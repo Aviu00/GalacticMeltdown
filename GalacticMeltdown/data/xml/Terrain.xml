@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TerrainObjects>
+    <TerrainObject>
+        <Name>floor</Name>
+        <Symbol>.</Symbol>
+        <Color>white</Color>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+    </TerrainObject>
+    <TerrainObject>
+        <Name>wall</Name>
+        <Symbol>%</Symbol>
+        <Color>dark_blue</Color>
+        <IsWalkable>False</IsWalkable>
+        <IsTransparent>False</IsTransparent>
+    </TerrainObject>
+</TerrainObjects>
