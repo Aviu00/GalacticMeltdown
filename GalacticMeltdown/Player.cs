@@ -21,19 +21,71 @@ namespace GalacticMeltdown
         public void ResetVisibleObjects()
         {
             VisibleObjects.Clear();
-            for (int y = -viewRange; y <= viewRange; y++)
-            {
-                for (int x = -viewRange; x <= viewRange; x++)
-                {
-                    (int, int) globalCords = Utility.GetGlobalCoordinates(x, y, this.X, this.Y);
-                    Tile tile = GameManager.Map.GetTile(globalCords.Item1, globalCords.Item2);
-                    if (tile == null)
-                        continue;
-                    tile.WasSeenByPlayer = true;
-                    VisibleObjects.Add(globalCords, tile);
-                }
-            }
+            //for (int y = -viewRange; y <= viewRange; y++)
+            //{
+            //    for (int x = -viewRange; x <= viewRange; x++)
+            //    {
+            //        (int, int) globalCords = Utility.GetGlobalCoordinates(x, y, this.X, this.Y);
+            //        Tile tile = GameManager.Map.GetTile(globalCords.Item1, globalCords.Item2);
+            //        if (tile == null)
+            //            continue;
+            //        tile.WasSeenByPlayer = true;
+            //        VisibleObjects.Add(globalCords, tile);
+            //    }
+            //}
+            FovCheckLine(0,1);
+            FovCheckLine(0,-1);
+            FovCheckLine(1,0);
+            FovCheckLine(-1,0);
+            FovCheckQuadrant(1, 1);
+            FovCheckQuadrant(1, -1);
+            FovCheckQuadrant(-1, -1);
+            FovCheckQuadrant(-1, 1);
             GameManager.ConsoleManager.Redraw();
+        }
+
+        private void FovCheckQuadrant(int relX, int relY)
+        {
+            int blockedCord = FovCheckLine(relX, relY);
+            FovCheckOctant(relX + relX, relY, blockedCord);
+            FovCheckOctant(relX, relY + relY, blockedCord);
+        }
+
+        private void FovCheckOctant(int relX, int relY, int blockedCord)
+        {
+            int innerLoopCycles = 1;
+            double slope;
+            for (int i = 0, y = relY; i < viewRange - 1; i++, y++)
+            {
+                for (int j = 0, x = relX - innerLoopCycles + 1; j < innerLoopCycles; j++, x++)
+                {
+                    //slope = (x - X) / (y - Y);
+                    //if (x == blockedCord && y == blockedCord + 1)
+                    //{
+                    //}
+                }
+                innerLoopCycles++;
+            }
+        }
+
+        /// <summary>
+        /// Fov only for vertical and horizontal lines
+        /// </summary>
+        private int FovCheckLine(int relX, int relY)
+        {
+            int curX = X + relX;
+            int curY = Y + relY;
+            for (int i = 0; i < viewRange; i++)
+            {
+                Tile tile = GameManager.Map.GetTile(curX, curY);
+                if (tile == null)
+                    continue;
+                VisibleObjects.Add((curX, curY), tile);
+                if (!tile.Obj.IsTransparent)
+                    return curX;
+            }
+
+            return curX;
         }
 
         public sealed override bool Move(int relX, int relY, bool redraw = true)
