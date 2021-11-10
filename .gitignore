@@ -3,3 +3,15 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/projectSettingsUpdater.xml
+/.idea.GalacticMeltdown.iml
+/modules.xml
+/contentModel.xml
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+.idea/
