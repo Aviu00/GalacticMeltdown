@@ -1,13 +1,8 @@
-using System;
-
 namespace GalacticMeltdown
 {
-    public abstract class Entity
+    public abstract class Entity : GameObject //Entity is an object that can be placed on a tile
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public char Symbol { get; set; }
-        public ConsoleColor Color = ConsoleColor.White;
-        //public bool Drawable = true;
     }
 }

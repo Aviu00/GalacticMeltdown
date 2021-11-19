@@ -3,16 +3,17 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown
 {
-    public class Player : Moveable
+    public class Player : Entity, IMovable
     {
-        public Dictionary<(int, int), Entity> VisibleObjects = new();
+        public Dictionary<(int, int), GameObject> VisibleObjects = new();
+        public MoveBehavior MoveBehavior { get; }
         private int viewRange = 10;
         public Player()
         {
+            MoveBehavior = new WalkBehavior(this);
             X = 48;
             Y = 48;
             Symbol = '@';
-            //ResetVisibleObjects();
         }
 
         /// <summary>
@@ -36,14 +37,12 @@ namespace GalacticMeltdown
             GameManager.ConsoleManager.Redraw();
         }
 
-        public sealed override bool Move(int relX, int relY, bool redraw = true)
+        public void Move(int relX, int relY)
         {
-            if (base.Move(relX, relY, false))
+            if (MoveBehavior.Move(relX, relY))
             {
                 ResetVisibleObjects();
-                return true;
             }
-            return false;
         }
     }
 }

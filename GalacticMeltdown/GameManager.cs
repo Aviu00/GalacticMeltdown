@@ -30,8 +30,6 @@ namespace GalacticMeltdown
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        //Action move = Player.Move();
-                        //Task.Run(move(0,1,false));
                         Player.Move(0,1);
                         break;
                     case ConsoleKey.DownArrow:
@@ -50,7 +48,7 @@ namespace GalacticMeltdown
 
                 while (Console.KeyAvailable)//clear console key buffer
                 {
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                 }
             }
         }
