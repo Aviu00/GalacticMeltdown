@@ -33,18 +33,27 @@ namespace GalacticMeltdown
             //        VisibleObjects.Add(globalCords, tile);
             //    }
             //}
-            FovCheckLine(0,1);
-            FovCheckLine(0,-1);
-            FovCheckLine(1,0);
-            FovCheckLine(-1,0);
-            FovCheckQuadrant(1, 1);
-            FovCheckQuadrant(1, -1);
-            FovCheckQuadrant(-1, -1);
-            FovCheckQuadrant(-1, 1);
+
             GameManager.ConsoleManager.Redraw();
         }
 
         private void FovCheckQuadrant(int relX, int relY)
+        {
+            
+        }
+
+        private void FovCheckLine(int x1, int y1)
+        {
+            foreach (var tile in GameManager.Map.GetPointsOnLine(X,Y,x1, y1))
+            {
+                VisibleObjects.Add((tile.X, tile.Y), tile);
+                if (!tile.Obj.IsTransparent)
+                {
+                    return;
+                }
+            }
+        }
+        /*private void FovCheckQuadrant(int relX, int relY)
         {
             int blockedCord = FovCheckLine(relX, relY);
             FovCheckOctant(relX + relX, relY, blockedCord);
@@ -86,7 +95,7 @@ namespace GalacticMeltdown
             }
 
             return curX;
-        }
+        }*/
 
         public sealed override bool Move(int relX, int relY, bool redraw = true)
         {
