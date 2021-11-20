@@ -1,10 +1,10 @@
-using System.Xml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Xml;
 
-namespace GalacticMeltdown
+namespace GalacticMeltdown.data
 {
     public class TerrainData
     {
@@ -51,7 +51,7 @@ namespace GalacticMeltdown
             }
         }
         
-        public struct TerrainObject
+        public readonly struct TerrainObject
         {
             public string Name { get; }
             public char Symbol { get; }

@@ -53,38 +53,5 @@ namespace GalacticMeltdown
             }
             return tile;
         }
-        
-        /// <summary>
-        /// Bresenham's line algorithm
-        /// </summary>
-        public IEnumerable<Tile> GetPointsOnLine(int x0, int y0, int x1, int y1)
-        {
-            bool steep = Math.Abs(y1 - y0) > Math.Abs(x1 - x0);
-            if (steep)
-            {
-                (x0, y0) = (y0, x0);
-                (x1, y1) = (y1, x1);
-            }
-            if (x0 > x1)
-            {
-                (x0, x1) = (x1, x0);
-                (y0, y1) = (y1, y0);
-            }
-            int dx = x1 - x0;
-            int dy = Math.Abs(y1 - y0);
-            int error = dx / 2;
-            int yStep = y0 < y1 ? 1 : -1;
-            int y = y0;
-            for (int x = x0; x <= x1; x++)
-            {
-                yield return GetTile(steep ? y : x, steep ? x : y);
-                error = error - dy;
-                if (error < 0)
-                {
-                    y += yStep;
-                    error += dx;
-                }
-            }
-        }
     }
 }

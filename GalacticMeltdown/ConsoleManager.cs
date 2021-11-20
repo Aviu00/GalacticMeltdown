@@ -32,29 +32,29 @@ namespace GalacticMeltdown
                 for (int x = 0; x < maxX; x++)
                 {
                     bool nullEntity = false;
-                    Entity drawableEntity;
+                    GameObject drawableGameObject;
                     var relCords = Utility.GetRelativeCoordinates(x, y, focusX, focusY);
                     var glCords = Utility.GetGlobalCoordinates(relCords, FocusPoint.X, FocusPoint.Y);
                     if(GameManager.Player.X == glCords.Item1 && GameManager.Player.Y == glCords.Item2)//draw player
                     {
-                        drawableEntity = GameManager.Player;
-                        Console.ForegroundColor = drawableEntity.Color;
+                        drawableGameObject = GameManager.Player;
+                        Console.ForegroundColor = drawableGameObject.Color;
                     }
                     else if (GameManager.Player.VisibleObjects.ContainsKey(glCords))//if currently visible by player
                     {
-                        drawableEntity = GameManager.Player.VisibleObjects[glCords];
-                        Console.ForegroundColor = drawableEntity.Color;
+                        drawableGameObject = GameManager.Player.VisibleObjects[glCords];
+                        Console.ForegroundColor = drawableGameObject.Color;
                     }
                     else//draw tiles outside of fov
                     {
-                        drawableEntity = GameManager.Map.GetTile(glCords.Item1, glCords.Item2);
-                        if (drawableEntity != null && ((Tile) drawableEntity).WasSeenByPlayer)
+                        drawableGameObject = GameManager.Map.GetTile(glCords.Item1, glCords.Item2);
+                        if (drawableGameObject != null && ((Tile) drawableGameObject).WasSeenByPlayer)
                             Console.ForegroundColor = ConsoleColor.DarkYellow;
                         else
                             nullEntity = true;
                     }
                     
-                    if (nullEntity || drawableEntity.Symbol == ' ')
+                    if (nullEntity || drawableGameObject.Symbol == ' ')
                     {
                         sb.Append(' ');
                         continue;
@@ -62,7 +62,7 @@ namespace GalacticMeltdown
                     lastFgColor ??= Console.ForegroundColor;
                     if(lastFgColor == Console.ForegroundColor)
                     {
-                        sb.Append(drawableEntity.Symbol);
+                        sb.Append(drawableGameObject.Symbol);
                     }
                     else
                     {
@@ -73,11 +73,11 @@ namespace GalacticMeltdown
                         lastFgColor = newColor;
                         Console.ForegroundColor = newColor;
                         Console.SetCursorPosition(x,i);
-                        sb.Append(drawableEntity.Symbol);
+                        sb.Append(drawableGameObject.Symbol);
                     }
                 }
 
-                if (sb.ToString().Length != 0)
+                if (sb.Length != 0)
                 {
                     if (i == maxY - 1)
                     {

@@ -1,110 +1,123 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown
 {
-    public class Player : Moveable
+    public class Player : Entity, IMovable
     {
-        public Dictionary<(int, int), Entity> VisibleObjects = new();
-        private int viewRange = 10;
+        public Dictionary<(int, int), GameObject> VisibleObjects = new();
+        public MoveBehavior MoveBehavior { get; }
+        private int _viewRange = 15;
+
+        public int ViewRange
+        {
+            get => _viewRange;
+            set
+            {
+                if (value > 0)
+                {
+                    _viewRange = value;
+                    ResetVisibleObjects();
+                    Console.SetCursorPosition(0, 0);
+                    Console.Write(value);
+                }
+            }
+        }
         public Player()
         {
+            MoveBehavior = new MoveBehavior(this);
             X = 48;
             Y = 48;
             Symbol = '@';
-            //ResetVisibleObjects();
         }
 
         /// <summary>
-        /// Just for testing, proper fov calculation method needs to be implemented
+        /// Reset player field of view
         /// </summary>
         public void ResetVisibleObjects()
         {
             VisibleObjects.Clear();
-            //for (int y = -viewRange; y <= viewRange; y++)
-            //{
-            //    for (int x = -viewRange; x <= viewRange; x++)
-            //    {
-            //        (int, int) globalCords = Utility.GetGlobalCoordinates(x, y, this.X, this.Y);
-            //        Tile tile = GameManager.Map.GetTile(globalCords.Item1, globalCords.Item2);
-            //        if (tile == null)
-            //            continue;
-            //        tile.WasSeenByPlayer = true;
-            //        VisibleObjects.Add(globalCords, tile);
-            //    }
-            //}
+            foreach (var cords in Utility.GetPointsOnSquareBorder(X, Y, _viewRange))
+            {
+                foreach (var tileCords in Utility.GetPointsOnLine(X, Y, cords.Item1, cords.Item2))
+                {
+                    int tx = tileCords.Item1;
+                    int ty = tileCords.Item2;
+                    int difX = X - tx;
+                    int difY = Y - ty;
+                    if (difX * difX + difY * difY > _viewRange * _viewRange -1)//maybe should do better calculations
+                    {
+                        break;
+                    }
+                    Tile tile = GameManager.Map.GetTile(tx, ty);
+                    if (tile == null)
+                        continue;
+                    if (!VisibleObjects.ContainsKey(tileCords))
+                    {
+                        VisibleObjects.Add(tileCords, tile);
+                        tile.WasSeenByPlayer = true;
+                    }
+                    if (!tile.Obj.IsTransparent)
+                    {
+                        break;
+                    }
+                    if(tx != X || ty != Y)
+                        CheckAdjacentWallsForPoint(tileCords);
+                }
+            }
 
             GameManager.ConsoleManager.Redraw();
         }
 
-        private void FovCheckQuadrant(int relX, int relY)
+        private void CheckAdjacentWallsForPoint((int, int) cords)
         {
-            
-        }
-
-        private void FovCheckLine(int x1, int y1)
-        {
-            foreach (var tile in GameManager.Map.GetPointsOnLine(X,Y,x1, y1))
+            int x = cords.Item1;
+            int y = cords.Item2;
+            int difX = x - X;
+            int dX ;
+            int difY = y - Y;
+            int dY;
+            if (difX == 0)
             {
-                VisibleObjects.Add((tile.X, tile.Y), tile);
-                if (!tile.Obj.IsTransparent)
+                dY = difY / Math.Abs(difY);
+                CheckWall(x + 1, y + dY);
+                CheckWall(x, y + dY);
+                CheckWall(x - 1, y + dY);
+            }
+            else if (difY == 0)
+            {
+                dX = difX / Math.Abs(difX);
+                CheckWall(x + dX, y + 1);
+                CheckWall(x + dX, y);
+                CheckWall(x + dX, y - 1);
+            }
+            else
+            {
+                dY = difY / Math.Abs(difY);
+                dX = difX / Math.Abs(difX);
+                CheckWall(x + dX, y + dY);
+            }
+        }
+        private void CheckWall(int x, int y)
+        {
+            if (!VisibleObjects.ContainsKey((x, y)))
+            {
+                Tile tile = GameManager.Map.GetTile(x, y);
+                if (tile is {Obj: {IsTransparent: false}})
                 {
-                    return;
+                    tile.WasSeenByPlayer = true;
+                    VisibleObjects.Add((x, y), tile);
                 }
             }
         }
-        /*private void FovCheckQuadrant(int relX, int relY)
+        public void Move(int relX, int relY)
         {
-            int blockedCord = FovCheckLine(relX, relY);
-            FovCheckOctant(relX + relX, relY, blockedCord);
-            FovCheckOctant(relX, relY + relY, blockedCord);
-        }
-
-        private void FovCheckOctant(int relX, int relY, int blockedCord)
-        {
-            int innerLoopCycles = 1;
-            double slope;
-            for (int i = 0, y = relY; i < viewRange - 1; i++, y++)
-            {
-                for (int j = 0, x = relX - innerLoopCycles + 1; j < innerLoopCycles; j++, x++)
-                {
-                    //slope = (x - X) / (y - Y);
-                    //if (x == blockedCord && y == blockedCord + 1)
-                    //{
-                    //}
-                }
-                innerLoopCycles++;
-            }
-        }
-
-        /// <summary>
-        /// Fov only for vertical and horizontal lines
-        /// </summary>
-        private int FovCheckLine(int relX, int relY)
-        {
-            int curX = X + relX;
-            int curY = Y + relY;
-            for (int i = 0; i < viewRange; i++)
-            {
-                Tile tile = GameManager.Map.GetTile(curX, curY);
-                if (tile == null)
-                    continue;
-                VisibleObjects.Add((curX, curY), tile);
-                if (!tile.Obj.IsTransparent)
-                    return curX;
-            }
-
-            return curX;
-        }*/
-
-        public sealed override bool Move(int relX, int relY, bool redraw = true)
-        {
-            if (base.Move(relX, relY, false))
+            if (MoveBehavior.Move(relX, relY))
             {
                 ResetVisibleObjects();
-                return true;
             }
-            return false;
         }
     }
 }

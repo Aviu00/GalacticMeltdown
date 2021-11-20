@@ -9,9 +9,16 @@
     </TerrainObject>
     <TerrainObject>
         <Name>wall</Name>
-        <Symbol>%</Symbol>
+        <Symbol>#</Symbol>
         <Color>dark_blue</Color>
         <IsWalkable>False</IsWalkable>
+        <IsTransparent>False</IsTransparent>
+    </TerrainObject>
+    <TerrainObject>
+        <Name>fog</Name>
+        <Symbol>%</Symbol>
+        <Color>black</Color>
+        <IsWalkable>True</IsWalkable>
         <IsTransparent>False</IsTransparent>
     </TerrainObject>
 </TerrainObjects>

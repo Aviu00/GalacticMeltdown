@@ -1,4 +1,5 @@
 ﻿using System;
+using GalacticMeltdown.data;
 
 namespace GalacticMeltdown
 {
@@ -30,8 +31,6 @@ namespace GalacticMeltdown
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        //Action move = Player.Move();
-                        //Task.Run(move(0,1,false));
                         Player.Move(0,1);
                         break;
                     case ConsoleKey.DownArrow:
@@ -43,6 +42,12 @@ namespace GalacticMeltdown
                     case ConsoleKey.LeftArrow:
                         Player.Move(-1,0);
                         break;
+                    case ConsoleKey.Multiply://for fov testing
+                        Player.ViewRange++;
+                        break;
+                    case ConsoleKey.Subtract:
+                        Player.ViewRange--;
+                        break;
                     case ConsoleKey.Q:
                         Stop();
                         return;
@@ -50,7 +55,7 @@ namespace GalacticMeltdown
 
                 while (Console.KeyAvailable)//clear console key buffer
                 {
-                    Console.ReadKey();
+                    Console.ReadKey(true);
                 }
             }
         }
