@@ -13,7 +13,7 @@ namespace GalacticMeltdown
             X = x;
             Y = y;
             Symbol = obj.Symbol;
-            Color = obj.Color;
+            FGColor = obj.Color;
             Obj = obj;
         }
     }

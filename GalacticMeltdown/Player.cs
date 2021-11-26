@@ -68,7 +68,7 @@ namespace GalacticMeltdown
                 }
             }
 
-            GameManager.ConsoleManager.Redraw();
+            GameManager.ConsoleManager.RedrawMap();
         }
 
         private void CheckAdjacentWallsForPoint((int, int) cords)
