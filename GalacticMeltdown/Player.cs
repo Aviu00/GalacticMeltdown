@@ -20,8 +20,8 @@ namespace GalacticMeltdown
                 {
                     _viewRange = value;
                     ResetVisibleObjects();
-                    Console.SetCursorPosition(0, 0);
-                    Console.Write(value);
+                    //Console.SetCursorPosition(0, 0);
+                    //Console.Write(value);
                 }
             }
         }
@@ -38,11 +38,15 @@ namespace GalacticMeltdown
         /// </summary>
         public void ResetVisibleObjects()
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             VisibleObjects.Clear();
+            VisibleObjects.Add((X, Y),this);
             foreach (var cords in Utility.GetPointsOnSquareBorder(X, Y, _viewRange))
             {
+                (int, int)? lastTileCords = null;
                 foreach (var tileCords in Utility.GetPointsOnLine(X, Y, cords.Item1, cords.Item2))
                 {
+                    CheckAdjacentWallsForPoint(lastTileCords);
                     int tx = tileCords.Item1;
                     int ty = tileCords.Item2;
                     int difX = X - tx;
@@ -63,18 +67,25 @@ namespace GalacticMeltdown
                     {
                         break;
                     }
-                    if(tx != X || ty != Y)
-                        CheckAdjacentWallsForPoint(tileCords);
+
+                    if (tx != X || ty != Y)
+                        lastTileCords = tileCords;
                 }
             }
-
             GameManager.ConsoleManager.RedrawMap();
+            watch.Stop();
+            Console.SetCursorPosition(0,0);
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write($"{watch.ElapsedMilliseconds} ms");
         }
 
-        private void CheckAdjacentWallsForPoint((int, int) cords)
+        private void CheckAdjacentWallsForPoint((int, int)? cords)
         {
-            int x = cords.Item1;
-            int y = cords.Item2;
+            if(cords == null)
+                return;
+            int x = cords.Value.Item1;
+            int y = cords.Value.Item2;
             int difX = x - X;
             int dX ;
             int difY = y - Y;

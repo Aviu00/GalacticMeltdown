@@ -8,10 +8,12 @@ namespace GalacticMeltdown
         public Entity FocusPoint;
         private int focusX;
         private int focusY;
+        public int overlayWidth = 0;
 
         public ConsoleManager()
         {
             Console.CursorVisible = false;
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.Clear();
         }
         
@@ -20,26 +22,31 @@ namespace GalacticMeltdown
         /// </summary>
         public void RedrawMap()
         {
-            FocusPoint ??= GameManager.Player;
-            int maxX = Console.WindowWidth;
-            int maxY = Console.WindowHeight;
-            focusX = maxX / 2;
-            focusY = maxY / 2;
-            Draw(0,0,maxX,maxY,MapDrawFunc);
+            //ResetFocus();
+            int maxX = Console.WindowWidth - overlayWidth-1;
+            int maxY = Console.WindowHeight-1;
+            DrawArea(0, 0, maxX, maxY, ScreenToMapDrawFunc, true);
         }
 
-        private void Draw(int startX, int startY, int maxX, int maxY, DrawFunc drawFunc)
+        public void ResetFocus()
+        {
+            FocusPoint ??= GameManager.Player;
+            focusX = (Console.WindowWidth - overlayWidth) / 2;
+            focusY = Console.WindowHeight / 2;
+        }
+
+        public void DrawArea(int startX, int startY, int maxX, int maxY, DrawFunc drawFunc, bool appendNewLine = false)
         {
             StringBuilder sb = new StringBuilder();
             ConsoleColor? lastFgColor = null;
             ConsoleColor? lastBgColor = null;
-            //Console.SetCursorPosition(0,0);
-            //Console.ForegroundColor = ConsoleColor.White;
-            //Console.BackgroundColor = ConsoleColor.Black;
-            for (int i = startY, y = maxY - 1; i < maxY; i++, y--)
+            Console.SetCursorPosition(startX, startY);
+            for (int y = maxY; y >= startY; y--)
             {
-                Console.SetCursorPosition(startX, i);
-                for (int x = startX; x < maxX; x++)
+                int i = Console.WindowHeight - 1 - y;
+                if(!appendNewLine)
+                    Console.SetCursorPosition(startX, i);
+                for (int x = startX; x <= maxX; x++)
                 {
                     SymbolData symbolData = drawFunc(x, y);
 
@@ -50,6 +57,7 @@ namespace GalacticMeltdown
                     if((lastFgColor == Console.ForegroundColor || symbolData.Symbol == ' ') 
                        && lastBgColor == Console.BackgroundColor)
                     {
+                        Console.ForegroundColor = (ConsoleColor)lastFgColor;
                         sb.Append(symbolData.Symbol);
                     }
                     else
@@ -58,7 +66,7 @@ namespace GalacticMeltdown
                         ConsoleColor newBgColor = Console.BackgroundColor;
                         Console.ForegroundColor = (ConsoleColor)lastFgColor;
                         Console.BackgroundColor = (ConsoleColor)lastBgColor;
-                        Console.Write(sb.ToString());
+                        Console.Write(sb);
                         sb.Clear();
                         lastFgColor = newFgColor;
                         lastBgColor = newBgColor;
@@ -68,44 +76,89 @@ namespace GalacticMeltdown
                         sb.Append(symbolData.Symbol);
                     }
                 }
-                Console.Write(sb.ToString());
-                sb.Clear();
-                lastFgColor = null;
-                lastBgColor = null;
+
+                if (appendNewLine)
+                {
+                    if (sb.Length != 0)
+                    {
+                        if (i == maxY)
+                        {
+                            Console.Write(sb);
+                            sb.Clear();
+                        }
+                        else
+                            sb.Append('\n');
+                    }
+                }
+                else
+                {
+                    Console.Write(sb);
+                    sb.Clear();
+                    lastBgColor = null;
+                    lastFgColor = null;
+                }
             }
         }
-
-        private SymbolData MapDrawFunc(int x, int y)
+        
+        /// <summary>
+        /// Draws a single obj
+        /// </summary>
+        public void DrawObj(int x, int y, DrawFunc drawFunc, bool glCords = false)
         {
-            //bool nullEntity = false;
-            GameObject drawableObj;
-            var relCords = Utility.GetRelativeCoordinates(x, y, focusX, focusY);
-            var glCords = Utility.GetGlobalCoordinates(relCords, FocusPoint.X, FocusPoint.Y);
-            if(GameManager.Player.X == glCords.Item1 && GameManager.Player.Y == glCords.Item2)//draw player
+            SymbolData symbolData = drawFunc(x, y);
+            if (glCords)
             {
-                drawableObj = GameManager.Player;
-                return new SymbolData(drawableObj.Symbol, drawableObj.FGColor, ConsoleColor.Green);
-                //Console.ForegroundColor = drawableGameObject.Color;
+                (x, y) = GlobalCordsToScreen(x, y);
             }
-            if (GameManager.Player.VisibleObjects.ContainsKey(glCords))//if currently visible by player
+            int i = Console.WindowHeight - 1 - y;
+            Console.SetCursorPosition(x,i);
+            Console.ForegroundColor = symbolData.FGColor;
+            Console.BackgroundColor = symbolData.BGColor;
+            Console.Write(symbolData.Symbol);
+        }
+
+        public SymbolData ScreenToMapDrawFunc(int x, int y)
+        {
+            (int, int) glCords = ScreenCordsToGlobal(x, y);
+            return GlCordsDrawFunc(glCords.Item1, glCords.Item2);
+        }
+
+        public SymbolData GlCordsDrawFunc(int x, int y)
+        {
+            GameObject drawableObj;
+            if (GameManager.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
             {
-                drawableObj = GameManager.Player.VisibleObjects[glCords];
+                drawableObj = GameManager.Player.VisibleObjects[(x,y)];
                 return new SymbolData(drawableObj.Symbol, drawableObj.FGColor, drawableObj.BGColor);
                 //Console.ForegroundColor = drawableGameObject.Color;
             } 
             //draw tiles outside of fov
-            drawableObj = GameManager.Map.GetTile(glCords.Item1, glCords.Item2);
+            drawableObj = GameManager.Map.GetTile(x, y);
             if (drawableObj != null && ((Tile) drawableObj).WasSeenByPlayer)
             {
-                return new SymbolData(drawableObj.Symbol, ConsoleColor.DarkYellow, drawableObj.BGColor);
+                return new SymbolData(drawableObj.Symbol, ConsoleColor.DarkYellow, ConsoleColor.Black);
             }
 
             return new SymbolData(' ', Console.ForegroundColor, ConsoleColor.Black);
         }
 
-        delegate SymbolData DrawFunc(int x, int y);
+        public delegate SymbolData DrawFunc(int x, int y);
 
-        private struct SymbolData
+        public (int, int) GlobalCordsToScreen(int x, int y)
+        {
+            ResetFocus();
+            (int, int) relCords = Utility.GetRelativeCoordinates(x, y, FocusPoint.X, FocusPoint.Y);
+            return Utility.GetGlobalCoordinates(relCords, focusX, focusY);
+        }
+
+        public (int, int) ScreenCordsToGlobal(int x, int y)
+        {
+            ResetFocus();
+            var relCords = Utility.GetRelativeCoordinates(x, y, focusX, focusY);
+            return Utility.GetGlobalCoordinates(relCords, FocusPoint.X, FocusPoint.Y);
+        }
+        
+        public struct SymbolData
         {
             public char Symbol;
             public ConsoleColor FGColor;

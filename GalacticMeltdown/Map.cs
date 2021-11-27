@@ -18,13 +18,13 @@ namespace GalacticMeltdown
         /// </summary>
         private void Fill()
         {
-            for (int y = 0; y < 3; y++)
+            for (int x = 0; x < 3; x++)
             {
                 submaps.Add(new List<SubMap>());
-                for (int x = 0; x < 3; x++)
+                for (int y = 0; y < 3; y++)
                 {
                     SubMap subMap = new SubMap(x, y);
-                    submaps[y].Add(subMap);
+                    submaps[x].Add(subMap);
                 }
             }
         }
@@ -38,20 +38,11 @@ namespace GalacticMeltdown
             int globalY = y / 24;
             int localX = x % 24;
             int localY = y % 24;
-            Tile tile;
-            try
+            if (x < 0 || globalX >= 3 || y < 0 || globalY >= 3)
             {
-                tile = submaps[globalY][globalX].Tiles[localX, localY];
+                return null;
             }
-            catch (ArgumentOutOfRangeException)
-            {
-                tile = null;
-            }
-            catch (IndexOutOfRangeException)
-            {
-                tile = null;
-            }
-            return tile;
+            return submaps[globalX][globalY].Tiles[localX, localY];
         }
     }
 }
