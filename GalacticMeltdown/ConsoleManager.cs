@@ -70,8 +70,8 @@ namespace GalacticMeltdown
                         sb.Clear();
                         lastFgColor = newFgColor;
                         lastBgColor = newBgColor;
-                        SetConsoleForegroundColor(newBgColor);
-                        SetConsoleBackgroundColor(newFgColor);
+                        SetConsoleForegroundColor(newFgColor);
+                        SetConsoleBackgroundColor(newBgColor);
                         Console.SetCursorPosition(x,i);
                         sb.Append(symbolData.Symbol);
                     }
@@ -153,13 +153,13 @@ namespace GalacticMeltdown
 
         public void SetConsoleForegroundColor(ConsoleColor color)
         {
-            if (Console.BackgroundColor != color)
-                Console.BackgroundColor = color;
+            if (Console.ForegroundColor != color)
+                Console.ForegroundColor = color;
         }
         public void SetConsoleBackgroundColor(ConsoleColor color)
         {
-            if (Console.ForegroundColor != color)
-                Console.ForegroundColor = color;
+            if (Console.BackgroundColor != color)
+                Console.BackgroundColor = color;
         }
 
         public (int, int) ScreenCordsToGlobal(int x, int y)
