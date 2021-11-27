@@ -66,8 +66,8 @@ namespace GalacticMeltdown
         static void Stop()
         {
             _stop = true;
-            Console.Clear();
             Console.ResetColor();
+            Console.Clear();
             Console.CursorVisible = true;
         }
     }

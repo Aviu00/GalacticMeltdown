@@ -75,8 +75,8 @@ namespace GalacticMeltdown
             GameManager.ConsoleManager.RedrawMap();
             watch.Stop();
             Console.SetCursorPosition(0,0);
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
+            GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
+            GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.White);
             Console.Write($"{watch.ElapsedMilliseconds} ms");
         }
 

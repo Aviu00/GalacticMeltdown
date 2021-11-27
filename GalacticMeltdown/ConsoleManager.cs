@@ -50,8 +50,8 @@ namespace GalacticMeltdown
                 {
                     SymbolData symbolData = drawFunc(x, y);
 
-                    Console.ForegroundColor = symbolData.FGColor;
-                    Console.BackgroundColor = symbolData.BGColor;
+                    SetConsoleForegroundColor(symbolData.FGColor);
+                    SetConsoleBackgroundColor(symbolData.BGColor);
                     lastFgColor ??= Console.ForegroundColor;
                     lastBgColor ??= Console.BackgroundColor;
                     if((lastFgColor == Console.ForegroundColor || symbolData.Symbol == ' ') 
@@ -64,14 +64,14 @@ namespace GalacticMeltdown
                     {
                         ConsoleColor newFgColor = Console.ForegroundColor;
                         ConsoleColor newBgColor = Console.BackgroundColor;
-                        Console.ForegroundColor = (ConsoleColor)lastFgColor;
-                        Console.BackgroundColor = (ConsoleColor)lastBgColor;
+                        SetConsoleForegroundColor((ConsoleColor)lastFgColor);
+                        SetConsoleBackgroundColor((ConsoleColor)lastBgColor);
                         Console.Write(sb);
                         sb.Clear();
                         lastFgColor = newFgColor;
                         lastBgColor = newBgColor;
-                        Console.ForegroundColor = newFgColor;
-                        Console.BackgroundColor = newBgColor;
+                        SetConsoleForegroundColor(newBgColor);
+                        SetConsoleBackgroundColor(newFgColor);
                         Console.SetCursorPosition(x,i);
                         sb.Append(symbolData.Symbol);
                     }
@@ -112,8 +112,8 @@ namespace GalacticMeltdown
             }
             int i = Console.WindowHeight - 1 - y;
             Console.SetCursorPosition(x,i);
-            Console.ForegroundColor = symbolData.FGColor;
-            Console.BackgroundColor = symbolData.BGColor;
+            SetConsoleForegroundColor(symbolData.FGColor);
+            SetConsoleBackgroundColor(symbolData.BGColor);
             Console.Write(symbolData.Symbol);
         }
 
@@ -149,6 +149,17 @@ namespace GalacticMeltdown
             ResetFocus();
             (int, int) relCords = Utility.GetRelativeCoordinates(x, y, FocusPoint.X, FocusPoint.Y);
             return Utility.GetGlobalCoordinates(relCords, focusX, focusY);
+        }
+
+        public void SetConsoleForegroundColor(ConsoleColor color)
+        {
+            if (Console.BackgroundColor != color)
+                Console.BackgroundColor = color;
+        }
+        public void SetConsoleBackgroundColor(ConsoleColor color)
+        {
+            if (Console.ForegroundColor != color)
+                Console.ForegroundColor = color;
         }
 
         public (int, int) ScreenCordsToGlobal(int x, int y)
