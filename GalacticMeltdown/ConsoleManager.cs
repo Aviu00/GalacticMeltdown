@@ -8,7 +8,7 @@ namespace GalacticMeltdown
         public Entity FocusPoint;
         private int focusX;
         private int focusY;
-        public int overlayWidth = 0;
+        public int overlayWidth = 1;
 
         public ConsoleManager()
         {
@@ -25,7 +25,7 @@ namespace GalacticMeltdown
             //ResetFocus();
             int maxX = Console.WindowWidth - overlayWidth-1;
             int maxY = Console.WindowHeight-1;
-            DrawArea(0, 0, maxX, maxY, ScreenToMapDrawFunc, true);
+            DrawArea(0, 0, maxX, maxY, DrawFunctions.ScreenCordsMapDrawFunc, true);
         }
 
         public void ResetFocus()
@@ -35,7 +35,8 @@ namespace GalacticMeltdown
             focusY = Console.WindowHeight / 2;
         }
 
-        public void DrawArea(int startX, int startY, int maxX, int maxY, DrawFunc drawFunc, bool appendNewLine = false)
+        public void DrawArea
+            (int startX, int startY, int maxX, int maxY, DrawFunctions.DrawFunc drawFunc, bool appendNewLine = false)
         {
             StringBuilder sb = new StringBuilder();
             ConsoleColor? lastFgColor = null;
@@ -43,12 +44,12 @@ namespace GalacticMeltdown
             Console.SetCursorPosition(startX, startY);
             for (int y = maxY; y >= startY; y--)
             {
-                int i = Console.WindowHeight - 1 - y;
+                int i = FlipYScreenCord(y);
                 if(!appendNewLine)
                     Console.SetCursorPosition(startX, i);
                 for (int x = startX; x <= maxX; x++)
                 {
-                    SymbolData symbolData = drawFunc(x, y);
+                    DrawFunctions.SymbolData symbolData = drawFunc(x, y);
 
                     SetConsoleForegroundColor(symbolData.FGColor);
                     SetConsoleBackgroundColor(symbolData.BGColor);
@@ -77,25 +78,22 @@ namespace GalacticMeltdown
                     }
                 }
 
-                if (appendNewLine)
-                {
-                    if (sb.Length != 0)
-                    {
-                        if (i == maxY)
-                        {
-                            Console.Write(sb);
-                            sb.Clear();
-                        }
-                        else
-                            sb.Append('\n');
-                    }
-                }
-                else
+                if(!appendNewLine)
                 {
                     Console.Write(sb);
                     sb.Clear();
                     lastBgColor = null;
                     lastFgColor = null;
+                }
+                else if(sb.Length != 0)
+                {
+                    if (i == maxY)
+                    {
+                        Console.Write(sb);
+                        sb.Clear();
+                    }
+                    else
+                        sb.Append('\n');
                 }
             }
         }
@@ -103,52 +101,24 @@ namespace GalacticMeltdown
         /// <summary>
         /// Draws a single obj
         /// </summary>
-        public void DrawObj(int x, int y, DrawFunc drawFunc, bool glCords = false)
+        public void DrawObj
+            (int x, int y, DrawFunctions.DrawFunc drawFunc, bool ignoreOverlay = false, bool glCords = false)
         {
-            SymbolData symbolData = drawFunc(x, y);
+            DrawFunctions.SymbolData symbolData = drawFunc(x, y);
             if (glCords)
             {
-                (x, y) = GlobalCordsToScreen(x, y);
+                (x, y) = ConvertGlobalToScreenCords(x, y);
             }
-            int i = Console.WindowHeight - 1 - y;
+
+            if (!ignoreOverlay && x > Console.WindowWidth - overlayWidth - 1)
+            {
+                return;
+            }
+            int i = FlipYScreenCord(y);
             Console.SetCursorPosition(x,i);
             SetConsoleForegroundColor(symbolData.FGColor);
             SetConsoleBackgroundColor(symbolData.BGColor);
             Console.Write(symbolData.Symbol);
-        }
-
-        public SymbolData ScreenToMapDrawFunc(int x, int y)
-        {
-            (int, int) glCords = ScreenCordsToGlobal(x, y);
-            return GlCordsDrawFunc(glCords.Item1, glCords.Item2);
-        }
-
-        public SymbolData GlCordsDrawFunc(int x, int y)
-        {
-            GameObject drawableObj;
-            if (GameManager.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
-            {
-                drawableObj = GameManager.Player.VisibleObjects[(x,y)];
-                return new SymbolData(drawableObj.Symbol, drawableObj.FGColor, drawableObj.BGColor);
-                //Console.ForegroundColor = drawableGameObject.Color;
-            } 
-            //draw tiles outside of fov
-            drawableObj = GameManager.Map.GetTile(x, y);
-            if (drawableObj != null && ((Tile) drawableObj).WasSeenByPlayer)
-            {
-                return new SymbolData(drawableObj.Symbol, ConsoleColor.DarkYellow, ConsoleColor.Black);
-            }
-
-            return new SymbolData(' ', Console.ForegroundColor, ConsoleColor.Black);
-        }
-
-        public delegate SymbolData DrawFunc(int x, int y);
-
-        public (int, int) GlobalCordsToScreen(int x, int y)
-        {
-            ResetFocus();
-            (int, int) relCords = Utility.GetRelativeCoordinates(x, y, FocusPoint.X, FocusPoint.Y);
-            return Utility.GetGlobalCoordinates(relCords, focusX, focusY);
         }
 
         public void SetConsoleForegroundColor(ConsoleColor color)
@@ -161,26 +131,24 @@ namespace GalacticMeltdown
             if (Console.BackgroundColor != color)
                 Console.BackgroundColor = color;
         }
-
-        public (int, int) ScreenCordsToGlobal(int x, int y)
+        
+        public (int x, int y) ConvertGlobalToScreenCords(int x, int y)
         {
             ResetFocus();
-            var relCords = Utility.GetRelativeCoordinates(x, y, focusX, focusY);
-            return Utility.GetGlobalCoordinates(relCords, FocusPoint.X, FocusPoint.Y);
+            (int x, int y) relCords = Utility.ConvertGlobalToRelativeCords(x, y, FocusPoint.X, FocusPoint.Y);
+            return Utility.ConvertRelativeToGlobalCords(relCords.x, relCords.y, focusX, focusY);
         }
-        
-        public struct SymbolData
-        {
-            public char Symbol;
-            public ConsoleColor FGColor;
-            public ConsoleColor BGColor;
 
-            public SymbolData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
-            {
-                Symbol = symbol;
-                BGColor = bgColor;
-                FGColor = fgColor;
-            }
+        public (int x, int y) ConvertScreenToGlobalCords(int x, int y)
+        {
+            ResetFocus();
+            var relCords = Utility.ConvertGlobalToRelativeCords(x, y, focusX, focusY);
+            return Utility.ConvertRelativeToGlobalCords(relCords.x, relCords.y, FocusPoint.X, FocusPoint.Y);
+        }
+
+        private int FlipYScreenCord(int y)
+        {
+            return Console.WindowHeight - 1 - y;
         }
     }
 }

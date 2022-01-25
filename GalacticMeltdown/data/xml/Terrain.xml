@@ -17,7 +17,7 @@
     <TerrainObject>
         <Name>fog</Name>
         <Symbol>%</Symbol>
-        <Color>black</Color>
+        <Color>dark_gray</Color>
         <IsWalkable>True</IsWalkable>
         <IsTransparent>False</IsTransparent>
     </TerrainObject>

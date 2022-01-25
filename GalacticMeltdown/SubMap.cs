@@ -7,13 +7,13 @@ namespace GalacticMeltdown
         public const int Size = 24;
         public Tile[,] Tiles { get; private set; }
 
-        public int GlobalX { get; }
-        public int GlobalY { get; }
+        public int MapX { get; }
+        public int MapY { get; }
 
         public SubMap(int x, int y)
         {
-            GlobalX = x;
-            GlobalY = y;
+            MapX = x;
+            MapY = y;
             Fill();
         }
         
@@ -27,8 +27,8 @@ namespace GalacticMeltdown
             {
                 for (int x = 0; x < Size; x++)
                 {
-                    int newX = GlobalX * 24 + x;
-                    int newY = GlobalY * 24 + y;
+                    int newX = MapX * 24 + x;
+                    int newY = MapY * 24 + y;
                     if(x == 1)
                         Tiles[x, y] = new Tile(GameManager.TerrainData.Data["fog"], newX, newY);
                     else if(y == 1 || x== 15 && y == 15)

@@ -34,15 +34,15 @@ namespace GalacticMeltdown
         /// </summary>
         public Tile GetTile(int x, int y)
         {
-            int globalX = x / 24;
-            int globalY = y / 24;
+            int mapX = x / 24;
+            int mapY = y / 24;
             int localX = x % 24;
             int localY = y % 24;
-            if (x < 0 || globalX >= 3 || y < 0 || globalY >= 3)
+            if (x < 0 || mapX >= 3 || y < 0 || mapY >= 3)
             {
                 return null;
             }
-            return submaps[globalX][globalY].Tiles[localX, localY];
+            return submaps[mapX][mapY].Tiles[localX, localY];
         }
     }
 }

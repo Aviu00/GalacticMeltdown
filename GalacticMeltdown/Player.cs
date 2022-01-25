@@ -20,8 +20,6 @@ namespace GalacticMeltdown
                 {
                     _viewRange = value;
                     ResetVisibleObjects();
-                    //Console.SetCursorPosition(0, 0);
-                    //Console.Write(value);
                 }
             }
         }
@@ -32,6 +30,15 @@ namespace GalacticMeltdown
             Y = 48;
             Symbol = '@';
         }
+        
+        public void Move(int relX, int relY)
+        {
+            if (MoveBehavior.Move(relX, relY))
+            {
+                ResetVisibleObjects();
+            }
+        }
+        
 
         /// <summary>
         /// Reset player field of view
@@ -41,21 +48,13 @@ namespace GalacticMeltdown
             var watch = System.Diagnostics.Stopwatch.StartNew();
             VisibleObjects.Clear();
             VisibleObjects.Add((X, Y),this);
-            foreach (var cords in Utility.GetPointsOnSquareBorder(X, Y, _viewRange))
+            foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(X, Y, _viewRange))
             {
-                (int, int)? lastTileCords = null;
-                foreach (var tileCords in Utility.GetPointsOnLine(X, Y, cords.Item1, cords.Item2))
+                (int x, int y)? lastTileCords = null;
+                foreach (var tileCords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
                 {
-                    CheckAdjacentWallsForPoint(lastTileCords);
-                    int tx = tileCords.Item1;
-                    int ty = tileCords.Item2;
-                    int difX = X - tx;
-                    int difY = Y - ty;
-                    if (difX * difX + difY * difY > _viewRange * _viewRange -1)//maybe should do better calculations
-                    {
-                        break;
-                    }
-                    Tile tile = GameManager.Map.GetTile(tx, ty);
+                    FovCheckAdjacentWalls(lastTileCords);
+                    Tile tile = GameManager.Map.GetTile(tileCords.x, tileCords.y);
                     if (tile == null)
                         continue;
                     if (!VisibleObjects.ContainsKey(tileCords))
@@ -68,11 +67,12 @@ namespace GalacticMeltdown
                         break;
                     }
 
-                    if (tx != X || ty != Y)
+                    if (tileCords.x != X || tileCords.y != Y)
                         lastTileCords = tileCords;
                 }
             }
             GameManager.ConsoleManager.RedrawMap();
+            
             watch.Stop();
             Console.SetCursorPosition(0,0);
             GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
@@ -80,12 +80,12 @@ namespace GalacticMeltdown
             Console.Write($"{watch.ElapsedMilliseconds} ms");
         }
 
-        private void CheckAdjacentWallsForPoint((int, int)? cords)
+        private void FovCheckAdjacentWalls((int x, int y)? cords)
         {
             if(cords == null)
                 return;
-            int x = cords.Value.Item1;
-            int y = cords.Value.Item2;
+            int x = cords.Value.x;
+            int y = cords.Value.y;
             int difX = x - X;
             int dX ;
             int difY = y - Y;
@@ -93,25 +93,25 @@ namespace GalacticMeltdown
             if (difX == 0)
             {
                 dY = difY / Math.Abs(difY);
-                CheckWall(x + 1, y + dY);
-                CheckWall(x, y + dY);
-                CheckWall(x - 1, y + dY);
+                FovCheckWall(x + 1, y + dY);
+                FovCheckWall(x, y + dY);
+                FovCheckWall(x - 1, y + dY);
             }
             else if (difY == 0)
             {
                 dX = difX / Math.Abs(difX);
-                CheckWall(x + dX, y + 1);
-                CheckWall(x + dX, y);
-                CheckWall(x + dX, y - 1);
+                FovCheckWall(x + dX, y + 1);
+                FovCheckWall(x + dX, y);
+                FovCheckWall(x + dX, y - 1);
             }
             else
             {
                 dY = difY / Math.Abs(difY);
                 dX = difX / Math.Abs(difX);
-                CheckWall(x + dX, y + dY);
+                FovCheckWall(x + dX, y + dY);
             }
         }
-        private void CheckWall(int x, int y)
+        private void FovCheckWall(int x, int y)
         {
             if (!VisibleObjects.ContainsKey((x, y)))
             {
@@ -121,13 +121,6 @@ namespace GalacticMeltdown
                     tile.WasSeenByPlayer = true;
                     VisibleObjects.Add((x, y), tile);
                 }
-            }
-        }
-        public void Move(int relX, int relY)
-        {
-            if (MoveBehavior.Move(relX, relY))
-            {
-                ResetVisibleObjects();
             }
         }
     }

@@ -1,6 +1,6 @@
 namespace GalacticMeltdown.EntityBehaviors
 {
-    public class MoveBehavior : Behavior//moving strategy abstract class //possible moving behaviors: walking, flying
+    public class MoveBehavior : Behavior
     {
         public MoveBehavior(Entity target)
         {
