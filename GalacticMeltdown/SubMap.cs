@@ -1,5 +1,3 @@
-using System;
-
 namespace GalacticMeltdown
 {
     public class SubMap
