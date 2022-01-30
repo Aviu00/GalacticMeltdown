@@ -58,23 +58,23 @@ public static class Algorithms
 
         public static IEnumerable<(int x, int y)> GetPointsOnSquareBorder(int x0, int y0, int radius)
         {
-            List<(int x, int y)> cords = new List<(int x, int y)>();
+            List<(int x, int y)> coords = new List<(int x, int y)>();
             int xMin = x0 - radius;
             int xMax = x0 + radius;
             int yMin = y0 - radius;
             int yMax = y0 + radius;
             for (int x = xMin; x <= xMax; x++)
             {
-                cords.Add((x, yMin));
-                cords.Add((x, yMax));
+                coords.Add((x, yMin));
+                coords.Add((x, yMax));
             }
             for (int y = yMin + 1; y <= yMax - 1; y++)
             {
-                cords.Add((xMin, y));
-                cords.Add((xMax, y));
+                coords.Add((xMin, y));
+                coords.Add((xMax, y));
             }
             
-            return cords;
+            return coords;
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ public static class Algorithms
         {
             int y = radius;
             int d = 3 - 2 * radius;
-            List<(int, int)> cords = new List<(int, int)>();
-            FillCirclePoints(cords, x0, y0, 0, y);
+            List<(int, int)> coords = new List<(int, int)>();
+            FillCirclePoints(coords, x0, y0, 0, y);
             for (int x = 1; x < y; x++)
             {
                 if (d > 0)
@@ -95,30 +95,30 @@ public static class Algorithms
                 }
                 else
                     d = d + 4 * x + 6;
-                FillCirclePoints(cords, x0, y0, x, y);
+                FillCirclePoints(coords, x0, y0, x, y);
             }
 
-            return cords;
+            return coords;
         }
 
         
-        private static void FillCirclePoints(List<(int x, int y)> cords, int x0, int y0, int x, int y)
+        private static void FillCirclePoints(List<(int x, int y)> coords, int x0, int y0, int x, int y)
         {
-            TransposePointsToList(cords, x0 + x, y0 + y);
-            TransposePointsToList(cords, x0 - x, y0 + y);
-            TransposePointsToList(cords, x0 + x, y0 - y);
-            TransposePointsToList(cords, x0 - x, y0 - y);
-            TransposePointsToList(cords, x0 + y, y0 + x);
-            TransposePointsToList(cords, x0 - y, y0 + x);
-            TransposePointsToList(cords, x0 + y, y0 - x);
-            TransposePointsToList(cords, x0 - y, y0 - x);
+            TransposePointsToList(coords, x0 + x, y0 + y);
+            TransposePointsToList(coords, x0 - x, y0 + y);
+            TransposePointsToList(coords, x0 + x, y0 - y);
+            TransposePointsToList(coords, x0 - x, y0 - y);
+            TransposePointsToList(coords, x0 + y, y0 + x);
+            TransposePointsToList(coords, x0 - y, y0 + x);
+            TransposePointsToList(coords, x0 + y, y0 - x);
+            TransposePointsToList(coords, x0 - y, y0 - x);
         }
 
-        private static void TransposePointsToList(List<(int, int)> cords, int x, int y)
+        private static void TransposePointsToList(List<(int, int)> coords, int x, int y)
         {
-            if (!cords.Contains((x, y)))
+            if (!coords.Contains((x, y)))
             {
-                cords.Add((x, y));
+                coords.Add((x, y));
             }
         }
 }

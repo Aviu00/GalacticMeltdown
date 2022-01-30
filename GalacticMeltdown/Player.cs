@@ -50,16 +50,16 @@ namespace GalacticMeltdown
             VisibleObjects.Add((X, Y),this);
             foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(X, Y, _viewRange))
             {
-                (int x, int y)? lastTileCords = null;
-                foreach (var tileCords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
+                (int x, int y)? lastTileCoords = null;
+                foreach (var tileCoords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
                 {
-                    FovCheckAdjacentWalls(lastTileCords);
-                    Tile tile = GameManager.Map.GetTile(tileCords.x, tileCords.y);
+                    FovCheckAdjacentWalls(lastTileCoords);
+                    Tile tile = GameManager.Map.GetTile(tileCoords.x, tileCoords.y);
                     if (tile == null)
                         continue;
-                    if (!VisibleObjects.ContainsKey(tileCords))
+                    if (!VisibleObjects.ContainsKey(tileCoords))
                     {
-                        VisibleObjects.Add(tileCords, tile);
+                        VisibleObjects.Add(tileCoords, tile);
                         tile.WasSeenByPlayer = true;
                     }
                     if (!tile.IsTransparent)
@@ -67,8 +67,8 @@ namespace GalacticMeltdown
                         break;
                     }
 
-                    if (tileCords.x != X || tileCords.y != Y)
-                        lastTileCords = tileCords;
+                    if (tileCoords.x != X || tileCoords.y != Y)
+                        lastTileCoords = tileCoords;
                 }
             }
             GameManager.ConsoleManager.RedrawMap();
@@ -80,12 +80,12 @@ namespace GalacticMeltdown
             Console.Write($"{watch.ElapsedMilliseconds} ms");
         }
 
-        private void FovCheckAdjacentWalls((int x, int y)? cords)
+        private void FovCheckAdjacentWalls((int x, int y)? coords)
         {
-            if(cords == null)
+            if(coords == null)
                 return;
-            int x = cords.Value.x;
-            int y = cords.Value.y;
+            int x = coords.Value.x;
+            int y = coords.Value.y;
             int difX = x - X;
             int dX ;
             int difY = y - Y;

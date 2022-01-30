@@ -25,7 +25,7 @@ namespace GalacticMeltdown
             //ResetFocus();
             int maxX = Console.WindowWidth - overlayWidth-1;
             int maxY = Console.WindowHeight-1;
-            DrawArea(0, 0, maxX, maxY, DrawFunctions.ScreenCordsMapDrawFunc, true);
+            DrawArea(0, 0, maxX, maxY, DrawFunctions.ScreenCoordsMapDrawFunc, true);
         }
 
         public void ResetFocus()
@@ -102,12 +102,12 @@ namespace GalacticMeltdown
         /// Draws a single obj
         /// </summary>
         public void DrawObj
-            (int x, int y, DrawFunctions.DrawFunc drawFunc, bool ignoreOverlay = false, bool glCords = false)
+            (int x, int y, DrawFunctions.DrawFunc drawFunc, bool ignoreOverlay = false, bool glCoords = false)
         {
             DrawFunctions.SymbolData symbolData = drawFunc(x, y);
-            if (glCords)
+            if (glCoords)
             {
-                (x, y) = ConvertGlobalToScreenCords(x, y);
+                (x, y) = ConvertGlobalToScreenCoords(x, y);
             }
 
             if (!ignoreOverlay && x > Console.WindowWidth - overlayWidth - 1)
@@ -132,18 +132,18 @@ namespace GalacticMeltdown
                 Console.BackgroundColor = color;
         }
         
-        public (int x, int y) ConvertGlobalToScreenCords(int x, int y)
+        public (int x, int y) ConvertGlobalToScreenCoords(int x, int y)
         {
             ResetFocus();
-            (int x, int y) relCords = Utility.ConvertGlobalToRelativeCords(x, y, FocusPoint.X, FocusPoint.Y);
-            return Utility.ConvertRelativeToGlobalCords(relCords.x, relCords.y, focusX, focusY);
+            (int x, int y) relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, FocusPoint.X, FocusPoint.Y);
+            return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, focusX, focusY);
         }
 
-        public (int x, int y) ConvertScreenToGlobalCords(int x, int y)
+        public (int x, int y) ConvertScreenToGlobalCoords(int x, int y)
         {
             ResetFocus();
-            var relCords = Utility.ConvertGlobalToRelativeCords(x, y, focusX, focusY);
-            return Utility.ConvertRelativeToGlobalCords(relCords.x, relCords.y, FocusPoint.X, FocusPoint.Y);
+            var relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, focusX, focusY);
+            return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, FocusPoint.X, FocusPoint.Y);
         }
 
         private int FlipYScreenCord(int y)

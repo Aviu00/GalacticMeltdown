@@ -27,11 +27,11 @@ namespace GalacticMeltdown
         public static readonly ConsoleColor OutOfVisionTileColor = ConsoleColor.Black;
         
         
-        public static (int x, int y) ConvertGlobalToRelativeCords(int x, int y, int relObjX, int relObjY)
+        public static (int x, int y) ConvertGlobalToRelativeCoords(int x, int y, int relObjX, int relObjY)
         {
             return (x - relObjX, y - relObjY);
         }
-        public static (int x, int y) ConvertRelativeToGlobalCords(int x, int y, int relObjX, int relObjY)
+        public static (int x, int y) ConvertRelativeToGlobalCoords(int x, int y, int relObjX, int relObjY)
         {
             return (x + relObjX, y + relObjY);
         }
