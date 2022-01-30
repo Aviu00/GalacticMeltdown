@@ -1,7 +1,6 @@
-namespace GalacticMeltdown.EntityBehaviors
+namespace GalacticMeltdown.EntityBehaviors;
+
+public abstract class Behavior//strategy pattern base class
 {
-    public abstract class Behavior//strategy pattern base class
-    {
-        protected Entity Target { get; init; }
-    }
+    protected Entity Target { get; init; }
 }

@@ -1,42 +1,95 @@
 using System;
+using GalacticMeltdown.data;
 
-namespace GalacticMeltdown
+namespace GalacticMeltdown;
+
+public class SubMap
 {
-    public class SubMap
+    public bool HasAccessToMainRoute;
+    public bool MainRoute;
+    public SubMap NorthConnection = null;
+    public SubMap EastConnection = null;
+    public SubMap SouthConnection = null;
+    public SubMap WestConnection = null;
+    public bool StartPoint;
+    public bool EndPoint;
+    public double Difficulty = -1;
+
+    public int ConnectionCount =>
+        Convert.ToInt32(NorthConnection == null) + Convert.ToInt32(EastConnection == null) +
+        Convert.ToInt32(SouthConnection == null) + Convert.ToInt32(WestConnection == null);
+
+    public Tile[,] Tiles { get; private set; }
+    public int MapX { get; }
+    public int MapY { get; }
+
+    public SubMap(int x, int y)
     {
-        public const int Size = 24;
-        public Tile[,] Tiles { get; private set; }
-
-        public int MapX { get; }
-        public int MapY { get; }
-
-        public SubMap(int x, int y)
-        {
-            MapX = x;
-            MapY = y;
-            Fill();
-        }
+        MapX = x;
+        MapY = y;
+    }
         
-        /// <summary>
-        /// Just for testing
-        /// </summary>
-        void Fill()
+    public SubMap GetNextRoom(SubMap previousRoom)//used in map generation, for main route calculations
+    {
+        if (NorthConnection != null && NorthConnection != previousRoom)
+            return NorthConnection;
+        if (EastConnection != null && EastConnection != previousRoom)
+            return EastConnection;
+        if (SouthConnection != null && SouthConnection != previousRoom)
+            return SouthConnection;
+        return WestConnection!;
+    }
+        
+    public void AccessMainRoute(double mainRouteDifficulty)//used in map generation
+    {
+        if (MainRoute)
+            return;
+        if(Difficulty < mainRouteDifficulty)
+            Difficulty = mainRouteDifficulty;
+        else
+            return;
+        HasAccessToMainRoute = true;
+        NorthConnection?.AccessMainRoute(Difficulty);
+        EastConnection?.AccessMainRoute(Difficulty);
+        SouthConnection?.AccessMainRoute(Difficulty);
+        WestConnection?.AccessMainRoute(Difficulty);
+    }
+    
+    public void Fill(TerrainData.TerrainObject[,] roomData)
+    {
+        //roomData = GameManager.RoomData.Rooms[0].room.Pattern;
+        Tiles = new Tile[25, 25];
+        for (int y = 0; y < 24; y++)
         {
-            Tiles = new Tile[Size, Size];
-            for (int y = 0; y < Size; y++)
+            for (int x = 0; x < 24; x++)
             {
-                for (int x = 0; x < Size; x++)
-                {
-                    int newX = MapX * 24 + x;
-                    int newY = MapY * 24 + y;
-                    if(x == 1)
-                        Tiles[x, y] = new Tile(GameManager.TerrainData.Data["fog"], newX, newY);
-                    else if(y == 1 || x== 15 && y == 15)
-                        Tiles[x, y] = new Tile(GameManager.TerrainData.Data["wall"], newX, newY);
-                    else
-                        Tiles[x, y] = new Tile(GameManager.TerrainData.Data["floor"], newX, newY);
-                }
+                int newX = MapX * 25 + x;
+                int newY = MapY * 25 + y;
+                Tiles[x, y] = new Tile(roomData[x, y], newX, newY);
             }
+        }
+        FillBorderWalls();
+    }
+
+    void FillBorderWalls()
+    {
+        for (int x = 0; x < 25; x++)
+        {
+            int newX = MapX * 25 + x;
+            int newY = MapY * 25 + 24;
+            TerrainData.TerrainObject terrainObject = NorthConnection == null
+                ? GameManager.TerrainData.Data["wall"]
+                : GameManager.TerrainData.Data["floor"];
+            Tiles[x, 24] = new Tile(terrainObject, newX, newY);
+        }
+        for (int y = 0; y < 24; y++)
+        {
+            int newX = MapX * 25 + 24;
+            int newY = MapY * 25 + y;
+            TerrainData.TerrainObject terrainObject = EastConnection == null
+                ? GameManager.TerrainData.Data["wall"]
+                : GameManager.TerrainData.Data["floor"];
+            Tiles[24, y] = new Tile(terrainObject, newX, newY);
         }
     }
 }
