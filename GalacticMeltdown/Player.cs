@@ -62,7 +62,7 @@ namespace GalacticMeltdown
                         VisibleObjects.Add(tileCords, tile);
                         tile.WasSeenByPlayer = true;
                     }
-                    if (!tile.Obj.IsTransparent)
+                    if (!tile.IsTransparent)
                     {
                         break;
                     }
@@ -116,7 +116,7 @@ namespace GalacticMeltdown
             if (!VisibleObjects.ContainsKey((x, y)))
             {
                 Tile tile = GameManager.Map.GetTile(x, y);
-                if (tile is {Obj: {IsTransparent: false}})
+                if (tile is not null && !tile.IsTransparent)
                 {
                     tile.WasSeenByPlayer = true;
                     VisibleObjects.Add((x, y), tile);

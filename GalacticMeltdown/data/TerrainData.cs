@@ -46,23 +46,21 @@ namespace GalacticMeltdown.data
                     }
                 }
 
-                TileData obj = new TileData(name, symbol, color, isWalkable, isTransparent);
-                Data.Add(name, obj);
+                TileData tileData = new TileData(symbol, color, isWalkable, isTransparent);
+                Data.Add(name, tileData);
             }
         }
         
         public readonly struct TileData
         {
-            public string Name { get; }
             public char Symbol { get; }
             public bool IsWalkable { get; }
             public bool IsTransparent { get; }
             public ConsoleColor Color { get; }
 
-            public TileData(string name, char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
+            public TileData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
             {
                 Symbol = symbol;
-                Name = name;
                 Color = color;
                 IsTransparent = isTransparent;
                 IsWalkable = isWalkable;

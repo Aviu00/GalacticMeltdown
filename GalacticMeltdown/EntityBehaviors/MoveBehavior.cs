@@ -9,7 +9,7 @@ namespace GalacticMeltdown.EntityBehaviors
         public bool Move(int relX, int relY)
         {
             Tile tile = GameManager.Map.GetTile(Target.X + relX, Target.Y + relY);
-            if (tile is {Obj: {IsWalkable: false}})
+            if (tile is not null && !tile.IsWalkable)
             {
                 return false;
             }
