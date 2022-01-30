@@ -158,8 +158,6 @@ public class MapGenerator
         {
             lastDifficulty += addDifficulty;
             currentSubMap.Difficulty = lastDifficulty;
-            if (lastDifficulty <= 0)
-                throw new Exception();
             if (i == endRoomIndex)
             {
                 currentSubMap.EndPoint = true;
