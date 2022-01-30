@@ -8,14 +8,14 @@ namespace GalacticMeltdown
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
 
-        public Tile(TileData tileData, int x, int y)
+        public Tile(TileTypeData tileTypeData, int x, int y)
         {
             X = x;
             Y = y;
-            Symbol = tileData.Symbol;
-            FGColor = tileData.Color;
-            IsTransparent = tileData.IsTransparent;
-            IsWalkable = tileData.IsWalkable;
+            Symbol = tileTypeData.Symbol;
+            FGColor = tileTypeData.Color;
+            IsTransparent = tileTypeData.IsTransparent;
+            IsWalkable = tileTypeData.IsWalkable;
         }
     }
 }

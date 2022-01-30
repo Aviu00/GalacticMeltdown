@@ -28,11 +28,11 @@ namespace GalacticMeltdown
                     int newX = MapX * 24 + x;
                     int newY = MapY * 24 + y;
                     if(x == 1)
-                        Tiles[x, y] = new Tile(GameManager.TerrainData.Data["fog"], newX, newY);
+                        Tiles[x, y] = new Tile(GameManager.TileTypesExtractor.Data["fog"], newX, newY);
                     else if(y == 1 || x== 15 && y == 15)
-                        Tiles[x, y] = new Tile(GameManager.TerrainData.Data["wall"], newX, newY);
+                        Tiles[x, y] = new Tile(GameManager.TileTypesExtractor.Data["wall"], newX, newY);
                     else
-                        Tiles[x, y] = new Tile(GameManager.TerrainData.Data["floor"], newX, newY);
+                        Tiles[x, y] = new Tile(GameManager.TileTypesExtractor.Data["floor"], newX, newY);
                 }
             }
         }

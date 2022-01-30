@@ -6,13 +6,13 @@ using System.Xml;
 
 namespace GalacticMeltdown.data
 {
-    public class TerrainData
+    public class TileTypesExtractor
     {
-        public Dictionary<string, TileData> Data { get; }
-        public TerrainData()
+        public Dictionary<string, TileTypeData> Data { get; }
+        public TileTypesExtractor()
         {
             // Temporary. TODO: decide whether to create a class for each tile type or specify them using strings 
-            Data = new Dictionary<string, TileData>();
+            Data = new Dictionary<string, TileTypeData>();
             string projectDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
             //Console.WriteLine("Dir: " + projectDirectory);
@@ -47,19 +47,19 @@ namespace GalacticMeltdown.data
                     }
                 }
 
-                TileData tileData = new TileData(symbol, color, isWalkable, isTransparent);
-                Data.Add(name, tileData);
+                TileTypeData tileTypeData = new TileTypeData(symbol, color, isWalkable, isTransparent);
+                Data.Add(name, tileTypeData);
             }
         }
     }
-    public readonly struct TileData
+    public readonly struct TileTypeData
     {
         public char Symbol { get; }
         public bool IsWalkable { get; }
         public bool IsTransparent { get; }
         public ConsoleColor Color { get; }
 
-        public TileData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
+        public TileTypeData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
         {
             Symbol = symbol;
             Color = color;

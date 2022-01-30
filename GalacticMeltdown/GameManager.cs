@@ -8,13 +8,13 @@ namespace GalacticMeltdown
         public static Player Player;
         public static ConsoleManager ConsoleManager;
         public static Map Map;
-        public static TerrainData TerrainData;
+        public static TileTypesExtractor TileTypesExtractor;
         
         private static bool _stop;
         
         static void Main()
         {
-            TerrainData = new TerrainData();
+            TileTypesExtractor = new TileTypesExtractor();
             Map = new Map();
             Player = new Player();
             ConsoleManager = new ConsoleManager();
