@@ -6,9 +6,9 @@ namespace GalacticMeltdown
     {
         public bool WasSeenByPlayer = false;
 
-        public TerrainData.TerrainObject Obj { get; }
+        public TerrainData.TileData Obj { get; }
         
-        public Tile(TerrainData.TerrainObject obj, int x, int y)
+        public Tile(TerrainData.TileData obj, int x, int y)
         {
             X = x;
             Y = y;

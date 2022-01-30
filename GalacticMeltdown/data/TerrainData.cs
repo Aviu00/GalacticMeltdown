@@ -8,10 +8,10 @@ namespace GalacticMeltdown.data
 {
     public class TerrainData
     {
-        public Dictionary<string, TerrainObject> Data { get; private set; }
+        public Dictionary<string, TileData> Data { get; private set; }
         public TerrainData()
         {
-            Data = new Dictionary<string, TerrainObject>();
+            Data = new Dictionary<string, TileData>();
             string projectDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
             //Console.WriteLine("Dir: " + projectDirectory);
@@ -46,12 +46,12 @@ namespace GalacticMeltdown.data
                     }
                 }
 
-                TerrainObject obj = new TerrainObject(name, symbol, color, isWalkable, isTransparent);
+                TileData obj = new TileData(name, symbol, color, isWalkable, isTransparent);
                 Data.Add(name, obj);
             }
         }
         
-        public readonly struct TerrainObject
+        public readonly struct TileData
         {
             public string Name { get; }
             public char Symbol { get; }
@@ -59,7 +59,7 @@ namespace GalacticMeltdown.data
             public bool IsTransparent { get; }
             public ConsoleColor Color { get; }
 
-            public TerrainObject(string name, char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
+            public TileData(string name, char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
             {
                 Symbol = symbol;
                 Name = name;
