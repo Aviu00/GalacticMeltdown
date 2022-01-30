@@ -26,8 +26,8 @@ public class Player : Entity, IMovable
     public Player()
     {
         MoveBehavior = new MoveBehavior(this);
-        X = 1;
-        Y = 1;
+        X = GameManager.Map.StartPoint.MapX * 25 + 12;
+        Y = GameManager.Map.StartPoint.MapX * 25 + 12;
         Symbol = '@';
     }
         

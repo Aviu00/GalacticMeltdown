@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using GalacticMeltdown.data;
 using static GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown;
@@ -16,6 +15,7 @@ public class MapGenerator
     private List<(int min, int max)> _bars;
     private int _maxPoint;
     private int _minPoint;
+    private SubMap StartPoint;
     
     public int Seed { get; private set; }
 
@@ -36,7 +36,7 @@ public class MapGenerator
         BuildMainRoute();
         FillMap();
         FillSubMaps();
-        return new Map(_map, Seed);
+        return new Map(_map, Seed, StartPoint);
     }
 
     private void GenerateBars()
@@ -98,7 +98,6 @@ public class MapGenerator
         int startRoomPos = _rng.Next(0,_bars.Count);
         bool topStartRoom = Chance(50, _rng);
         int mainRouteRoomCount = 0;
-        SubMap startPoint = null;
         for (int i = 0; i < _map.GetLength(0); i++)
         {
             int x = i - mapOffset;
@@ -129,7 +128,7 @@ public class MapGenerator
                         !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
                     {
                         _map[i, j].StartPoint = true;
-                        startPoint = _map[i, j];
+                        StartPoint = _map[i, j];
                     }
 
                     mainRouteRoomCount++;
@@ -154,7 +153,7 @@ public class MapGenerator
         double addDifficulty = 1;
         double lastDifficulty = 0;
         SubMap previousSubMap = null;
-        SubMap currentSubMap = startPoint!;
+        SubMap currentSubMap = StartPoint!;
         for (int i = 0; i < mainRouteRoomCount; i++)
         {
             lastDifficulty += addDifficulty;

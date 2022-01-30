@@ -4,11 +4,13 @@ public class Map
 {
     public readonly int MapSeed;
     private SubMap[,] _map;
+    public readonly SubMap StartPoint;
 
-    public Map(SubMap[,] map, int seed)
+    public Map(SubMap[,] map, int seed, SubMap startPoint)
     {
         _map = map;
         MapSeed = seed;
+        StartPoint = startPoint;
     }
 
 

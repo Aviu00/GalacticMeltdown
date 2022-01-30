@@ -77,7 +77,7 @@ public class SubMap
         {
             int newX = MapX * 25 + x;
             int newY = MapY * 25 + 24;
-            TerrainData.TerrainObject terrainObject = NorthConnection == null
+            TerrainData.TerrainObject terrainObject = NorthConnection == null || x is not (11 or 12)
                 ? GameManager.TerrainData.Data["wall"]
                 : GameManager.TerrainData.Data["floor"];
             Tiles[x, 24] = new Tile(terrainObject, newX, newY);
@@ -86,7 +86,7 @@ public class SubMap
         {
             int newX = MapX * 25 + 24;
             int newY = MapY * 25 + y;
-            TerrainData.TerrainObject terrainObject = EastConnection == null
+            TerrainData.TerrainObject terrainObject = EastConnection == null || y is not (11 or 12)
                 ? GameManager.TerrainData.Data["wall"]
                 : GameManager.TerrainData.Data["floor"];
             Tiles[24, y] = new Tile(terrainObject, newX, newY);

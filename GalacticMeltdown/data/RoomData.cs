@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -7,6 +8,7 @@ namespace GalacticMeltdown.data;
 
 public class RoomData
 {
+    string patt = "..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n###########..###########\n........................\n........................\n###########..###########\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........\n..........#..#..........";
     public List<(int rarity, int exitCount, Room room)> Rooms { get; private set; }
 
     private readonly Dictionary<char, string> _defaultTiles = new()
@@ -30,6 +32,7 @@ public class RoomData
                 switch (locNode.Name)
                 {
                     case "Pattern":
+                        Console.WriteLine(locNode.InnerText);
                         pattern = ConvertPattern(locNode.InnerText);
                         break;
                 }
@@ -41,7 +44,7 @@ public class RoomData
     private TerrainData.TerrainObject[,] ConvertPattern(string stringPattern)
     {
         int i = 0;
-        int j = 0;
+        int j = -1;
         TerrainData.TerrainObject[,] terrainObjects = new TerrainData.TerrainObject[24, 24];
         foreach (char c in stringPattern)
         {
@@ -57,7 +60,7 @@ public class RoomData
             
             TerrainData.TerrainObject data = GameManager.TerrainData.Data[_defaultTiles[c]];
             terrainObjects[i, j] = data;
-            break;
+            i++;
         }
 
         return terrainObjects;

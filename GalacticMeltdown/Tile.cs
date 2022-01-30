@@ -15,5 +15,9 @@ public class Tile : GameObject
         Symbol = obj.Symbol;
         FGColor = obj.Color;
         Obj = obj;
+        if (Symbol == '\0')
+        {
+            Symbol = 'X';
+        }
     }
 }
