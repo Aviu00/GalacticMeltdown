@@ -8,11 +8,11 @@ namespace GalacticMeltdown.data
 {
     public class TileTypesExtractor
     {
-        public Dictionary<string, TileTypeData> Data { get; }
+        public Dictionary<string, TileTypeData> TileTypes { get; }
         public TileTypesExtractor()
         {
             // Temporary. TODO: decide whether to create a class for each tile type or specify them using strings 
-            Data = new Dictionary<string, TileTypeData>();
+            TileTypes = new Dictionary<string, TileTypeData>();
             string projectDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
             //Console.WriteLine("Dir: " + projectDirectory);
@@ -48,7 +48,7 @@ namespace GalacticMeltdown.data
                 }
 
                 TileTypeData tileTypeData = new TileTypeData(symbol, color, isWalkable, isTransparent);
-                Data.Add(name, tileTypeData);
+                TileTypes.Add(name, tileTypeData);
             }
         }
     }
