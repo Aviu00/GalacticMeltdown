@@ -8,7 +8,7 @@ namespace GalacticMeltdown.data
 {
     public class TerrainData
     {
-        public Dictionary<string, TileData> Data { get; private set; }
+        public Dictionary<string, TileData> Data { get; }
         public TerrainData()
         {
             Data = new Dictionary<string, TileData>();
