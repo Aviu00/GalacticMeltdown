@@ -11,6 +11,7 @@ namespace GalacticMeltdown.data
         public Dictionary<string, TileData> Data { get; }
         public TerrainData()
         {
+            // Temporary. TODO: decide whether to create a class for each tile type or specify them using strings 
             Data = new Dictionary<string, TileData>();
             string projectDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
