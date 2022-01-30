@@ -12,7 +12,7 @@ namespace GalacticMeltdown
         
         private static bool _stop;
         
-        static void Main(string[] args)
+        static void Main()
         {
             TerrainData = new TerrainData();
             Map = new Map();
