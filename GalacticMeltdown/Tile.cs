@@ -8,7 +8,7 @@ namespace GalacticMeltdown
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
 
-        public Tile(TerrainData.TileData tileData, int x, int y)
+        public Tile(TileData tileData, int x, int y)
         {
             X = x;
             Y = y;
