@@ -5,8 +5,13 @@ using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown
 {
-    public class Player : Entity, IMovable
+    public class Player : IEntity
     {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public char Symbol { get; }
+        public ConsoleColor FgColor { get; }
+        public ConsoleColor BgColor { get; }
         public Dictionary<(int, int), GameObject> VisibleObjects = new();
         public MoveBehavior MoveBehavior { get; }
         private int _viewRange = 15;
@@ -29,6 +34,8 @@ namespace GalacticMeltdown
             X = 48;
             Y = 48;
             Symbol = '@';
+            FgColor = ConsoleColor.White;
+            BgColor = ConsoleColor.Black;
         }
         
         public void Move(int relX, int relY)
