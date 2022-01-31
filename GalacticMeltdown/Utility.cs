@@ -43,4 +43,10 @@ public static class Utility
         int val = rng.Next(1, 101);
         return val <= chance;
     }
+    
+    public static bool IsWalkable(int x, int y)
+    {
+        Tile tile = GameManager.Map.GetTile(x, y);
+        return tile is null || tile.IsWalkable;
+    }
 }

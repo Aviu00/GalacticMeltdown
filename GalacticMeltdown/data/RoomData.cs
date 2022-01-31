@@ -25,7 +25,7 @@ public class RoomData
         doc.Load($"{projectDirectory}/../../../data/xml/Rooms.xml");
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
-            TileTypesExtractor.TileTypeData[,] pattern = new TileTypesExtractor.TileTypeData[24, 24];
+            TileTypeData[,] pattern = new TileTypeData[24, 24];
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -40,11 +40,11 @@ public class RoomData
         }
     }
 
-    private TileTypesExtractor.TileTypeData[,] ConvertPattern(string stringPattern)
+    private TileTypeData[,] ConvertPattern(string stringPattern)
     {
         int i = 0;
         int j = -1;
-        TileTypesExtractor.TileTypeData[,] terrainObjects = new TileTypesExtractor.TileTypeData[24, 24];
+        TileTypeData[,] terrainObjects = new TileTypeData[24, 24];
         foreach (char c in stringPattern)
         {
             switch (c)
@@ -57,7 +57,7 @@ public class RoomData
                     continue;
             }
             
-            TileTypesExtractor.TileTypeData data = GameManager.TileTypesExtractor.TileTypes[_defaultTiles[c]];
+            TileTypeData data = GameManager.TileTypesExtractor.TileTypes[_defaultTiles[c]];
             terrainObjects[i, j] = data;
             i++;
         }
@@ -67,9 +67,9 @@ public class RoomData
         
     public readonly struct Room
     {
-        public TileTypesExtractor.TileTypeData[,] Pattern { get; }
+        public TileTypeData[,] Pattern { get; }
 
-        public Room(TileTypesExtractor.TileTypeData[,] pattern)
+        public Room(TileTypeData[,] pattern)
         {
             Pattern = pattern;
         }

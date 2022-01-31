@@ -54,7 +54,7 @@ public class SubMap
         WestConnection?.AccessMainRoute(Difficulty);
     }
     
-    public void Fill(TileTypesExtractor.TileTypeData[,] roomData)
+    public void Fill(TileTypeData[,] roomData)
     {
         //roomData = GameManager.RoomData.Rooms[0].room.Pattern;
         Tiles = new Tile[25, 25];
@@ -76,7 +76,7 @@ public class SubMap
         {
             int newX = MapX * 25 + x;
             int newY = MapY * 25 + 24;
-            TileTypesExtractor.TileTypeData terrainObject = NorthConnection == null || x is not (11 or 12)
+            TileTypeData terrainObject = NorthConnection == null || x is not (11 or 12)
                 ? GameManager.TileTypesExtractor.TileTypes["wall"]
                 : GameManager.TileTypesExtractor.TileTypes["floor"];
             Tiles[x, 24] = new Tile(terrainObject, newX, newY);
@@ -85,7 +85,7 @@ public class SubMap
         {
             int newX = MapX * 25 + 24;
             int newY = MapY * 25 + y;
-            TileTypesExtractor.TileTypeData terrainObject = EastConnection == null || y is not (11 or 12)
+            TileTypeData terrainObject = EastConnection == null || y is not (11 or 12)
                 ? GameManager.TileTypesExtractor.TileTypes["wall"]
                 : GameManager.TileTypesExtractor.TileTypes["floor"];
             Tiles[24, y] = new Tile(terrainObject, newX, newY);

@@ -52,20 +52,20 @@ public class TileTypesExtractor
             TileTypes.Add(name, tileTypeData);
         }
     }
+}
 
-    public readonly struct TileTypeData
+public readonly struct TileTypeData
+{
+    public char Symbol { get; }
+    public bool IsWalkable { get; }
+    public bool IsTransparent { get; }
+    public ConsoleColor Color { get; }
+
+    public TileTypeData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
     {
-        public char Symbol { get; }
-        public bool IsWalkable { get; }
-        public bool IsTransparent { get; }
-        public ConsoleColor Color { get; }
-
-        public TileTypeData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
-        {
-            Symbol = symbol;
-            Color = color;
-            IsTransparent = isTransparent;
-            IsWalkable = isWalkable;
-        }
+        Symbol = symbol;
+        Color = color;
+        IsTransparent = isTransparent;
+        IsWalkable = isWalkable;
     }
 }

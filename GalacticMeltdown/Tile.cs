@@ -1,20 +1,24 @@
+using System;
 using GalacticMeltdown.data;
 
-namespace GalacticMeltdown;
-
-public class Tile : GameObject
+namespace GalacticMeltdown
 {
-    public bool WasSeenByPlayer = false;
-    public bool IsTransparent { get; }
-    public bool IsWalkable { get; }
-
-    public Tile(TileTypesExtractor.TileTypeData tileTypeData, int x, int y)
+    public class Tile : IDrawable
     {
-        X = x;
-        Y = y;
-        Symbol = tileTypeData.Symbol;
-        FGColor = tileTypeData.Color;
-        IsTransparent = tileTypeData.IsTransparent;
-        IsWalkable = tileTypeData.IsWalkable;
+        public char Symbol { get; }
+        public ConsoleColor FgColor { get; }
+        public ConsoleColor BgColor { get; }
+        public bool WasSeenByPlayer = false;
+        public bool IsTransparent { get; }
+        public bool IsWalkable { get; }
+
+        public Tile(TileTypeData tileTypeData, int x, int y)
+        {
+            Symbol = tileTypeData.Symbol;
+            FgColor = tileTypeData.Color;
+            BgColor = ConsoleColor.Black;
+            IsTransparent = tileTypeData.IsTransparent;
+            IsWalkable = tileTypeData.IsWalkable;
+        }
     }
 }

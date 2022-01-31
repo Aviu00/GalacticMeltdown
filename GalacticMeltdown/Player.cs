@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown;
 
-public class Player : Entity, IMovable
+public class Player : IEntity, IControllable
 {
-    public Dictionary<(int, int), GameObject> VisibleObjects = new();
-    public MoveBehavior MoveBehavior { get; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    public char Symbol { get; }
+    public ConsoleColor FgColor { get; }
+    public ConsoleColor BgColor { get; }
+    public Dictionary<(int, int), IDrawable> VisibleObjects = new();
     private int _viewRange = 15;
 
     public int ViewRange
@@ -24,20 +26,20 @@ public class Player : Entity, IMovable
         }
     }
 
+    public bool TryMove(int deltaX, int deltaY)
+    {
+        if (!Utility.IsWalkable(X + deltaX, Y + deltaY)) return false;
+        X += deltaX;
+        Y += deltaY;
+        ResetVisibleObjects();
+        return true;
+    }
+
     public Player()
     {
-        MoveBehavior = new MoveBehavior(this);
         X = GameManager.Map.StartPoint.MapX + 12;
         Y = GameManager.Map.StartPoint.MapX + 12;
         Symbol = '@';
-    }
-
-    public void Move(int relX, int relY)
-    {
-        if (MoveBehavior.Move(relX, relY))
-        {
-            ResetVisibleObjects();
-        }
     }
 
 
