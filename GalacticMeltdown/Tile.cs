@@ -1,9 +1,15 @@
+using System;
 using GalacticMeltdown.data;
 
 namespace GalacticMeltdown
 {
-    public class Tile : GameObject
+    public class Tile : IDrawable, IImmovable
     {
+        public char Symbol { get; }
+        public ConsoleColor FgColor { get; }
+        public ConsoleColor BgColor { get; }
+        public int X { get; }
+        public int Y { get; }
         public bool WasSeenByPlayer = false;
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
@@ -14,6 +20,7 @@ namespace GalacticMeltdown
             Y = y;
             Symbol = tileTypeData.Symbol;
             FgColor = tileTypeData.Color;
+            BgColor = ConsoleColor.Black;
             IsTransparent = tileTypeData.IsTransparent;
             IsWalkable = tileTypeData.IsWalkable;
         }
