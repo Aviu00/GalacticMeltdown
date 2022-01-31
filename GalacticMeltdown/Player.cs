@@ -46,15 +46,6 @@ namespace GalacticMeltdown
             ResetVisibleObjects();
             return true;
         }
-        
-        public void Move(int relX, int relY)
-        {
-            if (MoveBehavior.Move(relX, relY))
-            {
-                ResetVisibleObjects();
-            }
-        }
-        
 
         /// <summary>
         /// Reset player field of view

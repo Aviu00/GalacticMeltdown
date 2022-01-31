@@ -31,16 +31,16 @@ namespace GalacticMeltdown
                 switch (key.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        Player.Move(0,1);
+                        Player.TryMove(0,1);
                         break;
                     case ConsoleKey.DownArrow:
-                        Player.Move(0,-1);
+                        Player.TryMove(0,-1);
                         break;
                     case ConsoleKey.RightArrow:
-                        Player.Move(1,0);
+                        Player.TryMove(1,0);
                         break;
                     case ConsoleKey.LeftArrow:
-                        Player.Move(-1,0);
+                        Player.TryMove(-1,0);
                         break;
                     case ConsoleKey.Multiply://for fov testing
                         Player.ViewRange++;
