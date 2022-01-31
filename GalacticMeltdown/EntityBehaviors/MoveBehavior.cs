@@ -2,7 +2,7 @@ namespace GalacticMeltdown.EntityBehaviors
 {
     public class MoveBehavior : Behavior
     {
-        public MoveBehavior(Entity target)
+        public MoveBehavior(IEntity target)
         {
             Target = target;
         }
