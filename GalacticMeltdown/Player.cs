@@ -5,7 +5,7 @@ using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown
 {
-    public class Player : IEntity
+    public class Player : IEntity, IControllable
     {
         public int X { get; set; }
         public int Y { get; set; }
@@ -36,6 +36,15 @@ namespace GalacticMeltdown
             Symbol = '@';
             FgColor = ConsoleColor.White;
             BgColor = ConsoleColor.Black;
+        }
+
+        public bool TryMove(int deltaX, int deltaY)
+        {
+            if (!Utility.IsWalkable(X + deltaX, Y + deltaY)) return false;
+            X += deltaX;
+            Y += deltaY;
+            ResetVisibleObjects();
+            return true;
         }
         
         public void Move(int relX, int relY)
