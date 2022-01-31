@@ -5,10 +5,10 @@ namespace GalacticMeltdown;
 public static class DrawFunctions
 {
     public delegate SymbolData DrawFunc(int x, int y);
-    public static SymbolData ScreenCordsMapDrawFunc(int x, int y)
+    public static SymbolData ScreenCoordsMapDrawFunc(int x, int y)
     {
-        (int x, int y) glCords = GameManager.ConsoleManager.ConvertScreenToGlobalCords(x, y);
-        return MapDrawFunc(glCords.x, glCords.y);
+        (int x, int y) glCoords = GameManager.ConsoleManager.ConvertScreenToGlobalCoords(x, y);
+        return MapDrawFunc(glCoords.x, glCoords.y);
     }
 
     public static SymbolData MapDrawFunc(int x, int y)

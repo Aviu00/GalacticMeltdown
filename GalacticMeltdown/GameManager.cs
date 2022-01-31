@@ -8,18 +8,18 @@ static class GameManager
     public static Player Player;
     public static ConsoleManager ConsoleManager;
     public static Map Map;
-    public static TerrainData TerrainData;
+    public static TileTypesExtractor TileTypesExtractor;
     public static RoomData RoomData;
-        
+
     private static bool _stop;
-        
+
     private static int _mapSeed = -1;
-        
-    static void Main(string[] args)
+
+    static void Main()
     {
         if (_mapSeed < 0)
             _mapSeed = Random.Shared.Next(0, 1000000);
-        TerrainData = new TerrainData();
+        TileTypesExtractor = new TileTypesExtractor();
         RoomData = new RoomData();
         MapGenerator mapGen = new MapGenerator(_mapSeed);
         Map = mapGen.Generate();
@@ -38,18 +38,18 @@ static class GameManager
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    Player.Move(0,1);
+                    Player.Move(0, 1);
                     break;
                 case ConsoleKey.DownArrow:
-                    Player.Move(0,-1);
+                    Player.Move(0, -1);
                     break;
                 case ConsoleKey.RightArrow:
-                    Player.Move(1,0);
+                    Player.Move(1, 0);
                     break;
                 case ConsoleKey.LeftArrow:
-                    Player.Move(-1,0);
+                    Player.Move(-1, 0);
                     break;
-                case ConsoleKey.Multiply://for fov testing
+                case ConsoleKey.Multiply: //for fov testing
                     Player.ViewRange++;
                     break;
                 case ConsoleKey.Subtract:
@@ -60,16 +60,18 @@ static class GameManager
                     return;
             }
 
-            while (Console.KeyAvailable)//clear console key buffer
+            while (Console.KeyAvailable) //clear console key buffer
             {
                 Console.ReadKey(true);
             }
         }
     }
+
     private static void ConsoleCancelEvent(object sender, ConsoleCancelEventArgs e)
     {
         Stop();
     }
+
     static void Stop()
     {
         _stop = true;

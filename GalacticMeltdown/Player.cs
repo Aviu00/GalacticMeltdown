@@ -23,14 +23,15 @@ public class Player : Entity, IMovable
             }
         }
     }
+
     public Player()
     {
         MoveBehavior = new MoveBehavior(this);
-        X = GameManager.Map.StartPoint.MapX * 25 + 12;
-        Y = GameManager.Map.StartPoint.MapX * 25 + 12;
+        X = GameManager.Map.StartPoint.MapX + 12;
+        Y = GameManager.Map.StartPoint.MapX + 12;
         Symbol = '@';
     }
-        
+
     public void Move(int relX, int relY)
     {
         if (MoveBehavior.Move(relX, relY))
@@ -38,7 +39,7 @@ public class Player : Entity, IMovable
             ResetVisibleObjects();
         }
     }
-        
+
 
     /// <summary>
     /// Reset player field of view
@@ -47,47 +48,49 @@ public class Player : Entity, IMovable
     {
         var watch = System.Diagnostics.Stopwatch.StartNew();
         VisibleObjects.Clear();
-        VisibleObjects.Add((X, Y),this);
+        VisibleObjects.Add((X, Y), this);
         foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(X, Y, _viewRange))
         {
-            (int x, int y)? lastTileCords = null;
-            foreach (var tileCords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
+            (int x, int y)? lastTileCoords = null;
+            foreach (var tileCoords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
             {
-                FovCheckAdjacentWalls(lastTileCords);
-                Tile tile = GameManager.Map.GetTile(tileCords.x, tileCords.y);
+                FovCheckAdjacentWalls(lastTileCoords);
+                Tile tile = GameManager.Map.GetTile(tileCoords.x, tileCoords.y);
                 if (tile == null)
                     continue;
-                if (!VisibleObjects.ContainsKey(tileCords))
+                if (!VisibleObjects.ContainsKey(tileCoords))
                 {
-                    VisibleObjects.Add(tileCords, tile);
+                    VisibleObjects.Add(tileCoords, tile);
                     tile.WasSeenByPlayer = true;
                 }
-                if (!tile.Obj.IsTransparent)
+
+                if (!tile.IsTransparent)
                 {
                     break;
                 }
 
-                if (tileCords.x != X || tileCords.y != Y)
-                    lastTileCords = tileCords;
+                if (tileCoords.x != X || tileCoords.y != Y)
+                    lastTileCoords = tileCoords;
             }
         }
+
         GameManager.ConsoleManager.RedrawMap();
-            
+
         watch.Stop();
-        Console.SetCursorPosition(0,0);
+        Console.SetCursorPosition(0, 0);
         GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
         GameManager.ConsoleManager.SetConsoleForegroundColor(ConsoleColor.White);
         Console.Write($"{watch.ElapsedMilliseconds} ms");
     }
 
-    private void FovCheckAdjacentWalls((int x, int y)? cords)
+    private void FovCheckAdjacentWalls((int x, int y)? coords)
     {
-        if(cords == null)
+        if (coords == null)
             return;
-        int x = cords.Value.x;
-        int y = cords.Value.y;
+        int x = coords.Value.x;
+        int y = coords.Value.y;
         int difX = x - X;
-        int dX ;
+        int dX;
         int difY = y - Y;
         int dY;
         if (difX == 0)
@@ -111,12 +114,13 @@ public class Player : Entity, IMovable
             FovCheckWall(x + dX, y + dY);
         }
     }
+
     private void FovCheckWall(int x, int y)
     {
         if (!VisibleObjects.ContainsKey((x, y)))
         {
             Tile tile = GameManager.Map.GetTile(x, y);
-            if (tile is {Obj: {IsTransparent: false}})
+            if (tile is not null && !tile.IsTransparent)
             {
                 tile.WasSeenByPlayer = true;
                 VisibleObjects.Add((x, y), tile);

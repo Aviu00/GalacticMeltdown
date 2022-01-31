@@ -5,19 +5,16 @@ namespace GalacticMeltdown;
 public class Tile : GameObject
 {
     public bool WasSeenByPlayer = false;
+    public bool IsTransparent { get; }
+    public bool IsWalkable { get; }
 
-    public TerrainData.TerrainObject Obj { get; }
-        
-    public Tile(TerrainData.TerrainObject obj, int x, int y)
+    public Tile(TileTypesExtractor.TileTypeData tileTypeData, int x, int y)
     {
         X = x;
         Y = y;
-        Symbol = obj.Symbol;
-        FGColor = obj.Color;
-        Obj = obj;
-        if (Symbol == '\0')
-        {
-            Symbol = 'X';
-        }
+        Symbol = tileTypeData.Symbol;
+        FGColor = tileTypeData.Color;
+        IsTransparent = tileTypeData.IsTransparent;
+        IsWalkable = tileTypeData.IsWalkable;
     }
 }
