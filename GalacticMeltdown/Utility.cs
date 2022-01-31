@@ -35,5 +35,11 @@ namespace GalacticMeltdown
         {
             return (x + relObjX, y + relObjY);
         }
+
+        public static bool IsWalkable(int x, int y)
+        {
+            Tile tile = GameManager.Map.GetTile(x, y);
+            return tile is null || tile.IsWalkable;
+        }
     }
 }
