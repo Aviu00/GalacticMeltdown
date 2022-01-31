@@ -13,7 +13,7 @@ public static class DrawFunctions
 
     public static SymbolData MapDrawFunc(int x, int y)
     {
-        GameObject drawableObj;
+        IDrawable drawableObj;
         if (GameManager.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
         {
             drawableObj = GameManager.Player.VisibleObjects[(x,y)];
