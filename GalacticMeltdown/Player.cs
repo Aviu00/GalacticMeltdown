@@ -13,7 +13,6 @@ namespace GalacticMeltdown
         public ConsoleColor FgColor { get; }
         public ConsoleColor BgColor { get; }
         public Dictionary<(int, int), IDrawable> VisibleObjects = new();
-        public MoveBehavior MoveBehavior { get; }
         private int _viewRange = 15;
 
         public int ViewRange
@@ -30,7 +29,6 @@ namespace GalacticMeltdown
         }
         public Player()
         {
-            MoveBehavior = new MoveBehavior(this);
             X = 48;
             Y = 48;
             Symbol = '@';
