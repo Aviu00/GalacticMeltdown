@@ -20,14 +20,4 @@ namespace GalacticMeltdown
         public int X { get; }
         public int Y { get; }
     }
-    public abstract class GameObject
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public char Symbol { get; set; }
-        public ConsoleColor FgColor = ConsoleColor.White;
-
-        public ConsoleColor BgColor = ConsoleColor.Black;
-        //public bool Drawable = true;
-    }
 }
