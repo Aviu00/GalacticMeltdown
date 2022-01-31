@@ -12,7 +12,7 @@ namespace GalacticMeltdown
         public char Symbol { get; }
         public ConsoleColor FgColor { get; }
         public ConsoleColor BgColor { get; }
-        public Dictionary<(int, int), GameObject> VisibleObjects = new();
+        public Dictionary<(int, int), IDrawable> VisibleObjects = new();
         public MoveBehavior MoveBehavior { get; }
         private int _viewRange = 15;
 
