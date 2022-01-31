@@ -15,12 +15,6 @@ namespace GalacticMeltdown
         public int Y { get; set; }
     }
 
-    public interface IImmovable
-    {
-        public int X { get; }
-        public int Y { get; }
-    }
-    
     public interface IEntity : IDrawable, IMovable //Entity is an object that can be placed on a tile
     {
         
