@@ -9,13 +9,13 @@ namespace GalacticMeltdown
         public ConsoleColor BgColor { get; }
     }
 
-    public interface IMovable
+    public interface IHasCoords
     {
         public int X { get; set; }
         public int Y { get; set; }
     }
 
-    public interface IEntity : IDrawable, IMovable //Entity is an object that can be placed on a tile
+    public interface IEntity : IDrawable, IHasCoords //Entity is an object that can be placed on a tile
     {
         
     }
