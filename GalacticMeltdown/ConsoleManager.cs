@@ -5,7 +5,7 @@ namespace GalacticMeltdown
 {
     public class ConsoleManager
     {
-        public IEntity FocusPoint;
+        public IHasCoords FocusPoint;
         private int focusX;
         private int focusY;
         public int overlayWidth = 1;
