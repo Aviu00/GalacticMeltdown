@@ -17,7 +17,7 @@ public static class DrawFunctions
         if (GameManager.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
         {
             drawableObj = GameManager.Player.VisibleObjects[(x,y)];
-            return new SymbolData(drawableObj.Symbol, drawableObj.FGColor, drawableObj.BGColor);
+            return new SymbolData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
         }
 
         drawableObj = GameManager.Map.GetTile(x, y);

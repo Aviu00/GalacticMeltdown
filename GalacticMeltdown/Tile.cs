@@ -13,7 +13,7 @@ namespace GalacticMeltdown
             X = x;
             Y = y;
             Symbol = tileTypeData.Symbol;
-            FGColor = tileTypeData.Color;
+            FgColor = tileTypeData.Color;
             IsTransparent = tileTypeData.IsTransparent;
             IsWalkable = tileTypeData.IsWalkable;
         }
