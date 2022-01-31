@@ -1,6 +1,6 @@
 namespace GalacticMeltdown;
 
-public interface IControllable
+public interface IControllable : IHasCoords
 {
     public bool TryMove(int deltaX, int deltaY);
 }
