@@ -37,9 +37,11 @@ public class Player : IEntity, IControllable
 
     public Player()
     {
-        X = GameManager.Map.StartPoint.MapX + 12;
-        Y = GameManager.Map.StartPoint.MapX + 12;
+        X = GameManager.Map.StartPoint.MapX * 25 + 12;
+        Y = GameManager.Map.StartPoint.MapY * 25 + 12;
         Symbol = '@';
+        FgColor = ConsoleColor.White;
+        BgColor = ConsoleColor.Black;
     }
 
 
