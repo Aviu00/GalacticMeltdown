@@ -55,6 +55,12 @@ static class GameManager
                 case ConsoleKey.Subtract:
                     Player.ViewRange--;
                     break;
+                case ConsoleKey.X:
+                    Player.Xray = !Player.Xray;
+                    break;
+                case ConsoleKey.Z:
+                    Player.NoClip = !Player.NoClip;
+                    break;
                 case ConsoleKey.Q:
                     Stop();
                     return;
