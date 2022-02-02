@@ -15,10 +15,12 @@ static class GameManager
 
     private static int _mapSeed = -1;
 
-    static void Main()
+    static void Main(string[] args)
     {
-        if (_mapSeed < 0)
-            _mapSeed = Random.Shared.Next(0, 1000000);
+        if (args.Length == 0 || int.TryParse(args[0], out _mapSeed) && _mapSeed < 0)
+            _mapSeed = Random.Shared.Next(0, 1000000000);
+        else if (_mapSeed < 0)
+            _mapSeed = args[0].GetHashCode();
         TileTypesExtractor = new TileTypesExtractor();
         RoomData = new RoomData();
         MapGenerator mapGen = new MapGenerator(_mapSeed);
