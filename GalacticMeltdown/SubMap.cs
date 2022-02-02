@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using GalacticMeltdown.data;
 
 namespace GalacticMeltdown;
@@ -64,21 +65,25 @@ public class SubMap
             {
                 int newX = MapX * 25 + x;
                 int newY = MapY * 25 + y;
-                Tiles[x, y] = new Tile(roomData[x, y], newX, newY);
+                TileTypeData tileTypeData = roomData[x, y].Name == "wall"
+                    ? GetWallData(roomData, x, y)
+                    : roomData[x, y];
+                Tiles[x, y] = new Tile(tileTypeData, newX, newY);
             }
         }
-        FillBorderWalls();
+        FillBorderWalls(roomData);
     }
 
-    void FillBorderWalls()
+    void FillBorderWalls(TileTypeData[,] roomData)
     {
+        var tileTypes = GameManager.TileTypesExtractor.TileTypes;
         for (int x = 0; x < 25; x++)
         {
             int newX = MapX * 25 + x;
             int newY = MapY * 25 + 24;
             TileTypeData terrainObject = NorthConnection == null || x is not (11 or 12)
-                ? GameManager.TileTypesExtractor.TileTypes["wall"]
-                : GameManager.TileTypesExtractor.TileTypes["floor"];
+                ? GetWallData(roomData, x, 24)
+                : tileTypes["floor"];
             Tiles[x, 24] = new Tile(terrainObject, newX, newY);
         }
         for (int y = 0; y < 24; y++)
@@ -86,9 +91,35 @@ public class SubMap
             int newX = MapX * 25 + 24;
             int newY = MapY * 25 + y;
             TileTypeData terrainObject = EastConnection == null || y is not (11 or 12)
-                ? GameManager.TileTypesExtractor.TileTypes["wall"]
-                : GameManager.TileTypesExtractor.TileTypes["floor"];
+                ? GetWallData(roomData, 24, y)
+                : tileTypes["floor"];
             Tiles[24, y] = new Tile(terrainObject, newX, newY);
         }
+    }
+
+    TileTypeData GetWallData(TileTypeData[,] roomData, int x, int y)
+    {
+        if ((x, y) is (24, 24))
+            return GameManager.TileTypesExtractor.TileTypes["wall_nesw"];
+        StringBuilder wallkey = new StringBuilder("wall_");
+        if (CheckForWallInTile(roomData, x, y + 1))
+            wallkey.Append('n');
+        if (CheckForWallInTile(roomData, x + 1, y))
+            wallkey.Append('e');
+        if (CheckForWallInTile(roomData, x, y - 1))
+            wallkey.Append('s');
+        if (CheckForWallInTile(roomData, x - 1, y))
+            wallkey.Append('w');
+        string str = wallkey.ToString();
+        if (str[^1] == '_')
+            str = "wall";
+        return GameManager.TileTypesExtractor.TileTypes[str];
+    }
+
+    bool CheckForWallInTile(TileTypeData[,] roomData, int x, int y)
+    {
+        if (x is < -1 or > 24 || y is < -1 or > 24)
+            return false;
+        return x is -1 or 24 || y is -1 or 24 || roomData[x, y].ConnectToWalls;
     }
 }

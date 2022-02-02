@@ -26,6 +26,7 @@ public class TileTypesExtractor
             bool isTransparent = false;
             char symbol = ' ';
             ConsoleColor color = ConsoleColor.White;
+            bool connectToWalls = false;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -45,10 +46,13 @@ public class TileTypesExtractor
                     case "Color":
                         color = Utility.Colors[locNode.InnerText];
                         break;
+                    case "ConnectToWalls":
+                        connectToWalls = Convert.ToBoolean(locNode.InnerText);
+                        break;
                 }
             }
             
-            TileTypeData tileTypeData = new TileTypeData(symbol, color, isWalkable, isTransparent);
+            TileTypeData tileTypeData = new TileTypeData(symbol, color, isWalkable, isTransparent, name, connectToWalls);
             TileTypes.Add(name, tileTypeData);
         }
     }
@@ -60,12 +64,17 @@ public readonly struct TileTypeData
     public bool IsWalkable { get; }
     public bool IsTransparent { get; }
     public ConsoleColor Color { get; }
+    public string Name { get; }
+    public bool ConnectToWalls { get; }
 
-    public TileTypeData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent)
+    public TileTypeData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent, string name, 
+        bool connectToWalls)
     {
         Symbol = symbol;
         Color = color;
         IsTransparent = isTransparent;
         IsWalkable = isWalkable;
+        Name = name;
+        ConnectToWalls = connectToWalls;
     }
 }
