@@ -72,7 +72,11 @@ public class Player : IEntity, IControllable
                 FovCheckAdjacentWalls(lastTileCoords);
                 Tile tile = GameManager.Map.GetTile(tileCoords.x, tileCoords.y);
                 if (tile == null)
+                {
+                    if (tileCoords.x != X || tileCoords.y != Y)
+                        lastTileCoords = tileCoords;
                     continue;
+                }
                 if (!VisibleObjects.ContainsKey(tileCoords))
                 {
                     VisibleObjects.Add(tileCoords, tile);
