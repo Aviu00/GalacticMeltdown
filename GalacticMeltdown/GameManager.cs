@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Windows.Input;
 using GalacticMeltdown.data;
 
 namespace GalacticMeltdown;
@@ -30,8 +33,37 @@ static class GameManager
         GameLoop();
     }
 
+    public enum ActionMove
+    {
+        MoveUp,
+        MoveDown,
+        MoveLeft,
+        MoveRight,
+        IncreaseViewRange, //for fov testing
+        ReduceViewRange, //for fov testing
+        Stop
+    }
+    static private readonly  IDictionary <ConsoleKey, ActionMove> KeyBinding = 
+        new Dictionary<ConsoleKey, ActionMove>
+        {
+            {ConsoleKey.UpArrow, ActionMove.MoveUp},
+            {ConsoleKey.DownArrow, ActionMove.MoveDown},
+            {ConsoleKey.LeftArrow, ActionMove.MoveLeft},
+            {ConsoleKey.RightArrow, ActionMove.MoveRight},
+            {ConsoleKey.Multiply, ActionMove.IncreaseViewRange},
+            {ConsoleKey.Subtract, ActionMove.ReduceViewRange},
+            {ConsoleKey.Q, ActionMove.Stop}
+        };
+
+    static private readonly IDictionary<ActionMove, Player> ActionBinding = 
+        new Dictionary<ActionMove, Player>
+    {
+        
+    };
+
     static void GameLoop()
     {
+       
         while (!_stop)
         {
             ConsoleKeyInfo key = Console.ReadKey(true);
