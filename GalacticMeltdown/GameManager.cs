@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Windows.Input;
 using GalacticMeltdown.data;
 
@@ -55,10 +56,16 @@ static class GameManager
             {ConsoleKey.Q, ActionMove.Stop}
         };
 
-    static private readonly IDictionary<ActionMove, Player> ActionBinding = 
-        new Dictionary<ActionMove, Player>
+    static private readonly IDictionary<ActionMove, Action> ActionBinding = 
+        new Dictionary<ActionMove, Action>
     {
-        
+        {ActionMove.MoveUp, () => Player.TryMove(0, 1)},
+        {ActionMove.MoveDown, () => Player.TryMove(0, -1)},
+        {ActionMove.MoveRight, () => Player.TryMove(1, 0)},
+        {ActionMove.MoveLeft, () => Player.TryMove(-1, 0)},
+        {ActionMove.IncreaseViewRange, () => Player.ViewRange++},
+        {ActionMove.ReduceViewRange, () => Player.ViewRange--},
+        {ActionMove.Stop, () => Stop()}
     };
 
     static void GameLoop()
@@ -67,31 +74,7 @@ static class GameManager
         while (!_stop)
         {
             ConsoleKeyInfo key = Console.ReadKey(true);
-            switch (key.Key)
-            {
-                case ConsoleKey.UpArrow:
-                    Player.TryMove(0, 1);
-                    break;
-                case ConsoleKey.DownArrow:
-                    Player.TryMove(0, -1);
-                    break;
-                case ConsoleKey.RightArrow:
-                    Player.TryMove(1, 0);
-                    break;
-                case ConsoleKey.LeftArrow:
-                    Player.TryMove(-1, 0);
-                    break;
-                case ConsoleKey.Multiply: //for fov testing
-                    Player.ViewRange++;
-                    break;
-                case ConsoleKey.Subtract:
-                    Player.ViewRange--;
-                    break;
-                case ConsoleKey.Q:
-                    Stop();
-                    return;
-            }
-
+            ActionBinding[KeyBinding[key.Key]].Invoke();
             while (Console.KeyAvailable) //clear console key buffer
             {
                 Console.ReadKey(true);
