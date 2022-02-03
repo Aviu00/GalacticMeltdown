@@ -49,7 +49,7 @@ public class RoomData
         {
             switch (c)
             {
-                case ' ':
+                case ' ' or '\r':
                     continue;
                 case '\n':
                     i = 0;
