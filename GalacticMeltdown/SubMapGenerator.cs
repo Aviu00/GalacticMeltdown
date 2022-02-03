@@ -65,12 +65,10 @@ public class SubMapGenerator
         {
             for (int x = 0; x < 24; x++)
             {
-                int newX = MapX * 25 + x;
-                int newY = MapY * 25 + y;
                 TileTypeData tileTypeData = roomData[x, y].Name == "wall"
                     ? GetWallData(roomData, x, y)
                     : roomData[x, y];
-                Tiles[x, y] = new Tile(tileTypeData, newX, newY);
+                Tiles[x, y] = new Tile(tileTypeData);
             }
         }
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
@@ -82,21 +80,17 @@ public class SubMapGenerator
         var tileTypes = GameManager.TileTypesExtractor.TileTypes;
         for (int x = 0; x < 25; x++)
         {
-            int newX = MapX * 25 + x;
-            int newY = MapY * 25 + 24;
             TileTypeData terrainObject = NorthConnection == null || x is not (11 or 12)
                 ? GetWallData(roomData, x, 24, northernTileMap?[x,0].ConnectToWalls)
                 : tileTypes["floor"];
-            Tiles[x, 24] = new Tile(terrainObject, newX, newY);
+            Tiles[x, 24] = new Tile(terrainObject);
         }
         for (int y = 0; y < 24; y++)
         {
-            int newX = MapX * 25 + 24;
-            int newY = MapY * 25 + y;
             TileTypeData terrainObject = EastConnection == null || y is not (11 or 12)
                 ? GetWallData(roomData, 24, y, easternTileConnectable: easternTileMap?[0,y].ConnectToWalls)
                 : tileTypes["floor"];
-            Tiles[24, y] = new Tile(terrainObject, newX, newY);
+            Tiles[24, y] = new Tile(terrainObject);
         }
     }
 

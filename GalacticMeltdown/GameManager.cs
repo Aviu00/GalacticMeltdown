@@ -83,17 +83,8 @@ static class GameManager
 
     static void GenerateMap(string seed = null)
     {
-        int mapSeed;
-        if (seed == null)
+        if (seed == null || !int.TryParse(seed, out int mapSeed) || mapSeed < 0)
             mapSeed = Random.Shared.Next(0, 1000000000);
-        else
-        {
-            bool isInt = int.TryParse(seed, out mapSeed);
-            if(mapSeed < 0)
-                mapSeed = Random.Shared.Next(0, 1000000000);
-            else if (!isInt)
-                mapSeed = seed.GetHashCode();
-        }
         MapGenerator mapGen = new MapGenerator(mapSeed);
         Map = mapGen.Generate();
         mapGen = null;

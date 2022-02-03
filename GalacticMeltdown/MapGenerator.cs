@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GalacticMeltdown.data;
 using static GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown;
@@ -16,7 +17,9 @@ public class MapGenerator
     private List<(int min, int max)> _bars;
     private int _maxPoint;
     private int _minPoint;
-    private SubMap StartPoint;
+    private SubMap _startPoint;
+    private Tile[] _westernWall;
+    private Tile[] _southernWall;
     
     public int Seed { get; private set; }
 
@@ -37,7 +40,8 @@ public class MapGenerator
         BuildMainRoute();
         FillMap();
         FillSubMaps();
-        return new Map(_map, Seed, StartPoint);
+        GenerateBorderWalls();
+        return new Map(_map, Seed, _startPoint, _southernWall, _westernWall);
     }
 
     private void GenerateBars()
@@ -222,9 +226,7 @@ public class MapGenerator
         {
             for (int j = height - 1; j >= 0; j--)
             {
-                _map[i,j] = FinalizeRoom(i, j);
-                if (_tempMap[i, j].StartPoint)
-                    StartPoint = _map[i, j];
+                FinalizeRoom(i, j);
             }
         }
     }
@@ -232,15 +234,43 @@ public class MapGenerator
     /// <summary>
     /// Work in progress method
     /// </summary>
-    private SubMap FinalizeRoom(int x, int y)
+    private void FinalizeRoom(int x, int y)
     {
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
         var rooms = GameManager.RoomData.Rooms;
-        return _tempMap[x,y].GenerateSubMap
+        _map[x, y] = _tempMap[x, y].GenerateSubMap
             (rooms[_rng.Next(0, rooms.Count)].room.Pattern, northernTileMap, easternTileMap);
+        if (_tempMap[x, y].StartPoint)
+            _startPoint = _map[x, y];
     }
 
+    private void GenerateBorderWalls()
+    {
+        _westernWall = new Tile[_map.GetLength(1) * 25];
+        _southernWall = new Tile[_map.GetLength(0) * 25];
+        for (int mapX = 0; mapX < _map.GetLength(0); mapX++)
+        {
+            for (int x = 0; x < 25; x++)
+            {
+                int tileX = mapX * 25 + x;
+                string wallKey = x == 24 
+                    ? "wall_nesw" : _map[mapX, 0].Tiles[x, 0].ConnectToWalls ? "wall_new" : "wall_ew";
+                _southernWall[tileX] = new Tile(GameManager.TileTypesExtractor.TileTypes[wallKey]);
+            }
+        }
+        for (int mapY = 0; mapY < _map.GetLength(1); mapY++)
+        {
+            for (int y = 0; y < 25; y++)
+            {
+                int tileY = mapY * 25 + y;
+                string wallKey = y == 24 
+                    ? "wall_nesw" : _map[0, mapY].Tiles[0, y].ConnectToWalls ? "wall_nes" : "wall_ns";
+                _westernWall[tileY] = new Tile(GameManager.TileTypesExtractor.TileTypes[wallKey]);
+            }
+        }
+    }
+    
     private void AddRoomToList(int x, int y, List<SubMapGenerator> accessList, List<SubMapGenerator> noAccessList)
     {
         if (x < 0 || x >= _tempMap.GetLength(0) || y < 0 || y >= _tempMap.GetLength(1)) return;

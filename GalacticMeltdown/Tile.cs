@@ -13,7 +13,7 @@ namespace GalacticMeltdown
         public bool IsWalkable { get; }
         public bool ConnectToWalls { get; }
 
-        public Tile(TileTypeData tileTypeData, int x, int y)
+        public Tile(TileTypeData tileTypeData)
         {
             Symbol = tileTypeData.Symbol;
             FgColor = tileTypeData.Color;
