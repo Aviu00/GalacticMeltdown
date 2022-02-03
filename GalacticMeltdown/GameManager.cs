@@ -74,7 +74,10 @@ static class GameManager
         while (!_stop)
         {
             ConsoleKeyInfo key = Console.ReadKey(true);
-            ActionBinding[KeyBinding[key.Key]].Invoke();
+            if (KeyBinding.ContainsKey(key.Key))
+            {
+                ActionBinding[KeyBinding[key.Key]].Invoke();
+            }
             while (Console.KeyAvailable) //clear console key buffer
             {
                 Console.ReadKey(true);
