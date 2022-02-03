@@ -8,10 +8,6 @@ namespace GalacticMeltdown;
 public class MapGenerator
 {
     private Random _rng;
-    private readonly int mapOffset = 3;
-    private readonly int minSize = 6;
-    private readonly int _mapWidth = 20;
-    
     private SubMapGenerator[,] _tempMap;
     private SubMap[,] _map;
     private List<(int min, int max)> _bars;
@@ -20,8 +16,11 @@ public class MapGenerator
     private SubMap _startPoint;
     private Tile[] _westernWall;
     private Tile[] _southernWall;
-    
-    public int Seed { get; private set; }
+    private int _seed;
+
+    private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
+    private const int MapWidth = 20; //width is specified; height is random
+    private const int ConnectionChance = 50; //room connection chance
 
     public MapGenerator(int seed)
     {
@@ -31,7 +30,7 @@ public class MapGenerator
     public void ChangeSeed(int newSeed)
     {
         _rng = new Random(newSeed);
-        Seed = newSeed;
+        _seed = newSeed;
     }
     
     public Map Generate()
@@ -39,25 +38,33 @@ public class MapGenerator
         GenerateBars();
         BuildMainRoute();
         FillMap();
-        FillSubMaps();
         GenerateBorderWalls();
-        return new Map(_map, Seed, _startPoint, _southernWall, _westernWall);
+        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall);
     }
 
     private void GenerateBars()
     {
-        int newSize = _rng.Next(minSize, 9);
+        //These 4 integers don't make much sense and probably should be left untouched
+        int minSize = 6;
+        int restrictionAddition = 7;
+        int firstMaxValue = 9;
+        int posMultiplierCeiling = 8;
+        
+        int newSize = _rng.Next(minSize, firstMaxValue);
         _bars = new() {(0, newSize)};
         _maxPoint = newSize;
         int lastMinVector = -1;
         int lastMaxVector = 1;
-        for (int i = _mapWidth; i > 0; i--)
+        for (int i = MapWidth; i > 0; i--)
         {
-            int sizeRestriction = i + 7;
+            int sizeRestriction = i + restrictionAddition;
+            
+            //Main route distribution formulas
             int dif = Chance(40, _rng) ? 0 : 
-                Chance(newSize * 20 - 120 - Math.Abs(_mapWidth / 2 - sizeRestriction) * 5, _rng) ? -1 : 1;
+                Chance(newSize * 20 - 120 - Math.Abs(MapWidth / 2 - sizeRestriction) * 5, _rng) ? -1 : 1;
             int posMultiplier = Chance(50, _rng) ? Chance(40, _rng) ? 2 : 1 : 0;
-            if (sizeRestriction <= 8)
+
+            if (sizeRestriction <= posMultiplierCeiling)
             {
                 posMultiplier = 0;
             }
@@ -97,7 +104,7 @@ public class MapGenerator
     
     private void BuildMainRoute()
     {
-        _tempMap = new SubMapGenerator[_mapWidth + 1 + mapOffset*2, _maxPoint - _minPoint +1 + mapOffset*2];
+        _tempMap = new SubMapGenerator[MapWidth + 1 + MapOffset*2, _maxPoint - _minPoint +1 + MapOffset*2];
         int lastMin = 0;
         int lastMax = 0;
         int startRoomPos = _rng.Next(0,_bars.Count);
@@ -107,7 +114,7 @@ public class MapGenerator
         SubMapGenerator startPoint = null;
         for (int i = 0; i < _tempMap.GetLength(0); i++)
         {
-            int x = i - mapOffset;
+            int x = i - MapOffset;
             if (x < 0 || x >= _bars.Count)
             {
                 for (int y = 0; y < _tempMap.GetLength(1); y++)
@@ -125,7 +132,7 @@ public class MapGenerator
             int min2 = _bars[x].min + lastMin - min1;
             int max1 = Math.Min(_bars[x].max, lastMax);
             int max2 = _bars[x].max + lastMax - max1;
-            for (int y = _minPoint-mapOffset, j = 0; y <= _maxPoint + mapOffset; j++, y++)
+            for (int y = _minPoint-MapOffset, j = 0; y <= _maxPoint + MapOffset; j++, y++)
             {
                 _tempMap[i, j] = new SubMapGenerator(i,j);
                 if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
@@ -177,25 +184,32 @@ public class MapGenerator
 
     private void FillMap()
     {
+        int width = _tempMap.GetLength(0);
+        int height = _tempMap.GetLength(1);
         int yStep = Chance(50, _rng) ? 1 : -1;
-        int lastX = _tempMap.GetLength(0) / 2 + 1;
+        int lastX = width / 2 + 1;
         for (int x = 0; x < lastX; x++)
         {
             FillColumn(x, 1, yStep);
             yStep = -yStep;
         }
         
-        for (int x = _tempMap.GetLength(0)-1; x >= lastX; x--)
+        for (int x = width-1; x >= lastX; x--)
         {
             FillColumn(x, -1, yStep);
             yStep = -yStep;
         }
         
-        for (int x = 0; x < _tempMap.GetLength(0); x++)
+        _map = new SubMap[width, height];
+        for (int x = width - 1; x >= 0; x--)
         {
-            for (int y = 0; y < _tempMap.GetLength(1); y++)
+            for (int y = height - 1; y >= 0; y--)
             {
-                if (_tempMap[x, y].HasAccessToMainRoute) continue;
+                if (_tempMap[x, y].HasAccessToMainRoute)
+                {
+                    FinalizeRoom(x, y);
+                    continue;
+                }
                 
                 List<SubMapGenerator> adjAccessRooms = new();
                 List<SubMapGenerator> adjNoAccessRooms = new();
@@ -206,6 +220,7 @@ public class MapGenerator
                 if (adjAccessRooms.Count != 0)
                 {
                     ConnectRooms(_tempMap[x,y], adjAccessRooms[_rng.Next(0, adjAccessRooms.Count)]);
+                    FinalizeRoom(x, y);
                     continue;
                 }
 
@@ -213,20 +228,7 @@ public class MapGenerator
                 {
                     ConnectRooms(_tempMap[x, y], room);
                 }
-            }
-        }
-    }
-
-    private void FillSubMaps()
-    {
-        int width = _tempMap.GetLength(0);
-        int height = _tempMap.GetLength(1);
-        _map = new SubMap[width, height];
-        for (int i = width - 1; i >= 0; i--)
-        {
-            for (int j = height - 1; j >= 0; j--)
-            {
-                FinalizeRoom(i, j);
+                FinalizeRoom(x, y);
             }
         }
     }
@@ -287,8 +289,6 @@ public class MapGenerator
 
     private void FillColumn(int x, int xStep, int yStep)
     {
-        const int connectionChance = 50;
-        
         int startY = yStep == 1 ? 0 : _tempMap.GetLength(1) - 1;
         for (int i = 0, y = startY; i < _tempMap.GetLength(1); y += yStep, i++)
         {
@@ -314,12 +314,12 @@ public class MapGenerator
                 return;
             }
 
-            if (Chance(connectionChance, _rng) && (!xConnection.HasAccessToMainRoute || !subMap.HasAccessToMainRoute))
+            if (Chance(ConnectionChance, _rng) && (!xConnection.HasAccessToMainRoute || !subMap.HasAccessToMainRoute))
             {
                 ConnectRooms(subMap, xConnection);
             }
             if (yConnection != null 
-                && Chance(connectionChance, _rng) && (!yConnection.HasAccessToMainRoute || !subMap.HasAccessToMainRoute))
+                && Chance(ConnectionChance, _rng) && (!yConnection.HasAccessToMainRoute || !subMap.HasAccessToMainRoute))
             {
                 ConnectRooms(subMap, yConnection);
             }
