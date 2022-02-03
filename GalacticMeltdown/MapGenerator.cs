@@ -11,6 +11,7 @@ public class MapGenerator
     private readonly int minSize = 6;
     private readonly int _mapWidth = 20;
     
+    private SubMapGenerator[,] _tempMap;
     private SubMap[,] _map;
     private List<(int min, int max)> _bars;
     private int _maxPoint;
@@ -92,20 +93,22 @@ public class MapGenerator
     
     private void BuildMainRoute()
     {
-        _map = new SubMap[_mapWidth + 1 + mapOffset*2, _maxPoint - _minPoint +1 + mapOffset*2];
+        _tempMap = new SubMapGenerator[_mapWidth + 1 + mapOffset*2, _maxPoint - _minPoint +1 + mapOffset*2];
         int lastMin = 0;
         int lastMax = 0;
         int startRoomPos = _rng.Next(0,_bars.Count);
         bool topStartRoom = Chance(50, _rng);
         int mainRouteRoomCount = 0;
-        for (int i = 0; i < _map.GetLength(0); i++)
+
+        SubMapGenerator startPoint = null;
+        for (int i = 0; i < _tempMap.GetLength(0); i++)
         {
             int x = i - mapOffset;
             if (x < 0 || x >= _bars.Count)
             {
-                for (int y = 0; y < _map.GetLength(1); y++)
+                for (int y = 0; y < _tempMap.GetLength(1); y++)
                 {
-                    _map[i, y] = new SubMap(i,y);
+                    _tempMap[i, y] = new SubMapGenerator(i,y);
                 }
                 continue;
             }
@@ -120,29 +123,27 @@ public class MapGenerator
             int max2 = _bars[x].max + lastMax - max1;
             for (int y = _minPoint-mapOffset, j = 0; y <= _maxPoint + mapOffset; j++, y++)
             {
-                _map[i, j] = new SubMap(i,j);
-                if (y >= min1 && y <= min2 || y >= max1 && y <= max2)//main route
+                _tempMap[i, j] = new SubMapGenerator(i,j);
+                if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
+                
+                if (topStartRoom && x == startRoomPos && y == _bars[x].max || 
+                    !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
                 {
+                    _tempMap[i, j].StartPoint = true;
+                    startPoint = _tempMap[i, j];
+                }
 
-                    if (topStartRoom && x == startRoomPos && y == _bars[x].max || 
-                        !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
-                    {
-                        _map[i, j].StartPoint = true;
-                        StartPoint = _map[i, j];
-                    }
+                mainRouteRoomCount++;
+                _tempMap[i, j].MainRoute = true;
+                _tempMap[i, j].HasAccessToMainRoute = true;
+                if (x > 0 && (_bars[x-1].min == y || _bars[x-1].max == y))
+                {
+                    ConnectRooms(_tempMap[i, j], _tempMap[i-1,j]);
+                }
 
-                    mainRouteRoomCount++;
-                    _map[i, j].MainRoute = true;
-                    _map[i, j].HasAccessToMainRoute = true;
-                    if (x > 0 && (_bars[x-1].min == y || _bars[x-1].max == y))
-                    {
-                        ConnectRooms(_map[i, j], _map[i-1,j]);
-                    }
-
-                    if (j > 0 && _map[i, j - 1].MainRoute)
-                    {
-                        ConnectRooms(_map[i,j], _map[i,j-1]);
-                    }
+                if (j > 0 && _tempMap[i, j - 1].MainRoute)
+                {
+                    ConnectRooms(_tempMap[i,j], _tempMap[i,j-1]);
                 }
             }
             lastMax = _bars[x].max;
@@ -152,8 +153,8 @@ public class MapGenerator
         int endRoomIndex = mainRouteRoomCount / 2;
         double addDifficulty = 1;
         double lastDifficulty = 0;
-        SubMap previousSubMap = null;
-        SubMap currentSubMap = StartPoint!;
+        SubMapGenerator previousSubMap = null;
+        SubMapGenerator currentSubMap = startPoint!;
         for (int i = 0; i < mainRouteRoomCount; i++)
         {
             lastDifficulty += addDifficulty;
@@ -163,7 +164,7 @@ public class MapGenerator
                 currentSubMap.EndPoint = true;
                 addDifficulty = -1;
             }
-            SubMap newSubMap = currentSubMap.GetNextRoom(previousSubMap);
+            SubMapGenerator newSubMap = currentSubMap.GetNextRoom(previousSubMap);
             previousSubMap = currentSubMap;
             currentSubMap = newSubMap;
         }
@@ -173,41 +174,40 @@ public class MapGenerator
     private void FillMap()
     {
         int yStep = Chance(50, _rng) ? 1 : -1;
-        int lastX = _map.GetLength(0) / 2 + 1;
+        int lastX = _tempMap.GetLength(0) / 2 + 1;
         for (int x = 0; x < lastX; x++)
         {
             FillColumn(x, 1, yStep);
             yStep = -yStep;
         }
         
-        for (int x = _map.GetLength(0)-1; x >= lastX; x--)
+        for (int x = _tempMap.GetLength(0)-1; x >= lastX; x--)
         {
             FillColumn(x, -1, yStep);
             yStep = -yStep;
         }
         
-        for (int x = 0; x < _map.GetLength(0); x++)
+        for (int x = 0; x < _tempMap.GetLength(0); x++)
         {
-            for (int y = 0; y < _map.GetLength(1); y++)
+            for (int y = 0; y < _tempMap.GetLength(1); y++)
             {
-                if (!_map[x, y].HasAccessToMainRoute)
+                if (_tempMap[x, y].HasAccessToMainRoute) continue;
+                
+                List<SubMapGenerator> adjAccessRooms = new();
+                List<SubMapGenerator> adjNoAccessRooms = new();
+                AddRoomToList(x + 1, y, adjAccessRooms, adjNoAccessRooms);
+                AddRoomToList(x - 1, y, adjAccessRooms, adjNoAccessRooms);
+                AddRoomToList(x, y + 1, adjAccessRooms, adjNoAccessRooms);
+                AddRoomToList(x, y - 1, adjAccessRooms, adjNoAccessRooms);
+                if (adjAccessRooms.Count != 0)
                 {
-                    List<SubMap> adjRooms = new();
-                    List<SubMap> adjNoAccessRooms = new();
-                    AddRoomToList(x + 1, y, adjRooms, adjNoAccessRooms);
-                    AddRoomToList(x - 1, y, adjRooms, adjNoAccessRooms);
-                    AddRoomToList(x, y + 1, adjRooms, adjNoAccessRooms);
-                    AddRoomToList(x, y - 1, adjRooms, adjNoAccessRooms);
-                    if (adjRooms.Count != 0)
-                    {
-                        ConnectRooms(_map[x,y], adjRooms[_rng.Next(0, adjRooms.Count)]);
-                        continue;
-                    }
+                    ConnectRooms(_tempMap[x,y], adjAccessRooms[_rng.Next(0, adjAccessRooms.Count)]);
+                    continue;
+                }
 
-                    foreach (var room in adjNoAccessRooms)
-                    {
-                        ConnectRooms(_map[x, y], room);
-                    }
+                foreach (var room in adjNoAccessRooms)
+                {
+                    ConnectRooms(_tempMap[x, y], room);
                 }
             }
         }
@@ -215,11 +215,16 @@ public class MapGenerator
 
     private void FillSubMaps()
     {
-        for (int i = 0; i < _map.GetLength(0); i++)
+        int width = _tempMap.GetLength(0);
+        int height = _tempMap.GetLength(1);
+        _map = new SubMap[width, height];
+        for (int i = 0; i < width; i++)
         {
-            for (int j = 0; j < _map.GetLength(1); j++)
+            for (int j = 0; j < height; j++)
             {
-                FinalizeRoom(_map[i,j]);
+                _map[i,j] = FinalizeRoom(_tempMap[i,j]);
+                if (_tempMap[i, j].StartPoint)
+                    StartPoint = _map[i, j];
             }
         }
     }
@@ -227,45 +232,45 @@ public class MapGenerator
     /// <summary>
     /// Work in progress method
     /// </summary>
-    private void FinalizeRoom(SubMap subMap)
+    private SubMap FinalizeRoom(SubMapGenerator subMap)
     {
         var rooms = GameManager.RoomData.Rooms;
-        subMap.Fill(rooms[_rng.Next(0, rooms.Count)].room.Pattern);
+        return subMap.GenerateSubMap(rooms[_rng.Next(0, rooms.Count)].room.Pattern);
     }
 
-    private void AddRoomToList(int x, int y, List<SubMap> list, List<SubMap> noAccessList)
+    private void AddRoomToList(int x, int y, List<SubMapGenerator> accessList, List<SubMapGenerator> noAccessList)
     {
-        if (x < 0 || x >= _map.GetLength(0) || y < 0 || y >= _map.GetLength(1)) return;
+        if (x < 0 || x >= _tempMap.GetLength(0) || y < 0 || y >= _tempMap.GetLength(1)) return;
         
-        if (_map[x, y].HasAccessToMainRoute)
+        if (_tempMap[x, y].HasAccessToMainRoute)
         {
-            list.Add(_map[x,y]);
+            accessList.Add(_tempMap[x,y]);
         }
         else
         {
-            noAccessList.Add(_map[x, y]);
+            noAccessList.Add(_tempMap[x, y]);
         }
     }
 
     private void FillColumn(int x, int xStep, int yStep)
     {
-        int connectionChance = 50;
+        const int connectionChance = 50;
         
-        int startY = yStep == 1 ? 0 : _map.GetLength(1) - 1;
-        for (int i = 0, y = startY; i < _map.GetLength(1); y += yStep, i++)
+        int startY = yStep == 1 ? 0 : _tempMap.GetLength(1) - 1;
+        for (int i = 0, y = startY; i < _tempMap.GetLength(1); y += yStep, i++)
         {
-            SubMap subMap = _map[x, y];
+            SubMapGenerator subMap = _tempMap[x, y];
             if (subMap.HasAccessToMainRoute)
             {
                 continue;
             }
             
-            SubMap yConnection = null;
-            SubMap xConnection = _map[x + xStep, y];
+            SubMapGenerator yConnection = null;
+            SubMapGenerator xConnection = _tempMap[x + xStep, y];
             int difY = y + yStep;
-            if (difY >= 0 && difY < _map.GetLength(1))
+            if (difY >= 0 && difY < _tempMap.GetLength(1))
             {
-                yConnection = _map[x, difY];
+                yConnection = _tempMap[x, difY];
             }
 
             if (subMap.StartPoint || subMap.EndPoint)
@@ -288,7 +293,7 @@ public class MapGenerator
         }
     }
 
-    private void ConnectRooms(SubMap room1, SubMap room2)
+    private void ConnectRooms(SubMapGenerator room1, SubMapGenerator room2)
     {
         if (room1.MapX != room2.MapX)
         {

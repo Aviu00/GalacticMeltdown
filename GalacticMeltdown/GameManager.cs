@@ -13,18 +13,11 @@ static class GameManager
 
     private static bool _stop;
 
-    private static int _mapSeed = -1;
-
     static void Main(string[] args)
     {
-        if (args.Length == 0 || int.TryParse(args[0], out _mapSeed) && _mapSeed < 0)
-            _mapSeed = Random.Shared.Next(0, 1000000000);
-        else if (_mapSeed < 0)
-            _mapSeed = args[0].GetHashCode();
         TileTypesExtractor = new TileTypesExtractor();
         RoomData = new RoomData();
-        MapGenerator mapGen = new MapGenerator(_mapSeed);
-        Map = mapGen.Generate();
+        GenerateMap(args.Length > 0 ? args[0] : null);
         Player = new Player();
         ConsoleManager = new ConsoleManager();
         Console.CancelKeyPress += ConsoleCancelEvent;
@@ -86,5 +79,24 @@ static class GameManager
         Console.ResetColor();
         Console.Clear();
         Console.CursorVisible = true;
+    }
+
+    static void GenerateMap(string seed = null)
+    {
+        int mapSeed;
+        if (seed == null)
+            mapSeed = Random.Shared.Next(0, 1000000000);
+        else
+        {
+            bool isInt = int.TryParse(seed, out mapSeed);
+            if(mapSeed < 0)
+                mapSeed = Random.Shared.Next(0, 1000000000);
+            else if (!isInt)
+                mapSeed = seed.GetHashCode();
+        }
+        MapGenerator mapGen = new MapGenerator(mapSeed);
+        Map = mapGen.Generate();
+        mapGen = null;
+        GC.Collect();
     }
 }
