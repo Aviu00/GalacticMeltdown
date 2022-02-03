@@ -218,11 +218,11 @@ public class MapGenerator
         int width = _tempMap.GetLength(0);
         int height = _tempMap.GetLength(1);
         _map = new SubMap[width, height];
-        for (int i = 0; i < width; i++)
+        for (int i = width - 1; i >= 0; i--)
         {
-            for (int j = 0; j < height; j++)
+            for (int j = height - 1; j >= 0; j--)
             {
-                _map[i,j] = FinalizeRoom(_tempMap[i,j]);
+                _map[i,j] = FinalizeRoom(i, j);
                 if (_tempMap[i, j].StartPoint)
                     StartPoint = _map[i, j];
             }
@@ -232,10 +232,13 @@ public class MapGenerator
     /// <summary>
     /// Work in progress method
     /// </summary>
-    private SubMap FinalizeRoom(SubMapGenerator subMap)
+    private SubMap FinalizeRoom(int x, int y)
     {
+        Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
+        Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
         var rooms = GameManager.RoomData.Rooms;
-        return subMap.GenerateSubMap(rooms[_rng.Next(0, rooms.Count)].room.Pattern);
+        return _tempMap[x,y].GenerateSubMap
+            (rooms[_rng.Next(0, rooms.Count)].room.Pattern, northernTileMap, easternTileMap);
     }
 
     private void AddRoomToList(int x, int y, List<SubMapGenerator> accessList, List<SubMapGenerator> noAccessList)

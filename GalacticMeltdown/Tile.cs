@@ -11,6 +11,7 @@ namespace GalacticMeltdown
         public bool WasSeenByPlayer = false;
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
+        public bool ConnectToWalls { get; }
 
         public Tile(TileTypeData tileTypeData, int x, int y)
         {
@@ -19,6 +20,7 @@ namespace GalacticMeltdown
             BgColor = ConsoleColor.Black;
             IsTransparent = tileTypeData.IsTransparent;
             IsWalkable = tileTypeData.IsWalkable;
+            ConnectToWalls = tileTypeData.ConnectToWalls;
         }
     }
 }
