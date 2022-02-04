@@ -244,8 +244,7 @@ public class MapGenerator
     private void FinalizeRoom(int x, int y)
     {
         //matrix rotation: 90deg = transpose + rev rows; 270deg = transpose + rev cols; 180deg = rev rows + cols
-        var rooms = _rooms;
-        var room = rooms[_rng.Next(0, rooms.Count)];
+        var room = _rooms[_rng.Next(0, _rooms.Count)];
         TileTypeData[,] roomData = (TileTypeData[,]) room.room.Pattern.Clone();
         List<int> possibleRotations = new(){0, 90, 180, 270};
         switch (possibleRotations[_rng.Next(0, possibleRotations.Count)])
