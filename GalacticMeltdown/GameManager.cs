@@ -20,7 +20,8 @@ static class GameManager
     static void Main(string[] args)
     {
         TileTypesExtractor = new TileTypesExtractor();
-        RoomData = new RoomData();
+        var tileTypes = TileTypesExtractor.TileTypes;
+        RoomData = new RoomData(tileTypes);
         GenerateMap(args.Length > 0 ? args[0] : null);
         Player = new Player(Map.StartPoint.MapX * 25 + 12, Map.StartPoint.MapY * 25 + 12, Map.GetTile);
         ConsoleManager = new ConsoleManager(Player);

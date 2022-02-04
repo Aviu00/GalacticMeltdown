@@ -16,8 +16,11 @@ public class RoomData
         {'#', "wall"}
     };
 
-    public RoomData()
+    private Dictionary<string, TileTypeData> _tileTypes;
+
+    public RoomData(Dictionary<string, TileTypeData> tileTypes)
     {
+        _tileTypes = tileTypes;
         Rooms = new List<(int rarity, int exitCount, Room room)>();
         
         string projectDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -56,7 +59,7 @@ public class RoomData
                     continue;
             }
             
-            TileTypeData data = GameManager.TileTypesExtractor.TileTypes[_defaultTiles[c]];
+            TileTypeData data = _tileTypes[_defaultTiles[c]];
             terrainObjects[i, j] = data;
             i++;
         }
