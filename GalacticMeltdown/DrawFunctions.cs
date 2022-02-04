@@ -32,14 +32,14 @@ public static class DrawFunctions
     public struct SymbolData
     {
         public char Symbol;
-        public ConsoleColor FGColor;
-        public ConsoleColor BGColor;
+        public ConsoleColor FgColor;
+        public ConsoleColor BgColor;
 
         public SymbolData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
         {
             Symbol = symbol;
-            BGColor = bgColor;
-            FGColor = fgColor;
+            BgColor = bgColor;
+            FgColor = fgColor;
         }
     }
 }

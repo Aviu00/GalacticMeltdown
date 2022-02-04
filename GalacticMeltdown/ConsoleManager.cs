@@ -56,8 +56,8 @@ public class ConsoleManager
             {
                 DrawFunctions.SymbolData symbolData = drawFunc(x, y);
 
-                SetConsoleForegroundColor(symbolData.FGColor);
-                SetConsoleBackgroundColor(symbolData.BGColor);
+                SetConsoleForegroundColor(symbolData.FgColor);
+                SetConsoleBackgroundColor(symbolData.BgColor);
                 lastFgColor ??= Console.ForegroundColor;
                 lastBgColor ??= Console.BackgroundColor;
                 if ((lastFgColor == Console.ForegroundColor || symbolData.Symbol == ' ')
@@ -122,8 +122,8 @@ public class ConsoleManager
 
         int i = FlipYScreenCord(y);
         Console.SetCursorPosition(x, i);
-        SetConsoleForegroundColor(symbolData.FGColor);
-        SetConsoleBackgroundColor(symbolData.BGColor);
+        SetConsoleForegroundColor(symbolData.FgColor);
+        SetConsoleBackgroundColor(symbolData.BgColor);
         Console.Write(symbolData.Symbol);
     }
     
