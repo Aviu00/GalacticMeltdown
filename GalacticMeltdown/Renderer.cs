@@ -45,7 +45,7 @@ public class Renderer
         for (int areaY = maxY; areaY >= startY; areaY--)
         {
             int consoleY = ConvertToConsoleY(areaY);
-            if (startX != 0)  // Can append new line at end of drawn line
+            if (startX != 0)  // Can't append new line at end of drawn line
                 Console.SetCursorPosition(startX, consoleY);
             for (; x <= maxX; x++)
             {
