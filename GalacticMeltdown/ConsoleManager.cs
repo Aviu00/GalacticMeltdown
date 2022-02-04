@@ -10,8 +10,9 @@ public class ConsoleManager
     private int _screenCenterY;
     public int overlayWidth = 1;
 
-    public ConsoleManager()
+    public ConsoleManager(IHasCoords focusPoint)
     {
+        FocusPoint = focusPoint;
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
@@ -35,7 +36,6 @@ public class ConsoleManager
 
     public void UpdateConsoleCenterCoords()
     {
-        FocusPoint ??= GameManager.Player;
         _screenCenterX = (Console.WindowWidth - overlayWidth) / 2;
         _screenCenterY = Console.WindowHeight / 2;
     }

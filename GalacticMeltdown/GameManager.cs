@@ -23,7 +23,7 @@ static class GameManager
         RoomData = new RoomData();
         GenerateMap(args.Length > 0 ? args[0] : null);
         Player = new Player();
-        ConsoleManager = new ConsoleManager();
+        ConsoleManager = new ConsoleManager(Player);
         Console.CancelKeyPress += ConsoleCancelEvent;
         Player.ResetVisibleObjects();
         GameLoop();
