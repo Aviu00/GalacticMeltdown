@@ -11,7 +11,9 @@ namespace GalacticMeltdown
         public bool WasSeenByPlayer = false;
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
-        public bool ConnectToWalls { get; }
+        public bool ConnectToWalls { get; } //used in map generation
+        
+        public string Name { get; }
 
         public Tile(TileTypeData tileTypeData)
         {
@@ -20,7 +22,8 @@ namespace GalacticMeltdown
             BgColor = ConsoleColor.Black;
             IsTransparent = tileTypeData.IsTransparent;
             IsWalkable = tileTypeData.IsWalkable;
-            ConnectToWalls = tileTypeData.ConnectToWalls;
+            ConnectToWalls = tileTypeData.IsConnection;
+            Name = tileTypeData.Name;
         }
     }
 }
