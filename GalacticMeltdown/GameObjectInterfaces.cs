@@ -19,3 +19,8 @@ public interface IEntity : IDrawable, IHasCoords //Entity is an object that can 
 {
         
 }
+
+public interface IControllable : IHasCoords
+{
+    public bool TryMove(int deltaX, int deltaY);
+}
