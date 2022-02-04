@@ -105,7 +105,42 @@ public static class Algorithms
         return coords;
     }
 
+    public static void TransposeMatrix<T>(T[,] matrix)
+    {
+        for (int y = 0; y < matrix.GetLength(1); y++)
+        {
+            for (int x = y; x < matrix.GetLength(0); x++)
+            {
+                if(x == y)
+                    continue;
+                (matrix[x, y], matrix[y, x]) = (matrix[y, x], matrix[x, y]);
+            }
+        }
+    }
+    
+    public static void ReverseMatrixRows<T>(T[,] matrix)
+    {
+        for (int y = 0; y < matrix.GetLength(1); y++)
+        {
+            for (int x = 0; x < matrix.GetLength(0) / 2; x++)
+            {
+                (matrix[x, y], matrix[matrix.GetLength(0) - 1 - x, y]) = 
+                    (matrix[matrix.GetLength(0) - 1 - x, y], matrix[x, y]);
+            }
+        }
+    }
 
+    public static void ReverseMatrixCols<T>(T[,] matrix)
+    {
+        for (int x = 0; x < matrix.GetLength(0); x++)
+        {
+            for (int y = 0; y < matrix.GetLength(1) / 2; y++)
+            {
+                (matrix[x, y], matrix[x, matrix.GetLength(1) - 1 - y]) = 
+                    (matrix[x, matrix.GetLength(1) - 1 - y], matrix[x, y]);
+            }
+        }
+    }
     private static void FillCirclePoints(List<(int x, int y)> coords, int x0, int y0, int x, int y)
     {
         TransposePointsToList(coords, x0 + x, y0 + y);
