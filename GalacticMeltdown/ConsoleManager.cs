@@ -91,6 +91,7 @@ public class ConsoleManager
     public void PutSymbol
         (int x, int y, DrawFunctions.GetSymbolAt getSymbolAt, bool ignoreOverlay = false, bool glCoords = false)
     {
+        UpdateConsoleCenterCoords();
         DrawFunctions.SymbolData symbolData = getSymbolAt(x, y);
         if (glCoords)
         {
@@ -124,14 +125,12 @@ public class ConsoleManager
 
     public (int x, int y) ConvertGlobalToScreenCoords(int x, int y)
     {
-        UpdateConsoleCenterCoords();
         (int x, int y) relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, FocusPoint.X, FocusPoint.Y);
         return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, _screenCenterX, _screenCenterY);
     }
 
     public (int x, int y) ConvertScreenToGlobalCoords(int x, int y)
     {
-        UpdateConsoleCenterCoords();
         var relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, _screenCenterX, _screenCenterY);
         return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, FocusPoint.X, FocusPoint.Y);
     }
