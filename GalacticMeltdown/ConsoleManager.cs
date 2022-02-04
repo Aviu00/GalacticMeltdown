@@ -6,8 +6,8 @@ namespace GalacticMeltdown;
 public class ConsoleManager
 {
     public IHasCoords FocusPoint;
-    private int focusX;
-    private int focusY;
+    private int _screenCenterX;
+    private int _screenCenterY;
     public int overlayWidth = 1;
 
     public ConsoleManager()
@@ -22,17 +22,17 @@ public class ConsoleManager
     /// </summary>
     public void RedrawMap()
     {
-        //ResetFocus();
+        //UpdateConsoleCenterCoords();
         int maxX = Console.WindowWidth - overlayWidth - 1;
         int maxY = Console.WindowHeight - 1;
         DrawArea(0, 0, maxX, maxY, DrawFunctions.ScreenCoordsMapDrawFunc, true);
     }
 
-    public void ResetFocus()
+    public void UpdateConsoleCenterCoords()
     {
         FocusPoint ??= GameManager.Player;
-        focusX = (Console.WindowWidth - overlayWidth) / 2;
-        focusY = Console.WindowHeight / 2;
+        _screenCenterX = (Console.WindowWidth - overlayWidth) / 2;
+        _screenCenterY = Console.WindowHeight / 2;
     }
 
     public void DrawArea
@@ -136,15 +136,15 @@ public class ConsoleManager
 
     public (int x, int y) ConvertGlobalToScreenCoords(int x, int y)
     {
-        ResetFocus();
+        UpdateConsoleCenterCoords();
         (int x, int y) relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, FocusPoint.X, FocusPoint.Y);
-        return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, focusX, focusY);
+        return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, _screenCenterX, _screenCenterY);
     }
 
     public (int x, int y) ConvertScreenToGlobalCoords(int x, int y)
     {
-        ResetFocus();
-        var relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, focusX, focusY);
+        UpdateConsoleCenterCoords();
+        var relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, _screenCenterX, _screenCenterY);
         return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, FocusPoint.X, FocusPoint.Y);
     }
 
