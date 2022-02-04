@@ -17,13 +17,18 @@ public class MapGenerator
     private Tile[] _westernWall;
     private Tile[] _southernWall;
     private int _seed;
+    private Dictionary<string, TileTypeData> _tileTypes;
+    private List<(int rarity, int exitCount, RoomData.Room room)> _rooms;
 
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
     private const int ConnectionChance = 50; //room connection chance
 
-    public MapGenerator(int seed)
+    public MapGenerator(int seed, Dictionary<string, TileTypeData> tileTypes, 
+        List<(int rarity, int exitCount, RoomData.Room room)> rooms)
     {
+        _tileTypes = tileTypes;
+        _rooms = rooms;
         ChangeSeed(seed);
     }
 
@@ -240,9 +245,8 @@ public class MapGenerator
     {
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
-        var rooms = GameManager.RoomData.Rooms;
         _map[x, y] = _tempMap[x, y].GenerateSubMap
-            (rooms[_rng.Next(0, rooms.Count)].room.Pattern, northernTileMap, easternTileMap);
+            (_rooms[_rng.Next(0, _rooms.Count)].room.Pattern, northernTileMap, easternTileMap);
         if (_tempMap[x, y].StartPoint)
             _startPoint = _map[x, y];
     }
@@ -258,7 +262,7 @@ public class MapGenerator
                 int tileX = mapX * 25 + x;
                 string wallKey = x == 24 
                     ? "wall_nesw" : _map[mapX, 0].Tiles[x, 0].ConnectToWalls ? "wall_new" : "wall_ew";
-                _southernWall[tileX] = new Tile(GameManager.TileTypesExtractor.TileTypes[wallKey]);
+                _southernWall[tileX] = new Tile(_tileTypes[wallKey]);
             }
         }
         for (int mapY = 0; mapY < _map.GetLength(1); mapY++)
@@ -268,7 +272,7 @@ public class MapGenerator
                 int tileY = mapY * 25 + y;
                 string wallKey = y == 24 
                     ? "wall_nesw" : _map[0, mapY].Tiles[0, y].ConnectToWalls ? "wall_nes" : "wall_ns";
-                _westernWall[tileY] = new Tile(GameManager.TileTypesExtractor.TileTypes[wallKey]);
+                _westernWall[tileY] = new Tile(_tileTypes[wallKey]);
             }
         }
     }
