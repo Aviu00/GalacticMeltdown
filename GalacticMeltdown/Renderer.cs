@@ -44,9 +44,8 @@ public class Renderer
         int x = startX + 1;
         for (int areaY = maxY; areaY >= startY; areaY--)
         {
-            int consoleY = ConvertToConsoleY(areaY);
             if (startX != 0)  // Can't append new line at end of drawn line
-                Console.SetCursorPosition(startX, consoleY);
+                Console.SetCursorPosition(startX, ConvertToConsoleY(areaY));
             for (; x <= maxX; x++)
             {
                 symbolData = getSymbolAt(x, areaY);
