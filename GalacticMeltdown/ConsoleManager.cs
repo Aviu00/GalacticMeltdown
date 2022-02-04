@@ -8,7 +8,7 @@ public class ConsoleManager
     public IHasCoords FocusPoint;
     private int _screenCenterX;
     private int _screenCenterY;
-    public int overlayWidth = 1;
+    private const int OverlayWidth = 1;
 
     public ConsoleManager(IHasCoords focusPoint)
     {
@@ -24,7 +24,7 @@ public class ConsoleManager
     public void RedrawMap()
     {
         var watch = System.Diagnostics.Stopwatch.StartNew();
-        int maxX = Console.WindowWidth - overlayWidth - 1;
+        int maxX = Console.WindowWidth - OverlayWidth - 1;
         int maxY = Console.WindowHeight - 1;
         DrawArea(0, 0, maxX, maxY, DrawFunctions.GetScreenSymbol);
         watch.Stop();
@@ -95,7 +95,7 @@ public class ConsoleManager
             (x, y) = ConvertGlobalToScreenCoords(x, y);
         }
 
-        if (!ignoreOverlay && x > Console.WindowWidth - overlayWidth - 1)
+        if (!ignoreOverlay && x > Console.WindowWidth - OverlayWidth - 1)
         {
             return;  // hidden by overlay
         }
@@ -108,7 +108,7 @@ public class ConsoleManager
     
     private void UpdateConsoleCenterCoords()
     {
-        _screenCenterX = (Console.WindowWidth - overlayWidth) / 2;
+        _screenCenterX = (Console.WindowWidth - OverlayWidth) / 2;
         _screenCenterY = Console.WindowHeight / 2;
     }
     
