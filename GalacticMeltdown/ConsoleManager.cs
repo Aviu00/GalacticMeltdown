@@ -42,7 +42,7 @@ public class ConsoleManager
         Console.SetCursorPosition(startX, startY);
         for (int y = maxY; y >= startY; y--)
         {
-            int i = FlipYScreenCord(y);
+            int i = ConvertToConsoleY(y);
             if (!appendNewLine)
                 Console.SetCursorPosition(startX, i);
             for (int x = startX; x <= maxX; x++)
@@ -110,7 +110,7 @@ public class ConsoleManager
             return;
         }
 
-        int i = FlipYScreenCord(y);
+        int i = ConvertToConsoleY(y);
         Console.SetCursorPosition(x, i);
         SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
         Console.Write(symbolData.Symbol);
@@ -144,7 +144,7 @@ public class ConsoleManager
         return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, FocusPoint.X, FocusPoint.Y);
     }
 
-    private int FlipYScreenCord(int y)
+    private int ConvertToConsoleY(int y)
     {
         return Console.WindowHeight - 1 - y;
     }
