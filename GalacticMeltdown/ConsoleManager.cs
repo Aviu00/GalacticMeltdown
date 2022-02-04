@@ -96,7 +96,7 @@ public class ConsoleManager
     /// <summary>
     /// Draws a single obj
     /// </summary>
-    public void DrawObj
+    public void PutSymbol
         (int x, int y, DrawFunctions.GetSymbolAt getSymbolAt, bool ignoreOverlay = false, bool glCoords = false)
     {
         DrawFunctions.SymbolData symbolData = getSymbolAt(x, y);
