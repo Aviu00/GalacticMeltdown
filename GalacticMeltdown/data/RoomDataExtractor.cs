@@ -70,6 +70,6 @@ public class RoomDataExtractor : XmlExtractor
 
         return terrainObjects;
     }
-        
-    public record struct Room(TileTypeData[,] Pattern);
 }
+
+public record struct Room(TileTypeData[,] Pattern);
