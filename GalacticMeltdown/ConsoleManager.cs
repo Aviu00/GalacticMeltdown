@@ -126,6 +126,14 @@ public class ConsoleManager
         SetConsoleBackgroundColor(symbolData.BGColor);
         Console.Write(symbolData.Symbol);
     }
+    
+    private void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
+    {
+        if (Console.ForegroundColor != fgColor)
+            Console.ForegroundColor = fgColor;
+        if (Console.BackgroundColor != bgColor)
+            Console.BackgroundColor = bgColor;
+    }
 
     public void SetConsoleForegroundColor(ConsoleColor color)
     {
