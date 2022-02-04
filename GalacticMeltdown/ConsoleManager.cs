@@ -100,8 +100,7 @@ public class ConsoleManager
             return;  // hidden by overlay
         }
 
-        int i = ConvertToConsoleY(y);
-        Console.SetCursorPosition(x, i);
+        Console.SetCursorPosition(x, ConvertToConsoleY(y));
         SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
         Console.Write(symbolData.Symbol);
     }
