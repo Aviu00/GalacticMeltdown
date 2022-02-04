@@ -91,8 +91,6 @@ public class Player : IEntity, IControllable
                     lastTileCoords = tileCoords;
             }
         }
-
-        GameManager.ConsoleManager.RedrawMap();
     }
 
     private void FovCheckAdjacentWalls((int x, int y)? coords)
