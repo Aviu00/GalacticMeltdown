@@ -62,7 +62,7 @@ public class Player : IEntity, IControllable
     /// <summary>
     /// Reset player field of view
     /// </summary>
-    public void ResetVisibleObjects()
+    private void ResetVisibleObjects()
     {
         VisibleObjects.Clear();
         VisibleObjects.Add((X, Y), this);
