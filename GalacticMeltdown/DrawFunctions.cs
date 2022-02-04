@@ -7,7 +7,7 @@ public static class DrawFunctions
     public delegate SymbolData GetSymbolAt(int x, int y);
     public static SymbolData GetScreenSymbol(int x, int y)
     {
-        (int x, int y) glCoords = GameManager.ConsoleManager.ConvertScreenToGlobalCoords(x, y);
+        (int x, int y) glCoords = GameManager.Renderer.ConvertScreenToGlobalCoords(x, y);
         return GetMapSymbol(glCoords.x, glCoords.y);
     }
 

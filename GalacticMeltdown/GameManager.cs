@@ -7,7 +7,7 @@ namespace GalacticMeltdown;
 static class GameManager
 {
     public static Player Player;
-    public static ConsoleManager ConsoleManager;
+    public static Renderer Renderer;
     public static Map Map;
     public static Dictionary<string, TileTypeData> TileTypes;
     private static List<(int rarity, int exitCount, RoomData.Room room)> _rooms;
@@ -20,11 +20,11 @@ static class GameManager
         _rooms = new RoomData(TileTypes).Rooms;
         GenerateMap(args.Length > 0 ? args[0] : null);
         Player = new Player(Map.StartPoint.MapX * 25 + 12, Map.StartPoint.MapY * 25 + 12, Map.GetTile);
-        ConsoleManager = new ConsoleManager(Player);
+        Renderer = new Renderer(Player);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         AppDomain.CurrentDomain.UnhandledException += ExitEvent;
-        ConsoleManager.RedrawMap();
+        Renderer.RedrawMap();
         GameLoop();
     }
 
@@ -105,7 +105,7 @@ static class GameManager
     {
         if (Player.TryMove(deltaX, deltaY))
         {
-            ConsoleManager.RedrawMap();
+            Renderer.RedrawMap();
         }
     }
 

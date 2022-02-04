@@ -3,14 +3,14 @@ using System.Text;
 
 namespace GalacticMeltdown;
 
-public class ConsoleManager
+public class Renderer
 {
     public IHasCoords FocusPoint;
     private int _screenCenterX;
     private int _screenCenterY;
     private const int OverlayWidth = 1;
 
-    public ConsoleManager(IHasCoords focusPoint)
+    public Renderer(IHasCoords focusPoint)
     {
         FocusPoint = focusPoint;
         Console.CursorVisible = false;
