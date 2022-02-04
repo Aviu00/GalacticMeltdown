@@ -25,7 +25,7 @@ static class GameManager
         Player = new Player();
         ConsoleManager = new ConsoleManager(Player);
         Console.CancelKeyPress += ConsoleCancelEvent;
-        Player.ResetVisibleObjects();
+        ConsoleManager.RedrawMap();
         GameLoop();
     }
 

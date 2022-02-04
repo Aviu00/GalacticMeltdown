@@ -53,6 +53,7 @@ public class Player : IEntity, IControllable
         Symbol = '@';
         FgColor = ConsoleColor.White;
         BgColor = ConsoleColor.Black;
+        ResetVisibleObjects();
     }
 
 
