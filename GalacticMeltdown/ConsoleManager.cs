@@ -85,21 +85,17 @@ public class ConsoleManager
         }
     }
 
-    public void PutSymbol
-        (int x, int y, DrawFunctions.GetSymbolAt getSymbolAt, bool ignoreOverlay = false, bool glCoords = false)
+    public void PutSymbolFrom(int x, int y, DrawFunctions.GetSymbolAt getSymbolAt)
     {
         UpdateConsoleCenterCoords();
         DrawFunctions.SymbolData symbolData = getSymbolAt(x, y);
-        if (glCoords)
-        {
-            (x, y) = ConvertGlobalToScreenCoords(x, y);
-        }
+        (x, y) = ConvertGlobalToScreenCoords(x, y);
+        if (x > Console.WindowWidth - OverlayWidth - 1) return;  // Not visible on the map
+        PutSymbolAt(x, y, symbolData);
+    }
 
-        if (!ignoreOverlay && x > Console.WindowWidth - OverlayWidth - 1)
-        {
-            return;  // hidden by overlay
-        }
-
+    public void PutSymbolAt(int x, int y, DrawFunctions.SymbolData symbolData)
+    {
         Console.SetCursorPosition(x, ConvertToConsoleY(y));
         SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
         Console.Write(symbolData.Symbol);
