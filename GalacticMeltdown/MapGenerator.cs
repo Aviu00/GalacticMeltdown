@@ -124,7 +124,7 @@ public class MapGenerator
             {
                 for (int y = 0; y < _tempMap.GetLength(1); y++)
                 {
-                    _tempMap[i, y] = new SubMapGenerator(i,y);
+                    _tempMap[i, y] = new SubMapGenerator(i,y, _tileTypes);
                 }
                 continue;
             }
@@ -139,7 +139,7 @@ public class MapGenerator
             int max2 = _bars[x].max + lastMax - max1;
             for (int y = _minPoint-MapOffset, j = 0; y <= _maxPoint + MapOffset; j++, y++)
             {
-                _tempMap[i, j] = new SubMapGenerator(i,j);
+                _tempMap[i, j] = new SubMapGenerator(i,j, _tileTypes);
                 if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
                 
                 if (topStartRoom && x == startRoomPos && y == _bars[x].max || 
