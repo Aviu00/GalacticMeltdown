@@ -22,10 +22,15 @@ public class ConsoleManager
     /// </summary>
     public void RedrawMap()
     {
-        //UpdateConsoleCenterCoords();
+        var watch = System.Diagnostics.Stopwatch.StartNew();
         int maxX = Console.WindowWidth - overlayWidth - 1;
         int maxY = Console.WindowHeight - 1;
         DrawArea(0, 0, maxX, maxY, DrawFunctions.ScreenCoordsMapDrawFunc, true);
+        watch.Stop();
+        Console.SetCursorPosition(0, 0);
+        GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
+        GameManager.ConsoleManager.SetConsoleForegroundColor(ConsoleColor.White);
+        Console.Write($"{watch.ElapsedMilliseconds} ms");
     }
 
     public void UpdateConsoleCenterCoords()

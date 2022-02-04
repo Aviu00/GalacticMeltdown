@@ -61,7 +61,6 @@ public class Player : IEntity, IControllable
     /// </summary>
     public void ResetVisibleObjects()
     {
-        var watch = System.Diagnostics.Stopwatch.StartNew();
         VisibleObjects.Clear();
         VisibleObjects.Add((X, Y), this);
         foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(X, Y, _viewRange))
@@ -94,12 +93,6 @@ public class Player : IEntity, IControllable
         }
 
         GameManager.ConsoleManager.RedrawMap();
-
-        watch.Stop();
-        Console.SetCursorPosition(0, 0);
-        GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
-        GameManager.ConsoleManager.SetConsoleForegroundColor(ConsoleColor.White);
-        Console.Write($"{watch.ElapsedMilliseconds} ms");
     }
 
     private void FovCheckAdjacentWalls((int x, int y)? coords)
