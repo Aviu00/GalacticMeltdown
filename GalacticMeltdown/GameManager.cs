@@ -22,7 +22,7 @@ static class GameManager
         TileTypesExtractor = new TileTypesExtractor();
         RoomData = new RoomData();
         GenerateMap(args.Length > 0 ? args[0] : null);
-        Player = new Player();
+        Player = new Player(Map.StartPoint.MapX * 25 + 12, Map.StartPoint.MapY * 25 + 12, Map.GetTile);
         ConsoleManager = new ConsoleManager(Player);
         Console.CancelKeyPress += ConsoleCancelEvent;
         ConsoleManager.RedrawMap();
