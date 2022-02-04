@@ -24,7 +24,9 @@ static class GameManager
         GenerateMap(args.Length > 0 ? args[0] : null);
         Player = new Player(Map.StartPoint.MapX * 25 + 12, Map.StartPoint.MapY * 25 + 12, Map.GetTile);
         ConsoleManager = new ConsoleManager(Player);
-        Console.CancelKeyPress += ConsoleCancelEvent;
+        Console.CancelKeyPress += ExitEvent;
+        AppDomain.CurrentDomain.ProcessExit += ExitEvent;
+        AppDomain.CurrentDomain.UnhandledException += ExitEvent;
         ConsoleManager.RedrawMap();
         GameLoop();
     }
@@ -110,7 +112,7 @@ static class GameManager
         }
     }
 
-    private static void ConsoleCancelEvent(object sender, ConsoleCancelEventArgs e)
+    private static void ExitEvent(object sender, EventArgs e)
     {
         Stop();
     }
