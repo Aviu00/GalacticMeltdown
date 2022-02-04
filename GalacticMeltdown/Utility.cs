@@ -25,7 +25,7 @@ public static class Utility
         {"dark_yellow", ConsoleColor.DarkYellow},
     };
 
-    public static readonly ConsoleColor OutOfVisionTileColor = ConsoleColor.Black;
+    public static readonly ConsoleColor OutOfVisionTileColor = ConsoleColor.DarkGray;
 
     public static (int x, int y) ConvertGlobalToRelativeCoords(int x, int y, int relObjX, int relObjY)
     {
