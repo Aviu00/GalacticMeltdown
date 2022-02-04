@@ -13,6 +13,17 @@ public class Player : IEntity, IControllable
     public Dictionary<(int, int), IDrawable> VisibleObjects = new();
     private int _viewRange = 15;
 
+    public bool NoClip;//Temporary implementation of debugging "cheat codes"
+    private bool _xray;
+    public bool Xray
+    {
+        get => _xray;
+        set
+        {
+            _xray = value;
+            ResetVisibleObjects();
+        }
+    }
     public int ViewRange
     {
         get => _viewRange;
@@ -28,7 +39,7 @@ public class Player : IEntity, IControllable
 
     public bool TryMove(int deltaX, int deltaY)
     {
-        if (!Utility.IsWalkable(X + deltaX, Y + deltaY)) return false;
+        if (!NoClip && !Utility.IsWalkable(X + deltaX, Y + deltaY)) return false;
         X += deltaX;
         Y += deltaY;
         ResetVisibleObjects();
@@ -61,14 +72,18 @@ public class Player : IEntity, IControllable
                 FovCheckAdjacentWalls(lastTileCoords);
                 Tile tile = GameManager.Map.GetTile(tileCoords.x, tileCoords.y);
                 if (tile == null)
+                {
+                    if (tileCoords.x != X || tileCoords.y != Y)
+                        lastTileCoords = tileCoords;
                     continue;
+                }
                 if (!VisibleObjects.ContainsKey(tileCoords))
                 {
                     VisibleObjects.Add(tileCoords, tile);
                     tile.WasSeenByPlayer = true;
                 }
 
-                if (!tile.IsTransparent)
+                if (!Xray && !tile.IsTransparent)
                 {
                     break;
                 }

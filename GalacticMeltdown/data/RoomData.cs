@@ -31,7 +31,6 @@ public class RoomData
                 switch (locNode.Name)
                 {
                     case "Pattern":
-                        Console.WriteLine(locNode.InnerText);
                         pattern = ConvertPattern(locNode.InnerText);
                         break;
                 }
