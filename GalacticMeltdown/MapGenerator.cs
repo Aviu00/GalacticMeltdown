@@ -243,14 +243,59 @@ public class MapGenerator
     /// </summary>
     private void FinalizeRoom(int x, int y)
     {
+        //matrix rotation: 90deg = transpose + rev rows; 270deg = transpose + rev cols; 180deg = rev rows + cols
+        var rooms = GameManager.Rooms;
+        var room = rooms[_rng.Next(0, rooms.Count)];
+        TileTypeData[,] roomData = (TileTypeData[,]) room.room.Pattern.Clone();
+        List<int> possibleRotations = new(){0, 90, 180, 270};
+        switch (possibleRotations[_rng.Next(0, possibleRotations.Count)])
+        {
+            case 90:
+                Algorithms.TransposeMatrix(roomData);
+                Algorithms.ReverseMatrixRows(roomData);
+                FlipPoles(roomData, ("north", "west"), ("south", "east"), ("west", "east"));
+                break;
+            case 180:
+                Algorithms.ReverseMatrixRows(roomData);
+                Algorithms.ReverseMatrixCols(roomData);
+                FlipPoles(roomData, ("north", "south"), ("west", "east"));
+                break;
+            case 270:
+                Algorithms.TransposeMatrix(roomData);
+                Algorithms.ReverseMatrixCols(roomData);
+                FlipPoles(roomData, ("north", "west"), ("south", "east"), ("north", "south"));
+                break;
+        }
+
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
-        _map[x, y] = _tempMap[x, y].GenerateSubMap
-            (_rooms[_rng.Next(0, _rooms.Count)].room.Pattern, northernTileMap, easternTileMap);
+        _map[x, y] = _tempMap[x, y].GenerateSubMap(roomData, northernTileMap, easternTileMap);
         if (_tempMap[x, y].StartPoint)
             _startPoint = _map[x, y];
     }
 
+    private void FlipPoles(TileTypeData[,] roomData, params (string p1, string p2)[] poles)
+    {
+        for (int x = 0; x < roomData.GetLength(0); x++)
+        {
+            for (int y = 0; y < roomData.GetLength(1); y++)
+            {
+                string[] parsedId = roomData[x, y].Id.Split('_');
+                if (parsedId.Length != 3 || parsedId[1] != "if")
+                    continue;
+                foreach (var (p1, p2) in poles)
+                {
+                    if (parsedId[2] == p1)
+                        parsedId[2] = p2;
+                    else if (parsedId[2] == p2)
+                        parsedId[2] = p1;
+                }
+
+                roomData[x, y] = GameManager.TileTypes[$"{parsedId[0]}_if_{parsedId[2]}"];
+            }
+        }
+    }
+    
     private void GenerateBorderWalls()
     {
         _westernWall = new Tile[_map.GetLength(1) * 25];

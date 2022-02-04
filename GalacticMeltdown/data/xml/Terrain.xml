@@ -9,10 +9,6 @@
         <IsTransparent>True</IsTransparent>
     </TerrainObject>
     <TerrainObject>
-        <Id>null</Id>
-        <Symbol>=</Symbol>
-    </TerrainObject>
-    <TerrainObject>
         <Id>wall_if_north</Id>
         <Symbol>N</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>

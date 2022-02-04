@@ -10,14 +10,14 @@ static class GameManager
     public static Renderer Renderer;
     public static Map Map;
     public static Dictionary<string, TileTypeData> TileTypes;
-    private static List<(int rarity, int exitCount, RoomData.Room room)> _rooms;
+    public static List<(int rarity, int exitCount, RoomData.Room room)> Rooms;
 
     private static bool _stop;
 
     static void Main(string[] args)
     {
         TileTypes = new TileTypesExtractor().TileTypes;
-        _rooms = new RoomData(TileTypes).Rooms;
+        Rooms = new RoomData(TileTypes).Rooms;
         GenerateMap(args.Length > 0 ? args[0] : null);
         Player = new Player(Map.StartPoint.MapX * 25 + 12, Map.StartPoint.MapY * 25 + 12, Map.GetTile);
         Renderer = new Renderer(Player);
@@ -126,7 +126,7 @@ static class GameManager
     {
         if (seed == null || !int.TryParse(seed, out int mapSeed) || mapSeed < 0)
             mapSeed = Random.Shared.Next(0, 1000000000);
-        MapGenerator mapGen = new MapGenerator(mapSeed, TileTypes, _rooms);
+        MapGenerator mapGen = new MapGenerator(mapSeed, TileTypes, Rooms);
         Map = mapGen.Generate();
         mapGen = null;
         GC.Collect();

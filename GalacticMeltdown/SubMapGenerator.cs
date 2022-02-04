@@ -61,16 +61,13 @@ public class SubMapGenerator
         (TileTypeData[,] roomData, Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
     {
         Tiles = new Tile[25, 25];
-        TileTypeData[,] newRoomData = (TileTypeData[,]) roomData.Clone();
         bool southNull = SouthConnection == null;
         for (int y = 0; y < 24; y++)
         {
             for (int x = 0; x < 24; x++)
             {
-                if (newRoomData[x, y].IsDependingOnRoomConnection)
-                {
-                    ResolveRoomConnectionDependency(newRoomData, x, y);
-                }
+                if (roomData[x, y].IsDependingOnRoomConnection)
+                    ResolveRoomConnectionDependency(roomData, x, y);
             }
         }
 
@@ -78,14 +75,14 @@ public class SubMapGenerator
         {
             for (int x = 0; x < 24; x++)
             {
-                TileTypeData tileTypeData = newRoomData[x, y].IsConnectable
-                    ? GetConnectableData(newRoomData, x, y)
-                    : newRoomData[x, y];
+                TileTypeData tileTypeData = roomData[x, y].IsConnectable
+                    ? GetConnectableData(roomData, x, y)
+                    : roomData[x, y];
                 Tiles[x, y] = new Tile(tileTypeData);
             }
         }
 
-        FillBorderWalls(newRoomData, northernTileMap, easternTileMap);
+        FillBorderWalls(roomData, northernTileMap, easternTileMap);
         return new SubMap(Tiles, Difficulty, MapX, MapY);
     }
 
