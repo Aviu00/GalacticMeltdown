@@ -25,7 +25,7 @@ public class ConsoleManager
         var watch = System.Diagnostics.Stopwatch.StartNew();
         int maxX = Console.WindowWidth - overlayWidth - 1;
         int maxY = Console.WindowHeight - 1;
-        DrawArea(0, 0, maxX, maxY, DrawFunctions.ScreenCoordsMapDrawFunc, true);
+        DrawArea(0, 0, maxX, maxY, DrawFunctions.GetScreenSymbol, true);
         watch.Stop();
         Console.SetCursorPosition(0, 0);
         GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
@@ -41,7 +41,7 @@ public class ConsoleManager
     }
 
     public void DrawArea
-        (int startX, int startY, int maxX, int maxY, DrawFunctions.DrawFunc drawFunc, bool appendNewLine = false)
+        (int startX, int startY, int maxX, int maxY, DrawFunctions.GetSymbolAt getSymbolAt, bool appendNewLine = false)
     {
         StringBuilder sb = new StringBuilder();
         ConsoleColor? lastFgColor = null;
@@ -54,7 +54,7 @@ public class ConsoleManager
                 Console.SetCursorPosition(startX, i);
             for (int x = startX; x <= maxX; x++)
             {
-                DrawFunctions.SymbolData symbolData = drawFunc(x, y);
+                DrawFunctions.SymbolData symbolData = getSymbolAt(x, y);
 
                 SetConsoleForegroundColor(symbolData.FgColor);
                 SetConsoleBackgroundColor(symbolData.BgColor);
@@ -107,9 +107,9 @@ public class ConsoleManager
     /// Draws a single obj
     /// </summary>
     public void DrawObj
-        (int x, int y, DrawFunctions.DrawFunc drawFunc, bool ignoreOverlay = false, bool glCoords = false)
+        (int x, int y, DrawFunctions.GetSymbolAt getSymbolAt, bool ignoreOverlay = false, bool glCoords = false)
     {
-        DrawFunctions.SymbolData symbolData = drawFunc(x, y);
+        DrawFunctions.SymbolData symbolData = getSymbolAt(x, y);
         if (glCoords)
         {
             (x, y) = ConvertGlobalToScreenCoords(x, y);

@@ -4,14 +4,14 @@ namespace GalacticMeltdown;
 
 public static class DrawFunctions
 {
-    public delegate SymbolData DrawFunc(int x, int y);
-    public static SymbolData ScreenCoordsMapDrawFunc(int x, int y)
+    public delegate SymbolData GetSymbolAt(int x, int y);
+    public static SymbolData GetScreenSymbol(int x, int y)
     {
         (int x, int y) glCoords = GameManager.ConsoleManager.ConvertScreenToGlobalCoords(x, y);
-        return MapDrawFunc(glCoords.x, glCoords.y);
+        return GetMapSymbol(glCoords.x, glCoords.y);
     }
 
-    public static SymbolData MapDrawFunc(int x, int y)
+    public static SymbolData GetMapSymbol(int x, int y)
     {
         IDrawable drawableObj;
         if (GameManager.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
