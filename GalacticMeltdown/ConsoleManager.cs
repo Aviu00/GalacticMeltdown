@@ -85,9 +85,6 @@ public class ConsoleManager
         }
     }
 
-    /// <summary>
-    /// Draws a single obj
-    /// </summary>
     public void PutSymbol
         (int x, int y, DrawFunctions.GetSymbolAt getSymbolAt, bool ignoreOverlay = false, bool glCoords = false)
     {
@@ -100,7 +97,7 @@ public class ConsoleManager
 
         if (!ignoreOverlay && x > Console.WindowWidth - overlayWidth - 1)
         {
-            return;
+            return;  // hidden by overlay
         }
 
         int i = ConvertToConsoleY(y);
