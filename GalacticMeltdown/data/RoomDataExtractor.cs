@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace GalacticMeltdown.data;
 
-public class RoomData : XmlExtractor
+public class RoomDataExtractor : XmlExtractor
 {
     public List<(int rarity, int exitCount, Room room)> Rooms { get; private set; }
 
@@ -25,7 +25,7 @@ public class RoomData : XmlExtractor
 
     private Dictionary<string, TileTypeData> _tileTypes;
 
-    public RoomData(Dictionary<string, TileTypeData> tileTypes)
+    public RoomDataExtractor(Dictionary<string, TileTypeData> tileTypes)
     {
         _tileTypes = tileTypes;
         Rooms = new List<(int rarity, int exitCount, Room room)>();

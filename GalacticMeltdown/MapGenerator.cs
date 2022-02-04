@@ -18,14 +18,14 @@ public class MapGenerator
     private Tile[] _southernWall;
     private int _seed;
     private Dictionary<string, TileTypeData> _tileTypes;
-    private List<(int rarity, int exitCount, RoomData.Room room)> _rooms;
+    private List<(int rarity, int exitCount, RoomDataExtractor.Room room)> _rooms;
 
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
     private const int ConnectionChance = 50; //room connection chance
 
     public MapGenerator(int seed, Dictionary<string, TileTypeData> tileTypes, 
-        List<(int rarity, int exitCount, RoomData.Room room)> rooms)
+        List<(int rarity, int exitCount, RoomDataExtractor.Room room)> rooms)
     {
         _tileTypes = tileTypes;
         _rooms = rooms;

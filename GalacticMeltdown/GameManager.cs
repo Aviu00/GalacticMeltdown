@@ -123,7 +123,7 @@ static class GameManager
         if (seed == null || !int.TryParse(seed, out int mapSeed) || mapSeed < 0)
             mapSeed = Random.Shared.Next(0, 1000000000);
         var tileTypes = new TileTypesExtractor().TileTypes;
-        var rooms = new RoomData(tileTypes).Rooms;
+        var rooms = new RoomDataExtractor(tileTypes).Rooms;
         MapGenerator mapGen = new MapGenerator(mapSeed, tileTypes, rooms);
         Map = mapGen.Generate();
         mapGen = null;
