@@ -29,8 +29,7 @@ public class ConsoleManager
         DrawArea(0, 0, maxX, maxY, DrawFunctions.GetScreenSymbol, true);
         watch.Stop();
         Console.SetCursorPosition(0, 0);
-        GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
-        GameManager.ConsoleManager.SetConsoleForegroundColor(ConsoleColor.White);
+        SetConsoleColor(ConsoleColor.Black, ConsoleColor.White);
         Console.Write($"{watch.ElapsedMilliseconds} ms");
     }
 
@@ -56,8 +55,7 @@ public class ConsoleManager
             {
                 DrawFunctions.SymbolData symbolData = getSymbolAt(x, y);
 
-                SetConsoleForegroundColor(symbolData.FgColor);
-                SetConsoleBackgroundColor(symbolData.BgColor);
+                SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
                 lastFgColor ??= Console.ForegroundColor;
                 lastBgColor ??= Console.BackgroundColor;
                 if ((lastFgColor == Console.ForegroundColor || symbolData.Symbol == ' ')
@@ -70,14 +68,12 @@ public class ConsoleManager
                 {
                     ConsoleColor newFgColor = Console.ForegroundColor;
                     ConsoleColor newBgColor = Console.BackgroundColor;
-                    SetConsoleForegroundColor((ConsoleColor) lastFgColor);
-                    SetConsoleBackgroundColor((ConsoleColor) lastBgColor);
+                    SetConsoleColor((ConsoleColor) lastFgColor, (ConsoleColor) lastBgColor);
                     Console.Write(sb);
                     sb.Clear();
                     lastFgColor = newFgColor;
                     lastBgColor = newBgColor;
-                    SetConsoleForegroundColor(newFgColor);
-                    SetConsoleBackgroundColor(newBgColor);
+                    SetConsoleColor(newFgColor, newBgColor);
                     Console.SetCursorPosition(x, i);
                     sb.Append(symbolData.Symbol);
                 }
@@ -122,8 +118,7 @@ public class ConsoleManager
 
         int i = FlipYScreenCord(y);
         Console.SetCursorPosition(x, i);
-        SetConsoleForegroundColor(symbolData.FgColor);
-        SetConsoleBackgroundColor(symbolData.BgColor);
+        SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
         Console.Write(symbolData.Symbol);
     }
     
@@ -133,18 +128,6 @@ public class ConsoleManager
             Console.ForegroundColor = fgColor;
         if (Console.BackgroundColor != bgColor)
             Console.BackgroundColor = bgColor;
-    }
-
-    public void SetConsoleForegroundColor(ConsoleColor color)
-    {
-        if (Console.ForegroundColor != color)
-            Console.ForegroundColor = color;
-    }
-
-    public void SetConsoleBackgroundColor(ConsoleColor color)
-    {
-        if (Console.BackgroundColor != color)
-            Console.BackgroundColor = color;
     }
 
     public (int x, int y) ConvertGlobalToScreenCoords(int x, int y)
