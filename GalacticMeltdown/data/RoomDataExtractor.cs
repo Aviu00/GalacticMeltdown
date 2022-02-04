@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -6,7 +5,7 @@ using System.Xml;
 
 namespace GalacticMeltdown.data;
 
-public class RoomData : XmlExtractor
+public class RoomDataExtractor : XmlExtractor
 {
     public List<(int rarity, int exitCount, Room room)> Rooms { get; private set; }
 
@@ -24,8 +23,11 @@ public class RoomData : XmlExtractor
         {'w', "floor_if_west"}
     };
 
-    public RoomData()
+    private Dictionary<string, TileTypeData> _tileTypes;
+
+    public RoomDataExtractor(Dictionary<string, TileTypeData> tileTypes)
     {
+        _tileTypes = tileTypes;
         Rooms = new List<(int rarity, int exitCount, Room room)>();
         XmlDocument doc = GetXmlDocument("Rooms.xml");
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
@@ -61,14 +63,13 @@ public class RoomData : XmlExtractor
                     j++;
                     continue;
             }
-            
-            TileTypeData data = GameManager.TileTypesExtractor.TileTypes[_defaultTiles[c]];
+            TileTypeData data = _tileTypes[_defaultTiles[c]];
             terrainObjects[i, 23 - j] = data;
             i++;
         }
 
         return terrainObjects;
     }
-        
-    public record struct Room(TileTypeData[,] Pattern);
 }
+
+public record struct Room(TileTypeData[,] Pattern);

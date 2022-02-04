@@ -12,6 +12,7 @@ public class Player : IEntity, IControllable
     public ConsoleColor BgColor { get; }
     public Dictionary<(int, int), IDrawable> VisibleObjects = new();
     private int _viewRange = 15;
+    private Func<int, int, Tile> _tileAt;
 
     public bool NoClip;//Temporary implementation of debugging "cheat codes"
     private bool _xray;
@@ -39,29 +40,30 @@ public class Player : IEntity, IControllable
 
     public bool TryMove(int deltaX, int deltaY)
     {
-        if (!NoClip && !Utility.IsWalkable(X + deltaX, Y + deltaY)) return false;
+        if (!NoClip && !_tileAt(X + deltaX, Y + deltaY).IsWalkable) return false;
         X += deltaX;
         Y += deltaY;
         ResetVisibleObjects();
         return true;
     }
 
-    public Player()
+    public Player(int x, int y, Func<int, int, Tile> tileAt)
     {
-        X = GameManager.Map.StartPoint.MapX * 25 + 12;
-        Y = GameManager.Map.StartPoint.MapY * 25 + 12;
+        X = x;
+        Y = y;
+        _tileAt = tileAt;
         Symbol = '@';
         FgColor = ConsoleColor.White;
         BgColor = ConsoleColor.Black;
+        ResetVisibleObjects();
     }
 
 
     /// <summary>
     /// Reset player field of view
     /// </summary>
-    public void ResetVisibleObjects()
+    private void ResetVisibleObjects()
     {
-        var watch = System.Diagnostics.Stopwatch.StartNew();
         VisibleObjects.Clear();
         VisibleObjects.Add((X, Y), this);
         foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(X, Y, _viewRange))
@@ -70,7 +72,7 @@ public class Player : IEntity, IControllable
             foreach (var tileCoords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
             {
                 FovCheckAdjacentWalls(lastTileCoords);
-                Tile tile = GameManager.Map.GetTile(tileCoords.x, tileCoords.y);
+                Tile tile = _tileAt(tileCoords.x, tileCoords.y);
                 if (tile == null)
                 {
                     if (tileCoords.x != X || tileCoords.y != Y)
@@ -92,14 +94,6 @@ public class Player : IEntity, IControllable
                     lastTileCoords = tileCoords;
             }
         }
-
-        GameManager.ConsoleManager.RedrawMap();
-
-        watch.Stop();
-        Console.SetCursorPosition(0, 0);
-        GameManager.ConsoleManager.SetConsoleBackgroundColor(ConsoleColor.Black);
-        GameManager.ConsoleManager.SetConsoleForegroundColor(ConsoleColor.White);
-        Console.Write($"{watch.ElapsedMilliseconds} ms");
     }
 
     private void FovCheckAdjacentWalls((int x, int y)? coords)
@@ -138,7 +132,7 @@ public class Player : IEntity, IControllable
     {
         if (!VisibleObjects.ContainsKey((x, y)))
         {
-            Tile tile = GameManager.Map.GetTile(x, y);
+            Tile tile = _tileAt(x, y);
             if (tile is not null && !tile.IsTransparent)
             {
                 tile.WasSeenByPlayer = true;

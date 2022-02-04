@@ -25,7 +25,7 @@ public static class Utility
         {"dark_yellow", ConsoleColor.DarkYellow},
     };
 
-    public static readonly ConsoleColor OutOfVisionTileColor = ConsoleColor.Black;
+    public static readonly ConsoleColor OutOfVisionTileColor = ConsoleColor.DarkGray;
 
     public static (int x, int y) ConvertGlobalToRelativeCoords(int x, int y, int relObjX, int relObjY)
     {
@@ -42,11 +42,5 @@ public static class Utility
         rng ??= new Random();
         int val = rng.Next(1, 101);
         return val <= chance;
-    }
-    
-    public static bool IsWalkable(int x, int y)
-    {
-        Tile tile = GameManager.Map.GetTile(x, y);
-        return tile is null || tile.IsWalkable;
     }
 }

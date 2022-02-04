@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Windows.Input;
 using GalacticMeltdown.data;
 
 namespace GalacticMeltdown;
@@ -10,22 +7,20 @@ namespace GalacticMeltdown;
 static class GameManager
 {
     public static Player Player;
-    public static ConsoleManager ConsoleManager;
+    public static Renderer Renderer;
     public static Map Map;
-    public static TileTypesExtractor TileTypesExtractor;
-    public static RoomData RoomData;
 
     private static bool _stop;
 
     static void Main(string[] args)
     {
-        TileTypesExtractor = new TileTypesExtractor();
-        RoomData = new RoomData();
         GenerateMap(args.Length > 0 ? args[0] : null);
-        Player = new Player();
-        ConsoleManager = new ConsoleManager();
-        Console.CancelKeyPress += ConsoleCancelEvent;
-        Player.ResetVisibleObjects();
+        Player = new Player(Map.StartPoint.MapX * 25 + 12, Map.StartPoint.MapY * 25 + 12, Map.GetTile);
+        Renderer = new Renderer(Player);
+        Console.CancelKeyPress += ExitEvent;
+        AppDomain.CurrentDomain.ProcessExit += ExitEvent;
+        // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
+        Renderer.RedrawMap();
         GameLoop();
     }
 
@@ -70,14 +65,14 @@ static class GameManager
     private static readonly IDictionary<ActionMove, Action> ActionBinding = 
         new Dictionary<ActionMove, Action>
     {
-        {ActionMove.MoveUp, () => Player.TryMove(0, 1)},
-        {ActionMove.MoveDown, () => Player.TryMove(0, -1)},
-        {ActionMove.MoveRight, () => Player.TryMove(1, 0)},
-        {ActionMove.MoveLeft, () => Player.TryMove(-1, 0)},
-        {ActionMove.MoveNe, () => Player.TryMove(1, 1)},
-        {ActionMove.MoveSe, () => Player.TryMove(1, -1)},
-        {ActionMove.MoveSw, () => Player.TryMove(-1, -1)},
-        {ActionMove.MoveNw, () => Player.TryMove(-1, 1)},
+        {ActionMove.MoveUp, () => MovePlayer(0, 1)},
+        {ActionMove.MoveDown, () => MovePlayer(0, -1)},
+        {ActionMove.MoveRight, () => MovePlayer(1, 0)},
+        {ActionMove.MoveLeft, () => MovePlayer(-1, 0)},
+        {ActionMove.MoveNe, () => MovePlayer(1, 1)},
+        {ActionMove.MoveSe, () => MovePlayer(1, -1)},
+        {ActionMove.MoveSw, () => MovePlayer(-1, -1)},
+        {ActionMove.MoveNw, () => MovePlayer(-1, 1)},
         {ActionMove.IncreaseViewRange, () => Player.ViewRange++},
         {ActionMove.ReduceViewRange, () => Player.ViewRange--},
         {ActionMove.ActivateNoClip, () => Player.NoClip = !Player.NoClip},
@@ -101,8 +96,16 @@ static class GameManager
             }
         }
     }
+    
+    private static void MovePlayer(int deltaX, int deltaY)
+    {
+        if (Player.TryMove(deltaX, deltaY))
+        {
+            Renderer.RedrawMap();
+        }
+    }
 
-    private static void ConsoleCancelEvent(object sender, ConsoleCancelEventArgs e)
+    private static void ExitEvent(object sender, EventArgs e)
     {
         Stop();
     }
@@ -119,7 +122,9 @@ static class GameManager
     {
         if (seed == null || !int.TryParse(seed, out int mapSeed) || mapSeed < 0)
             mapSeed = Random.Shared.Next(0, 1000000000);
-        MapGenerator mapGen = new MapGenerator(mapSeed);
+        var tileTypes = new TileTypesExtractor().TileTypes;
+        var rooms = new RoomDataExtractor(tileTypes).Rooms;
+        MapGenerator mapGen = new MapGenerator(mapSeed, tileTypes, rooms);
         Map = mapGen.Generate();
         mapGen = null;
         GC.Collect();

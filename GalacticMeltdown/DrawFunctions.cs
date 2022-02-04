@@ -4,14 +4,14 @@ namespace GalacticMeltdown;
 
 public static class DrawFunctions
 {
-    public delegate SymbolData DrawFunc(int x, int y);
-    public static SymbolData ScreenCoordsMapDrawFunc(int x, int y)
+    public delegate SymbolData GetSymbolAt(int x, int y);
+    public static SymbolData GetScreenSymbol(int x, int y)
     {
-        (int x, int y) glCoords = GameManager.ConsoleManager.ConvertScreenToGlobalCoords(x, y);
-        return MapDrawFunc(glCoords.x, glCoords.y);
+        (int x, int y) glCoords = GameManager.Renderer.ConvertScreenToGlobalCoords(x, y);
+        return GetMapSymbol(glCoords.x, glCoords.y);
     }
 
-    public static SymbolData MapDrawFunc(int x, int y)
+    public static SymbolData GetMapSymbol(int x, int y)
     {
         IDrawable drawableObj;
         if (GameManager.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
@@ -28,18 +28,18 @@ public static class DrawFunctions
 
         return new SymbolData(' ', Console.ForegroundColor, ConsoleColor.Black);
     }
-    
-    public struct SymbolData
-    {
-        public char Symbol;
-        public ConsoleColor FGColor;
-        public ConsoleColor BGColor;
+}
 
-        public SymbolData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
-        {
-            Symbol = symbol;
-            BGColor = bgColor;
-            FGColor = fgColor;
-        }
+public struct SymbolData
+{
+    public char Symbol;
+    public ConsoleColor FgColor;
+    public ConsoleColor BgColor;
+
+    public SymbolData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
+    {
+        Symbol = symbol;
+        BgColor = bgColor;
+        FgColor = fgColor;
     }
 }
