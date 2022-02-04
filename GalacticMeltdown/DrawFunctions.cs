@@ -28,18 +28,18 @@ public static class DrawFunctions
 
         return new SymbolData(' ', Console.ForegroundColor, ConsoleColor.Black);
     }
-    
-    public struct SymbolData
-    {
-        public char Symbol;
-        public ConsoleColor FgColor;
-        public ConsoleColor BgColor;
+}
 
-        public SymbolData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
-        {
-            Symbol = symbol;
-            BgColor = bgColor;
-            FgColor = fgColor;
-        }
+public struct SymbolData
+{
+    public char Symbol;
+    public ConsoleColor FgColor;
+    public ConsoleColor BgColor;
+
+    public SymbolData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
+    {
+        Symbol = symbol;
+        BgColor = bgColor;
+        FgColor = fgColor;
     }
 }

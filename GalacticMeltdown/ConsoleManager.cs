@@ -88,13 +88,13 @@ public class ConsoleManager
     public void PutSymbolFrom(int x, int y, DrawFunctions.GetSymbolAt getSymbolAt)
     {
         UpdateConsoleCenterCoords();
-        DrawFunctions.SymbolData symbolData = getSymbolAt(x, y);
+        SymbolData symbolData = getSymbolAt(x, y);
         (x, y) = ConvertGlobalToScreenCoords(x, y);
         if (x > Console.WindowWidth - OverlayWidth - 1) return;  // Not visible on the map
         PutSymbolAt(x, y, symbolData);
     }
 
-    public void PutSymbolAt(int x, int y, DrawFunctions.SymbolData symbolData)
+    public void PutSymbolAt(int x, int y, SymbolData symbolData)
     {
         Console.SetCursorPosition(x, ConvertToConsoleY(y));
         SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
