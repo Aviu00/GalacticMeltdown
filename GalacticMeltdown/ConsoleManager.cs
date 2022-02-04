@@ -106,7 +106,7 @@ public class ConsoleManager
         Console.Write(symbolData.Symbol);
     }
     
-    public void UpdateConsoleCenterCoords()
+    private void UpdateConsoleCenterCoords()
     {
         _screenCenterX = (Console.WindowWidth - overlayWidth) / 2;
         _screenCenterY = Console.WindowHeight / 2;
