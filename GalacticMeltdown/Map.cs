@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GalacticMeltdown.data;
 
 namespace GalacticMeltdown;
@@ -9,10 +10,12 @@ public class Map
     public readonly SubMap StartPoint;
     private Tile[] _southernWall;
     private Tile[] _westernWall;
-    private Tile _cornerTile = new Tile(GameManager.TileTypes["wall_nesw"]);
+    private Tile _cornerTile;
 
-    public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, Tile[] westernWall)
+    public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
+        Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes)
     {
+        _cornerTile = new Tile(tileTypes["wall_nesw"]);
         _map = map;
         MapSeed = seed;
         StartPoint = startPoint;

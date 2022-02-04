@@ -44,7 +44,7 @@ public class MapGenerator
         BuildMainRoute();
         FillMap();
         GenerateBorderWalls();
-        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall);
+        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall, _tileTypes);
     }
 
     private void GenerateBars()
