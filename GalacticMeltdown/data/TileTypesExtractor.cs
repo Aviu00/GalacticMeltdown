@@ -1,36 +1,35 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 using System.Xml;
 
 namespace GalacticMeltdown.data;
 
-public class TileTypesExtractor
+public class TileTypesExtractor : XmlExtractor
 {
     public Dictionary<string, TileTypeData> TileTypes { get; }
 
     public TileTypesExtractor()
     {
-        // Temporary. TODO: decide whether to create a class for each tile type or specify them using strings 
         TileTypes = new Dictionary<string, TileTypeData>();
-        string projectDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-
-        //Console.WriteLine("Dir: " + projectDirectory);
-        XmlDocument doc = new XmlDocument();
-        doc.Load($"{projectDirectory}/../../../data/xml/Terrain.xml");
+        XmlDocument doc = GetXmlDocument("Terrain.xml");
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
+            string id = "";
             string name = "";
             bool isWalkable = false;
             bool isTransparent = false;
             char symbol = ' ';
             ConsoleColor color = ConsoleColor.White;
-            bool connectToWalls = false;
+            bool isConnection = false;
+            bool isConnectable = false;
+            bool isDependingOnRoomConnection = false;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
                 {
+                    case "Id":
+                        id = locNode.InnerText;
+                        break;
                     case "Name":
                         name = locNode.InnerText;
                         break;
@@ -46,35 +45,25 @@ public class TileTypesExtractor
                     case "Color":
                         color = Utility.Colors[locNode.InnerText];
                         break;
-                    case "ConnectToWalls":
-                        connectToWalls = Convert.ToBoolean(locNode.InnerText);
+                    case "IsConnection":
+                        isConnection = Convert.ToBoolean(locNode.InnerText);
+                        break;
+                    case "IsConnectable":
+                        isConnectable = Convert.ToBoolean(locNode.InnerText);
+                        break;
+                    case "IsDependingOnRoomConnection":
+                        isDependingOnRoomConnection = Convert.ToBoolean(locNode.InnerText);
                         break;
                 }
             }
             
-            TileTypeData tileTypeData = new TileTypeData(symbol, color, isWalkable, isTransparent, name, connectToWalls);
-            TileTypes.Add(name, tileTypeData);
+            TileTypeData tileTypeData = 
+                new TileTypeData(symbol, color, isWalkable, isTransparent, name, id, isConnection, isConnectable, 
+                    isDependingOnRoomConnection);
+            TileTypes.Add(id, tileTypeData);
         }
     }
 }
 
-public readonly struct TileTypeData
-{
-    public char Symbol { get; }
-    public bool IsWalkable { get; }
-    public bool IsTransparent { get; }
-    public ConsoleColor Color { get; }
-    public string Name { get; }
-    public bool ConnectToWalls { get; }
-
-    public TileTypeData(char symbol, ConsoleColor color, bool isWalkable, bool isTransparent, string name, 
-        bool connectToWalls)
-    {
-        Symbol = symbol;
-        Color = color;
-        IsTransparent = isTransparent;
-        IsWalkable = isWalkable;
-        Name = name;
-        ConnectToWalls = connectToWalls;
-    }
-}
+public record struct TileTypeData(char Symbol, ConsoleColor Color, bool IsWalkable, bool IsTransparent, string Name, string Id,
+    bool IsConnection, bool IsConnectable, bool IsDependingOnRoomConnection);
