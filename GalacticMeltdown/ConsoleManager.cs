@@ -33,12 +33,6 @@ public class ConsoleManager
         Console.Write($"{watch.ElapsedMilliseconds} ms");
     }
 
-    public void UpdateConsoleCenterCoords()
-    {
-        _screenCenterX = (Console.WindowWidth - overlayWidth) / 2;
-        _screenCenterY = Console.WindowHeight / 2;
-    }
-
     public void DrawArea
         (int startX, int startY, int maxX, int maxY, DrawFunctions.GetSymbolAt getSymbolAt, bool appendNewLine = false)
     {
@@ -120,6 +114,12 @@ public class ConsoleManager
         Console.SetCursorPosition(x, i);
         SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
         Console.Write(symbolData.Symbol);
+    }
+    
+    public void UpdateConsoleCenterCoords()
+    {
+        _screenCenterX = (Console.WindowWidth - overlayWidth) / 2;
+        _screenCenterY = Console.WindowHeight / 2;
     }
     
     private void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
