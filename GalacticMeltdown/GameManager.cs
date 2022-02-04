@@ -23,7 +23,7 @@ static class GameManager
         Renderer = new Renderer(Player);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
-        AppDomain.CurrentDomain.UnhandledException += ExitEvent;
+        // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
         Renderer.RedrawMap();
         GameLoop();
     }
