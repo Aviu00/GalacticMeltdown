@@ -9,7 +9,7 @@ public class Map
     public readonly SubMap StartPoint;
     private Tile[] _southernWall;
     private Tile[] _westernWall;
-    private Tile _cornerTile = new Tile(GameManager.TileTypesExtractor.TileTypes["wall_nesw"]);
+    private Tile _cornerTile = new Tile(GameManager.TileTypes["wall_nesw"]);
 
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, Tile[] westernWall)
     {

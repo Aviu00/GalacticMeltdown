@@ -77,7 +77,7 @@ public class SubMapGenerator
 
     void FillBorderWalls(TileTypeData[,] roomData, Tile[,] northernTileMap, Tile[,] easternTileMap)
     {
-        var tileTypes = GameManager.TileTypesExtractor.TileTypes;
+        var tileTypes = GameManager.TileTypes;
         for (int x = 0; x < 25; x++)
         {
             TileTypeData terrainObject = NorthConnection == null || x is not (11 or 12)
@@ -98,7 +98,7 @@ public class SubMapGenerator
         bool? northernTileConnectable = null, bool? easternTileConnectable = null)
     {
         if ((x, y) is (24, 24))
-            return GameManager.TileTypesExtractor.TileTypes["wall_nesw"];
+            return GameManager.TileTypes["wall_nesw"];
         StringBuilder wallKey = new StringBuilder("wall_");
         if (northernTileConnectable ?? CheckForWallInTile(roomData, x, y + 1))
             wallKey.Append('n');
@@ -111,7 +111,7 @@ public class SubMapGenerator
         string str = wallKey.ToString();
         if (str[^1] == '_')
             str = "wall";
-        return GameManager.TileTypesExtractor.TileTypes[str];
+        return GameManager.TileTypes[str];
     }
 
     bool CheckForWallInTile(TileTypeData[,] roomData, int x, int y)
