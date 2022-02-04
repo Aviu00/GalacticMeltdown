@@ -244,7 +244,7 @@ public class MapGenerator
     private void FinalizeRoom(int x, int y)
     {
         //matrix rotation: 90deg = transpose + rev rows; 270deg = transpose + rev cols; 180deg = rev rows + cols
-        var rooms = GameManager.Rooms;
+        var rooms = _rooms;
         var room = rooms[_rng.Next(0, rooms.Count)];
         TileTypeData[,] roomData = (TileTypeData[,]) room.room.Pattern.Clone();
         List<int> possibleRotations = new(){0, 90, 180, 270};
@@ -291,7 +291,7 @@ public class MapGenerator
                         parsedId[2] = p1;
                 }
 
-                roomData[x, y] = GameManager.TileTypes[$"{parsedId[0]}_if_{parsedId[2]}"];
+                roomData[x, y] = _tileTypes[$"{parsedId[0]}_if_{parsedId[2]}"];
             }
         }
     }
