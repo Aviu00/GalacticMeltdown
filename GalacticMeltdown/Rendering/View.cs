@@ -7,7 +7,7 @@ public abstract class View
     protected int Width;
     protected int Height;
 
-    protected void Resize(int width, int height)
+    public virtual void Resize(int width, int height)
     {
         Width = width;
         Height = height;
