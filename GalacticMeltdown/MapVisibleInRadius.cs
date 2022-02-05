@@ -22,7 +22,7 @@ public partial class Map
                 if (tile is null)
                 {
                     if (!(pointCoords.x == x0 && pointCoords.y == y0))
-                        prevTileCoords = null;
+                        prevTileCoords = pointCoords;  // Mark OOB walls as visible too
                     continue;
                 }
                 if (!visibleObjects.ContainsKey(pointCoords))

@@ -81,7 +81,7 @@ public class Player : IEntity, IControllable
                 if (tile is null)
                 {
                     if (!(tileCoords.x == X && tileCoords.y == Y))
-                        lastTileCoords = null;
+                        lastTileCoords = tileCoords;
                     continue;
                 }
                 if (!VisibleObjects.ContainsKey(tileCoords))
