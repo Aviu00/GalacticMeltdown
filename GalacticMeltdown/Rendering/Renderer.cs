@@ -8,9 +8,6 @@ namespace GalacticMeltdown.Rendering;
 public class Renderer
 {
     public IHasCoords FocusPoint;
-    private int _screenCenterX;
-    private int _screenCenterY;
-    private const int OverlayWidth = 1;
     private const int TotalWidth = 1000;
     private List<(View, int, int, int, int)> _views;  // View, top-left and bottom-right corner coords (rel) 
 
@@ -118,8 +115,6 @@ public class Renderer
     
     private void UpdateConsoleCenterCoords()
     {
-        _screenCenterX = (Console.WindowWidth - OverlayWidth) / 2;
-        _screenCenterY = Console.WindowHeight / 2;
     }
     
     public static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
