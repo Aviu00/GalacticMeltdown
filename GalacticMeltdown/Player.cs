@@ -78,10 +78,10 @@ public class Player : IEntity, IControllable
             {
                 AddVisibleAdjacentWalls(lastTileCoords);
                 Tile tile = _tileAt(tileCoords.x, tileCoords.y);
-                if (tile == null)
+                if (tile is null)
                 {
                     if (tileCoords.x != X || tileCoords.y != Y)
-                        lastTileCoords = tileCoords;
+                        lastTileCoords = null;
                     continue;
                 }
                 if (!VisibleObjects.ContainsKey(tileCoords))
@@ -103,7 +103,7 @@ public class Player : IEntity, IControllable
 
     private void AddVisibleAdjacentWalls((int x, int y)? coords)
     {
-        if (coords == null)
+        if (coords is null)
             return;
         var (x, y) = coords.Value;
         int posToPlayerX = Math.Sign(x - X);  // -1 - right, 0 - same X, 1 - left  
