@@ -82,6 +82,7 @@ public partial class Map
         int mapY = enemy.Y / 25;
         int oldMapX = oldX / 25;
         int oldMapY = oldY / 25;
+        if (!(0 <= mapX && mapX < _map.GetLength(0) && 0 <= mapY && mapY < _map.GetLength(1))) return;
         if (mapX != oldMapX || oldY != oldMapY)
         {
             if (oldX >= 0 && oldY >= 0)
