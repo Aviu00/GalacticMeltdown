@@ -58,21 +58,6 @@ public class Renderer
         }
     }
 
-    /// <summary>
-    /// Draws tiles, player and visible objects
-    /// </summary>
-    public void RedrawMap()
-    {
-        var watch = System.Diagnostics.Stopwatch.StartNew();
-        int maxX = Console.WindowWidth - OverlayWidth - 1;
-        int maxY = Console.WindowHeight - 1;
-        DrawArea(0, 0, maxX, maxY, DrawFunctions.GetScreenSymbol);
-        watch.Stop();
-        Console.SetCursorPosition(0, 0);
-        SetConsoleColor(ConsoleColor.Black, ConsoleColor.White);
-        Console.Write($"{watch.ElapsedMilliseconds} ms");
-    }
-
     public void DrawArea
         (int startX, int startY, int maxX, int maxY, DrawFunctions.GetSymbolAt getSymbolAt)
     {
