@@ -30,11 +30,7 @@ public class Map
     }
 
 
-    public Tile GetTile(int x, int y)//remove this method late
-    {
-        return GetTile(x, y, null, null);
-    }
-    public Tile GetTile(int x, int y, int? mapX/* = null*/, int? mapY/* = null*/)
+    public Tile GetTile(int x, int y)
     {
         switch (x, y)
         {
@@ -45,34 +41,32 @@ public class Map
             case(>= 0, -1):
                 return x >= _southernWall.Length ? null : _southernWall[x];
         }
-        mapX ??= x / 25;
-        mapY ??= y / 25;
+        int mapX = x / 25;
+        int mapY = y / 25;
         int localX = x % 25;
         int localY = y % 25;
-        if (x < 0 || mapX >= _map.GetLength(0) || y < 0 || mapY >= _map.GetLength(1))
+        if (!(x >= 0 && mapX < _map.GetLength(0) && y >= 0 && mapY < _map.GetLength(1)))
         {
             return null;
         }
 
-        return _map[mapX.Value, mapY.Value].Tiles[localX, localY];
+        return _map[mapX, mapY].Tiles[localX, localY];
     }
 
-    public IEntity GetEntity(int x, int y, int? mapX = null, int? mapY = null)
+    public IEntity GetEntity(int x, int y)
     {
-        mapX ??= x / 25;
-        mapY ??= y / 25;
-        if (x < 0 || mapX >= _map.GetLength(0) || y < 0 || mapY >= _map.GetLength(1))
+        int mapX = x / 25;
+        int mapY = y / 25;
+        if (!(x >= 0 && mapX < _map.GetLength(0) && y >= 0 && mapY < _map.GetLength(1)))
         {
             return null;
         }
-        return _map[mapX.Value, mapY.Value].GetEntity(x, y);
+        return _map[mapX, mapY].GetEntity(x, y);
     }
 
     public IDrawable GetDrawable(int x, int y)
     {
-        int mapX = x / 25;
-        int mapY = y / 25;
-        return (IDrawable)GetEntity(x, y, mapX, mapY) ?? GetTile(x, y, mapX, mapY);
+        return (IDrawable) GetEntity(x, y) ?? GetTile(x, y);
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
