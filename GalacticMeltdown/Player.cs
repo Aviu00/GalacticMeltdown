@@ -80,7 +80,7 @@ public class Player : IEntity, IControllable
                 Tile tile = _tileAt(tileCoords.x, tileCoords.y);
                 if (tile is null)
                 {
-                    if (!(tileCoords.x == X || tileCoords.y == Y))
+                    if (!(tileCoords.x == X && tileCoords.y == Y))
                         lastTileCoords = null;
                     continue;
                 }
@@ -95,7 +95,7 @@ public class Player : IEntity, IControllable
                     break;
                 }
 
-                if (!(tileCoords.x == X || tileCoords.y == Y))
+                if (!(tileCoords.x == X && tileCoords.y == Y))
                     lastTileCoords = tileCoords;
             }
         }

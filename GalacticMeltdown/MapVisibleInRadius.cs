@@ -21,7 +21,7 @@ public partial class Map
                 Tile tile = GetTile(pointCoords.x, pointCoords.y);
                 if (tile is null)
                 {
-                    if (!(pointCoords.x == x0 || pointCoords.y == y0))
+                    if (!(pointCoords.x == x0 && pointCoords.y == y0))
                         prevTileCoords = null;
                     continue;
                 }
@@ -36,7 +36,7 @@ public partial class Map
                     break;
                 }
 
-                if (!(pointCoords.x == x0 || pointCoords.y == y0))
+                if (!(pointCoords.x == x0 && pointCoords.y == y0))
                     prevTileCoords = pointCoords;
             }
         }
