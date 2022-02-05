@@ -14,24 +14,24 @@ static partial class GameManager
     private static Player _player;
     private static IControllable _controlledObject;
     private static HashSet<IControllable> _updateOnMove;
-    public static Renderer Renderer;
-    public static Map Map;
+    private static Renderer _renderer;
+    private static Map _map;
 
     private static bool _stop;
 
     static void Main(string[] args)
     {
         var map = GenerateMap(args.Length > 0 ? args[0] : null);
-        _player = Map.Player;
+        _player = _map.Player;
         _controlledObject = _player;
         _updateOnMove = new HashSet<IControllable> { _player };
-        Renderer = new Renderer();
-        Renderer.AddView(new WorldView(map), 0, 0, 600, 1000);
-        Renderer.AddView(new OverlayView(map), 601, 0, 1000, 1000);
+        _renderer = new Renderer();
+        _renderer.AddView(new WorldView(map), 0, 0, 600, 1000);
+        _renderer.AddView(new OverlayView(map), 601, 0, 1000, 1000);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
-        Renderer.Redraw();
+        _renderer.Redraw();
         GameLoop();
     }
 
@@ -56,7 +56,7 @@ static partial class GameManager
     {
         if (_updateOnMove.Contains(_controlledObject) && _controlledObject.TryMove(deltaX, deltaY))
         {
-            Renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
+            _renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
             Console.SetCursorPosition(0, 1);
             Renderer.SetConsoleColor(ConsoleColor.Black, ConsoleColor.White);
             Console.WriteLine($"X: {_controlledObject.X} Y: {_controlledObject.Y}");
@@ -75,9 +75,9 @@ static partial class GameManager
         Console.Clear();
         Console.CursorVisible = true;
         Console.SetCursorPosition(0, 0);
-        Console.WriteLine($"Seed: {Map.MapSeed}");
+        Console.WriteLine($"Seed: {_map.MapSeed}");
         Console.WriteLine($"X: {_player.X} Y: {_player.Y}");
-        Console.WriteLine(Map.MapString);
+        Console.WriteLine(_map.MapString);
     }
 
     private static Map GenerateMap(string seed = null)
@@ -87,11 +87,11 @@ static partial class GameManager
         var tileTypes = new TileTypesExtractor().TileTypes;
         var rooms = new RoomDataExtractor(tileTypes).Rooms;
         MapGenerator mapGen = new MapGenerator(mapSeed, tileTypes, rooms);
-        Map = mapGen.Generate();
+        _map = mapGen.Generate();
         rooms = null;
         tileTypes = null;
         mapGen = null;
         GC.Collect();
-        return Map;
+        return _map;
     }
 }
