@@ -55,6 +55,7 @@ public class Map
 
     public IEntity GetEntity(int x, int y)
     {
+        if (x == Player.X && y == Player.Y) return Player;
         int mapX = x / 25;
         int mapY = y / 25;
         if (!(x >= 0 && mapX < _map.GetLength(0) && y >= 0 && mapY < _map.GetLength(1)))
