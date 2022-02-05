@@ -138,6 +138,8 @@ static class GameManager
         var rooms = new RoomDataExtractor(tileTypes).Rooms;
         MapGenerator mapGen = new MapGenerator(mapSeed, tileTypes, rooms);
         Map = mapGen.Generate();
+        rooms = null;
+        tileTypes = null;
         mapGen = null;
         GC.Collect();
     }
