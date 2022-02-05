@@ -1,6 +1,6 @@
 using System;
 
-namespace GalacticMeltdown;
+namespace GalacticMeltdown.Rendering;
 
 public static class DrawFunctions
 {

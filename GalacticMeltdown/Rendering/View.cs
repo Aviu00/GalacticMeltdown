@@ -1,4 +1,4 @@
-namespace GalacticMeltdown;
+namespace GalacticMeltdown.Rendering;
 
 public abstract class View
 {

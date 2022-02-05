@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace GalacticMeltdown;
+namespace GalacticMeltdown.Rendering;
 
 public class Renderer
 {
