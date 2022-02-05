@@ -27,12 +27,12 @@ public static class Utility
 
     public static readonly ConsoleColor OutOfVisionTileColor = ConsoleColor.DarkGray;
 
-    public static (int x, int y) ConvertGlobalToRelativeCoords(int x, int y, int relObjX, int relObjY)
+    public static (int x, int y) ConvertAbsoluteToRelativeCoords(int x, int y, int relObjX, int relObjY)
     {
         return (x - relObjX, y - relObjY);
     }
 
-    public static (int x, int y) ConvertRelativeToGlobalCoords(int x, int y, int relObjX, int relObjY)
+    public static (int x, int y) ConvertRelativeToAbsoluteCoords(int x, int y, int relObjX, int relObjY)
     {
         return (x + relObjX, y + relObjY);
     }

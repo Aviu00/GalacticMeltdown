@@ -116,14 +116,14 @@ public class Renderer
 
     public (int x, int y) ConvertGlobalToScreenCoords(int x, int y)
     {
-        (int x, int y) relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, FocusPoint.X, FocusPoint.Y);
-        return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, _screenCenterX, _screenCenterY);
+        (int x, int y) relCoords = Utility.ConvertAbsoluteToRelativeCoords(x, y, FocusPoint.X, FocusPoint.Y);
+        return Utility.ConvertRelativeToAbsoluteCoords(relCoords.x, relCoords.y, _screenCenterX, _screenCenterY);
     }
 
     public (int x, int y) ConvertScreenToGlobalCoords(int x, int y)
     {
-        var relCoords = Utility.ConvertGlobalToRelativeCoords(x, y, _screenCenterX, _screenCenterY);
-        return Utility.ConvertRelativeToGlobalCoords(relCoords.x, relCoords.y, FocusPoint.X, FocusPoint.Y);
+        var relCoords = Utility.ConvertAbsoluteToRelativeCoords(x, y, _screenCenterX, _screenCenterY);
+        return Utility.ConvertRelativeToAbsoluteCoords(relCoords.x, relCoords.y, FocusPoint.X, FocusPoint.Y);
     }
 
     private int ConvertToConsoleY(int y)
