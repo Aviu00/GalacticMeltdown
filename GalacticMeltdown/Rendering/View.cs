@@ -4,13 +4,13 @@ public abstract class View
 {
     public abstract SymbolData GetSymbol(int x, int y);
 
-    private int _width;
-    private int _height;
+    protected int Width;
+    protected int Height;
 
     protected void Resize(int width, int height)
     {
-        _width = width;
-        _height = height;
+        Width = width;
+        Height = height;
     }
 
     protected View(int initialWidth, int initialHeight)
