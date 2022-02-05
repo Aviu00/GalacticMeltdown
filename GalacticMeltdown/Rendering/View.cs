@@ -12,9 +12,4 @@ public abstract class View
         Width = width;
         Height = height;
     }
-
-    protected View(int initialWidth, int initialHeight)
-    {
-        Resize(initialWidth, initialHeight);
-    }
 }

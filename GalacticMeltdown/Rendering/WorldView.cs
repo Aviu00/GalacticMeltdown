@@ -10,8 +10,7 @@ public class WorldView : View
     private int _viewRadius;
     private Dictionary<(int, int), IDrawable> _visibleObjects;
     
-    public WorldView(int initialWidth, int initialHeight, Map map)
-        : base(initialWidth, initialHeight)
+    public WorldView(Map map)
     {
         _map = map;
         _map.Updated += MapChange;

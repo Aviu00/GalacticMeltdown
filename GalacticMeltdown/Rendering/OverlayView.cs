@@ -8,8 +8,7 @@ public class OverlayView : View
     private Player _player;  // State, Effects, (?) Event log, Enemy-in-sight indicator
     private SymbolData?[,] _symbols; 
 
-    public OverlayView(int initialWidth, int initialHeight, Map map)
-        : base(initialWidth, initialHeight)
+    public OverlayView(Map map)
     {
         _map = map;
         _player = map.Player;
