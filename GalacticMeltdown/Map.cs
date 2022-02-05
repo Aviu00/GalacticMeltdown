@@ -6,14 +6,15 @@ namespace GalacticMeltdown;
 public class Map
 {
     public readonly int MapSeed;
-    private SubMap[,] _map;
+    private readonly SubMap[,] _map;
     public readonly SubMap StartPoint;
-    private Tile[] _southernWall;
-    private Tile[] _westernWall;
-    private Tile _cornerTile;
+    private readonly Tile[] _southernWall;
+    private readonly Tile[] _westernWall;
+    private readonly Tile _cornerTile;
+    public readonly string MapString;//for debugging
 
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
-        Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes)
+        Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes, string mapString)
     {
         _cornerTile = new Tile(tileTypes["wall_nesw"]);
         _map = map;
@@ -21,6 +22,7 @@ public class Map
         StartPoint = startPoint;
         _southernWall = southernWall;
         _westernWall = westernWall;
+        MapString = mapString;
     }
 
 

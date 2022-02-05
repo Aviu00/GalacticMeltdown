@@ -102,6 +102,9 @@ static class GameManager
         if (Player.TryMove(deltaX, deltaY))
         {
             Renderer.RedrawMap();
+            Console.SetCursorPosition(0, 1);
+            Renderer.SetConsoleColor(ConsoleColor.Black, ConsoleColor.White);
+            Console.WriteLine($"X: {Player.X} Y: {Player.Y}");
         }
     }
 
@@ -116,6 +119,10 @@ static class GameManager
         Console.ResetColor();
         Console.Clear();
         Console.CursorVisible = true;
+        Console.SetCursorPosition(0, 0);
+        Console.WriteLine($"Seed: {Map.MapSeed}");
+        Console.WriteLine($"X: {Player.X} Y: {Player.Y}");
+        Console.WriteLine(Map.MapString);
     }
 
     static void GenerateMap(string seed = null)
