@@ -2,13 +2,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 using GalacticMeltdown.data;
 
 namespace GalacticMeltdown;
 
-static partial class GameManager
+static partial class GameManager // special class for bindings
 {
+    static void ChangeBindings(IDictionary ChangeTarget, IDictionary WhatToChange) // method to change binding when open/close inventory ot etc.
+    {
+        ChangeTarget = WhatToChange;
+    }
+
     public enum ActionMove
     {
         MoveUp,
@@ -17,9 +23,13 @@ static partial class GameManager
         MoveRight,
         IncreaseViewRange, //for fov testing
         ReduceViewRange, //for fov testing
-        Stop
+        Stop,
+        OpenCloseInventory
     }
     
+    // Inventory bindings supposed to be updated in the future
+    static private readonly IDictionary<ActionMove, Action> InventoryBinding =
+        new Dictionary<ActionMove, Action>() { };
     static private readonly IDictionary<ActionMove, Action> ActionBinding = 
         new Dictionary<ActionMove, Action>
         {
@@ -30,6 +40,7 @@ static partial class GameManager
             {ActionMove.IncreaseViewRange, () => Player.ViewRange++},
             {ActionMove.ReduceViewRange, () => Player.ViewRange--},
             {ActionMove.Stop, () => Stop()}
+            //{ActionMove.OpenCloseInventory, () => ChangeBindings()}
         };
     
     static private readonly  IDictionary <ConsoleKey, ActionMove> KeyBinding = 
@@ -41,7 +52,8 @@ static partial class GameManager
             {ConsoleKey.RightArrow, ActionMove.MoveRight},
             {ConsoleKey.Multiply, ActionMove.IncreaseViewRange},
             {ConsoleKey.Subtract, ActionMove.ReduceViewRange},
-            {ConsoleKey.Q, ActionMove.Stop}
+            {ConsoleKey.Q, ActionMove.Stop},
+            {ConsoleKey.Y, ActionMove.OpenCloseInventory}
         };
 }
 
