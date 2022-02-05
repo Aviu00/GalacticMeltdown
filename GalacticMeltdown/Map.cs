@@ -84,4 +84,9 @@ public class Map
             _map[mapX, mapY].Enemies.Add(enemy);
         }
     }
+
+    public Dictionary<(int, int), IDrawable> GetObjectsVisibleAround(int x, int y, int radius)
+    {
+        return new Dictionary<(int, int), IDrawable>();
+    }
 }
