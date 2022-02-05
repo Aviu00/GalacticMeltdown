@@ -6,7 +6,8 @@ namespace GalacticMeltdown;
 public class Map
 {
     public readonly int MapSeed;
-    private readonly SubMap[,] _map;
+    public Player Player { get; }
+    private SubMap[,] _map;
     public readonly SubMap StartPoint;
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
@@ -23,6 +24,7 @@ public class Map
         _southernWall = southernWall;
         _westernWall = westernWall;
         MapString = mapString;
+        Player = new Player(StartPoint.MapX * 25 + 12, StartPoint.MapY * 25 + 12, GetTile);
     }
 
 
