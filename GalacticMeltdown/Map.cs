@@ -14,7 +14,12 @@ public class Map
     private readonly Tile _cornerTile;
     public readonly string MapString;//for debugging
 
-    private event Player.TakeAction OnPlayerAction;
+    public delegate void MapUpdatedEventHandler();
+    public event MapUpdatedEventHandler Updated;
+    private void PlayerPerformedAction(int _)
+    {
+        Updated?.Invoke();
+    }
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
         Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes, string mapString)
     {
@@ -26,6 +31,7 @@ public class Map
         _westernWall = westernWall;
         MapString = mapString;
         Player = new Player(StartPoint.MapX * 25 + 12, StartPoint.MapY * 25 + 12, GetTile);
+        Player.PerformedAction += PlayerPerformedAction;
         Enemy enemy = new MeleeEnemy(StartPoint.MapX * 25 + 13, StartPoint.MapY * 25 + 13, this, Player);
     }
 

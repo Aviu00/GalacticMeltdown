@@ -14,6 +14,7 @@ public class WorldView : View
         : base(initialWidth, initialHeight)
     {
         _map = map;
+        _map.Updated += MapChange;
         _focusObject = map.Player;
         _viewRadius = map.Player.ViewRange;
         _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
@@ -39,7 +40,7 @@ public class WorldView : View
         return new SymbolData(' ', ConsoleColor.Black, ConsoleColor.Black);
     }
 
-    private void MapChange(object sender, EventArgs e)
+    private void MapChange()
     {
         _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
     }

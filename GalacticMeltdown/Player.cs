@@ -38,16 +38,16 @@ public class Player : IEntity, IControllable
         }
     }
     
-    public delegate void TakeAction(int movePoints);
+    public delegate void PerformedActionEventHandler(int movePoints);
 
-    public event TakeAction OnPlayerAction;
+    public event PerformedActionEventHandler PerformedAction;
 
     public bool TryMove(int deltaX, int deltaY)
     {
         if (!NoClip && !_tileAt(X + deltaX, Y + deltaY).IsWalkable) return false;
         X += deltaX;
         Y += deltaY;
-        OnPlayerAction?.Invoke(100);
+        PerformedAction?.Invoke(100);
         ResetVisibleObjects();
         return true;
     }
@@ -80,7 +80,7 @@ public class Player : IEntity, IControllable
                 Tile tile = _tileAt(tileCoords.x, tileCoords.y);
                 if (tile is null)
                 {
-                    if (tileCoords.x != X || tileCoords.y != Y)
+                    if (!(tileCoords.x == X || tileCoords.y == Y))
                         lastTileCoords = null;
                     continue;
                 }
@@ -95,7 +95,7 @@ public class Player : IEntity, IControllable
                     break;
                 }
 
-                if (tileCoords.x != X || tileCoords.y != Y)
+                if (!(tileCoords.x == X || tileCoords.y == Y))
                     lastTileCoords = tileCoords;
             }
         }
