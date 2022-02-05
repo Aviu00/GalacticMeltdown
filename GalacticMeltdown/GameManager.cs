@@ -31,7 +31,7 @@ static partial class GameManager
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
-        Renderer.RedrawMap();
+        Renderer.Redraw();
         GameLoop();
     }
     static void GameLoop()
@@ -55,7 +55,7 @@ static partial class GameManager
     {
         if (_updateOnMove.Contains(_controlledObject) && _controlledObject.TryMove(deltaX, deltaY))
         {
-            Renderer.RedrawMap();  // TODO: Redraw should happen after a MoveMade event instead
+            Renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
             Console.SetCursorPosition(0, 1);
             Renderer.SetConsoleColor(ConsoleColor.Black, ConsoleColor.White);
             Console.WriteLine($"X: {_controlledObject.X} Y: {_controlledObject.Y}");

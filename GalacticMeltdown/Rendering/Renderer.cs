@@ -49,8 +49,8 @@ public class Renderer
             int y0Real = (int) Math.Round(Console.WindowWidth * y0 / (double) TotalWidth);
             int x1Real = Math.Min((int) Math.Round(Console.WindowWidth * x1 / (double) TotalWidth), 
                 Console.WindowWidth - 1);
-            int y1Real = Math.Min((int) Math.Round(Console.WindowWidth * y1 / (double) TotalWidth),
-                Console.WindowWidth - 1);
+            int y1Real = Math.Min((int) Math.Round(Console.WindowHeight * y1 / (double) TotalWidth),
+                Console.WindowHeight - 1);
             int width = x1Real - x0Real, height = y1Real - y0Real;
             view.Resize(width, height);
             DrawArea(x0Real, y0Real, x0Real + width, y0Real + height, 
