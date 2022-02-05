@@ -40,14 +40,14 @@ public class Player : IEntity, IControllable
     
     public delegate void TakeAction(int movePoints);
 
-    public event TakeAction OnPlayerMove;
+    public event TakeAction OnPlayerAction;
 
     public bool TryMove(int deltaX, int deltaY)
     {
         if (!NoClip && !_tileAt(X + deltaX, Y + deltaY).IsWalkable) return false;
         X += deltaX;
         Y += deltaY;
-        OnPlayerMove?.Invoke(100);
+        OnPlayerAction?.Invoke(100);
         ResetVisibleObjects();
         return true;
     }

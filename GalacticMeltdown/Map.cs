@@ -14,7 +14,7 @@ public class Map
     private readonly Tile _cornerTile;
     public readonly string MapString;//for debugging
 
-    private event Player.TakeAction OnPlayerMove;
+    private event Player.TakeAction OnPlayerAction;
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
         Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes, string mapString)
     {

@@ -19,7 +19,7 @@ public abstract class Enemy : IEntity
         Player = player;
         X = x;
         Y = y;
-        player.OnPlayerMove += TakeAction;
+        player.OnPlayerAction += TakeAction;
         map.UpdateEnemyPosition(this, -1, -1);
         
         Symbol = 'W';
