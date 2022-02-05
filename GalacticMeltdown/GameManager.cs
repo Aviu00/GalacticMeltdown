@@ -8,6 +8,8 @@ namespace GalacticMeltdown;
 static class GameManager
 {
     public static Player Player;
+    private static IControllable _controlledObject;
+    private static HashSet<IControllable> _updateOnMove;
     public static Renderer Renderer;
     public static Map Map;
 
@@ -17,6 +19,8 @@ static class GameManager
     {
         GenerateMap(args.Length > 0 ? args[0] : null);
         Player = Map.Player;
+        _controlledObject = Player;
+        _updateOnMove = new HashSet<IControllable> { Player };
         Renderer = new Renderer(Player);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
@@ -66,14 +70,14 @@ static class GameManager
     private static readonly IDictionary<ActionMove, Action> ActionBinding = 
         new Dictionary<ActionMove, Action>
     {
-        {ActionMove.MoveUp, () => MovePlayer(0, 1)},
-        {ActionMove.MoveDown, () => MovePlayer(0, -1)},
-        {ActionMove.MoveRight, () => MovePlayer(1, 0)},
-        {ActionMove.MoveLeft, () => MovePlayer(-1, 0)},
-        {ActionMove.MoveNe, () => MovePlayer(1, 1)},
-        {ActionMove.MoveSe, () => MovePlayer(1, -1)},
-        {ActionMove.MoveSw, () => MovePlayer(-1, -1)},
-        {ActionMove.MoveNw, () => MovePlayer(-1, 1)},
+        {ActionMove.MoveUp, () => MoveControlled(0, 1)},
+        {ActionMove.MoveDown, () => MoveControlled(0, -1)},
+        {ActionMove.MoveRight, () => MoveControlled(1, 0)},
+        {ActionMove.MoveLeft, () => MoveControlled(-1, 0)},
+        {ActionMove.MoveNe, () => MoveControlled(1, 1)},
+        {ActionMove.MoveSe, () => MoveControlled(1, -1)},
+        {ActionMove.MoveSw, () => MoveControlled(-1, -1)},
+        {ActionMove.MoveNw, () => MoveControlled(-1, 1)},
         {ActionMove.IncreaseViewRange, () => Player.ViewRange++},
         {ActionMove.ReduceViewRange, () => Player.ViewRange--},
         {ActionMove.ActivateNoClip, () => Player.NoClip = !Player.NoClip},
@@ -98,11 +102,11 @@ static class GameManager
         }
     }
     
-    private static void MovePlayer(int deltaX, int deltaY)
+    private static void MoveControlled(int deltaX, int deltaY)
     {
-        if (Player.TryMove(deltaX, deltaY))
+        if (_updateOnMove.Contains(_controlledObject) && _controlledObject.TryMove(deltaX, deltaY))
         {
-            Renderer.RedrawMap();
+            Renderer.RedrawMap();  // TODO: Redraw should happen after a MoveMade event instead
         }
     }
 
