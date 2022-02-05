@@ -76,7 +76,7 @@ public class Player : IEntity, IControllable
             (int x, int y)? lastTileCoords = null;
             foreach (var tileCoords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
             {
-                FovCheckAdjacentWalls(lastTileCoords);
+                AddVisibleAdjacentWalls(lastTileCoords);
                 Tile tile = _tileAt(tileCoords.x, tileCoords.y);
                 if (tile == null)
                 {
@@ -101,7 +101,7 @@ public class Player : IEntity, IControllable
         }
     }
 
-    private void FovCheckAdjacentWalls((int x, int y)? coords)
+    private void AddVisibleAdjacentWalls((int x, int y)? coords)
     {
         if (coords == null)
             return;
@@ -111,14 +111,14 @@ public class Player : IEntity, IControllable
         if (posToPlayerX == 0)
         {
             FovCheckWall(x + 1, y + posToPlayerY);
-            FovCheckWall(x, y + posToPlayerY);
-            FovCheckWall(x - 1, y + posToPlayerY);
+            FovCheckWall(x, y + posToPlayerY);        //  .
+            FovCheckWall(x - 1, y + posToPlayerY);  // +*+
         }
         else if (posToPlayerY == 0)
         {
-            FovCheckWall(x + posToPlayerX, y + 1);
-            FovCheckWall(x + posToPlayerX, y);
-            FovCheckWall(x + posToPlayerX, y - 1);
+            FovCheckWall(x + posToPlayerX, y + 1);  //  +
+            FovCheckWall(x + posToPlayerX, y);        // .*
+            FovCheckWall(x + posToPlayerX, y - 1);  //  +
         }
         else
         {
@@ -128,14 +128,10 @@ public class Player : IEntity, IControllable
 
     private void FovCheckWall(int x, int y)
     {
-        if (!VisibleObjects.ContainsKey((x, y)))
-        {
-            Tile tile = _tileAt(x, y);
-            if (tile is not null && !tile.IsTransparent)
-            {
-                tile.WasSeenByPlayer = true;
-                VisibleObjects.Add((x, y), tile);
-            }
-        }
+        if (VisibleObjects.ContainsKey((x, y))) return;
+        Tile tile = _tileAt(x, y);
+        if (tile is null || tile.IsTransparent) return;
+        tile.WasSeenByPlayer = true;
+        VisibleObjects.Add((x, y), tile);
     }
 }
