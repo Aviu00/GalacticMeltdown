@@ -16,7 +16,7 @@ static class GameManager
     static void Main(string[] args)
     {
         GenerateMap(args.Length > 0 ? args[0] : null);
-        Player = new Player(Map.StartPoint.MapX * 25 + 12, Map.StartPoint.MapY * 25 + 12, Map.GetTile);
+        Player = Map.Player;
         Renderer = new Renderer(Player);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
