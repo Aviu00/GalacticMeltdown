@@ -8,7 +8,7 @@ public partial class Map
     public readonly int MapSeed;
     public Player Player { get; }
     private SubMap[,] _map;
-    public readonly SubMap StartPoint;
+    private readonly SubMap _startPoint;
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
@@ -26,13 +26,13 @@ public partial class Map
         _cornerTile = new Tile(tileTypes["wall_nesw"]);
         _map = map;
         MapSeed = seed;
-        StartPoint = startPoint;
+        _startPoint = startPoint;
         _southernWall = southernWall;
         _westernWall = westernWall;
         MapString = mapString;
-        Player = new Player(StartPoint.MapX * 25 + 12, StartPoint.MapY * 25 + 12, GetTile);
+        Player = new Player(_startPoint.MapX * 25 + 12, _startPoint.MapY * 25 + 12, GetTile);
         Player.PerformedAction += PlayerPerformedAction;
-        Enemy enemy = new MeleeEnemy(StartPoint.MapX * 25 + 13, StartPoint.MapY * 25 + 13, this, Player);
+        Enemy enemy = new MeleeEnemy(_startPoint.MapX * 25 + 13, _startPoint.MapY * 25 + 13, this, Player);
     }
 
 
