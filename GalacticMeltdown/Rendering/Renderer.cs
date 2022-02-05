@@ -7,13 +7,11 @@ namespace GalacticMeltdown.Rendering;
 
 public class Renderer
 {
-    public IHasCoords FocusPoint;
     private const int TotalWidth = 1000;
     private List<(View, int, int, int, int)> _views;  // View, top-left and bottom-right corner coords (rel) 
 
-    public Renderer(IHasCoords focusPoint)
+    public Renderer()
     {
-        FocusPoint = focusPoint;
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
