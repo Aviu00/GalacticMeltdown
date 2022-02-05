@@ -74,7 +74,7 @@ public class Player : IEntity, IControllable
         foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(X, Y, _viewRange))
         {
             (int x, int y)? lastTileCoords = null;
-            foreach (var tileCoords in Algorithms.GetPointsOnLine(X, Y, x, y, _viewRange))
+            foreach (var tileCoords in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y, _viewRange))
             {
                 AddVisibleAdjacentWalls(lastTileCoords);
                 Tile tile = _tileAt(tileCoords.x, tileCoords.y);
