@@ -109,15 +109,6 @@ public class Renderer
         }
     }
 
-    public void PutSymbolFrom(int x, int y, GetSymbolAt getSymbolAt)
-    {
-        UpdateConsoleCenterCoords();
-        SymbolData symbolData = getSymbolAt(x, y);
-        (x, y) = ConvertGlobalToScreenCoords(x, y);
-        if (x > Console.WindowWidth - OverlayWidth - 1) return;  // Not visible on the map
-        PutSymbolAt(x, y, symbolData);
-    }
-
     public void PutSymbolAt(int x, int y, SymbolData symbolData)
     {
         Console.SetCursorPosition(x, ConvertToConsoleY(y));
