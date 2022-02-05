@@ -14,9 +14,9 @@ public static class DrawFunctions
     public static SymbolData GetMapSymbol(int x, int y)
     {
         IDrawable drawableObj;
-        if (GameManager.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
+        if (GameManager.Map.Player.VisibleObjects.ContainsKey((x,y)))//if currently visible by player
         {
-            drawableObj = GameManager.Player.VisibleObjects[(x,y)];
+            drawableObj = GameManager.Map.Player.VisibleObjects[(x,y)];
             return new SymbolData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
         }
 

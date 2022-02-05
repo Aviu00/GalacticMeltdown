@@ -7,7 +7,7 @@ namespace GalacticMeltdown;
 
 static class GameManager
 {
-    public static Player Player;
+    private static Player _player;
     private static IControllable _controlledObject;
     private static HashSet<IControllable> _updateOnMove;
     public static Renderer Renderer;
@@ -18,10 +18,10 @@ static class GameManager
     static void Main(string[] args)
     {
         GenerateMap(args.Length > 0 ? args[0] : null);
-        Player = Map.Player;
-        _controlledObject = Player;
-        _updateOnMove = new HashSet<IControllable> { Player };
-        Renderer = new Renderer(Player);
+        _player = Map.Player;
+        _controlledObject = _player;
+        _updateOnMove = new HashSet<IControllable> { _player };
+        Renderer = new Renderer(_player);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
@@ -78,10 +78,10 @@ static class GameManager
         {ActionMove.MoveSe, () => MoveControlled(1, -1)},
         {ActionMove.MoveSw, () => MoveControlled(-1, -1)},
         {ActionMove.MoveNw, () => MoveControlled(-1, 1)},
-        {ActionMove.IncreaseViewRange, () => Player.ViewRange++},
-        {ActionMove.ReduceViewRange, () => Player.ViewRange--},
-        {ActionMove.ActivateNoClip, () => Player.NoClip = !Player.NoClip},
-        {ActionMove.ActivateXRay, () => Player.Xray = !Player.Xray},
+        {ActionMove.IncreaseViewRange, () => _player.ViewRange++},
+        {ActionMove.ReduceViewRange, () => _player.ViewRange--},
+        {ActionMove.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
+        {ActionMove.ActivateXRay, () => _player.Xray = !_player.Xray},
         {ActionMove.Stop, Stop}
     };
 
