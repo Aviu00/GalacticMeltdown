@@ -130,18 +130,6 @@ public class Renderer
             Console.BackgroundColor = bgColor;
     }
 
-    public (int x, int y) ConvertGlobalToScreenCoords(int x, int y)
-    {
-        (int x, int y) relCoords = Utility.ConvertAbsoluteToRelativeCoords(x, y, FocusPoint.X, FocusPoint.Y);
-        return Utility.ConvertRelativeToAbsoluteCoords(relCoords.x, relCoords.y, _screenCenterX, _screenCenterY);
-    }
-
-    public (int x, int y) ConvertScreenToGlobalCoords(int x, int y)
-    {
-        var relCoords = Utility.ConvertAbsoluteToRelativeCoords(x, y, _screenCenterX, _screenCenterY);
-        return Utility.ConvertRelativeToAbsoluteCoords(relCoords.x, relCoords.y, FocusPoint.X, FocusPoint.Y);
-    }
-
     private int ConvertToConsoleY(int y)
     {
         return Console.WindowHeight - 1 - y;
