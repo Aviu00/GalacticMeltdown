@@ -34,7 +34,8 @@ static partial class GameManager
         Renderer.Redraw();
         GameLoop();
     }
-    static void GameLoop()
+
+    private static void GameLoop()
     {
        
         while (!_stop)
@@ -67,7 +68,7 @@ static partial class GameManager
         Stop();
     }
 
-    static void Stop()
+    private static void Stop()
     {
         _stop = true;
         Console.ResetColor();
@@ -79,7 +80,7 @@ static partial class GameManager
         Console.WriteLine(Map.MapString);
     }
 
-    static Map GenerateMap(string seed = null)
+    private static Map GenerateMap(string seed = null)
     {
         if (seed == null || !int.TryParse(seed, out int mapSeed) || mapSeed < 0)
             mapSeed = Random.Shared.Next(0, 1000000000);
