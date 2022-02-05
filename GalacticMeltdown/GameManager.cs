@@ -26,6 +26,8 @@ static partial class GameManager
         _controlledObject = _player;
         _updateOnMove = new HashSet<IControllable> { _player };
         Renderer = new Renderer(_player);
+        Renderer.AddView(new WorldView(map), 0, 0, 600, 1000);
+        Renderer.AddView(new OverlayView(map), 601, 0, 1000, 1000);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
