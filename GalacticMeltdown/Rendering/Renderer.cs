@@ -20,6 +20,7 @@ public class Renderer
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
+        _views = new List<(View, int, int, int, int)>();
     }
 
     public void AddView(View view, int x0, int y0, int x1, int y1)

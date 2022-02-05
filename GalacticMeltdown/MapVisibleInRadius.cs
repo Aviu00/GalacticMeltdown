@@ -17,7 +17,10 @@ public partial class Map
             {
                 AddVisibleAdjacentWalls(prevTileCoords);
                 IDrawable drawableObj = GetDrawable(pointCoords.x, pointCoords.y);
-                if (drawableObj is not null) visibleObjects.Add(pointCoords, drawableObj);
+                if (drawableObj is not null && !visibleObjects.ContainsKey(pointCoords))
+                {
+                    visibleObjects.Add(pointCoords, drawableObj);
+                }
                 Tile tile = GetTile(pointCoords.x, pointCoords.y);
                 if (tile is null)
                 {
