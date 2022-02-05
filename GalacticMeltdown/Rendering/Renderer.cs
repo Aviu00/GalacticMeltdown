@@ -53,8 +53,8 @@ public class Renderer
                 Console.WindowWidth - 1);
             int width = x1Real - x0Real, height = y1Real - y0Real;
             view.Resize(width, height);
-            DrawArea(x0, y0, x0 + width, y0 + height, 
-                (x, y) => view.GetSymbol(x - x0, y - y0));
+            DrawArea(x0Real, y0Real, x0Real + width, y0Real + height, 
+                (x, y) => view.GetSymbol(x - x0Real, y - y0Real));
         }
     }
 
