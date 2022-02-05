@@ -105,31 +105,24 @@ public class Player : IEntity, IControllable
     {
         if (coords == null)
             return;
-        int x = coords.Value.x;
-        int y = coords.Value.y;
-        int difX = x - X;
-        int dX;
-        int difY = y - Y;
-        int dY;
-        if (difX == 0)
+        var (x, y) = coords.Value;
+        int posToPlayerX = Math.Sign(x - X);  // -1 - right, 0 - same X, 1 - left  
+        int posToPlayerY = Math.Sign(y - Y);  // -1 - above, 0 - same Y, 1 - below
+        if (posToPlayerX == 0)
         {
-            dY = difY / Math.Abs(difY);
-            FovCheckWall(x + 1, y + dY);
-            FovCheckWall(x, y + dY);
-            FovCheckWall(x - 1, y + dY);
+            FovCheckWall(x + 1, y + posToPlayerY);
+            FovCheckWall(x, y + posToPlayerY);
+            FovCheckWall(x - 1, y + posToPlayerY);
         }
-        else if (difY == 0)
+        else if (posToPlayerY == 0)
         {
-            dX = difX / Math.Abs(difX);
-            FovCheckWall(x + dX, y + 1);
-            FovCheckWall(x + dX, y);
-            FovCheckWall(x + dX, y - 1);
+            FovCheckWall(x + posToPlayerX, y + 1);
+            FovCheckWall(x + posToPlayerX, y);
+            FovCheckWall(x + posToPlayerX, y - 1);
         }
         else
         {
-            dY = difY / Math.Abs(difY);
-            dX = difX / Math.Abs(difX);
-            FovCheckWall(x + dX, y + dY);
+            FovCheckWall(x + posToPlayerX, y + posToPlayerY);
         }
     }
 
