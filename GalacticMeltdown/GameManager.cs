@@ -7,7 +7,45 @@ using GalacticMeltdown.data;
 
 namespace GalacticMeltdown;
 
-static class GameManager
+static partial class GameManager
+{
+    public enum ActionMove
+    {
+        MoveUp,
+        MoveDown,
+        MoveLeft,
+        MoveRight,
+        IncreaseViewRange, //for fov testing
+        ReduceViewRange, //for fov testing
+        Stop
+    }
+    
+    static private readonly IDictionary<ActionMove, Action> ActionBinding = 
+        new Dictionary<ActionMove, Action>
+        {
+            {ActionMove.MoveUp, () => Player.TryMove(0, 1)},
+            {ActionMove.MoveDown, () => Player.TryMove(0, -1)},
+            {ActionMove.MoveRight, () => Player.TryMove(1, 0)},
+            {ActionMove.MoveLeft, () => Player.TryMove(-1, 0)},
+            {ActionMove.IncreaseViewRange, () => Player.ViewRange++},
+            {ActionMove.ReduceViewRange, () => Player.ViewRange--},
+            {ActionMove.Stop, () => Stop()}
+        };
+    
+    static private readonly  IDictionary <ConsoleKey, ActionMove> KeyBinding = 
+        new Dictionary<ConsoleKey, ActionMove>
+        {
+            {ConsoleKey.UpArrow, ActionMove.MoveUp},
+            {ConsoleKey.DownArrow, ActionMove.MoveDown},
+            {ConsoleKey.LeftArrow, ActionMove.MoveLeft},
+            {ConsoleKey.RightArrow, ActionMove.MoveRight},
+            {ConsoleKey.Multiply, ActionMove.IncreaseViewRange},
+            {ConsoleKey.Subtract, ActionMove.ReduceViewRange},
+            {ConsoleKey.Q, ActionMove.Stop}
+        };
+}
+
+static partial class GameManager
 {
     public static Player Player;
     public static ConsoleManager ConsoleManager;
@@ -33,41 +71,7 @@ static class GameManager
         Player.ResetVisibleObjects();
         GameLoop();
     }
-
-    public enum ActionMove
-    {
-        MoveUp,
-        MoveDown,
-        MoveLeft,
-        MoveRight,
-        IncreaseViewRange, //for fov testing
-        ReduceViewRange, //for fov testing
-        Stop
-    }
-    static private readonly  IDictionary <ConsoleKey, ActionMove> KeyBinding = 
-        new Dictionary<ConsoleKey, ActionMove>
-        {
-            {ConsoleKey.UpArrow, ActionMove.MoveUp},
-            {ConsoleKey.DownArrow, ActionMove.MoveDown},
-            {ConsoleKey.LeftArrow, ActionMove.MoveLeft},
-            {ConsoleKey.RightArrow, ActionMove.MoveRight},
-            {ConsoleKey.Multiply, ActionMove.IncreaseViewRange},
-            {ConsoleKey.Subtract, ActionMove.ReduceViewRange},
-            {ConsoleKey.Q, ActionMove.Stop}
-        };
-
-    static private readonly IDictionary<ActionMove, Action> ActionBinding = 
-        new Dictionary<ActionMove, Action>
-    {
-        {ActionMove.MoveUp, () => Player.TryMove(0, 1)},
-        {ActionMove.MoveDown, () => Player.TryMove(0, -1)},
-        {ActionMove.MoveRight, () => Player.TryMove(1, 0)},
-        {ActionMove.MoveLeft, () => Player.TryMove(-1, 0)},
-        {ActionMove.IncreaseViewRange, () => Player.ViewRange++},
-        {ActionMove.ReduceViewRange, () => Player.ViewRange--},
-        {ActionMove.Stop, () => Stop()}
-    };
-
+    
     static void GameLoop()
     {
        
