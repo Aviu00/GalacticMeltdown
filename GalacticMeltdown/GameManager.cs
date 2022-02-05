@@ -21,7 +21,7 @@ static partial class GameManager
 
     static void Main(string[] args)
     {
-        GenerateMap(args.Length > 0 ? args[0] : null);
+        var map = GenerateMap(args.Length > 0 ? args[0] : null);
         _player = Map.Player;
         _controlledObject = _player;
         _updateOnMove = new HashSet<IControllable> { _player };
@@ -77,7 +77,7 @@ static partial class GameManager
         Console.WriteLine(Map.MapString);
     }
 
-    static void GenerateMap(string seed = null)
+    static Map GenerateMap(string seed = null)
     {
         if (seed == null || !int.TryParse(seed, out int mapSeed) || mapSeed < 0)
             mapSeed = Random.Shared.Next(0, 1000000000);
@@ -89,5 +89,6 @@ static partial class GameManager
         tileTypes = null;
         mapGen = null;
         GC.Collect();
+        return Map;
     }
 }
