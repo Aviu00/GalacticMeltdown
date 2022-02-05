@@ -7,7 +7,7 @@ public abstract class View
     private int _width;
     private int _height;
 
-    protected void SetSize(int width, int height)
+    protected void Resize(int width, int height)
     {
         _width = width;
         _height = height;
@@ -15,6 +15,6 @@ public abstract class View
 
     protected View(int initialWidth, int initialHeight)
     {
-        SetSize(initialWidth, initialHeight);
+        Resize(initialWidth, initialHeight);
     }
 }
