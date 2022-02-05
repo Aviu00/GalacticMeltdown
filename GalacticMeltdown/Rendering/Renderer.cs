@@ -56,7 +56,6 @@ public class Renderer
     public void DrawArea
         (int startX, int startY, int maxX, int maxY, GetSymbolAt getSymbolAt)
     {
-        UpdateConsoleCenterCoords();
         Console.SetCursorPosition(startX, startY);
         var symbolData = getSymbolAt(startX, startY);
         StringBuilder currentSequence = new StringBuilder($"{symbolData.Symbol}");
@@ -109,10 +108,6 @@ public class Renderer
         Console.SetCursorPosition(x, ConvertToConsoleY(y));
         SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
         Console.Write(symbolData.Symbol);
-    }
-    
-    private void UpdateConsoleCenterCoords()
-    {
     }
     
     public static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
