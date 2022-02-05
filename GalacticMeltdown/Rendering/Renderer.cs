@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace GalacticMeltdown.Rendering;
@@ -9,6 +11,8 @@ public class Renderer
     private int _screenCenterX;
     private int _screenCenterY;
     private const int OverlayWidth = 1;
+    private const int TotalWidth = 1000;
+    private List<(View, int, int, int, int)> _views;  // View, top-left and bottom-right corner coords (rel) 
 
     public Renderer(IHasCoords focusPoint)
     {
@@ -16,6 +20,41 @@ public class Renderer
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
+    }
+
+    public void AddView(View view, int x0, int y0, int x1, int y1)
+    {
+        _views.Add((view, x0, y0, x1, y1));
+    }
+
+    public void RemoveLastView()
+    {
+        if (_views.Any())
+        {
+            _views.RemoveAt(_views.Count - 1);
+        }
+    }
+
+    public void ClearViews()
+    {
+        _views.Clear();
+    }
+
+    public void Redraw()
+    {
+        foreach (var (view, x0, y0, x1, y1) in _views)
+        {
+            int x0Real = (int) Math.Round(Console.WindowWidth * x0 / (double) TotalWidth);
+            int y0Real = (int) Math.Round(Console.WindowWidth * y0 / (double) TotalWidth);
+            int x1Real = Math.Min((int) Math.Round(Console.WindowWidth * x1 / (double) TotalWidth), 
+                Console.WindowWidth - 1);
+            int y1Real = Math.Min((int) Math.Round(Console.WindowWidth * y1 / (double) TotalWidth),
+                Console.WindowWidth - 1);
+            int width = x1Real - x0Real, height = y1Real - y0Real;
+            view.Resize(width, height);
+            DrawArea(x0, y0, x0 + width, y0 + height, 
+                (x, y) => view.GetSymbol(x - x0, y - y0));
+        }
     }
 
     /// <summary>
