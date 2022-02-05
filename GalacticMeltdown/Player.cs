@@ -110,23 +110,23 @@ public class Player : IEntity, IControllable
         int posToPlayerY = Math.Sign(y - Y);  // -1 - above, 0 - same Y, 1 - below
         if (posToPlayerX == 0)
         {
-            FovCheckWall(x + 1, y + posToPlayerY);
-            FovCheckWall(x, y + posToPlayerY);        //  .
-            FovCheckWall(x - 1, y + posToPlayerY);  // +*+
+            AddVisibleWall(x + 1, y + posToPlayerY);
+            AddVisibleWall(x, y + posToPlayerY);        //  .
+            AddVisibleWall(x - 1, y + posToPlayerY);  // +*+
         }
         else if (posToPlayerY == 0)
         {
-            FovCheckWall(x + posToPlayerX, y + 1);  //  +
-            FovCheckWall(x + posToPlayerX, y);        // .*
-            FovCheckWall(x + posToPlayerX, y - 1);  //  +
+            AddVisibleWall(x + posToPlayerX, y + 1);  //  +
+            AddVisibleWall(x + posToPlayerX, y);        // .*
+            AddVisibleWall(x + posToPlayerX, y - 1);  //  +
         }
         else
         {
-            FovCheckWall(x + posToPlayerX, y + posToPlayerY);
+            AddVisibleWall(x + posToPlayerX, y + posToPlayerY);
         }
     }
 
-    private void FovCheckWall(int x, int y)
+    private void AddVisibleWall(int x, int y)
     {
         if (VisibleObjects.ContainsKey((x, y))) return;
         Tile tile = _tileAt(x, y);
