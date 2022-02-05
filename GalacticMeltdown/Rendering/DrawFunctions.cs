@@ -2,10 +2,7 @@ using System;
 
 namespace GalacticMeltdown.Rendering;
 
-public static class DrawFunctions
-{
-    public delegate SymbolData GetSymbolAt(int x, int y);
-}
+public delegate SymbolData GetSymbolAt(int x, int y);
 
 public struct SymbolData
 {

@@ -59,7 +59,7 @@ public class Renderer
     }
 
     public void DrawArea
-        (int startX, int startY, int maxX, int maxY, DrawFunctions.GetSymbolAt getSymbolAt)
+        (int startX, int startY, int maxX, int maxY, GetSymbolAt getSymbolAt)
     {
         UpdateConsoleCenterCoords();
         Console.SetCursorPosition(startX, startY);
@@ -109,7 +109,7 @@ public class Renderer
         }
     }
 
-    public void PutSymbolFrom(int x, int y, DrawFunctions.GetSymbolAt getSymbolAt)
+    public void PutSymbolFrom(int x, int y, GetSymbolAt getSymbolAt)
     {
         UpdateConsoleCenterCoords();
         SymbolData symbolData = getSymbolAt(x, y);
