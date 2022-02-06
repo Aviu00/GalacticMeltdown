@@ -38,6 +38,7 @@ public class WorldView : View
 
     public void RemoveTileRevealingObject(ICanSeeTiles obj)
     {
+        obj.VisiblePointsChanged -= UpdateVisiblePoints;
         _tileRevealingObjects.Remove(obj);
         UpdateVisiblePoints();
     }
