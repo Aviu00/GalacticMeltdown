@@ -44,8 +44,8 @@ static partial class GameManager // special class for bindings
             {ActionMove.MoveSe, () => MoveControlled(1, -1)},
             {ActionMove.MoveSw, () => MoveControlled(-1, -1)},
             {ActionMove.MoveNw, () => MoveControlled(-1, 1)},
-            {ActionMove.IncreaseViewRange, () => _player.ViewRange++},
-            {ActionMove.ReduceViewRange, () => _player.ViewRange--},
+            {ActionMove.IncreaseViewRange, () => _player.ViewRadius++},
+            {ActionMove.ReduceViewRange, () => _player.ViewRadius--},
             {ActionMove.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
             {ActionMove.ActivateXRay, () => _player.Xray = !_player.Xray},
             {ActionMove.Stop, Stop}
