@@ -49,9 +49,9 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         if (!NoClip && !_tileAt(X + deltaX, Y + deltaY).IsWalkable) return false;
         X += deltaX;
         Y += deltaY;
-        PerformedAction?.Invoke(100);
         VisiblePointsChanged?.Invoke();
         PositionChanged?.Invoke();
+        PerformedAction?.Invoke(100);
         return true;
     }
 
