@@ -11,9 +11,19 @@ public class Player : IEntity, IControllable, ICanSeeTiles
     public ConsoleColor BgColor { get; }
     private int _viewRadius = 15;
     private Func<int, int, Tile> _tileAt;
+    private bool _xray;
 
     public bool NoClip;//Temporary implementation of debugging "cheat codes"
-    public bool Xray { get; set; }
+
+    public bool Xray
+    {
+        get => _xray;
+        set
+        {
+            _xray = value;
+            ViewChanged?.Invoke();
+        }
+    }
 
     public int ViewRadius
     {
@@ -23,10 +33,12 @@ public class Player : IEntity, IControllable, ICanSeeTiles
             if (value > 0)
             {
                 _viewRadius = value;
+                ViewChanged?.Invoke();
             }
         }
     }
     
+    public event ViewChangedEventHandler ViewChanged;
     public delegate void PerformedActionEventHandler(int movePoints);
 
     public event PerformedActionEventHandler PerformedAction;
@@ -37,6 +49,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles
         X += deltaX;
         Y += deltaY;
         PerformedAction?.Invoke(100);
+        ViewChanged?.Invoke();
         return true;
     }
 
