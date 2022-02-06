@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GalacticMeltdown.Rendering;
 
@@ -7,17 +8,30 @@ public class WorldView : View
 {
     private Map _map;
     private IHasCoords _focusObject;
-    private List<ICanSeeTiles> _tileRevealingObjects;
+    private LinkedList<ICanSeeTiles> _tileRevealingObjects;
     private HashSet<(int, int)> _visiblePoints;
 
     public WorldView(Map map)
     {
         _map = map;
+        _tileRevealingObjects = new LinkedList<ICanSeeTiles>();
+    }
+
+    private void UpdateVisiblePoints()
+    {
+        _visiblePoints = _tileRevealingObjects
+            .SelectMany((obj, _) => _map.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
+            .ToHashSet();
     }
 
     public void AddTileRevealingObject(ICanSeeTiles obj)
     {
-        _tileRevealingObjects.Add(obj);
+        _tileRevealingObjects.AddFirst(obj);
+    }
+
+    public void RemoveTileRevealingObject(ICanSeeTiles obj)
+    {
+        _tileRevealingObjects.Remove(obj);
     }
 
     public void SetFocus(IHasCoords focusObj)
