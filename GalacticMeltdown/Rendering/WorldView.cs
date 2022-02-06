@@ -27,11 +27,13 @@ public class WorldView : View
     public void AddTileRevealingObject(ICanSeeTiles obj)
     {
         _tileRevealingObjects.AddFirst(obj);
+        UpdateVisiblePoints();
     }
 
     public void RemoveTileRevealingObject(ICanSeeTiles obj)
     {
         _tileRevealingObjects.Remove(obj);
+        UpdateVisiblePoints();
     }
 
     public void SetFocus(IHasCoords focusObj)
