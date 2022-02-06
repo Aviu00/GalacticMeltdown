@@ -9,6 +9,7 @@ public class OverlayView : View
     private SymbolData?[,] _symbols;
     private int Width = 0;
     private int Height = 0;
+    public override event ViewChangedEventHandler ViewChanged;
 
     public OverlayView(Map map)
     {
