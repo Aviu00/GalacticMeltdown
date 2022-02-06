@@ -15,10 +15,10 @@ public partial class Map
     public readonly string MapString;//for debugging
 
     public delegate void MapUpdatedEventHandler();
-    public event MapUpdatedEventHandler Updated;
+    public event MapUpdatedEventHandler RedrawNeeded;
     private void PlayerPerformedAction(int _)
     {
-        Updated?.Invoke();
+        RedrawNeeded?.Invoke();
     }
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
         Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes, string mapString)
@@ -91,5 +91,6 @@ public partial class Map
             }
             _map[mapX, mapY].Enemies.Add(enemy);
         }
+        RedrawNeeded?.Invoke();
     }
 }

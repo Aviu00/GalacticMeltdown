@@ -13,7 +13,7 @@ public class WorldView : View
     public WorldView(Map map)
     {
         _map = map;
-        _map.Updated += MapChange;
+        _map.RedrawNeeded += MapChange;
         _focusObject = map.Player;
         _viewRadius = map.Player.ViewRange;
         _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
