@@ -9,18 +9,16 @@ public class WorldView : View
     private IHasCoords _focusObject;
     private int _viewRadius;
     private Dictionary<(int, int), IDrawable> _visibleObjects;
-    public bool _xray = false;
 
-    public bool Xray
+    public int ViewRadius
     {
-        get => _xray;
+        get => _viewRadius;
         set
         {
-            _xray = value;
-            MapChange();
+            if (value >= 0) _viewRadius = value;
         }
     }
-    
+
     public WorldView(Map map)
     {
         _map = map;
@@ -58,7 +56,7 @@ public class WorldView : View
     public void SetFocus(IHasCoords focusObject, int viewRadius)
     {
         _focusObject = focusObject;
-        _viewRadius = viewRadius;
+        _viewRadius = Math.Max(0, viewRadius);
         _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
     }
 }
