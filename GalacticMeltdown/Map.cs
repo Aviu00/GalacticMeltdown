@@ -20,7 +20,7 @@ public partial class Map
     {
         foreach (var (_, tile) in GetObjectsVisibleAround(Player.X, Player.Y, Player.ViewRange, true, Player.Xray))
         {
-            ((Tile) tile).WasSeenByPlayer = true;
+            ((Tile) tile).Seen = true;
         }
         RedrawNeeded?.Invoke();
     }

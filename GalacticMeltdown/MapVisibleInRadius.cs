@@ -80,7 +80,7 @@ public partial class Map
             if (visibleObjects.ContainsKey((x, y))) return;
             Tile tile = GetTile(x, y);
             if (tile is null || tile.IsTransparent) return;
-            tile.WasSeenByPlayer = true;
+            tile.Seen = true;
             visibleObjects.Add((x, y), tile);
         }
     }

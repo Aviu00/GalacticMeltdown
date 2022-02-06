@@ -40,7 +40,7 @@ public class WorldView : View
         }
 
         drawableObj = _map.GetTile(x, y);
-        if (drawableObj is not null && ((Tile) drawableObj).WasSeenByPlayer)
+        if (drawableObj is not null && ((Tile) drawableObj).Seen)
         {
             return new SymbolData(drawableObj.Symbol, Utility.OutOfVisionTileColor, ConsoleColor.Black);
         }
