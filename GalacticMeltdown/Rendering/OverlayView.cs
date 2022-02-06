@@ -6,6 +6,7 @@ public class OverlayView : View
 {
     private Map _map;  // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player;  // State, Effects, (?) Event log, Enemy-in-sight indicator
+    // Performance monitor? Coordinates of controlled object, player?
     private SymbolData?[,] _symbols;
     public override event ViewChangedEventHandler ViewChanged;
 
