@@ -19,6 +19,7 @@ public interface ICanSeeTiles : IHasCoords
 {
     int ViewRadius { get; set; }
     bool Xray { get; set; }
+    public event ViewChangedEventHandler ViewChanged;
 }
 
 public interface IEntity : IDrawable, IHasCoords //Entity is an object that can be placed on a tile
@@ -30,3 +31,5 @@ public interface IControllable : IHasCoords
 {
     public bool TryMove(int deltaX, int deltaY);
 }
+
+public delegate void ViewChangedEventHandler();
