@@ -28,6 +28,8 @@ static partial class GameManager
         _updateOnMove = new HashSet<IControllable> { _player };
         _renderer = new Renderer();
         _worldView = new WorldView(map);
+        _worldView.AddTileRevealingObject(_player);
+        _worldView.SetFocus(_player);
         _renderer.AddView(_worldView, 0, 0, 600, 1000);
         _renderer.AddView(new OverlayView(map), 601, 0, 1000, 1000);
         Console.CancelKeyPress += ExitEvent;
