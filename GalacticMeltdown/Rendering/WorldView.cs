@@ -25,7 +25,7 @@ public class WorldView : View
         _map.RedrawNeeded += MapChange;
         _focusObject = map.Player;
         _viewRadius = map.Player.ViewRange;
-        _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
+        _visibleObjects = _map.GetPointsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
     }
 
     public override SymbolData GetSymbol(int x, int y)
@@ -50,13 +50,13 @@ public class WorldView : View
 
     private void MapChange()
     {
-        _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius, xray: _map.Player.Xray);
+        _visibleObjects = _map.GetPointsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius, xray: _map.Player.Xray);
     }
 
     public void SetFocus(IHasCoords focusObject, int viewRadius)
     {
         _focusObject = focusObject;
         _viewRadius = Math.Max(0, viewRadius);
-        _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
+        _visibleObjects = _map.GetPointsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
     }
 }

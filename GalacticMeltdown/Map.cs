@@ -18,7 +18,7 @@ public partial class Map
     public event MapUpdatedEventHandler RedrawNeeded;
     private void PlayerPerformedAction(int _)
     {
-        foreach (var (_, tile) in GetObjectsVisibleAround(Player.X, Player.Y, Player.ViewRange, true, Player.Xray))
+        foreach (var (_, tile) in GetPointsVisibleAround(Player.X, Player.Y, Player.ViewRange, true, Player.Xray))
         {
             ((Tile) tile).Seen = true;
         }
