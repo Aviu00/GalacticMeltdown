@@ -13,13 +13,7 @@ public partial class Map
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
     public readonly string MapString;//for debugging
-
-    public delegate void MapUpdatedEventHandler();
-    public event MapUpdatedEventHandler RedrawNeeded;
-    private void PlayerPerformedAction(int _)
-    {
-        RedrawNeeded?.Invoke();
-    }
+    
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
         Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes, string mapString)
     {
@@ -31,7 +25,6 @@ public partial class Map
         _westernWall = westernWall;
         MapString = mapString;
         Player = new Player(_startPoint.MapX * 25 + 12, _startPoint.MapY * 25 + 12, GetTile);
-        Player.PerformedAction += PlayerPerformedAction;
         Enemy enemy = new MeleeEnemy(_startPoint.MapX * 25 + 13, _startPoint.MapY * 25 + 13, this, Player);
     }
 
@@ -91,6 +84,5 @@ public partial class Map
             }
             _map[mapX, mapY].Enemies.Add(enemy);
         }
-        RedrawNeeded?.Invoke();
     }
 }
