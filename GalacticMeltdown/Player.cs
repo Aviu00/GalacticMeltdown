@@ -21,7 +21,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         set
         {
             _xray = value;
-            ViewChanged?.Invoke();
+            VisiblePointsChanged?.Invoke();
         }
     }
 
@@ -33,12 +33,12 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
             if (value > 0)
             {
                 _viewRadius = value;
-                ViewChanged?.Invoke();
+                VisiblePointsChanged?.Invoke();
             }
         }
     }
     
-    public event ViewChangedEventHandler ViewChanged;
+    public event VisiblePointsChangedEventHandler VisiblePointsChanged;
     public delegate void PerformedActionEventHandler(int movePoints);
 
     public event PerformedActionEventHandler PerformedAction;
@@ -50,7 +50,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         X += deltaX;
         Y += deltaY;
         PerformedAction?.Invoke(100);
-        ViewChanged?.Invoke();
+        VisiblePointsChanged?.Invoke();
         PositionChanged?.Invoke();
         return true;
     }

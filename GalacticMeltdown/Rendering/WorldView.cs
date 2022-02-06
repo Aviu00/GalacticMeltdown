@@ -31,7 +31,7 @@ public class WorldView : View
 
     public void AddTileRevealingObject(ICanSeeTiles obj)
     {
-        obj.ViewChanged += UpdateVisiblePoints;
+        obj.VisiblePointsChanged += UpdateVisiblePoints;
         _tileRevealingObjects.AddFirst(obj);
         UpdateVisiblePoints();
     }

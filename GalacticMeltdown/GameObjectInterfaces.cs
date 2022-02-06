@@ -19,7 +19,7 @@ public interface ICanSeeTiles : IHasCoords
 {
     int ViewRadius { get; set; }
     bool Xray { get; set; }
-    public event ViewChangedEventHandler ViewChanged;
+    public event VisiblePointsChangedEventHandler VisiblePointsChanged;
 }
 
 public interface IFocusPoint : IHasCoords
@@ -37,6 +37,6 @@ public interface IControllable : IHasCoords
     public bool TryMove(int deltaX, int deltaY);
 }
 
-public delegate void ViewChangedEventHandler();
+public delegate void VisiblePointsChangedEventHandler();
 
 public delegate void PositionChangedEventHandler();
