@@ -52,7 +52,7 @@ public class WorldView : View
 
     private void MapChange()
     {
-        _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius, xray: _xray);
+        _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius, xray: _map.Player.Xray);
     }
 
     public void SetFocus(IHasCoords focusObject, int viewRadius)
