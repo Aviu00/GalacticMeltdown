@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
 using GalacticMeltdown.data;
 using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
-static class GameManager
+
+static partial class GameManager
 {
     private static Player _player;
     private static IControllable _controlledObject;
@@ -28,63 +32,6 @@ static class GameManager
         Renderer.RedrawMap();
         GameLoop();
     }
-
-    private enum ActionMove
-    {
-        MoveUp,
-        MoveDown,
-        MoveLeft,
-        MoveRight,
-        MoveNe,
-        MoveSe,
-        MoveSw,
-        MoveNw,
-        IncreaseViewRange, //for fov testing
-        ReduceViewRange, //for fov testing
-        ActivateNoClip, //temporary cheat codes
-        ActivateXRay, //temporary cheat codes
-        Stop
-    }
-    private static readonly  IDictionary <ConsoleKey, ActionMove> KeyBinding = 
-        new Dictionary<ConsoleKey, ActionMove>
-        {
-            {ConsoleKey.UpArrow, ActionMove.MoveUp},
-            {ConsoleKey.DownArrow, ActionMove.MoveDown},
-            {ConsoleKey.LeftArrow, ActionMove.MoveLeft},
-            {ConsoleKey.RightArrow, ActionMove.MoveRight},
-            {ConsoleKey.D8, ActionMove.MoveUp},
-            {ConsoleKey.D9, ActionMove.MoveNe},
-            {ConsoleKey.D6, ActionMove.MoveRight},
-            {ConsoleKey.D3, ActionMove.MoveSe},
-            {ConsoleKey.D2, ActionMove.MoveDown},
-            {ConsoleKey.D1, ActionMove.MoveSw},
-            {ConsoleKey.D4, ActionMove.MoveLeft},
-            {ConsoleKey.D7, ActionMove.MoveNw},
-            {ConsoleKey.Multiply, ActionMove.IncreaseViewRange},
-            {ConsoleKey.Subtract, ActionMove.ReduceViewRange},
-            {ConsoleKey.Z, ActionMove.ActivateNoClip},
-            {ConsoleKey.X, ActionMove.ActivateXRay},
-            {ConsoleKey.Q, ActionMove.Stop}
-        };
-
-    private static readonly IDictionary<ActionMove, Action> ActionBinding = 
-        new Dictionary<ActionMove, Action>
-    {
-        {ActionMove.MoveUp, () => MoveControlled(0, 1)},
-        {ActionMove.MoveDown, () => MoveControlled(0, -1)},
-        {ActionMove.MoveRight, () => MoveControlled(1, 0)},
-        {ActionMove.MoveLeft, () => MoveControlled(-1, 0)},
-        {ActionMove.MoveNe, () => MoveControlled(1, 1)},
-        {ActionMove.MoveSe, () => MoveControlled(1, -1)},
-        {ActionMove.MoveSw, () => MoveControlled(-1, -1)},
-        {ActionMove.MoveNw, () => MoveControlled(-1, 1)},
-        {ActionMove.IncreaseViewRange, () => _player.ViewRange++},
-        {ActionMove.ReduceViewRange, () => _player.ViewRange--},
-        {ActionMove.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
-        {ActionMove.ActivateXRay, () => _player.Xray = !_player.Xray},
-        {ActionMove.Stop, Stop}
-    };
-
     static void GameLoop()
     {
        
