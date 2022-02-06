@@ -59,9 +59,6 @@ static partial class GameManager
         if (_controlledObject.TryMove(deltaX, deltaY))  // Temporary, keeps screen up to date
         {
             _renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
-            Console.SetCursorPosition(0, 1);
-            Renderer.SetConsoleColor(ConsoleColor.Black, ConsoleColor.White);
-            Console.WriteLine($"X: {_controlledObject.X} Y: {_controlledObject.Y}");
         }
     }
 
