@@ -13,7 +13,6 @@ static partial class GameManager
 {
     private static Player _player;
     private static IControllable _controlledObject;
-    private static HashSet<IControllable> _updateOnMove;
     private static Renderer _renderer;
     private static Map _map;
     private static WorldView _worldView;
@@ -25,7 +24,6 @@ static partial class GameManager
         var map = GenerateMap(args.Length > 0 ? args[0] : null);
         _player = _map.Player;
         _controlledObject = _player;
-        _updateOnMove = new HashSet<IControllable> { _player };
         _renderer = new Renderer();
         _worldView = new WorldView(map);
         _worldView.AddTileRevealingObject(_player);
@@ -58,7 +56,7 @@ static partial class GameManager
     
     private static void MoveControlled(int deltaX, int deltaY)
     {
-        if (_updateOnMove.Contains(_controlledObject) && _controlledObject.TryMove(deltaX, deltaY))
+        if (_controlledObject.TryMove(deltaX, deltaY))
         {
             _renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
             Console.SetCursorPosition(0, 1);
