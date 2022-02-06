@@ -7,7 +7,7 @@ namespace GalacticMeltdown.Rendering;
 public class WorldView : View
 {
     private Map _map;
-    private IHasCoords _focusObject;
+    private IFocusPoint _focusObject;
     private LinkedList<ICanSeeTiles> _tileRevealingObjects;
     private HashSet<(int, int)> _visiblePoints;
 
@@ -43,7 +43,7 @@ public class WorldView : View
         UpdateVisiblePoints();
     }
 
-    public void SetFocus(IHasCoords focusObj)
+    public void SetFocus(IFocusPoint focusObj)
     {
         _focusObject = focusObj;
     }
