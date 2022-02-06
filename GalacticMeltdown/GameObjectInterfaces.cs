@@ -15,6 +15,12 @@ public interface IHasCoords
     public int Y { get; set; }
 }
 
+public interface ICanSeeTiles : IHasCoords
+{
+    int ViewRadius { get; set; }
+    bool Xray { get; set; }
+}
+
 public interface IEntity : IDrawable, IHasCoords //Entity is an object that can be placed on a tile
 {
         

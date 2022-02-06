@@ -7,38 +7,34 @@ public class WorldView : View
 {
     private Map _map;
     private IHasCoords _focusObject;
-    private int _viewRadius;
-    private Dictionary<(int, int), IDrawable> _visibleObjects;
-
-    public int ViewRadius
-    {
-        get => _viewRadius;
-        set
-        {
-            if (value >= 0) _viewRadius = value;
-        }
-    }
+    private List<ICanSeeTiles> _tileRevealingObjects;
+    private HashSet<(int, int)> _visiblePoints;
 
     public WorldView(Map map)
     {
         _map = map;
-        _map.RedrawNeeded += MapChange;
-        _focusObject = map.Player;
-        _viewRadius = map.Player.ViewRange;
-        _visibleObjects = _map.GetPointsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
+    }
+
+    public void AddTileRevealingObject(ICanSeeTiles obj)
+    {
+        _tileRevealingObjects.Add(obj);
+    }
+
+    public void SetFocus(IHasCoords focusObj)
+    {
+        _focusObject = focusObj;
     }
 
     public override SymbolData GetSymbol(int x, int y)
     {
-        (x, y) = Utility.ConvertAbsoluteToRelativeCoords(x, y, Width / 2, Height / 2);
-        (x, y) = Utility.ConvertRelativeToAbsoluteCoords(x, y, _focusObject.X, _focusObject.Y);
+        var coords = Utility.ConvertAbsoluteToRelativeCoords(x, y, Width / 2, Height / 2);
+        coords = Utility.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         IDrawable drawableObj;
-        if (_visibleObjects.ContainsKey((x, y)))
+        if (_visiblePoints.Contains(coords))
         {
-            drawableObj = _visibleObjects[(x, y)];
+            drawableObj = _map.GetDrawable(coords.x, coords.y);
             return new SymbolData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
         }
-
         drawableObj = _map.GetTile(x, y);
         if (drawableObj is not null && ((Tile) drawableObj).Seen)
         {
@@ -46,17 +42,5 @@ public class WorldView : View
         }
 
         return new SymbolData(' ', ConsoleColor.Black, ConsoleColor.Black);
-    }
-
-    private void MapChange()
-    {
-        _visibleObjects = _map.GetPointsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius, xray: _map.Player.Xray);
-    }
-
-    public void SetFocus(IHasCoords focusObject, int viewRadius)
-    {
-        _focusObject = focusObject;
-        _viewRadius = Math.Max(0, viewRadius);
-        _visibleObjects = _map.GetPointsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
     }
 }
