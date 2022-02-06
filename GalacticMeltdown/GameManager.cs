@@ -16,6 +16,7 @@ static partial class GameManager
     private static HashSet<IControllable> _updateOnMove;
     private static Renderer _renderer;
     private static Map _map;
+    private static WorldView _worldView;
 
     private static bool _stop;
 
@@ -26,7 +27,8 @@ static partial class GameManager
         _controlledObject = _player;
         _updateOnMove = new HashSet<IControllable> { _player };
         _renderer = new Renderer();
-        _renderer.AddView(new WorldView(map), 0, 0, 600, 1000);
+        _worldView = new WorldView(map);
+        _renderer.AddView(_worldView, 0, 0, 600, 1000);
         _renderer.AddView(new OverlayView(map), 601, 0, 1000, 1000);
         Console.CancelKeyPress += ExitEvent;
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;

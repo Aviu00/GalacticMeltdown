@@ -9,6 +9,17 @@ public class WorldView : View
     private IHasCoords _focusObject;
     private int _viewRadius;
     private Dictionary<(int, int), IDrawable> _visibleObjects;
+    public bool _xray = false;
+
+    public bool Xray
+    {
+        get => _xray;
+        set
+        {
+            _xray = value;
+            MapChange();
+        }
+    }
     
     public WorldView(Map map)
     {
@@ -41,7 +52,7 @@ public class WorldView : View
 
     private void MapChange()
     {
-        _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius);
+        _visibleObjects = _map.GetObjectsVisibleAround(_focusObject.X, _focusObject.Y, _viewRadius, xray: _xray);
     }
 
     public void SetFocus(IHasCoords focusObject, int viewRadius)

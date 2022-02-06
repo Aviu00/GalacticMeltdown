@@ -5,7 +5,8 @@ namespace GalacticMeltdown;
 
 public partial class Map
 {
-    public Dictionary<(int, int), IDrawable> GetObjectsVisibleAround(int x0, int y0, int radius, bool tilesOnly = false)
+    public Dictionary<(int, int), IDrawable> GetObjectsVisibleAround(int x0, int y0, int radius, bool tilesOnly = false,
+        bool xray = false)
     {
         var visibleObjects = new Dictionary<(int, int), IDrawable>();
         var firstObj = tilesOnly ? GetTile(x0, y0) : GetDrawable(x0, y0);
@@ -37,7 +38,7 @@ public partial class Map
                     visibleObjects.Add(pointCoords, tile);
                 }
 
-                if (!tile.IsTransparent)
+                if (!tile.IsTransparent && !xray)
                 {
                     break;
                 }
