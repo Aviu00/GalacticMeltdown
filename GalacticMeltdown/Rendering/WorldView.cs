@@ -62,9 +62,19 @@ public class WorldView : View
 
     public override SymbolData GetSymbol(int x, int y)
     {
-        var coords = Utility.ConvertAbsoluteToRelativeCoords(x, y, Width / 2, Height / 2);
-        coords = Utility.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         IDrawable drawableObj;
+        int centerScreenX = Width / 2, centerScreenY = Height / 2;
+        // Draw object in focus on top of everything else
+        if (x == centerScreenX && y == centerScreenY)
+        {
+            drawableObj = _focusObject as IDrawable;
+            if (drawableObj is not null)
+            {
+                return new SymbolData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
+            }
+        }
+        var coords = Utility.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
+        coords = Utility.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         if (_visiblePoints.Contains(coords))
         {
             drawableObj = _map.GetDrawable(coords.x, coords.y);
