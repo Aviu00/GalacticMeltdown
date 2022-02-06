@@ -22,6 +22,11 @@ public interface ICanSeeTiles : IHasCoords
     public event ViewChangedEventHandler ViewChanged;
 }
 
+public interface IFocusPoint : IHasCoords
+{
+    public event PositionChangedEventHandler PositionChanged;
+}
+
 public interface IEntity : IDrawable, IHasCoords //Entity is an object that can be placed on a tile
 {
         
@@ -33,3 +38,5 @@ public interface IControllable : IHasCoords
 }
 
 public delegate void ViewChangedEventHandler();
+
+public delegate void PositionChangedEventHandler();

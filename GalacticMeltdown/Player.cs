@@ -2,7 +2,7 @@ using System;
 
 namespace GalacticMeltdown;
 
-public class Player : IEntity, IControllable, ICanSeeTiles
+public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
 {
     public int X { get; set; }
     public int Y { get; set; }
@@ -42,6 +42,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles
     public delegate void PerformedActionEventHandler(int movePoints);
 
     public event PerformedActionEventHandler PerformedAction;
+    public event PositionChangedEventHandler PositionChanged;
 
     public bool TryMove(int deltaX, int deltaY)
     {
@@ -50,6 +51,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles
         Y += deltaY;
         PerformedAction?.Invoke(100);
         ViewChanged?.Invoke();
+        PositionChanged?.Invoke();
         return true;
     }
 
