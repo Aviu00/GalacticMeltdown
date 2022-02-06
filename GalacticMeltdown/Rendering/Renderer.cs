@@ -5,6 +5,8 @@ using System.Text;
 
 namespace GalacticMeltdown.Rendering;
 
+public delegate void ViewChangedEventHandler(View sender);
+
 public class Renderer
 {
     private const int TotalWidth = 1000;
@@ -20,7 +22,13 @@ public class Renderer
 
     public void AddView(View view, int x0, int y0, int x1, int y1)
     {
+        view.ViewChanged += ViewChangedHandler;
         _views.Add((view, x0, y0, x1, y1));
+    }
+
+    private void ViewChangedHandler(View sender)
+    {
+        Redraw();  // The renderer is fast enough
     }
 
     public void RemoveLastView()

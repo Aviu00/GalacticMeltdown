@@ -3,6 +3,7 @@ namespace GalacticMeltdown.Rendering;
 public abstract class View
 {
     public abstract SymbolData GetSymbol(int x, int y);
+    public event ViewChangedEventHandler ViewChanged;
 
     protected int Width;
     protected int Height;
