@@ -18,6 +18,10 @@ public partial class Map
     public event MapUpdatedEventHandler RedrawNeeded;
     private void PlayerPerformedAction(int _)
     {
+        foreach (var (_, tile) in GetObjectsVisibleAround(Player.X, Player.Y, Player.ViewRange, true))
+        {
+            ((Tile) tile).WasSeenByPlayer = true;
+        }
         RedrawNeeded?.Invoke();
     }
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 

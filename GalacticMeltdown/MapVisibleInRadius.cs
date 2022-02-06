@@ -5,10 +5,10 @@ namespace GalacticMeltdown;
 
 public partial class Map
 {
-    public Dictionary<(int, int), IDrawable> GetObjectsVisibleAround(int x0, int y0, int radius)
+    public Dictionary<(int, int), IDrawable> GetObjectsVisibleAround(int x0, int y0, int radius, bool tilesOnly = false)
     {
         var visibleObjects = new Dictionary<(int, int), IDrawable>();
-        var firstObj = GetDrawable(x0, y0);
+        var firstObj = tilesOnly ? GetTile(x0, y0) : GetDrawable(x0, y0);
         if (firstObj is not null) visibleObjects.Add((x0, y0), firstObj);
         foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(x0, y0, radius))
         {
@@ -16,11 +16,15 @@ public partial class Map
             foreach (var pointCoords in Algorithms.BresenhamGetPointsOnLine(x0, y0, x, y, radius))
             {
                 AddVisibleAdjacentWalls(prevTileCoords);
-                IDrawable drawableObj = GetDrawable(pointCoords.x, pointCoords.y);
-                if (drawableObj is not null && !visibleObjects.ContainsKey(pointCoords))
+                if (!tilesOnly)
                 {
-                    visibleObjects.Add(pointCoords, drawableObj);
+                    IDrawable drawableObj = GetDrawable(pointCoords.x, pointCoords.y);
+                    if (drawableObj is not null && !visibleObjects.ContainsKey(pointCoords))
+                    {
+                        visibleObjects.Add(pointCoords, drawableObj);
+                    }
                 }
+
                 Tile tile = GetTile(pointCoords.x, pointCoords.y);
                 if (tile is null)
                 {
@@ -31,7 +35,6 @@ public partial class Map
                 if (!visibleObjects.ContainsKey(pointCoords))
                 {
                     visibleObjects.Add(pointCoords, tile);
-                    tile.WasSeenByPlayer = true;
                 }
 
                 if (!tile.IsTransparent)
