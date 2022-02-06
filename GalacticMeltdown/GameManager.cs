@@ -54,6 +54,9 @@ static partial class GameManager
         if (_updateOnMove.Contains(_controlledObject) && _controlledObject.TryMove(deltaX, deltaY))
         {
             Renderer.RedrawMap();  // TODO: Redraw should happen after a MoveMade event instead
+            Console.SetCursorPosition(0, 1);
+            Renderer.SetConsoleColor(ConsoleColor.Black, ConsoleColor.White);
+            Console.WriteLine($"X: {_controlledObject.X} Y: {_controlledObject.Y}");
         }
     }
 
@@ -68,6 +71,10 @@ static partial class GameManager
         Console.ResetColor();
         Console.Clear();
         Console.CursorVisible = true;
+        Console.SetCursorPosition(0, 0);
+        Console.WriteLine($"Seed: {Map.MapSeed}");
+        Console.WriteLine($"X: {_player.X} Y: {_player.Y}");
+        Console.WriteLine(Map.MapString);
     }
 
     static void GenerateMap(string seed = null)
@@ -78,6 +85,8 @@ static partial class GameManager
         var rooms = new RoomDataExtractor(tileTypes).Rooms;
         MapGenerator mapGen = new MapGenerator(mapSeed, tileTypes, rooms);
         Map = mapGen.Generate();
+        rooms = null;
+        tileTypes = null;
         mapGen = null;
         GC.Collect();
     }

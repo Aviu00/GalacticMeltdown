@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using GalacticMeltdown.data;
 using static GalacticMeltdown.Utility;
 
@@ -44,7 +45,7 @@ public class MapGenerator
         BuildMainRoute();
         FillMap();
         GenerateBorderWalls();
-        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall, _tileTypes);
+        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall, _tileTypes, CalculateMapString());
     }
 
     private void GenerateBars()
@@ -145,7 +146,7 @@ public class MapGenerator
                 if (topStartRoom && x == startRoomPos && y == _bars[x].max || 
                     !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
                 {
-                    _tempMap[i, j].StartPoint = true;
+                    _tempMap[i, j].IsStartPoint = true;
                     startPoint = _tempMap[i, j];
                 }
 
@@ -177,7 +178,7 @@ public class MapGenerator
             currentSubMap.Difficulty = lastDifficulty;
             if (i == endRoomIndex)
             {
-                currentSubMap.EndPoint = true;
+                currentSubMap.IsEndPoint = true;
                 addDifficulty = -1;
             }
             SubMapGenerator newSubMap = currentSubMap.GetNextRoom(previousSubMap);
@@ -252,7 +253,7 @@ public class MapGenerator
             case 90:
                 Algorithms.TransposeMatrix(roomData);
                 Algorithms.ReverseMatrixRows(roomData);
-                FlipPoles(roomData, ("north", "west"), ("south", "east"), ("west", "east"));
+                FlipPoles(roomData, ("north", "west"), ("south", "east"), ("north", "south"));
                 break;
             case 180:
                 Algorithms.ReverseMatrixRows(roomData);
@@ -262,14 +263,14 @@ public class MapGenerator
             case 270:
                 Algorithms.TransposeMatrix(roomData);
                 Algorithms.ReverseMatrixCols(roomData);
-                FlipPoles(roomData, ("north", "west"), ("south", "east"), ("north", "south"));
+                FlipPoles(roomData, ("north", "west"), ("south", "east"), ("west", "east"));
                 break;
         }
 
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
         _map[x, y] = _tempMap[x, y].GenerateSubMap(roomData, northernTileMap, easternTileMap);
-        if (_tempMap[x, y].StartPoint)
+        if (_tempMap[x, y].IsStartPoint)
             _startPoint = _map[x, y];
     }
 
@@ -280,7 +281,7 @@ public class MapGenerator
             for (int y = 0; y < roomData.GetLength(1); y++)
             {
                 string[] parsedId = roomData[x, y].Id.Split('_');
-                if (parsedId.Length != 3 || parsedId[1] != "if")
+                if (!roomData[x, y].IsDependingOnRoomConnection)
                     continue;
                 foreach (var (p1, p2) in poles)
                 {
@@ -354,7 +355,7 @@ public class MapGenerator
                 yConnection = _tempMap[x, difY];
             }
 
-            if (subMap.StartPoint || subMap.EndPoint)
+            if (subMap.IsStartPoint || subMap.IsEndPoint)
             {
                 ConnectRooms(subMap, xConnection);
                 if(yConnection != null)
@@ -415,5 +416,25 @@ public class MapGenerator
             room2.AccessMainRoute(room1.Difficulty);
         if(room2.HasAccessToMainRoute)
             room1.AccessMainRoute(room2.Difficulty);
+    }
+
+    /// <summary>
+    /// Debug method
+    /// </summary>
+    private string CalculateMapString()
+    {
+        int width = _tempMap.GetLength(0);
+        int height = _tempMap.GetLength(1);
+        StringBuilder sb = new StringBuilder((_tempMap.GetLength(0) + 1) * _tempMap.GetLength(1));
+        for (int y = height - 1; y >= 0; y--)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                sb.Append(_tempMap[x, y].CalculateSymbol());
+            }
+            sb.Append('\n');
+        }
+
+        return sb.ToString();
     }
 }

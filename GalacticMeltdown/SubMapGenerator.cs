@@ -13,10 +13,10 @@ public class SubMapGenerator
     public SubMapGenerator EastConnection = null;
     public SubMapGenerator SouthConnection = null;
     public SubMapGenerator WestConnection = null;
-    public bool StartPoint;
-    public bool EndPoint;
+    public bool IsStartPoint;
+    public bool IsEndPoint;
     public double Difficulty = -1;
-    private Dictionary<string, TileTypeData> _tileTypes;
+    private readonly Dictionary<string, TileTypeData> _tileTypes;
 
     public int ConnectionCount =>
         Convert.ToInt32(NorthConnection != null) + Convert.ToInt32(EastConnection != null) +
@@ -63,8 +63,8 @@ public class SubMapGenerator
     public SubMap GenerateSubMap
         (TileTypeData[,] roomData, Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
     {
+        CalculateSymbol();
         Tiles = new Tile[25, 25];
-        bool southNull = SouthConnection == null;
         for (int y = 0; y < 24; y++)
         {
             for (int x = 0; x < 24; x++)
@@ -131,7 +131,7 @@ public class SubMapGenerator
         return _tileTypes[str];
     }
 
-    private bool CheckForConnectionInTile(TileTypeData[,] roomData, int x, int y)
+    private static bool CheckForConnectionInTile(TileTypeData[,] roomData, int x, int y)
     {
         if (x is < -1 or > 24 || y is < -1 or > 24)
             return false;
@@ -152,5 +152,57 @@ public class SubMapGenerator
 
         string newId = !switchId ? parsedId[0] : parsedId[0] == "wall" ? "floor" : "wall";
         roomData[x, y] = _tileTypes[newId];
+    }
+    
+    public char CalculateSymbol()
+    {
+        List<char> symbols = new()
+            {'┼', '├', '┤', '┬', '┴', '┌', '└', '┐', '┘', '│', '─', '╴', '╶', '╷', '╵','0'};
+        if (NorthConnection == null)
+        {
+            symbols.Remove('┼');
+            symbols.Remove('├');
+            symbols.Remove('┤');
+            symbols.Remove('┴');
+            symbols.Remove('└');
+            symbols.Remove('┘');
+            symbols.Remove('│');
+            symbols.Remove('╵');
+        }
+        if (SouthConnection == null)
+        {
+            symbols.Remove('┼');
+            symbols.Remove('├');
+            symbols.Remove('┤');
+            symbols.Remove('┬');
+            symbols.Remove('┌');
+            symbols.Remove('┐');
+            symbols.Remove('│');
+            symbols.Remove('╷');
+        }
+        if (EastConnection == null)
+        {
+            symbols.Remove('┼');
+            symbols.Remove('├');
+            symbols.Remove('┬');
+            symbols.Remove('┴');
+            symbols.Remove('┌');
+            symbols.Remove('└');
+            symbols.Remove('─');
+            symbols.Remove('╶');
+        }
+        if (WestConnection == null)
+        {
+            symbols.Remove('┼');
+            symbols.Remove('┤');
+            symbols.Remove('┬');
+            symbols.Remove('┴');
+            symbols.Remove('┐');
+            symbols.Remove('┘');
+            symbols.Remove('─');
+            symbols.Remove('╴');
+        }
+
+        return symbols[0];
     }
 }

@@ -106,7 +106,7 @@ public class Renderer
         _screenCenterY = Console.WindowHeight / 2;
     }
     
-    private void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
+    public static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
     {
         if (Console.ForegroundColor != fgColor)
             Console.ForegroundColor = fgColor;
