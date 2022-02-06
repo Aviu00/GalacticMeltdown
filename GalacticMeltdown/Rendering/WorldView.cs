@@ -22,6 +22,11 @@ public class WorldView : View
         _visiblePoints = _tileRevealingObjects
             .SelectMany((obj, _) => _map.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
             .ToHashSet();
+        foreach (var (x, y) in _visiblePoints)
+        {
+            var tile = _map.GetTile(x, y);
+            if (tile is not null) tile.Seen = true;
+        }
     }
 
     public void AddTileRevealingObject(ICanSeeTiles obj)
