@@ -57,7 +57,7 @@ public class WorldView : View
             drawableObj = _map.GetDrawable(coords.x, coords.y);
             return new SymbolData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
         }
-        drawableObj = _map.GetTile(x, y);
+        drawableObj = _map.GetTile(coords.x, coords.y);
         if (drawableObj is not null && ((Tile) drawableObj).Seen)
         {
             return new SymbolData(drawableObj.Symbol, Utility.OutOfVisionTileColor, ConsoleColor.Black);
