@@ -78,6 +78,8 @@ public class WorldView : View
         if (_visiblePoints.Contains(coords))
         {
             drawableObj = _map.GetDrawable(coords.x, coords.y);
+            if (drawableObj is null)
+                return new SymbolData(' ', ConsoleColor.Black, ConsoleColor.Black);
             return new SymbolData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
         }
         drawableObj = _map.GetTile(coords.x, coords.y);
