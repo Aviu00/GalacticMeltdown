@@ -7,14 +7,14 @@ public class OverlayView : View
     private Map _map;  // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player;  // State, Effects, (?) Event log, Enemy-in-sight indicator
     private SymbolData?[,] _symbols;
-    private int Width = 0;
-    private int Height = 0;
     public override event ViewChangedEventHandler ViewChanged;
 
     public OverlayView(Map map)
     {
         _map = map;
         _player = map.Player;
+        Width = 0;
+        Height = 0;
         // TODO: subscribe to events
     }
 
