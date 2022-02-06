@@ -46,7 +46,8 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
 
     public bool TryMove(int deltaX, int deltaY)
     {
-        if (!NoClip && !_tileAt(X + deltaX, Y + deltaY).IsWalkable) return false;
+        var tile = _tileAt(X + deltaX, Y + deltaY);
+        if (!(NoClip || tile is null || tile.IsWalkable)) return false;
         X += deltaX;
         Y += deltaY;
         VisiblePointsChanged?.Invoke();
