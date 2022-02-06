@@ -47,7 +47,17 @@ public class WorldView : View
 
     public void SetFocus(IFocusPoint focusObj)
     {
+        if (ReferenceEquals(focusObj, _focusObject)) return;
         _focusObject = focusObj;
+        _focusObject.PositionChanged += FocusObjectMoved;
+        ViewChanged?.Invoke(this);
+    }
+
+    private void FocusObjectMoved()
+    {
+        // Already re-rendered
+        if (_focusObject is ICanSeeTiles focusObject && _tileRevealingObjects.Contains(focusObject)) return;
+        ViewChanged?.Invoke(this);
     }
 
     public override SymbolData GetSymbol(int x, int y)
