@@ -49,7 +49,7 @@ public class Renderer
         foreach (var (view, x0, y0, x1, y1) in _views)
         {
             int x0Real = (int) Math.Round(Console.WindowWidth * x0 / (double) TotalWidth);
-            int y0Real = (int) Math.Round(Console.WindowWidth * y0 / (double) TotalWidth);
+            int y0Real = (int) Math.Round(Console.WindowHeight * y0 / (double) TotalWidth);
             int x1Real = Math.Min((int) Math.Round(Console.WindowWidth * x1 / (double) TotalWidth), 
                 Console.WindowWidth - 1);
             int y1Real = Math.Min((int) Math.Round(Console.WindowHeight * y1 / (double) TotalWidth),
