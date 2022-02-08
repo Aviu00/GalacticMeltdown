@@ -25,8 +25,8 @@ public partial class Map
         _westernWall = westernWall;
         MapString = mapString;
         Player = new Player(_startPoint.MapX * 25 + 12, _startPoint.MapY * 25 + 12, GetTile, GetEntity);
-        MeleeEnemy enemy = new MeleeEnemy(_startPoint.MapX * 25 + 15, _startPoint.MapY * 25 + 15, this, Player);
-        MeleeEnemy enemy2 = new MeleeEnemy(_startPoint.MapX * 25 + 5, _startPoint.MapY * 25 + 5, this, Player);
+        MeleeEnemy enemy = new MeleeEnemy(_startPoint.MapX * 25 + 13, _startPoint.MapY * 25 + 13, this, Player);
+        MeleeEnemy enemy2 = new MeleeEnemy(_startPoint.MapX * 25 + 11, _startPoint.MapY * 25 + 11, this, Player);
     }
 
 
