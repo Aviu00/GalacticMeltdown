@@ -15,6 +15,6 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     {
         //calculate actions
         
-        MoveStrategy.Move(0, 1);
+        MoveStrategy.Move(1, 0);
     }
 }
