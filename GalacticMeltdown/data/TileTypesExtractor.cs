@@ -11,7 +11,12 @@ public class TileTypesExtractor : XmlExtractor
     public TileTypesExtractor()
     {
         TileTypes = new Dictionary<string, TileTypeData>();
-        XmlDocument doc = GetXmlDocument("Tile.xml");
+        ParseDocument("Tile.xml");
+    }
+
+    protected sealed override void ParseDocument(string docName)
+    {
+        XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
             string id = "";

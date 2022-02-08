@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+using System.Linq;
 using System.Xml;
 
 namespace GalacticMeltdown.data;
@@ -9,45 +9,71 @@ public class RoomDataExtractor : XmlExtractor
 {
     public List<(int rarity, int exitCount, Room room)> Rooms { get; private set; }
 
-    private readonly Dictionary<char, string> _defaultTiles = new()
-    {
-        {'.', "floor"},
-        {'#', "wall"},
-        {'N', "wall_if_north"},
-        {'n', "floor_if_north"},
-        {'E', "wall_if_east"},
-        {'e', "floor_if_east"},
-        {'S', "wall_if_south"},
-        {'s', "floor_if_south"},
-        {'W', "wall_if_west"},
-        {'w', "floor_if_west"}
-    };
-
-    private Dictionary<string, TileTypeData> _tileTypes;
+    private readonly Dictionary<string, TileTypeData> _tileTypes;
 
     public RoomDataExtractor(Dictionary<string, TileTypeData> tileTypes)
     {
         _tileTypes = tileTypes;
         Rooms = new List<(int rarity, int exitCount, Room room)>();
-        XmlDocument doc = GetXmlDocument("Rooms.xml");
+        ParseDocument("Rooms.xml");
+    }
+
+    protected sealed override void ParseDocument(string docName)
+    {
+        XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
-            TileTypeData[,] pattern = new TileTypeData[24, 24];
+            string stringPattern = "";
+            Dictionary<char, string> roomTerrain = null;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
                 {
                     case "Pattern":
-                        pattern = ConvertPattern(locNode.InnerText);
+                        stringPattern = locNode.InnerText;
+                        break;
+                    case "Terrain":
+                        roomTerrain = ParseTerrain(locNode);
                         break;
                 }
             }
-            
+
+            TileTypeData[,] pattern = ConvertPattern(stringPattern, roomTerrain);
             Rooms.Add((0, 4, new Room(pattern)));
         }
     }
 
-    private TileTypeData[,] ConvertPattern(string stringPattern)
+    /// <summary>
+    /// This will be used later to get information about loot table placement
+    /// </summary>
+    private Dictionary<char, string> ParseTerrain(XmlNode terrainNode)
+    {
+        Dictionary<char, string> roomTerrain = new();
+        foreach (XmlNode node in terrainNode)
+        {
+            if (node.Attributes == null)
+                continue;
+            char symbol = ' ';
+            string id = "";
+            foreach (XmlAttribute attribute in node.Attributes)
+            {
+                switch (attribute.Name)
+                {
+                    case "char":
+                        symbol = Convert.ToChar(attribute.InnerText);
+                        break;
+                    case "tileId":
+                        id = attribute.InnerText;
+                        break;
+                }
+            }
+            roomTerrain.Add(symbol, id);
+        }
+
+        return roomTerrain;
+    }
+
+    private TileTypeData[,] ConvertPattern(string stringPattern, Dictionary<char, string> roomTerrain)
     {
         int i = 0;
         int j = -1;
@@ -63,7 +89,9 @@ public class RoomDataExtractor : XmlExtractor
                     j++;
                     continue;
             }
-            TileTypeData data = _tileTypes[_defaultTiles[c]];
+            
+            TileTypeData data = roomTerrain is not null && roomTerrain.ContainsKey(c) ? _tileTypes[roomTerrain[c]] 
+                : _tileTypes.Values.First(tileType => tileType.Symbol == c);
             terrainObjects[i, 23 - j] = data;
             i++;
         }
