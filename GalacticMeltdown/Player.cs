@@ -11,6 +11,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
     public ConsoleColor BgColor { get; }
     private int _viewRadius = 15;
     private Func<int, int, Tile> _tileAt;
+    private Func<int, int, IEntity> _entityAt;
     private bool _xray;
 
     public bool NoClip;//Temporary implementation of debugging "cheat codes"
@@ -47,7 +48,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
     public bool TryMove(int deltaX, int deltaY)
     {
         var tile = _tileAt(X + deltaX, Y + deltaY);
-        if (!(NoClip || tile is null || tile.IsWalkable)) return false;
+        if (!(NoClip || (tile is null || tile.IsWalkable) && _entityAt(X + deltaX, Y + deltaY) is null)) return false;
         X += deltaX;
         Y += deltaY;
         VisiblePointsChanged?.Invoke();
@@ -56,11 +57,12 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         return true;
     }
 
-    public Player(int x, int y, Func<int, int, Tile> tileAt)
+    public Player(int x, int y, Func<int, int, Tile> tileAt, Func<int, int, IEntity> entityAt)
     {
         X = x;
         Y = y;
         _tileAt = tileAt;
+        _entityAt = entityAt;
         Symbol = '@';
         FgColor = ConsoleColor.White;
         BgColor = ConsoleColor.Black;
