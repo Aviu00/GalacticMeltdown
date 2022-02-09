@@ -22,7 +22,7 @@ public abstract class Enemy : IEntity
         Y = y;
         player.PerformedAction += TakeAction;
         map.UpdateEnemyPosition(this, -1, -1);
-        _viewRadius = 3;
+        _viewRadius = 10;
         Symbol = 'W';
         FgColor = ConsoleColor.Red;
         BgColor = ConsoleColor.Black;
