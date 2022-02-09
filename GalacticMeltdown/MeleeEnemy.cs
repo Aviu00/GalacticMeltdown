@@ -14,7 +14,9 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     protected override void TakeAction(int movePoints)
     {
         //calculate actions
-        
-        MoveStrategy.Move(1, 0);
+        if (Map.GetPointsVisibleAround(this.X, this.Y, this._viewRadius).Contains((this.Player.X, this.Player.Y)))
+        {
+            MoveStrategy.Move(1, 0);
+        }
     }
 }

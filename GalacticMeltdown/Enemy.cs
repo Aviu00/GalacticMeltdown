@@ -9,6 +9,7 @@ public abstract class Enemy : IEntity
     public ConsoleColor BgColor { get; }
     public int X { get; set; }
     public int Y { get; set; }
+    public int _viewRadius;
 
     protected readonly Map Map;
     protected readonly Player Player;
@@ -21,7 +22,7 @@ public abstract class Enemy : IEntity
         Y = y;
         player.PerformedAction += TakeAction;
         map.UpdateEnemyPosition(this, -1, -1);
-        
+        _viewRadius = 3;
         Symbol = 'W';
         FgColor = ConsoleColor.Red;
         BgColor = ConsoleColor.Black;
