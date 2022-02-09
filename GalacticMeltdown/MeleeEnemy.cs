@@ -16,7 +16,24 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         //calculate actions
         if (Map.GetPointsVisibleAround(this.X, this.Y, this._viewRadius).Contains((this.Player.X, this.Player.Y)))
         {
-            MoveStrategy.Move(1, 0);
+            // temporary move logic
+            if (this.X > Player.X)
+            {
+                MoveStrategy.Move(-1, 0);
+            }
+            else if (this.Y > Player.Y)
+            {
+                MoveStrategy.Move(0, -1);
+            }
+            else if(this.Y < Player.Y)
+            {
+                MoveStrategy.Move(0, 1);
+            }
+            else
+            {
+                MoveStrategy.Move(1, 0);
+            }
+
         }
     }
 }
