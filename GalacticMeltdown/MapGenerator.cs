@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using GalacticMeltdown.data;
 using static GalacticMeltdown.Utility;
@@ -18,15 +19,16 @@ public class MapGenerator
     private Tile[] _westernWall;
     private Tile[] _southernWall;
     private int _seed;
-    private Dictionary<string, TileTypeData> _tileTypes;
-    private List<(int rarity, int exitCount, Room room)> _rooms;
+    private readonly Dictionary<string, TileTypeData> _tileTypes;
+    private readonly List<Room> _rooms;
 
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
-    private const int ConnectionChance = 50; //room connection chance
+    private const int ConnectionChance = 50; //room connection chance(this probably shouldn't be touched)
+    private const int MainRouteCommonnessMultiplier = 2; //there are less rare rooms in main route
 
     public MapGenerator(int seed, Dictionary<string, TileTypeData> tileTypes, 
-        List<(int rarity, int exitCount, Room room)> rooms)
+        List<Room> rooms)
     {
         _tileTypes = tileTypes;
         _rooms = rooms;
@@ -238,16 +240,120 @@ public class MapGenerator
             }
         }
     }
-
-    /// <summary>
-    /// Work in progress method
-    /// </summary>
+    
     private void FinalizeRoom(int x, int y)
     {
-        //matrix rotation: 90deg = transpose + rev rows; 270deg = transpose + rev cols; 180deg = rev rows + cols
-        var room = _rooms[_rng.Next(0, _rooms.Count)];
-        TileTypeData[,] roomData = (TileTypeData[,]) room.room.Pattern.Clone();
+        int roomType = CalculateRoomType(x, y);
+        int commonFactor = _rng.Next(1, 101);
+        if (_tempMap[x, y].MainRoute)
+            commonFactor *= MainRouteCommonnessMultiplier;
+        if (commonFactor > 100)
+            commonFactor = 100;
+        var matchingRooms = 
+            _rooms.Where(room => room.Type == roomType && room.Commonness >= commonFactor).ToArray();
+        Room room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
+        TileTypeData[,] roomData = (TileTypeData[,]) room.Pattern.Clone();
+        RotateRoomPattern(x, y, roomData, room);
+        Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
+        Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
+        _map[x, y] = _tempMap[x, y].GenerateSubMap(roomData, northernTileMap, easternTileMap);
+        if (_tempMap[x, y].IsStartPoint)
+            _startPoint = _map[x, y];
+    }
+
+    private int CalculateRoomType(int x, int y)
+    {
+        int[] chances = { 0, 0, 0, 0, 100 };
+        switch (_tempMap[x, y].ConnectionCount)
+        {
+            case 1://type 0
+                chances = new[]{61, 0, 25, 7, 7};
+                break;
+            case 2:
+                if ((_tempMap[x, y].NorthConnection is null || _tempMap[x, y].SouthConnection is null) &&
+                    (_tempMap[x, y].WestConnection is null || _tempMap[x, y].EastConnection is null))
+                {//type 2
+                    chances = new[] {0, 0, 86, 7, 7};
+                }
+                else//type 1
+                {
+                    chances = new[] {0, 70, 0, 15, 15};
+                }
+                break;
+            case 3://type 3
+                chances = new[] {0, 0, 0, 60, 40};
+                break;
+        }//type 4 is default
+
+        return MultiChance(_rng, chances);
+    }
+
+    private void RotateRoomPattern(int x, int y, TileTypeData[,] roomData, Room room)
+    {
+        if(room.RotationalSymmetry)
+            return;
         List<int> possibleRotations = new(){0, 90, 180, 270};
+        var mapRoom = _tempMap[x, y];
+        switch (room.Type)
+        {
+            case 0:
+                if (mapRoom.SouthConnection is null)
+                    possibleRotations.Remove(0);
+                if (mapRoom.EastConnection is null)
+                    possibleRotations.Remove(90);
+                if (mapRoom.NorthConnection is null)
+                    possibleRotations.Remove(180);
+                if (mapRoom.WestConnection is null)
+                    possibleRotations.Remove(270);
+                break;
+            case 1:
+                if (mapRoom.NorthConnection is null && mapRoom.SouthConnection is null)
+                {
+                    possibleRotations.Remove(0);
+                    possibleRotations.Remove(180);
+                }
+                else if (mapRoom.WestConnection is null && mapRoom.EastConnection is null)
+                {
+                    possibleRotations.Remove(90);
+                    possibleRotations.Remove(270);
+                }
+                break;
+            case 2:
+                if (mapRoom.SouthConnection is not null)
+                {
+                    possibleRotations.Remove(180);
+                    possibleRotations.Remove(270);
+                }
+                if (mapRoom.EastConnection is not null)
+                {
+                    possibleRotations.Remove(0);
+                    possibleRotations.Remove(270);
+                }
+                if (mapRoom.NorthConnection is not null)
+                {
+                    possibleRotations.Remove(0);
+                    possibleRotations.Remove(90);
+                }
+                if (mapRoom.WestConnection is not null)
+                {
+                    possibleRotations.Remove(90);
+                    possibleRotations.Remove(180);
+                }
+                break;
+            case 3:
+                if (mapRoom.SouthConnection is not null)
+                    possibleRotations.Remove(180);
+                if (mapRoom.WestConnection is not null)
+                    possibleRotations.Remove(270);
+                if (mapRoom.NorthConnection is not null)
+                    possibleRotations.Remove(0);
+                if (mapRoom.EastConnection is not null)
+                    possibleRotations.Remove(90);
+                break;
+        }
+        if (room.HorizontalSymmetry)
+            possibleRotations.Remove(180);
+        //matrix rotation: 90deg = transpose + rev rows; 270deg = transpose + rev cols; 180deg = rev rows + cols
         switch (possibleRotations[_rng.Next(0, possibleRotations.Count)])
         {
             case 90:
@@ -266,14 +372,8 @@ public class MapGenerator
                 FlipPoles(roomData, ("north", "west"), ("south", "east"), ("west", "east"));
                 break;
         }
-
-        Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
-        Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
-        _map[x, y] = _tempMap[x, y].GenerateSubMap(roomData, northernTileMap, easternTileMap);
-        if (_tempMap[x, y].IsStartPoint)
-            _startPoint = _map[x, y];
     }
-
+    
     private void FlipPoles(TileTypeData[,] roomData, params (string p1, string p2)[] poles)
     {
         for (int x = 0; x < roomData.GetLength(0); x++)

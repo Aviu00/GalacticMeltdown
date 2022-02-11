@@ -39,8 +39,26 @@ public static class Utility
     
     public static bool Chance(int chance, Random rng = null)
     {
-        rng ??= new Random();
+        rng ??= Random.Shared;
         int val = rng.Next(1, 101);
         return val <= chance;
+    }
+    
+    public static int MultiChance(Random rng = null, params int[] chances)
+    {
+        rng ??= Random.Shared;
+        if (chances.Length == 0)
+            throw new ArgumentException();
+        int val = rng.Next(1, 101);
+        int curChance = chances[0];
+        for (int i = 0; i < chances.Length; i++)
+        {
+            if (val <= curChance)
+                return i;
+            if (i+1 == chances.Length)
+                break;
+            curChance += chances[i+1];
+        }
+        throw new ArgumentException();
     }
 }

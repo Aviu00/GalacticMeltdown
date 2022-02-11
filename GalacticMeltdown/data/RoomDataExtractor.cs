@@ -7,14 +7,14 @@ namespace GalacticMeltdown.data;
 
 public class RoomDataExtractor : XmlExtractor
 {
-    public List<(int rarity, int exitCount, Room room)> Rooms { get; private set; }
+    public List<Room> Rooms { get; }
 
     private readonly Dictionary<string, TileTypeData> _tileTypes;
 
     public RoomDataExtractor(Dictionary<string, TileTypeData> tileTypes)
     {
         _tileTypes = tileTypes;
-        Rooms = new List<(int rarity, int exitCount, Room room)>();
+        Rooms = new List<Room>();
         ParseDocument("Rooms.xml");
     }
 
@@ -24,6 +24,10 @@ public class RoomDataExtractor : XmlExtractor
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
             string stringPattern = "";
+            int type = 0;
+            int commonness = 0;
+            bool rotationalSymmetry = false;
+            bool horizontalSymmetry = false;
             Dictionary<char, string> roomTerrain = null;
             foreach (XmlNode locNode in node)
             {
@@ -32,14 +36,26 @@ public class RoomDataExtractor : XmlExtractor
                     case "Pattern":
                         stringPattern = locNode.InnerText;
                         break;
+                    case "Commonness":
+                        commonness = Convert.ToInt32(locNode.InnerText);
+                        break;
+                    case "Type":
+                        type = Convert.ToInt32(locNode.InnerText);
+                        break;
                     case "Terrain":
                         roomTerrain = ParseTerrain(locNode);
+                        break;
+                    case "Rotational Symmetry":
+                        rotationalSymmetry = Convert.ToBoolean(locNode.InnerText);
+                        break;
+                    case "Horizontal Symmetry":
+                        horizontalSymmetry = Convert.ToBoolean(locNode.InnerText);
                         break;
                 }
             }
 
             TileTypeData[,] pattern = ConvertPattern(stringPattern, roomTerrain);
-            Rooms.Add((0, 4, new Room(pattern)));
+            Rooms.Add(new Room(pattern, type, commonness, rotationalSymmetry, horizontalSymmetry));
         }
     }
 
@@ -51,7 +67,7 @@ public class RoomDataExtractor : XmlExtractor
         Dictionary<char, string> roomTerrain = new();
         foreach (XmlNode node in terrainNode)
         {
-            if (node.Attributes == null)
+            if (node.Attributes is null)
                 continue;
             char symbol = ' ';
             string id = "";
@@ -100,4 +116,5 @@ public class RoomDataExtractor : XmlExtractor
     }
 }
 
-public record struct Room(TileTypeData[,] Pattern);
+public readonly record struct Room(TileTypeData[,] Pattern, int Type, int Commonness, bool RotationalSymmetry,
+    bool HorizontalSymmetry);

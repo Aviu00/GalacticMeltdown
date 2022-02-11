@@ -70,5 +70,5 @@ public class TileTypesExtractor : XmlExtractor
     }
 }
 
-public record struct TileTypeData(char Symbol, ConsoleColor Color, bool IsWalkable, bool IsTransparent, string Name, string Id,
-    bool IsConnection, bool IsConnectable, bool IsDependingOnRoomConnection);
+public readonly record struct TileTypeData(char Symbol, ConsoleColor Color, bool IsWalkable, bool IsTransparent, 
+    string Name, string Id, bool IsConnection, bool IsConnectable, bool IsDependingOnRoomConnection);
