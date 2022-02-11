@@ -10,7 +10,7 @@ public static class Algorithms
     /// </summary>
     /// <param name="maxLength">max possible length of the line; negative value or 0 for no restrictions</param>
     /// <returns></returns>
-    public static IEnumerable<(int x, int y)> GetPointsOnLine(int x0, int y0, int x1, int y1, int maxLength = 0)
+    public static IEnumerable<(int x, int y)> BresenhamGetPointsOnLine(int x0, int y0, int x1, int y1, int maxLength = 0)
     {
         int dx = Math.Abs(x1 - x0);
         int dy = Math.Abs(y1 - y0);

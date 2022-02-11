@@ -3,38 +3,33 @@ using GalacticMeltdown.data;
 
 namespace GalacticMeltdown;
 
-public class Map
+public partial class Map
 {
     public readonly int MapSeed;
     public Player Player { get; }
     private SubMap[,] _map;
-    public readonly SubMap StartPoint;
+    private readonly SubMap _startPoint;
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
     public readonly string MapString;//for debugging
-
-    private event Player.TakeAction OnPlayerMove;
+    
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
         Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes, string mapString)
     {
         _cornerTile = new Tile(tileTypes["wall_nesw"]);
         _map = map;
         MapSeed = seed;
-        StartPoint = startPoint;
+        _startPoint = startPoint;
         _southernWall = southernWall;
         _westernWall = westernWall;
         MapString = mapString;
-        Player = new Player(StartPoint.MapX * 25 + 12, StartPoint.MapY * 25 + 12, GetTile);
-        Enemy enemy = new MeleeEnemy(StartPoint.MapX * 25 + 13, StartPoint.MapY * 25 + 13, this, Player);
+        Player = new Player(_startPoint.MapX * 25 + 12, _startPoint.MapY * 25 + 12, GetTile, GetEntity);
+        Enemy enemy = new MeleeEnemy(_startPoint.MapX * 25 + 13, _startPoint.MapY * 25 + 13, this, Player);
     }
 
 
-    public Tile GetTile(int x, int y)//remove this method late
-    {
-        return GetTile(x, y, null, null);
-    }
-    public Tile GetTile(int x, int y, int? mapX/* = null*/, int? mapY/* = null*/)
+    public Tile GetTile(int x, int y)
     {
         switch (x, y)
         {
@@ -45,34 +40,33 @@ public class Map
             case(>= 0, -1):
                 return x >= _southernWall.Length ? null : _southernWall[x];
         }
-        mapX ??= x / 25;
-        mapY ??= y / 25;
+        int mapX = x / 25;
+        int mapY = y / 25;
         int localX = x % 25;
         int localY = y % 25;
-        if (x < 0 || mapX >= _map.GetLength(0) || y < 0 || mapY >= _map.GetLength(1))
+        if (!(x >= 0 && mapX < _map.GetLength(0) && y >= 0 && mapY < _map.GetLength(1)))
         {
             return null;
         }
 
-        return _map[mapX.Value, mapY.Value].Tiles[localX, localY];
+        return _map[mapX, mapY].Tiles[localX, localY];
     }
 
-    public IEntity GetEntity(int x, int y, int? mapX = null, int? mapY = null)
+    public IEntity GetEntity(int x, int y)
     {
-        mapX ??= x / 25;
-        mapY ??= y / 25;
-        if (x < 0 || mapX >= _map.GetLength(0) || y < 0 || mapY >= _map.GetLength(1))
+        if (x == Player.X && y == Player.Y) return Player;
+        int mapX = x / 25;
+        int mapY = y / 25;
+        if (!(x >= 0 && mapX < _map.GetLength(0) && y >= 0 && mapY < _map.GetLength(1)))
         {
             return null;
         }
-        return _map[mapX.Value, mapY.Value].GetEntity(x, y);
+        return _map[mapX, mapY].GetEntity(x, y);
     }
 
     public IDrawable GetDrawable(int x, int y)
     {
-        int mapX = x / 25;
-        int mapY = y / 25;
-        return (IDrawable)GetEntity(x, y, mapX, mapY) ?? GetTile(x, y, mapX, mapY);
+        return (IDrawable) GetEntity(x, y) ?? GetTile(x, y);
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
@@ -81,6 +75,7 @@ public class Map
         int mapY = enemy.Y / 25;
         int oldMapX = oldX / 25;
         int oldMapY = oldY / 25;
+        if (!(0 <= mapX && mapX < _map.GetLength(0) && 0 <= mapY && mapY < _map.GetLength(1))) return;
         if (mapX != oldMapX || oldY != oldMapY)
         {
             if (oldX >= 0 && oldY >= 0)

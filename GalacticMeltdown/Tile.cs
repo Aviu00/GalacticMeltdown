@@ -8,7 +8,7 @@ namespace GalacticMeltdown
         public char Symbol { get; }
         public ConsoleColor FgColor { get; }
         public ConsoleColor BgColor { get; }
-        public bool WasSeenByPlayer = false;
+        public bool Seen = false;
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
         public bool ConnectToWalls { get; } //used in map generation
