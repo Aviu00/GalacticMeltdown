@@ -25,9 +25,9 @@ public class RoomDataExtractor : XmlExtractor
         {
             string stringPattern = "";
             int type = 0;
-            int commonness = 0;
+            int chance = 100;
             bool rotationalSymmetry = false;
-            bool horizontalSymmetry = false;
+            bool centralSymmetry = false;
             Dictionary<char, string> roomTerrain = null;
             foreach (XmlNode locNode in node)
             {
@@ -36,8 +36,8 @@ public class RoomDataExtractor : XmlExtractor
                     case "Pattern":
                         stringPattern = locNode.InnerText;
                         break;
-                    case "Commonness":
-                        commonness = Convert.ToInt32(locNode.InnerText);
+                    case "Chance":
+                        chance = Convert.ToInt32(locNode.InnerText);
                         break;
                     case "Type":
                         type = Convert.ToInt32(locNode.InnerText);
@@ -45,17 +45,17 @@ public class RoomDataExtractor : XmlExtractor
                     case "Terrain":
                         roomTerrain = ParseTerrain(locNode);
                         break;
-                    case "Rotational Symmetry":
+                    case "RotationalSymmetry":
                         rotationalSymmetry = Convert.ToBoolean(locNode.InnerText);
                         break;
-                    case "Horizontal Symmetry":
-                        horizontalSymmetry = Convert.ToBoolean(locNode.InnerText);
+                    case "CentralSymmetry":
+                        centralSymmetry = Convert.ToBoolean(locNode.InnerText);
                         break;
                 }
             }
 
             TileTypeData[,] pattern = ConvertPattern(stringPattern, roomTerrain);
-            Rooms.Add(new Room(pattern, type, commonness, rotationalSymmetry, horizontalSymmetry));
+            Rooms.Add(new Room(pattern, type, chance, rotationalSymmetry, centralSymmetry));
         }
     }
 
@@ -116,5 +116,5 @@ public class RoomDataExtractor : XmlExtractor
     }
 }
 
-public readonly record struct Room(TileTypeData[,] Pattern, int Type, int Commonness, bool RotationalSymmetry,
-    bool HorizontalSymmetry);
+public readonly record struct Room(TileTypeData[,] Pattern, int Type, int Chance, bool RotationalSymmetry,
+    bool CentralSymmetry);

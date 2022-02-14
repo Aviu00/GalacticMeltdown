@@ -150,7 +150,7 @@ public class SubMapGenerator
             _ => false
         };
 
-        string newId = !switchId ? parsedId[0] : parsedId[0] == "wall" ? "floor" : "wall";
+        string newId = !switchId ? parsedId[0] : parsedId[0] == "wall" ? "nospawnfloor" : "wall";
         roomData[x, y] = _tileTypes[newId];
     }
     

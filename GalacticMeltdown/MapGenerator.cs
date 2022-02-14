@@ -25,7 +25,6 @@ public class MapGenerator
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
     private const int ConnectionChance = 50; //room connection chance(this probably shouldn't be touched)
-    private const int MainRouteCommonnessMultiplier = 2; //there are less rare rooms in main route
 
     public MapGenerator(int seed, Dictionary<string, TileTypeData> tileTypes, 
         List<Room> rooms)
@@ -46,6 +45,7 @@ public class MapGenerator
         GenerateBars();
         BuildMainRoute();
         FillMap();
+        FinalizeRooms();
         GenerateBorderWalls();
         return new Map(_map, _seed, _startPoint, _southernWall, _westernWall, _tileTypes, CalculateMapString());
     }
@@ -209,16 +209,13 @@ public class MapGenerator
         }
         
         _map = new SubMap[width, height];
-        for (int x = width - 1; x >= 0; x--)
+        for (int x = 0; x < width; x++)
         {
-            for (int y = height - 1; y >= 0; y--)
+            for (int y = 0; y < height; y++)
             {
                 if (_tempMap[x, y].HasAccessToMainRoute)
-                {
-                    FinalizeRoom(x, y);
                     continue;
-                }
-                
+
                 List<SubMapGenerator> adjAccessRooms = new();
                 List<SubMapGenerator> adjNoAccessRooms = new();
                 AddRoomToList(x + 1, y, adjAccessRooms, adjNoAccessRooms);
@@ -228,7 +225,6 @@ public class MapGenerator
                 if (adjAccessRooms.Count != 0)
                 {
                     ConnectRooms(_tempMap[x,y], adjAccessRooms[_rng.Next(0, adjAccessRooms.Count)]);
-                    FinalizeRoom(x, y);
                     continue;
                 }
 
@@ -236,6 +232,16 @@ public class MapGenerator
                 {
                     ConnectRooms(_tempMap[x, y], room);
                 }
+            }
+        }
+    }
+
+    private void FinalizeRooms()
+    {
+        for (int x = _map.GetLength(0) - 1; x >= 0; x--)
+        {
+            for (int y = _map.GetLength(1) - 1; y >= 0; y--)
+            {
                 FinalizeRoom(x, y);
             }
         }
@@ -244,13 +250,8 @@ public class MapGenerator
     private void FinalizeRoom(int x, int y)
     {
         int roomType = CalculateRoomType(x, y);
-        int commonFactor = _rng.Next(1, 101);
-        if (_tempMap[x, y].MainRoute)
-            commonFactor *= MainRouteCommonnessMultiplier;
-        if (commonFactor > 100)
-            commonFactor = 100;
         var matchingRooms = 
-            _rooms.Where(room => room.Type == roomType && room.Commonness >= commonFactor).ToArray();
+            _rooms.Where(room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng)).ToArray();
         Room room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
         TileTypeData[,] roomData = (TileTypeData[,]) room.Pattern.Clone();
         RotateRoomPattern(x, y, roomData, room);
@@ -260,32 +261,30 @@ public class MapGenerator
         if (_tempMap[x, y].IsStartPoint)
             _startPoint = _map[x, y];
     }
-
+    
     private int CalculateRoomType(int x, int y)
     {
-        int[] chances = { 0, 0, 0, 0, 100 };
-        switch (_tempMap[x, y].ConnectionCount)
+        int connections = _tempMap[x, y].ConnectionCount;
+        switch (connections)
         {
-            case 1://type 0
-                chances = new[]{61, 0, 25, 7, 7};
-                break;
+            case 1:
+                return 0;
             case 2:
                 if ((_tempMap[x, y].NorthConnection is null || _tempMap[x, y].SouthConnection is null) &&
                     (_tempMap[x, y].WestConnection is null || _tempMap[x, y].EastConnection is null))
-                {//type 2
-                    chances = new[] {0, 0, 86, 7, 7};
-                }
-                else//type 1
                 {
-                    chances = new[] {0, 70, 0, 15, 15};
+                    return 2;
                 }
-                break;
-            case 3://type 3
-                chances = new[] {0, 0, 0, 60, 40};
-                break;
-        }//type 4 is default
+                else
+                    return 1;
+            default:
+                return connections;
+        }
+    }
 
-        return MultiChance(_rng, chances);
+    private bool ValidateRoomType(int roomType, int validator)
+    {
+        return roomType >= validator && (roomType, validator) is not (1, 2) and not (2, 1);
     }
 
     private void RotateRoomPattern(int x, int y, TileTypeData[,] roomData, Room room)
@@ -322,37 +321,43 @@ public class MapGenerator
                 if (mapRoom.SouthConnection is not null)
                 {
                     possibleRotations.Remove(180);
-                    possibleRotations.Remove(270);
-                }
-                if (mapRoom.EastConnection is not null)
-                {
-                    possibleRotations.Remove(0);
-                    possibleRotations.Remove(270);
-                }
-                if (mapRoom.NorthConnection is not null)
-                {
-                    possibleRotations.Remove(0);
                     possibleRotations.Remove(90);
                 }
                 if (mapRoom.WestConnection is not null)
                 {
+                    possibleRotations.Remove(0);
                     possibleRotations.Remove(90);
+                }
+                if (mapRoom.NorthConnection is not null)
+                {
+                    possibleRotations.Remove(0);
+                    possibleRotations.Remove(270);
+                }
+                if (mapRoom.EastConnection is not null)
+                {
+                    possibleRotations.Remove(270);
                     possibleRotations.Remove(180);
                 }
                 break;
             case 3:
                 if (mapRoom.SouthConnection is not null)
                     possibleRotations.Remove(180);
-                if (mapRoom.WestConnection is not null)
+                if (mapRoom.EastConnection is not null)
                     possibleRotations.Remove(270);
                 if (mapRoom.NorthConnection is not null)
                     possibleRotations.Remove(0);
-                if (mapRoom.EastConnection is not null)
+                if (mapRoom.WestConnection is not null)
                     possibleRotations.Remove(90);
                 break;
         }
-        if (room.HorizontalSymmetry)
-            possibleRotations.Remove(180);
+
+        if (room.CentralSymmetry)
+        {
+            if(possibleRotations.Contains(0))
+                possibleRotations.Remove(180);
+            if (possibleRotations.Contains(90))
+                possibleRotations.Remove(270);
+        }
         //matrix rotation: 90deg = transpose + rev rows; 270deg = transpose + rev cols; 180deg = rev rows + cols
         switch (possibleRotations[_rng.Next(0, possibleRotations.Count)])
         {
@@ -530,6 +535,11 @@ public class MapGenerator
         {
             for (int x = 0; x < width; x++)
             {
+                if (_tempMap[x, y].IsStartPoint)
+                {
+                    sb.Append('S');
+                    continue;
+                }
                 sb.Append(_tempMap[x, y].CalculateSymbol());
             }
             sb.Append('\n');
