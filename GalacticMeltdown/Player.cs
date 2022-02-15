@@ -61,6 +61,14 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
             PerformedAction?.Invoke(100);
         }
         VisiblePointsChanged?.Invoke();
+        Energy -= 10;
+        if (Energy < 10)
+        {
+            Energy = 100;
+            VisiblePointsChanged?.Invoke();
+            PositionChanged?.Invoke();
+            PerformedAction?.Invoke(100);
+        }
         return true;
     }
 
