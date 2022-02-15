@@ -6,6 +6,8 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
 {
     public int X { get; set; }
     public int Y { get; set; }
+    
+    private int Energy;
     public char Symbol { get; }
     public ConsoleColor FgColor { get; }
     public ConsoleColor BgColor { get; }
@@ -51,9 +53,14 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         if (!(NoClip || (tile is null || tile.IsWalkable) && _entityAt(X + deltaX, Y + deltaY) is null)) return false;
         X += deltaX;
         Y += deltaY;
-        VisiblePointsChanged?.Invoke();
-        PositionChanged?.Invoke();
-        PerformedAction?.Invoke(100);
+        Energy -= 10;
+        if (Energy < 10)
+        {
+            Energy = 100;
+            VisiblePointsChanged?.Invoke();
+            PositionChanged?.Invoke();
+            PerformedAction?.Invoke(100);
+        }
         return true;
     }
 
@@ -61,6 +68,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
     {
         X = x;
         Y = y;
+        Energy = 100;
         _tileAt = tileAt;
         _entityAt = entityAt;
         Symbol = '@';
