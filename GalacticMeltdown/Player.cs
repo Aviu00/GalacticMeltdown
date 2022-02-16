@@ -53,8 +53,8 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         if (!(NoClip || (tile is null || tile.IsWalkable) && _entityAt(X + deltaX, Y + deltaY) is null)) return false;
         X += deltaX;
         Y += deltaY;
-        Energy -= 10;
-        if (Energy < 10)
+        Energy -= tile.TileMoveCost;
+        if (Energy - tile.TileMoveCost < 0)
         {
             Energy = 100;
             VisiblePointsChanged?.Invoke();

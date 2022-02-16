@@ -12,6 +12,7 @@ namespace GalacticMeltdown
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
         public bool ConnectToWalls { get; } //used in map generation
+        public int TileMoveCost = 10; // temporary value
         
         public string Name { get; }
 
