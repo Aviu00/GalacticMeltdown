@@ -57,10 +57,10 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         if (Energy - tile.TileMoveCost < 0)
         {
             Energy = 100;
-            VisiblePointsChanged?.Invoke();
             PositionChanged?.Invoke();
             PerformedAction?.Invoke(100);
         }
+        VisiblePointsChanged?.Invoke();
         return true;
     }
 
