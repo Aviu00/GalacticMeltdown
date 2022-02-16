@@ -9,6 +9,7 @@ public abstract class Enemy : IEntity
     public ConsoleColor BgColor { get; }
     public int X { get; set; }
     public int Y { get; set; }
+    public int Energy = 100;
     public int _viewRadius;
 
     protected readonly Map Map;
