@@ -10,10 +10,12 @@ public class MoveStrategy : Behavior
     }
     public void Move(int relX, int relY)
     {
-        if (_map.GetTile(Target.X + relX,Target.Y + relY).IsWalkable)
+        var tile = _map.GetTile(Target.X + relX, Target.Y + relY); 
+        if (tile.IsWalkable && (Target.Energy - tile.TileMoveCost > 0))
         {
             Target.X += relX;
-            Target.Y += relY;   
+            Target.Y += relY;
+            Target.Energy -= tile.TileMoveCost;
         }
         _map.UpdateEnemyPosition(Target, Target.X - relX, Target.Y - relY);
     }
