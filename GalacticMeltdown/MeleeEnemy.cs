@@ -1,3 +1,4 @@
+using System;
 using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown;
@@ -13,27 +14,39 @@ public class MeleeEnemy : Enemy, IMoveStrategy
 
     protected override void TakeAction(int movePoints)
     {
-        //calculate actions
-        if (Map.GetPointsVisibleAround(this.X, this.Y, this._viewRadius).Contains((this.Player.X, this.Player.Y)))
+        this.Energy = movePoints;
+        while(this.Energy > 0)
         {
-            // temporary move logic
-            if (this.X > Player.X)
+            //Console.WriteLine(this.Energy);
+            //calculate actions
+            if (Map.GetPointsVisibleAround(this.X, this.Y, this._viewRadius).Contains((this.Player.X, this.Player.Y)))
             {
-                MoveStrategy.Move(-1, 0);
-            }
-            else if (this.Y > Player.Y)
-            {
-                MoveStrategy.Move(0, -1);
-            }
-            else if(this.Y < Player.Y)
-            {
-                MoveStrategy.Move(0, 1);
+                // temporary move logic
+                if (this.X > Player.X)
+                {
+                    MoveStrategy.Move(-1, 0);
+                }
+                else if (this.Y > Player.Y)
+                {
+                    MoveStrategy.Move(0, -1);
+                }
+                else if (this.Y < Player.Y)
+                {
+                    MoveStrategy.Move(0, 1);
+                }
+                else if(this.X < Player.X)
+                {
+                    MoveStrategy.Move(1, 0);
+                }
+                else
+                {
+                    break;
+                }
             }
             else
             {
-                MoveStrategy.Move(1, 0);
+                break;
             }
-
         }
     }
 }
