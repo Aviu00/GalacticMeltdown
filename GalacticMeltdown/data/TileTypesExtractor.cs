@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 namespace GalacticMeltdown.data;
 
 public class TileTypesExtractor : XmlExtractor
 {
+    private static readonly string[] Directions =
+    {
+        "nesw", "nes", "new", "nsw", "esw", "ns", "ew", "ne", "es", "sw", "nw", "n", "e", "s", "w"
+    };
     public Dictionary<string, TileTypeData> TileTypes { get; }
 
     public TileTypesExtractor()
@@ -28,6 +33,7 @@ public class TileTypesExtractor : XmlExtractor
             bool isConnection = false;
             bool isConnectable = false;
             bool isDependingOnRoomConnection = false;
+            char[] symbols = null;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -59,13 +65,26 @@ public class TileTypesExtractor : XmlExtractor
                     case "IsDependingOnRoomConnection":
                         isDependingOnRoomConnection = Convert.ToBoolean(locNode.InnerText);
                         break;
+                    case "ConnectionSymbols":
+                        symbols = locNode.InnerText.Split().Select(char.Parse).ToArray();
+                        break;
                 }
             }
-            
-            TileTypeData tileTypeData = 
-                new TileTypeData(symbol, color, isWalkable, isTransparent, name, id, isConnection, isConnectable, 
+            //log an error if id is null or TileTypes contains id
+            TileTypeData tileTypeData =
+                new TileTypeData(symbol, color, isWalkable, isTransparent, name, id, isConnection, isConnectable,
                     isDependingOnRoomConnection);
-            TileTypes.Add(id, tileTypeData);
+            TileTypes.Add(tileTypeData.Id, tileTypeData);
+            if (symbols == null || !isConnectable) continue;
+            //generate connections
+            //log an error if symbols length is not 15
+            for (int i = 0; i < 15; i++)
+            {
+                TileTypeData connectionData =
+                    new TileTypeData(symbols[i], color, isWalkable, isTransparent, name, id + "_" + Directions[i],
+                        isConnection, false, false);
+                TileTypes.Add(connectionData.Id, connectionData);
+            }
         }
     }
 }
