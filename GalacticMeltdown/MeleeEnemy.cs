@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown;
@@ -15,35 +18,40 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     protected override void TakeAction(int movePoints)
     {
         this.Energy = movePoints;
-        // acts only if see enemy
-        if (Map.GetPointsVisibleAround(this.X, this.Y, this._viewRadius).Contains((this.Player.X, this.Player.Y)))
+        bool flag = true;
+        IEnumerable PathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y); 
+        // check if enemy see player
+        foreach (var coords in Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y))
         {
-            while (this.Energy - (this.Map.GetTile(this.X, this.Y)).TileMoveCost > 0)
+            if (!Map.GetTile(coords.x, coords.y).IsWalkable)
             {
-                Console.Write(this.GetHashCode() + ":" +this.Energy + "/");
-                //calculate actions
-                // temporary move logic
-                if (this.X > Player.X)
+                flag = false;
+            }
+        }
+
+        int DiffX = 0, DiffY = 0;
+        // acts only if see enemy
+        if (flag == true)
+        {
+            int CostOfWay = 0;
+            foreach (var coords in Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y))
+            {
+                CostOfWay += (Map.GetTile(coords.x, coords.y)).TileMoveCost;
+                if (CostOfWay < this.Energy)
                 {
-                    MoveStrategy.Move(-1, 0);
-                }
-                else if (this.Y > Player.Y)
-                {
-                    MoveStrategy.Move(0, -1);
-                }
-                else if (this.Y < Player.Y)
-                {
-                    MoveStrategy.Move(0, 1);
-                }
-                else if (this.X < Player.X)
-                {
-                    MoveStrategy.Move(1, 0);
+                    continue;
                 }
                 else
                 {
+                    DiffX = coords.x - this.X;
+                    DiffY = coords.y - this.Y;
                     break;
                 }
             }
+            MoveStrategy.Move(DiffX, DiffY);
+            // string for test
+            //Console.WriteLine("Enenmy №-" + GetHashCode().ToString()+ "|||" + DiffX.ToString() + ":" + DiffY.ToString());
         }
+
     }
 }

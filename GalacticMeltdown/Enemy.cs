@@ -9,7 +9,7 @@ public abstract class Enemy : IEntity
     public ConsoleColor BgColor { get; }
     public int X { get; set; }
     public int Y { get; set; }
-    public int Energy = 100;
+    public int Energy = 20;
     public int _viewRadius;
 
     protected readonly Map Map;
@@ -23,7 +23,7 @@ public abstract class Enemy : IEntity
         Y = y;
         player.PerformedAction += TakeAction;
         map.UpdateEnemyPosition(this, -1, -1);
-        _viewRadius = 10;
+        _viewRadius = 20;
         Symbol = 'W';
         FgColor = ConsoleColor.Red;
         BgColor = ConsoleColor.Black;

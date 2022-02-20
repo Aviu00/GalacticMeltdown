@@ -56,8 +56,8 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         Energy -= tile.TileMoveCost;
         if (Energy - tile.TileMoveCost < 0)
         {
-            Energy = 100;
-            PerformedAction?.Invoke(100);
+            Energy = 40;
+            PerformedAction?.Invoke(20);
         }
         PositionChanged?.Invoke();
         VisiblePointsChanged?.Invoke();
@@ -68,7 +68,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
     {
         X = x;
         Y = y;
-        Energy = 100;
+        Energy = 40;
         _tileAt = tileAt;
         _entityAt = entityAt;
         Symbol = '@';
