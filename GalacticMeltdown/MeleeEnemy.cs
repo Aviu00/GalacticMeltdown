@@ -43,7 +43,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         foreach ((int x, int y) coords in pathToPlayer)
         {
             costOfWay += (Map.GetTile(coords.x, coords.y)).TileMoveCost;
-            if (costOfWay < this.Energy)
+            if (costOfWay <= this.Energy)
             {
                 continue;
             }
