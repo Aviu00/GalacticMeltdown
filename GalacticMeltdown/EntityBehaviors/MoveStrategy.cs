@@ -11,7 +11,7 @@ public class MoveStrategy : Behavior
     public void Move(int relX, int relY)
     {
         var tile = _map.GetTile(Target.X + relX, Target.Y + relY); 
-        if (tile.IsWalkable && (Target.Energy - tile.TileMoveCost > 0))
+        if (tile.IsWalkable)
         {
             Target.X += relX;
             Target.Y += relY;

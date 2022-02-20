@@ -15,12 +15,13 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     protected override void TakeAction(int movePoints)
     {
         this.Energy = movePoints;
-        while(this.Energy > 0)
+        // acts only if see enemy
+        if (Map.GetPointsVisibleAround(this.X, this.Y, this._viewRadius).Contains((this.Player.X, this.Player.Y)))
         {
-            //Console.WriteLine(this.Energy);
-            //calculate actions
-            if (Map.GetPointsVisibleAround(this.X, this.Y, this._viewRadius).Contains((this.Player.X, this.Player.Y)))
+            while (this.Energy - (this.Map.GetTile(this.X, this.Y)).TileMoveCost > 0)
             {
+                Console.Write(this.GetHashCode() + ":" +this.Energy + "/");
+                //calculate actions
                 // temporary move logic
                 if (this.X > Player.X)
                 {
@@ -34,7 +35,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
                 {
                     MoveStrategy.Move(0, 1);
                 }
-                else if(this.X < Player.X)
+                else if (this.X < Player.X)
                 {
                     MoveStrategy.Move(1, 0);
                 }
@@ -42,10 +43,6 @@ public class MeleeEnemy : Enemy, IMoveStrategy
                 {
                     break;
                 }
-            }
-            else
-            {
-                break;
             }
         }
     }
