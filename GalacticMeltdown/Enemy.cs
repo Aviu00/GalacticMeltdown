@@ -28,6 +28,5 @@ public abstract class Enemy : IEntity
         FgColor = ConsoleColor.Red;
         BgColor = ConsoleColor.Black;
     }
-
     protected abstract void TakeAction(int movePoints);
 }
