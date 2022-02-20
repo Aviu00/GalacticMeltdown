@@ -17,6 +17,7 @@ public class TileTypesExtractor : XmlExtractor
     {
         TileTypes = new Dictionary<string, TileTypeData>();
         ParseDocument("Tiles.xml");
+        ParseDocument("TilesExtra.xml");
     }
 
     protected sealed override void ParseDocument(string docName)

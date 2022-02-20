@@ -385,9 +385,9 @@ public class MapGenerator
         {
             for (int y = 0; y < roomData.GetLength(1); y++)
             {
-                string[] parsedId = roomData[x, y].Id.Split('_');
                 if (!roomData[x, y].IsDependingOnRoomConnection)
                     continue;
+                string[] parsedId = roomData[x, y].Id.Split('_');
                 foreach (var (p1, p2) in poles)
                 {
                     if (parsedId[2] == p1)
@@ -396,7 +396,7 @@ public class MapGenerator
                         parsedId[2] = p1;
                 }
 
-                roomData[x, y] = _tileTypes[$"{parsedId[0]}_if_{parsedId[2]}"];
+                roomData[x, y] = _tileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
             }
         }
     }
