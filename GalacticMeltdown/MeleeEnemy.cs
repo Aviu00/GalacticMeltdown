@@ -12,14 +12,14 @@ public class MeleeEnemy : Enemy, IMoveStrategy
 {
     public MoveStrategy MoveStrategy { get; set; }
 
-    protected int LastSeenPlayerX;
-    protected int LastSeenPlayerY;
+    private int _lastSeenPlayerX;
+    private int _lastSeenPlayerY;
 
     public MeleeEnemy(int x, int y, Map map, Player player) : base(x, y, map, player)
     {
         MoveStrategy = new MoveStrategy(this, Map);
-        LastSeenPlayerX = X;
-        LastSeenPlayerY = Y;
+        _lastSeenPlayerX = X;
+        _lastSeenPlayerY = Y;
     }
 
     protected bool SeePlayer()
@@ -36,47 +36,46 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     }
 
     // makes many moves
-    protected void MoveToGoal(IEnumerable PathToPlayer)
+    protected void MoveToGoal(IEnumerable pathToPlayer)
     {
-        int CostOfWay = 0;
-        int DiffX = 0, DiffY = 0;
-        foreach ((int x, int y) coords in PathToPlayer)
+        int costOfWay = 0;
+        int diffX = 0, diffY = 0;
+        foreach ((int x, int y) coords in pathToPlayer)
         {
-            CostOfWay += (Map.GetTile(coords.x, coords.y)).TileMoveCost;
-            if (CostOfWay < this.Energy)
+            costOfWay += (Map.GetTile(coords.x, coords.y)).TileMoveCost;
+            if (costOfWay < this.Energy)
             {
                 continue;
             }
             else
             {
-                DiffX = coords.x - this.X;
-                DiffY = coords.y - this.Y;
+                diffX = coords.x - this.X;
+                diffY = coords.y - this.Y;
                 break;
             }
         }
-        MoveStrategy.Move(DiffX, DiffY);
+        MoveStrategy.Move(diffX, diffY);
     }
     
     protected override void TakeAction(int movePoints)
     {
         this.Energy = movePoints;
-        IEnumerable PathToPlayer;
+        IEnumerable pathToPlayer;
         // acts only if see enemy
         if (SeePlayer())
         {
-            PathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
-            int CostOfWay = 0;
-            LastSeenPlayerX = Player.X;
-            LastSeenPlayerY = Player.Y;
-            MoveToGoal(PathToPlayer);
+            pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
+            _lastSeenPlayerX = Player.X;
+            _lastSeenPlayerY = Player.Y;
+            MoveToGoal(pathToPlayer);
             // string for test
             //Console.WriteLine("Enenmy №-" + GetHashCode().ToString()+ "|||" + DiffX.ToString() + ":" + DiffY.ToString());
         }
         else
         {
-            PathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, LastSeenPlayerX, LastSeenPlayerY);
-            MoveToGoal(PathToPlayer);
+            pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            MoveToGoal(pathToPlayer);
         }
-        Console.WriteLine("Enenmy №-" + GetHashCode().ToString()+ "|||" + (LastSeenPlayerX - this.X).ToString() + ":" + (LastSeenPlayerY - this.Y).ToString());
+        //Console.WriteLine("Enemy №-" + GetHashCode().ToString()+ "|||" + (_lastSeenPlayerX - this.X).ToString() + ":" + (_lastSeenPlayerY - this.Y).ToString());
     }
 }
