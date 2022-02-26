@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using GalacticMeltdown.EntityBehaviors;
 
@@ -24,6 +25,8 @@ public class MeleeEnemy : Enemy, IMoveStrategy
             _lastSeenPlayerX = Player.X;
             _lastSeenPlayerY = Player.Y;
         }
+        // for tests
+        //Console.WriteLine(this.GetHashCode() + ":" + SeePlayer().ToString());
     }
 
     protected bool SeePlayer()
