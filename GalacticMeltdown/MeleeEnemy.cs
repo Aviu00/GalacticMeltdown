@@ -69,8 +69,6 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         if (SeePlayer())
         {
             pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
-            _lastSeenPlayerX = Player.X;
-            _lastSeenPlayerY = Player.Y;
             MoveToGoal(pathToPlayer);
             // string for test
             //Console.WriteLine("Enenmy №-" + GetHashCode().ToString()+ "|||" + DiffX.ToString() + ":" + DiffY.ToString());
