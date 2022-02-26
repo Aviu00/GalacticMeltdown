@@ -40,3 +40,5 @@ public interface IControllable : IHasCoords
 public delegate void VisiblePointsChangedEventHandler();
 
 public delegate void PositionChangedEventHandler();
+
+public delegate void PositionChangedForEnemyEventHandler(int x, int y);
