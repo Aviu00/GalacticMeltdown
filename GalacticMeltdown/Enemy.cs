@@ -29,4 +29,5 @@ public abstract class Enemy : IEntity
         BgColor = ConsoleColor.Black;
     }
     protected abstract void TakeAction(int movePoints);
+    protected abstract void UpdateLastSeenPosition();
 }
