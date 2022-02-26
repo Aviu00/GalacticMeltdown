@@ -17,6 +17,15 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         _lastSeenPlayerY = Y;
     }
 
+    protected override void UpdateLastSeenPosition()
+    {
+        if (SeePlayer())
+        {
+            _lastSeenPlayerX = Player.X;
+            _lastSeenPlayerY = Player.Y;
+        }
+    }
+
     protected bool SeePlayer()
     {
         bool flag = true;
