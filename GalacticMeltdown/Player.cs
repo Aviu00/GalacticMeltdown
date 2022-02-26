@@ -46,7 +46,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
 
     public event PerformedActionEventHandler PerformedAction;
     public event PositionChangedEventHandler PositionChanged;
-    public event PositionChangedForEnemyEventHandler PositionChangedForEnemy;
+    public event PositionChangedEventHandler PositionChangedForEnemy;
 
     public bool TryMove(int deltaX, int deltaY)
     {
@@ -62,15 +62,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         }
         PositionChanged?.Invoke();
         VisiblePointsChanged?.Invoke();
-        Energy -= 10;
-        if (Energy < 10)
-        {
-            Energy = 100;
-            VisiblePointsChanged?.Invoke();
-            PositionChanged?.Invoke();
-            PerformedAction?.Invoke(100);
-        }
-        PositionChangedForEnemy?.Invoke(this.X, this.Y);
+        PositionChangedForEnemy?.Invoke();
         return true;
     }
 

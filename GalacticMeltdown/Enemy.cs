@@ -22,6 +22,7 @@ public abstract class Enemy : IEntity
         X = x;
         Y = y;
         player.PerformedAction += TakeAction;
+        player.PositionChangedForEnemy += UpdateLastSeenPosition;
         map.UpdateEnemyPosition(this, -1, -1);
         _viewRadius = 20;
         Symbol = 'W';
