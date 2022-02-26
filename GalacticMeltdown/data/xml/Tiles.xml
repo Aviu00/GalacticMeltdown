@@ -51,4 +51,12 @@
         <IsConnectable>True</IsConnectable>
         <ConnectionSymbols>┼ ├ ┴ ┤ ┬ │ ─ └ ┌ ┐ ┘ ╵ ╶ ╷ ╴</ConnectionSymbols>
     </TileType>
+    <TileType>
+        <Id>water</Id>
+        <Name>water</Name>
+        <Symbol>~</Symbol>
+        <Color>blue</Color>
+        <IsTransparent>True</IsTransparent>
+        <IsWalkable>True</IsWalkable>
+    </TileType>
 </TileTypes>

@@ -72,4 +72,20 @@
         <Id>wall_void_west</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
     </TileType>
+    <TileType>
+        <Id>floor_water_north</Id>
+        <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
+    </TileType>
+    <TileType>
+        <Id>floor_water_east</Id>
+        <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
+    </TileType>
+    <TileType>
+        <Id>floor_water_south</Id>
+        <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
+    </TileType>
+    <TileType>
+        <Id>floor_water_west</Id>
+        <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
+    </TileType>
 </TileTypes>
