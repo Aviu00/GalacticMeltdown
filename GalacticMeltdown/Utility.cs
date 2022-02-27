@@ -61,4 +61,16 @@ public static class Utility
         }
         throw new ArgumentException();
     }
+
+    public static Dictionary<TKey, TVal> JoinDictionaries<TKey, TJoin, TVal>
+        (Dictionary<TKey, TJoin> dict1, Dictionary<TJoin, TVal> dict2)
+    {
+        Dictionary<TKey, TVal> dictionary = new();
+        foreach (var (key, value) in dict1)
+        {
+            if (dict2.ContainsKey(value)) dictionary.Add(key, dict2[value]);
+        }
+
+        return dictionary;
+    }
 }
