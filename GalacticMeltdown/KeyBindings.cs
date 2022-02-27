@@ -9,7 +9,7 @@ partial class GameManager
         ChangeTarget = WhatToChange;
     }
 
-    private enum PlayerAction
+    public enum PlayerAction
     {
         MoveUp,
         MoveDown,
