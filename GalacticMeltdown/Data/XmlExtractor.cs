@@ -10,7 +10,7 @@ public abstract class XmlExtractor
     protected XmlDocument GetXmlDocument(string name)
     {
         XmlDocument doc = new XmlDocument();
-        doc.Load($"{_projectDirectory}/../../../data/xml/{name}");
+        doc.Load($"{_projectDirectory}/../../../Data/xml/{name}");
         return doc;
     }
 
