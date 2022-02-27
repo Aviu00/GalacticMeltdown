@@ -32,5 +32,15 @@ public static class Data
             {ConsoleKey.X, GameManager.PlayerAction.ActivateXRay},
             {ConsoleKey.Q, GameManager.PlayerAction.Quit}
         };
+
+        public static Dictionary<ConsoleKey, SelectionControl> Selection = new()
+        {
+            {ConsoleKey.UpArrow, SelectionControl.Up},
+            {ConsoleKey.DownArrow, SelectionControl.Down},
+            {ConsoleKey.LeftArrow, SelectionControl.Left},
+            {ConsoleKey.RightArrow, SelectionControl.Right},
+            {ConsoleKey.Enter, SelectionControl.Select},
+            {ConsoleKey.Escape, SelectionControl.Back}
+        };
     }
 }
