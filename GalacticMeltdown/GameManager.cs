@@ -29,7 +29,6 @@ public partial class GameManager
         _renderer.Redraw();
         InputProcessor.AddBinding(Data.Data.CurrentBindings.Player, PlayerActions);
         InputProcessor.StartProcessLoop();
-        CleanUp();
     }
     
     private static void MoveControlled(int deltaX, int deltaY)
