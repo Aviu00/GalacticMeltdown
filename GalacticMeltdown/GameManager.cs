@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
-partial class GameManager
+public partial class GameManager
 {
     private static Player _player;
     private static IControllable _controlledObject;
@@ -28,13 +27,7 @@ partial class GameManager
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
         _renderer.Redraw();
-        Dictionary<ConsoleKey, Action> bindings = new();
-        foreach (var (key, action) in KeyBinding)
-        {
-            bindings.Add(key, ActionBinding[action]);
-        }
-        bindings.Add(ConsoleKey.Q, InputProcessor.StopProcessLoop);
-        InputProcessor.Bindings = bindings;
+        InputProcessor.AddBinding(Data.Data.CurrentBindings.Player, PlayerActions);
         InputProcessor.StartProcessLoop();
         CleanUp();
     }

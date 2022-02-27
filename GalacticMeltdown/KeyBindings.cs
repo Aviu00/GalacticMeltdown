@@ -1,14 +1,8 @@
 namespace GalacticMeltdown;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-partial class GameManager
+public partial class GameManager
 {
-    static void ChangeBindings(IDictionary ChangeTarget, IDictionary WhatToChange) // method to change binding when open/close inventory ot etc.
-    {
-        ChangeTarget = WhatToChange;
-    }
-
     public enum PlayerAction
     {
         MoveUp,
@@ -23,13 +17,12 @@ partial class GameManager
         ReduceViewRange, //for fov testing
         ActivateNoClip, //temporary cheat codes
         ActivateXRay, //temporary cheat codes
+        Quit
     }
     
     // Inventory bindings supposed to be updated in the future
-    static private readonly IDictionary<PlayerAction, Action> InventoryBinding =
-        new Dictionary<PlayerAction, Action>() { };
-    static private readonly IDictionary<PlayerAction, Action> ActionBinding = 
-        new Dictionary<PlayerAction, Action>
+    private static readonly Dictionary<PlayerAction, Action> PlayerActions = 
+        new()
         {
             {PlayerAction.MoveUp, () => MoveControlled(0, 1)},
             {PlayerAction.MoveDown, () => MoveControlled(0, -1)},
@@ -43,28 +36,7 @@ partial class GameManager
             {PlayerAction.ReduceViewRange, () => _player.ViewRadius--},
             {PlayerAction.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
             {PlayerAction.ActivateXRay, () => _player.Xray = !_player.Xray},
+            {PlayerAction.Quit, () => { InputProcessor.StopProcessLoop(); CleanUp(); }},
             //{PlayerAction.OpenCloseInventory, () => ChangeBindings()}
-        };
-    
-    static private readonly  IDictionary <ConsoleKey, PlayerAction> KeyBinding = 
-        new Dictionary<ConsoleKey, PlayerAction>
-        {
-            {ConsoleKey.UpArrow, PlayerAction.MoveUp},
-            {ConsoleKey.DownArrow, PlayerAction.MoveDown},
-            {ConsoleKey.LeftArrow, PlayerAction.MoveLeft},
-            {ConsoleKey.RightArrow, PlayerAction.MoveRight},
-            {ConsoleKey.D8, PlayerAction.MoveUp},
-            {ConsoleKey.D9, PlayerAction.MoveNe},
-            {ConsoleKey.D6, PlayerAction.MoveRight},
-            {ConsoleKey.D3, PlayerAction.MoveSe},
-            {ConsoleKey.D2, PlayerAction.MoveDown},
-            {ConsoleKey.D1, PlayerAction.MoveSw},
-            {ConsoleKey.D4, PlayerAction.MoveLeft},
-            {ConsoleKey.D7, PlayerAction.MoveNw},
-            {ConsoleKey.Multiply, PlayerAction.IncreaseViewRange},
-            {ConsoleKey.Subtract, PlayerAction.ReduceViewRange},
-            {ConsoleKey.Z, PlayerAction.ActivateNoClip},
-            {ConsoleKey.X, PlayerAction.ActivateXRay},
-            //{ConsoleKey.Y, PlayerAction.OpenCloseInventory}
         };
 }
