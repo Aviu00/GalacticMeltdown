@@ -5,8 +5,8 @@ namespace GalacticMeltdown;
 
 public static class InputProcessor
 {
-    private static Stack<Dictionary<ConsoleKey, Action>> Bindings { get; set; } = new();
-    private static bool _isActive = false;
+    private static Stack<Dictionary<ConsoleKey, Action>> Bindings { get; } = new();
+    private static bool _isActive;
 
     public static void StartProcessLoop()
     {
@@ -20,10 +20,7 @@ public static class InputProcessor
         }
     }
 
-    public static void StopProcessLoop()
-    {
-        _isActive = false;
-    }
+    public static void StopProcessLoop() => _isActive = false;
 
     public static void AddBinding<TEnum>(Dictionary<ConsoleKey, TEnum> controlMode,
         Dictionary<TEnum, Action> actions) =>
