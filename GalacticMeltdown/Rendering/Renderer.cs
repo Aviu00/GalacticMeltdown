@@ -130,4 +130,12 @@ public class Renderer
     {
         return Console.WindowHeight - 1 - y;
     }
+
+    public static void CleanUp()
+    {
+        Console.ResetColor();
+        Console.Clear();
+        Console.CursorVisible = true;
+        Console.SetCursorPosition(0, 0);
+    }
 }

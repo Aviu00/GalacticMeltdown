@@ -4,7 +4,7 @@ using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
-public partial class GameManager
+public partial class PlaySession
 {
     private static Player _player;
     private static IControllable _controlledObject;
@@ -12,9 +12,9 @@ public partial class GameManager
     private static Map _map;
     private static WorldView _worldView;
 
-    static void Main(string[] args)
+    public void Start()
     {
-        var map = GenerateMap(args.Length > 0 ? args[0] : null);
+        var map = GenerateMap();
         _player = _map.Player;
         _controlledObject = _player;
         _renderer = new Renderer();
@@ -23,9 +23,6 @@ public partial class GameManager
         _worldView.SetFocus(_player);
         _renderer.AddView(_worldView, 0, 0, 600, 1000);
         _renderer.AddView(new OverlayView(map), 601, 0, 1000, 1000);
-        Console.CancelKeyPress += ExitEvent;
-        AppDomain.CurrentDomain.ProcessExit += ExitEvent;
-        // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
         _renderer.Redraw();
         InputProcessor.AddBinding(Data.Data.CurrentBindings.Player, PlayerActions);
         InputProcessor.StartProcessLoop();
@@ -37,22 +34,6 @@ public partial class GameManager
         {
             _renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
         }
-    }
-
-    private static void ExitEvent(object sender, EventArgs e)
-    {
-        CleanUp();
-    }
-
-    private static void CleanUp()
-    {
-        Console.ResetColor();
-        Console.Clear();
-        Console.CursorVisible = true;
-        Console.SetCursorPosition(0, 0);
-        Console.WriteLine($"Seed: {_map.MapSeed}");
-        Console.WriteLine($"X: {_player.X} Y: {_player.Y}");
-        Console.WriteLine(_map.MapString);
     }
 
     private static Map GenerateMap(string seed = null)

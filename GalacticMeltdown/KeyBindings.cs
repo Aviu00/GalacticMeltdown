@@ -1,7 +1,7 @@
 namespace GalacticMeltdown;
 using System;
 using System.Collections.Generic;
-public partial class GameManager
+public partial class PlaySession
 {
     public enum PlayerAction
     {
@@ -36,7 +36,7 @@ public partial class GameManager
             {PlayerAction.ReduceViewRange, () => _player.ViewRadius--},
             {PlayerAction.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
             {PlayerAction.ActivateXRay, () => _player.Xray = !_player.Xray},
-            {PlayerAction.Quit, () => { InputProcessor.StopProcessLoop(); CleanUp(); }},
+            {PlayerAction.Quit, InputProcessor.StopProcessLoop},
             //{PlayerAction.OpenCloseInventory, () => ChangeBindings()}
         };
 }

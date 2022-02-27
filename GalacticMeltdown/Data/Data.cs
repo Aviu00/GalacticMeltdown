@@ -12,25 +12,25 @@ public static class Data
 
     public struct CurrentBindings
     {
-        public static Dictionary<ConsoleKey, GameManager.PlayerAction> Player = new()
+        public static Dictionary<ConsoleKey, PlaySession.PlayerAction> Player = new()
         {
-            {ConsoleKey.UpArrow, GameManager.PlayerAction.MoveUp},
-            {ConsoleKey.DownArrow, GameManager.PlayerAction.MoveDown},
-            {ConsoleKey.LeftArrow, GameManager.PlayerAction.MoveLeft},
-            {ConsoleKey.RightArrow, GameManager.PlayerAction.MoveRight},
-            {ConsoleKey.D8, GameManager.PlayerAction.MoveUp},
-            {ConsoleKey.D9, GameManager.PlayerAction.MoveNe},
-            {ConsoleKey.D6, GameManager.PlayerAction.MoveRight},
-            {ConsoleKey.D3, GameManager.PlayerAction.MoveSe},
-            {ConsoleKey.D2, GameManager.PlayerAction.MoveDown},
-            {ConsoleKey.D1, GameManager.PlayerAction.MoveSw},
-            {ConsoleKey.D4, GameManager.PlayerAction.MoveLeft},
-            {ConsoleKey.D7, GameManager.PlayerAction.MoveNw},
-            {ConsoleKey.Multiply, GameManager.PlayerAction.IncreaseViewRange},
-            {ConsoleKey.Subtract, GameManager.PlayerAction.ReduceViewRange},
-            {ConsoleKey.Z, GameManager.PlayerAction.ActivateNoClip},
-            {ConsoleKey.X, GameManager.PlayerAction.ActivateXRay},
-            {ConsoleKey.Q, GameManager.PlayerAction.Quit}
+            {ConsoleKey.UpArrow, PlaySession.PlayerAction.MoveUp},
+            {ConsoleKey.DownArrow, PlaySession.PlayerAction.MoveDown},
+            {ConsoleKey.LeftArrow, PlaySession.PlayerAction.MoveLeft},
+            {ConsoleKey.RightArrow, PlaySession.PlayerAction.MoveRight},
+            {ConsoleKey.D8, PlaySession.PlayerAction.MoveUp},
+            {ConsoleKey.D9, PlaySession.PlayerAction.MoveNe},
+            {ConsoleKey.D6, PlaySession.PlayerAction.MoveRight},
+            {ConsoleKey.D3, PlaySession.PlayerAction.MoveSe},
+            {ConsoleKey.D2, PlaySession.PlayerAction.MoveDown},
+            {ConsoleKey.D1, PlaySession.PlayerAction.MoveSw},
+            {ConsoleKey.D4, PlaySession.PlayerAction.MoveLeft},
+            {ConsoleKey.D7, PlaySession.PlayerAction.MoveNw},
+            {ConsoleKey.Multiply, PlaySession.PlayerAction.IncreaseViewRange},
+            {ConsoleKey.Subtract, PlaySession.PlayerAction.ReduceViewRange},
+            {ConsoleKey.Z, PlaySession.PlayerAction.ActivateNoClip},
+            {ConsoleKey.X, PlaySession.PlayerAction.ActivateXRay},
+            {ConsoleKey.Q, PlaySession.PlayerAction.Quit}
         };
 
         public static Dictionary<ConsoleKey, SelectionControl> Selection = new()
