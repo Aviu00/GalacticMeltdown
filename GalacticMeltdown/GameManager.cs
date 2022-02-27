@@ -13,8 +13,6 @@ partial class GameManager
     private static Map _map;
     private static WorldView _worldView;
 
-    private static bool _stop;
-
     static void Main(string[] args)
     {
         var map = GenerateMap(args.Length > 0 ? args[0] : null);
@@ -39,23 +37,6 @@ partial class GameManager
         InputProcessor.Bindings = bindings;
         InputProcessor.StartProcessLoop();
     }
-
-    private static void GameLoop()
-    {
-       
-        while (!_stop)
-        {
-            ConsoleKeyInfo key = Console.ReadKey(true);
-            if (KeyBinding.ContainsKey(key.Key))
-            {
-                ActionBinding[KeyBinding[key.Key]].Invoke();
-            }
-            while (Console.KeyAvailable) //clear console key buffer
-            {
-                Console.ReadKey(true);
-            }
-        }
-    }
     
     private static void MoveControlled(int deltaX, int deltaY)
     {
@@ -67,12 +48,11 @@ partial class GameManager
 
     private static void ExitEvent(object sender, EventArgs e)
     {
-        Stop();
+        CleanUp();
     }
 
-    private static void Stop()
+    private static void CleanUp()
     {
-        _stop = true;
         Console.ResetColor();
         Console.Clear();
         Console.CursorVisible = true;
