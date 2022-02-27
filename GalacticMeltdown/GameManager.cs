@@ -36,6 +36,7 @@ partial class GameManager
         bindings.Add(ConsoleKey.Q, InputProcessor.StopProcessLoop);
         InputProcessor.Bindings = bindings;
         InputProcessor.StartProcessLoop();
+        CleanUp();
     }
     
     private static void MoveControlled(int deltaX, int deltaY)
