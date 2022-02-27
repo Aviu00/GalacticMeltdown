@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
@@ -29,7 +30,13 @@ partial class GameManager
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
         _renderer.Redraw();
-        GameLoop();
+        Dictionary<ConsoleKey, Action> Bindings = new();
+        foreach (var (key, action) in KeyBinding)
+        {
+            Bindings.Add(key, ActionBinding[action]);
+        }
+        Bindings.Add(ConsoleKey.Q, InputProcessor.StopProcessLoop);
+        InputProcessor.StartProcessLoop();
     }
 
     private static void GameLoop()

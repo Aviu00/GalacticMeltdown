@@ -44,7 +44,6 @@ partial class GameManager
             {ActionMove.ReduceViewRange, () => _player.ViewRadius--},
             {ActionMove.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
             {ActionMove.ActivateXRay, () => _player.Xray = !_player.Xray},
-            {ActionMove.Stop, Stop}
             //{ActionMove.OpenCloseInventory, () => ChangeBindings()}
         };
     
@@ -67,7 +66,6 @@ partial class GameManager
             {ConsoleKey.Subtract, ActionMove.ReduceViewRange},
             {ConsoleKey.Z, ActionMove.ActivateNoClip},
             {ConsoleKey.X, ActionMove.ActivateXRay},
-            {ConsoleKey.Q, ActionMove.Stop}
             //{ConsoleKey.Y, ActionMove.OpenCloseInventory}
         };
 }

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown;
 
-public class InputProcessor
+public static class InputProcessor
 {
-    public Dictionary<ConsoleKey, Action> Bindings { get; set; } = new Dictionary<ConsoleKey, Action>();
-    private bool _isActive = false;
+    public static Dictionary<ConsoleKey, Action> Bindings { get; set; } = new Dictionary<ConsoleKey, Action>();
+    private static bool _isActive = false;
 
-    public void StartProcessLoop()
+    public static void StartProcessLoop()
     {
         _isActive = true;
         while (_isActive)
@@ -20,7 +20,7 @@ public class InputProcessor
         }
     }
 
-    public void StopProcessLoop()
+    public static void StopProcessLoop()
     {
         _isActive = false;
     }
