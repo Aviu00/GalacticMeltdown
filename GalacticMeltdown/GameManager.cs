@@ -4,8 +4,7 @@ using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
-
-static partial class GameManager
+partial class GameManager
 {
     private static Player _player;
     private static IControllable _controlledObject;

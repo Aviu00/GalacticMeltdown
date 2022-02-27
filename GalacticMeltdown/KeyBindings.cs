@@ -2,7 +2,7 @@ namespace GalacticMeltdown;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-static partial class GameManager // special class for bindings
+partial class GameManager
 {
     static void ChangeBindings(IDictionary ChangeTarget, IDictionary WhatToChange) // method to change binding when open/close inventory ot etc.
     {
