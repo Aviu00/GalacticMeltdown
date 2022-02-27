@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GalacticMeltdown.data;
+using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown;
 

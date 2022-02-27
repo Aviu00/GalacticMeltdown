@@ -1,5 +1,5 @@
 ﻿using System;
-using GalacticMeltdown.data;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;

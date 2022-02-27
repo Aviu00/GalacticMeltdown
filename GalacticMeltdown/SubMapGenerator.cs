@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GalacticMeltdown.data;
+using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown;
 

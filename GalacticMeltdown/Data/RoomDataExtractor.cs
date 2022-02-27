@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 
-namespace GalacticMeltdown.data;
+namespace GalacticMeltdown.Data;
 
 public class RoomDataExtractor : XmlExtractor
 {

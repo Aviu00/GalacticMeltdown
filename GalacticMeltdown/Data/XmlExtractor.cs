@@ -2,7 +2,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 
-namespace GalacticMeltdown.data;
+namespace GalacticMeltdown.Data;
 
 public abstract class XmlExtractor
 {
