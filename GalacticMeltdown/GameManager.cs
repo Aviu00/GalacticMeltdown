@@ -30,12 +30,13 @@ partial class GameManager
         AppDomain.CurrentDomain.ProcessExit += ExitEvent;
         // AppDomain.CurrentDomain.UnhandledException += ExitEvent; // Actually no, it should crash
         _renderer.Redraw();
-        Dictionary<ConsoleKey, Action> Bindings = new();
+        Dictionary<ConsoleKey, Action> bindings = new();
         foreach (var (key, action) in KeyBinding)
         {
-            Bindings.Add(key, ActionBinding[action]);
+            bindings.Add(key, ActionBinding[action]);
         }
-        Bindings.Add(ConsoleKey.Q, InputProcessor.StopProcessLoop);
+        bindings.Add(ConsoleKey.Q, InputProcessor.StopProcessLoop);
+        InputProcessor.Bindings = bindings;
         InputProcessor.StartProcessLoop();
     }
 
