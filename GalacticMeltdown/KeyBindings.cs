@@ -23,7 +23,6 @@ partial class GameManager
         ReduceViewRange, //for fov testing
         ActivateNoClip, //temporary cheat codes
         ActivateXRay, //temporary cheat codes
-        Stop
     }
     
     // Inventory bindings supposed to be updated in the future
