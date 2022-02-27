@@ -9,7 +9,7 @@ partial class GameManager
         ChangeTarget = WhatToChange;
     }
 
-    private enum ActionMove
+    private enum PlayerAction
     {
         MoveUp,
         MoveDown,
@@ -27,45 +27,45 @@ partial class GameManager
     }
     
     // Inventory bindings supposed to be updated in the future
-    static private readonly IDictionary<ActionMove, Action> InventoryBinding =
-        new Dictionary<ActionMove, Action>() { };
-    static private readonly IDictionary<ActionMove, Action> ActionBinding = 
-        new Dictionary<ActionMove, Action>
+    static private readonly IDictionary<PlayerAction, Action> InventoryBinding =
+        new Dictionary<PlayerAction, Action>() { };
+    static private readonly IDictionary<PlayerAction, Action> ActionBinding = 
+        new Dictionary<PlayerAction, Action>
         {
-            {ActionMove.MoveUp, () => MoveControlled(0, 1)},
-            {ActionMove.MoveDown, () => MoveControlled(0, -1)},
-            {ActionMove.MoveRight, () => MoveControlled(1, 0)},
-            {ActionMove.MoveLeft, () => MoveControlled(-1, 0)},
-            {ActionMove.MoveNe, () => MoveControlled(1, 1)},
-            {ActionMove.MoveSe, () => MoveControlled(1, -1)},
-            {ActionMove.MoveSw, () => MoveControlled(-1, -1)},
-            {ActionMove.MoveNw, () => MoveControlled(-1, 1)},
-            {ActionMove.IncreaseViewRange, () => _player.ViewRadius++},
-            {ActionMove.ReduceViewRange, () => _player.ViewRadius--},
-            {ActionMove.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
-            {ActionMove.ActivateXRay, () => _player.Xray = !_player.Xray},
-            //{ActionMove.OpenCloseInventory, () => ChangeBindings()}
+            {PlayerAction.MoveUp, () => MoveControlled(0, 1)},
+            {PlayerAction.MoveDown, () => MoveControlled(0, -1)},
+            {PlayerAction.MoveRight, () => MoveControlled(1, 0)},
+            {PlayerAction.MoveLeft, () => MoveControlled(-1, 0)},
+            {PlayerAction.MoveNe, () => MoveControlled(1, 1)},
+            {PlayerAction.MoveSe, () => MoveControlled(1, -1)},
+            {PlayerAction.MoveSw, () => MoveControlled(-1, -1)},
+            {PlayerAction.MoveNw, () => MoveControlled(-1, 1)},
+            {PlayerAction.IncreaseViewRange, () => _player.ViewRadius++},
+            {PlayerAction.ReduceViewRange, () => _player.ViewRadius--},
+            {PlayerAction.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
+            {PlayerAction.ActivateXRay, () => _player.Xray = !_player.Xray},
+            //{PlayerAction.OpenCloseInventory, () => ChangeBindings()}
         };
     
-    static private readonly  IDictionary <ConsoleKey, ActionMove> KeyBinding = 
-        new Dictionary<ConsoleKey, ActionMove>
+    static private readonly  IDictionary <ConsoleKey, PlayerAction> KeyBinding = 
+        new Dictionary<ConsoleKey, PlayerAction>
         {
-            {ConsoleKey.UpArrow, ActionMove.MoveUp},
-            {ConsoleKey.DownArrow, ActionMove.MoveDown},
-            {ConsoleKey.LeftArrow, ActionMove.MoveLeft},
-            {ConsoleKey.RightArrow, ActionMove.MoveRight},
-            {ConsoleKey.D8, ActionMove.MoveUp},
-            {ConsoleKey.D9, ActionMove.MoveNe},
-            {ConsoleKey.D6, ActionMove.MoveRight},
-            {ConsoleKey.D3, ActionMove.MoveSe},
-            {ConsoleKey.D2, ActionMove.MoveDown},
-            {ConsoleKey.D1, ActionMove.MoveSw},
-            {ConsoleKey.D4, ActionMove.MoveLeft},
-            {ConsoleKey.D7, ActionMove.MoveNw},
-            {ConsoleKey.Multiply, ActionMove.IncreaseViewRange},
-            {ConsoleKey.Subtract, ActionMove.ReduceViewRange},
-            {ConsoleKey.Z, ActionMove.ActivateNoClip},
-            {ConsoleKey.X, ActionMove.ActivateXRay},
-            //{ConsoleKey.Y, ActionMove.OpenCloseInventory}
+            {ConsoleKey.UpArrow, PlayerAction.MoveUp},
+            {ConsoleKey.DownArrow, PlayerAction.MoveDown},
+            {ConsoleKey.LeftArrow, PlayerAction.MoveLeft},
+            {ConsoleKey.RightArrow, PlayerAction.MoveRight},
+            {ConsoleKey.D8, PlayerAction.MoveUp},
+            {ConsoleKey.D9, PlayerAction.MoveNe},
+            {ConsoleKey.D6, PlayerAction.MoveRight},
+            {ConsoleKey.D3, PlayerAction.MoveSe},
+            {ConsoleKey.D2, PlayerAction.MoveDown},
+            {ConsoleKey.D1, PlayerAction.MoveSw},
+            {ConsoleKey.D4, PlayerAction.MoveLeft},
+            {ConsoleKey.D7, PlayerAction.MoveNw},
+            {ConsoleKey.Multiply, PlayerAction.IncreaseViewRange},
+            {ConsoleKey.Subtract, PlayerAction.ReduceViewRange},
+            {ConsoleKey.Z, PlayerAction.ActivateNoClip},
+            {ConsoleKey.X, PlayerAction.ActivateXRay},
+            //{ConsoleKey.Y, PlayerAction.OpenCloseInventory}
         };
 }
