@@ -127,7 +127,7 @@ public class Renderer
 
     private int ConvertToConsoleY(int y)
     {
-        return Console.WindowHeight - 1 - y;
+        return Console.WindowHeight - y;
     }
 
     public static void CleanUp()
