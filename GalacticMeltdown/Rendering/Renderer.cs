@@ -9,20 +9,20 @@ public delegate void ViewChangedEventHandler(View sender);
 
 public class Renderer
 {
-    private List<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel) 
+    private LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
 
     public Renderer()
     {
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
-        _views = new List<(View, double, double, double, double)>();
+        _views = new LinkedList<(View, double, double, double, double)>();
     }
 
     public void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
     {
         view.ViewChanged += ViewChangedHandler;
-        _views.Add((view, x0Portion, y0Portion, x1Portion, y1Portion));
+        _views.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
     }
 
     private void ViewChangedHandler(View sender)
@@ -34,7 +34,7 @@ public class Renderer
     {
         if (_views.Any())
         {
-            _views.RemoveAt(_views.Count - 1);
+            _views.RemoveFirst();
         }
     }
 
