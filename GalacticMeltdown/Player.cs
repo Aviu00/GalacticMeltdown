@@ -55,9 +55,9 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         X += deltaX;
         Y += deltaY;
         Energy -= tile.TileMoveCost;
-        if (Energy - tile.TileMoveCost < 0)
+        if (Energy < 0)
         {
-            Energy = 40;
+            Energy += 40;
             PerformedAction?.Invoke(20);
         }
         PositionChanged?.Invoke();
