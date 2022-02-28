@@ -44,6 +44,30 @@ public class Renderer
         }
     }
 
+    private void UpdateCurrentCells()
+    {
+        for (int x = 0; x < _pixelFuncs.GetLength(0); x++)
+        {
+            for (int y = 0; y < _pixelFuncs.GetLength(1); y++)
+            {
+                (char symbol, ConsoleColor color)? symbolData = null;
+                ConsoleColor? backgroundColor = null;
+                foreach (var func in _pixelFuncs[x, y])
+                {
+                    ScreenCellData screenCellData = func();
+                    symbolData ??= screenCellData.SymbolData;
+                    if ((backgroundColor ??= screenCellData.BackgroundColor) is not null)
+                    {
+                        break;
+                    }
+                }
+
+                _screenCells[x, y] = new ScreenCellData(symbolData ?? (' ', ConsoleColor.Black),
+                    backgroundColor ?? ConsoleColor.Black);
+            }
+        }
+    }
+
     public void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
     {
         view.ViewChanged += ViewChangedHandler;
