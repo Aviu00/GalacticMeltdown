@@ -9,7 +9,6 @@ public delegate void ViewChangedEventHandler(View sender);
 
 public class Renderer
 {
-    private const int TotalWidth = 1000;
     private List<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel) 
 
     public Renderer()
@@ -56,7 +55,7 @@ public class Renderer
             int y1Screen = Math.Min((int) Math.Round(windowHeight * y1Portion), windowWidth - 1);
             int width = x1Screen - x0Screen, height = y1Screen - y0Screen;
             view.Resize(width, height);
-            DrawArea(x0Screen, y0Screen, x0Screen + width, y0Screen + height, 
+            DrawArea(x0Screen, y0Screen, x1Screen, y1Screen, 
                 (x, y) => view.GetSymbol(x - x0Screen, y - y0Screen));
         }
     }
