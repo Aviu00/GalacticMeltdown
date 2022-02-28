@@ -159,11 +159,11 @@ public class Renderer
         }
     }
 
-    public void PutSymbolAt(int x, int y, SymbolData symbolData)
+    public void PutSymbolAt(int x, int y, ScreenPixelData screenPixelData)
     {
         Console.SetCursorPosition(x, ConvertToConsoleY(y));
-        SetConsoleColor(symbolData.FgColor, symbolData.BgColor);
-        Console.Write(symbolData.Symbol);
+        SetConsoleColor(screenPixelData.FgColor, screenPixelData.BgColor);
+        Console.Write(screenPixelData.Symbol);
     }
     
     public static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
