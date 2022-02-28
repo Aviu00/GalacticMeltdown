@@ -52,7 +52,7 @@ public class Renderer
             int x0Screen = (int) Math.Round(windowWidth * x0Portion);
             int y0Screen = (int) Math.Round(windowHeight * y0Portion);
             int x1Screen = Math.Min((int) Math.Round(windowWidth * x1Portion), windowWidth - 1);
-            int y1Screen = Math.Min((int) Math.Round(windowHeight * y1Portion), windowWidth - 1);
+            int y1Screen = Math.Min((int) Math.Round(windowHeight * y1Portion), windowHeight - 1);
             int width = x1Screen - x0Screen, height = y1Screen - y0Screen;
             view.Resize(width, height);
             DrawArea(x0Screen, y0Screen, x1Screen, y1Screen, 
