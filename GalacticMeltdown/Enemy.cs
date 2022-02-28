@@ -4,9 +4,8 @@ namespace GalacticMeltdown;
 
 public abstract class Enemy : IEntity
 {
-    public char Symbol { get; }
-    public ConsoleColor FgColor { get; }
-    public ConsoleColor BgColor { get; }
+    public (char symbol, ConsoleColor color) SymbolData { get; }
+    public ConsoleColor? BgColor { get; }
     public int X { get; set; }
     public int Y { get; set; }
 
@@ -21,10 +20,9 @@ public abstract class Enemy : IEntity
         Y = y;
         player.PerformedAction += TakeAction;
         map.UpdateEnemyPosition(this, -1, -1);
-        
-        Symbol = 'W';
-        FgColor = ConsoleColor.Red;
-        BgColor = ConsoleColor.Black;
+
+        SymbolData = ('W', ConsoleColor.Red);
+        BgColor = null;
     }
 
     protected abstract void TakeAction(int movePoints);

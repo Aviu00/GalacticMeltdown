@@ -4,9 +4,8 @@ namespace GalacticMeltdown;
 
 public interface IDrawable
 {
-    public char Symbol { get; }
-    public ConsoleColor FgColor { get; }
-    public ConsoleColor BgColor { get; }
+    public (char symbol, ConsoleColor color) SymbolData { get; }
+    public ConsoleColor? BgColor { get; }
 }
 
 public interface IHasCoords

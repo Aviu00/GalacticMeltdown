@@ -6,9 +6,8 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
 {
     public int X { get; set; }
     public int Y { get; set; }
-    public char Symbol { get; }
-    public ConsoleColor FgColor { get; }
-    public ConsoleColor BgColor { get; }
+    public (char symbol, ConsoleColor color) SymbolData { get; }
+    public ConsoleColor? BgColor { get; }
     private int _viewRadius = 15;
     private Func<int, int, Tile> _tileAt;
     private Func<int, int, IEntity> _entityAt;
@@ -63,8 +62,7 @@ public class Player : IEntity, IControllable, ICanSeeTiles, IFocusPoint
         Y = y;
         _tileAt = tileAt;
         _entityAt = entityAt;
-        Symbol = '@';
-        FgColor = ConsoleColor.White;
-        BgColor = ConsoleColor.Black;
+        SymbolData = ('@', ConsoleColor.White);
+        BgColor = null;
     }
 }
