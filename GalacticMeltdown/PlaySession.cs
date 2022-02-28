@@ -21,8 +21,8 @@ public partial class PlaySession
         _worldView = new WorldView(map);
         _worldView.AddTileRevealingObject(_player);
         _worldView.SetFocus(_player);
-        _renderer.AddView(_worldView, 0, 0, 600, 1000);
-        _renderer.AddView(new OverlayView(map), 601, 0, 1000, 1000);
+        _renderer.AddView(_worldView, 0, 0, 0.8, 1);
+        _renderer.AddView(new OverlayView(map), 0.8, 0, 1, 1);
         _renderer.Redraw();
         InputProcessor.AddBinding(Data.Data.CurrentBindings.Player, PlayerActions);
         InputProcessor.StartProcessLoop();
