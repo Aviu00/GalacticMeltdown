@@ -7,7 +7,7 @@ public class OverlayView : View
     private Map _map;  // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player;  // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?
-    private ScreenPixelData?[,] _symbols;
+    private ViewCellData[,] _symbols;
     public override event ViewChangedEventHandler ViewChanged;
 
     public OverlayView(Map map)
@@ -19,11 +19,10 @@ public class OverlayView : View
         // TODO: subscribe to events
     }
 
-    public override ScreenPixelData GetSymbol(int x, int y)
+    public override ViewCellData GetSymbol(int x, int y)
     {
-        if (!(0 <= x && x < Width && 0 <= y && y < Height) || _symbols[x, y] 
-                is null) return new ScreenPixelData(' ', ConsoleColor.Black, ConsoleColor.Black);
-        return (ScreenPixelData) _symbols[x, y];
+        if (!(0 <= x && x < Width && 0 <= y && y < Height)) return new ViewCellData(null, null);
+        return _symbols[x, y];
     }
 
     public override void Resize(int width, int height)
@@ -31,7 +30,7 @@ public class OverlayView : View
         int oldWidth = Width, oldHeight = Height;
         base.Resize(width, height);
         if (oldWidth == Width && oldHeight == Height) return;
-        _symbols = new ScreenPixelData?[Width, Height];
+        _symbols = new ViewCellData[Width, Height];
         
     }
 }

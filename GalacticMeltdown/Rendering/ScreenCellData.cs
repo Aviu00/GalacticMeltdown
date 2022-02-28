@@ -2,15 +2,15 @@ using System;
 
 namespace GalacticMeltdown.Rendering;
 
-public delegate ScreenPixelData GetSymbolAt(int x, int y);
+public delegate ScreenCellData GetSymbolAt(int x, int y);
 
-public struct ScreenPixelData
+public struct ScreenCellData
 {
     public char Symbol;
     public ConsoleColor FgColor;
     public ConsoleColor BgColor;
 
-    public ScreenPixelData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
+    public ScreenCellData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
     {
         Symbol = symbol;
         BgColor = bgColor;

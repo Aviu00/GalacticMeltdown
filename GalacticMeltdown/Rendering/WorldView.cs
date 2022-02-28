@@ -60,7 +60,7 @@ public class WorldView : View
         ViewChanged?.Invoke(this);
     }
 
-    public override ScreenPixelData GetSymbol(int x, int y)
+    public override ViewCellData GetSymbol(int x, int y)
     {
         IDrawable drawableObj;
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
@@ -70,7 +70,7 @@ public class WorldView : View
             drawableObj = _focusObject as IDrawable;
             if (drawableObj is not null)
             {
-                return new ScreenPixelData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
+                return new ViewCellData((drawableObj.Symbol, drawableObj.FgColor), null);
             }
         }
         var coords = Utility.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
@@ -79,15 +79,15 @@ public class WorldView : View
         {
             drawableObj = _map.GetDrawable(coords.x, coords.y);
             if (drawableObj is null)
-                return new ScreenPixelData(' ', ConsoleColor.Black, ConsoleColor.Black);
-            return new ScreenPixelData(drawableObj.Symbol, drawableObj.FgColor, drawableObj.BgColor);
+                return new ViewCellData(null, null);
+            return new ViewCellData((drawableObj.Symbol, drawableObj.FgColor), null);
         }
         drawableObj = _map.GetTile(coords.x, coords.y);
         if (drawableObj is not null && ((Tile) drawableObj).Seen)
         {
-            return new ScreenPixelData(drawableObj.Symbol, Utility.OutOfVisionTileColor, ConsoleColor.Black);
+            return new ViewCellData((drawableObj.Symbol, Utility.OutOfVisionTileColor), ConsoleColor.Black);
         }
 
-        return new ScreenPixelData(' ', ConsoleColor.Black, ConsoleColor.Black);
+        return new ViewCellData(null, null);
     }
 }

@@ -2,7 +2,7 @@ namespace GalacticMeltdown.Rendering;
 
 public abstract class View
 {
-    public abstract ScreenPixelData GetSymbol(int x, int y);
+    public abstract ViewCellData GetSymbol(int x, int y);
     public abstract event ViewChangedEventHandler ViewChanged;
 
     protected int Width;
