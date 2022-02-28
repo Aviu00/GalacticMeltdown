@@ -10,20 +10,20 @@ public delegate void ViewChangedEventHandler(View sender);
 public class Renderer
 {
     private const int TotalWidth = 1000;
-    private List<(View, int, int, int, int)> _views;  // View, top-left and bottom-right corner coords (rel) 
+    private List<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel) 
 
     public Renderer()
     {
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
-        _views = new List<(View, int, int, int, int)>();
+        _views = new List<(View, double, double, double, double)>();
     }
 
-    public void AddView(View view, int x0, int y0, int x1, int y1)
+    public void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
     {
         view.ViewChanged += ViewChangedHandler;
-        _views.Add((view, x0, y0, x1, y1));
+        _views.Add((view, x0Portion, y0Portion, x1Portion, y1Portion));
     }
 
     private void ViewChangedHandler(View sender)
@@ -46,18 +46,18 @@ public class Renderer
 
     public void Redraw()
     {
-        foreach (var (view, x0, y0, x1, y1) in _views)
+        int windowWidth = Console.WindowWidth;
+        int windowHeight = Console.WindowHeight;
+        foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _views)
         {
-            int x0Real = (int) Math.Round(Console.WindowWidth * x0 / (double) TotalWidth);
-            int y0Real = (int) Math.Round(Console.WindowHeight * y0 / (double) TotalWidth);
-            int x1Real = Math.Min((int) Math.Round(Console.WindowWidth * x1 / (double) TotalWidth), 
-                Console.WindowWidth - 1);
-            int y1Real = Math.Min((int) Math.Round(Console.WindowHeight * y1 / (double) TotalWidth),
-                Console.WindowHeight - 1);
-            int width = x1Real - x0Real, height = y1Real - y0Real;
+            int x0Screen = (int) Math.Round(windowWidth * x0Portion);
+            int y0Screen = (int) Math.Round(windowHeight * y0Portion);
+            int x1Screen = Math.Min((int) Math.Round(windowWidth * x1Portion), windowWidth - 1);
+            int y1Screen = Math.Min((int) Math.Round(windowHeight * y1Portion), windowWidth - 1);
+            int width = x1Screen - x0Screen, height = y1Screen - y0Screen;
             view.Resize(width, height);
-            DrawArea(x0Real, y0Real, x0Real + width, y0Real + height, 
-                (x, y) => view.GetSymbol(x - x0Real, y - y0Real));
+            DrawArea(x0Screen, y0Screen, x0Screen + width, y0Screen + height, 
+                (x, y) => view.GetSymbol(x - x0Screen, y - y0Screen));
         }
     }
 
