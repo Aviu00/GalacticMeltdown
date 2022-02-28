@@ -10,8 +10,8 @@ public delegate void ViewChangedEventHandler(View sender);
 public class Renderer
 {
     private LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
-    private LinkedList<Func<ScreenCellData>>[,] _pixelFuncs;
-    private ScreenCellData[,] _screenCells;
+    private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
+    private ViewCellData[,] _screenCells;
 
     public Renderer()
     {
@@ -25,8 +25,8 @@ public class Renderer
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
-        _screenCells = new ScreenCellData[windowWidth, windowHeight];
-        _pixelFuncs = new LinkedList<Func<ScreenCellData>>[windowWidth, windowHeight];
+        _screenCells = new ViewCellData[windowWidth, windowHeight];
+        _pixelFuncs = new LinkedList<Func<ViewCellData>>[windowWidth, windowHeight];
         foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _views)
         {
             int x0Screen = (int) Math.Round(windowWidth * x0Portion);
@@ -54,15 +54,15 @@ public class Renderer
                 ConsoleColor? backgroundColor = null;
                 foreach (var func in _pixelFuncs[x, y])
                 {
-                    ScreenCellData screenCellData = func();
-                    symbolData ??= screenCellData.SymbolData;
-                    if ((backgroundColor ??= screenCellData.BackgroundColor) is not null)
+                    ViewCellData viewCellData = func();
+                    symbolData ??= viewCellData.SymbolData;
+                    if ((backgroundColor ??= viewCellData.BackgroundColor) is not null)
                     {
                         break;
                     }
                 }
 
-                _screenCells[x, y] = new ScreenCellData(symbolData ?? (' ', ConsoleColor.Black),
+                _screenCells[x, y] = new ViewCellData(symbolData ?? (' ', ConsoleColor.Black),
                     backgroundColor ?? ConsoleColor.Black);
             }
         }
