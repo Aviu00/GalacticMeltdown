@@ -8,11 +8,13 @@ namespace GalacticMeltdown;
 public static class Game
 {
     private static bool _playing;
+    private static Stack<ButtonListView> _menus;
     public static void Main()
     {
         _playing = true;
         while (_playing)
         {
+            _menus = new Stack<ButtonListView>();
             OpenMainMenu();
             InputProcessor.StartProcessLoop();
         }
@@ -27,8 +29,7 @@ public static class Game
         mainMenuButtons.AddLast(playButton);
         mainMenuButtons.AddLast(quitButton);
         var mainMenuButtonsView = new ButtonListView(mainMenuButtons);
-        Renderer.AddView(mainMenuButtonsView, 0, 0, 1, 1);
-        InputProcessor.AddBinding(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
+        OpenMenu(mainMenuButtonsView, new Dictionary<SelectionControl, Action>
         {
             {SelectionControl.Up, mainMenuButtonsView.SelectPrev},
             {SelectionControl.Down, mainMenuButtonsView.SelectNext},
@@ -36,6 +37,20 @@ public static class Game
         });
         //var session = new PlaySession();
         //session.Start();
+    }
+
+    private static void OpenMenu(ButtonListView buttonListView, Dictionary<SelectionControl, Action> bindings)
+    {
+        _menus.Push(buttonListView);
+        Renderer.AddView(buttonListView, 0, 0, 1, 1);
+        InputProcessor.AddBinding(DataHolder.CurrentBindings.Selection, bindings);
+    }
+
+    private static void CloseMenu()
+    {
+        _menus.Pop();
+        Renderer.RemoveLastView();
+        InputProcessor.RemoveLastBinding();
     }
 
     private static void Quit()

@@ -25,4 +25,6 @@ public static class InputProcessor
     public static void AddBinding<TEnum>(Dictionary<ConsoleKey, TEnum> controlMode,
         Dictionary<TEnum, Action> actions) =>
         Bindings.Push(Utility.JoinDictionaries(controlMode, actions));
+
+    public static void RemoveLastBinding() => Bindings.Pop();
 }
