@@ -15,5 +15,5 @@ public readonly struct Button
         _action = action;
     }
 
-    public void Press() => _action();
+    public void Press() => _action?.Invoke();
 }
