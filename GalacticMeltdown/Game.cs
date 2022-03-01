@@ -30,7 +30,7 @@ public static class Game
 
     private static void OpenBasicMenu(params Button[] buttons)
     {
-        var buttonListView = new ButtonListView(new LinkedList<Button>(buttons));
+        var buttonListView = new ButtonListView(buttons);
         OpenMenu(buttonListView, new Dictionary<SelectionControl, Action>
         {
             {SelectionControl.Up, buttonListView.SelectPrev},

@@ -9,9 +9,9 @@ public class ButtonListView : View
     private LinkedList<Button> _buttons;
     private LinkedListNode<Button> _currentButtonNode;
 
-    public ButtonListView(LinkedList<Button> buttons)
+    public ButtonListView(ICollection<Button> buttons)
     {
-        _buttons = buttons;
+        _buttons = new LinkedList<Button>(buttons);
         _currentButtonNode = _buttons.First;
     }
 
