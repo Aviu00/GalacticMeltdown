@@ -24,21 +24,24 @@ public class LevelSelectionView : View
     
     public void PressCurrent()
     {
-        
+        if (_isManagementSelected) _currentManagementNode.Value.Press();
+        else _currentLevelNode.Value.Press();
     }
 
     public void SelectNext()
     {
-        
+        if (_isManagementSelected) _currentManagementNode = _currentManagementNode.Next ?? _managementButtons.First;
+        else _currentLevelNode = _currentLevelNode.Next ?? _levelButtons.First;
     }
 
     public void SelectPrev()
     {
-        
+        if (_isManagementSelected) _currentManagementNode = _currentManagementNode.Previous ?? _managementButtons.Last;
+        else _currentLevelNode = _currentLevelNode.Previous ?? _levelButtons.Last;
     }
 
     public void SwitchButtonGroup()
     {
-        
+        _isManagementSelected = !_isManagementSelected;
     }
 }
