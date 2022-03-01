@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown.Data;
 
-public static class Data
+public static class DataHolder
 {
-    static Data()
+    static DataHolder()
     {
         
     }

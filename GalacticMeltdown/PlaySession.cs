@@ -22,7 +22,7 @@ public partial class PlaySession
         Renderer.AddView(_worldView, 0, 0, 0.8, 1);
         Renderer.AddView(new OverlayView(map), 0.8, 0, 1, 1);
         Renderer.Redraw();
-        InputProcessor.AddBinding(Data.Data.CurrentBindings.Player, PlayerActions);
+        InputProcessor.AddBinding(DataHolder.CurrentBindings.Player, PlayerActions);
         InputProcessor.StartProcessLoop();
     }
     
