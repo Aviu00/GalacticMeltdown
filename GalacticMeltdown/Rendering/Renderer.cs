@@ -97,9 +97,8 @@ public class Renderer
             for (; x < _screenCells.GetLength(0); x++)
             {
                 screenCellData = _screenCells[x, areaY];
-                if ((screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' ' 
-                     || screenCellData.BgColor != curBgColor))
-                    //&& currentSequence.Length != 0)  // When new line isn't appended length can be 0
+                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' ' 
+                    || screenCellData.BgColor != curBgColor)
                 {
                     SetConsoleColor(curFgColor, curBgColor);
                     Console.Write(currentSequence);
@@ -112,11 +111,7 @@ public class Renderer
             }
 
             x = 0;
-
-            //currentSequence.Append('\n');
         }
-
-        //if (startX == 0) currentSequence.Length--; // remove new line
         SetConsoleColor(curFgColor, curBgColor);
         Console.Write(currentSequence);
     }
