@@ -8,10 +8,13 @@ public class LevelSelectionView : View
     public override event CellsChangedEventHandler CellsChanged;
     private LinkedList<Button> _levelButtons;
     private LinkedList<Button> _managementButtons;
+    private LinkedListNode<Button> _currentLevelNode;
+    private LinkedListNode<Button> _currentManagementNode;
+    private bool _isManagementSelected;
 
-    public LevelSelectionView()
+    public LevelSelectionView(ICollection<Button> levelButtons)
     {
-        
+        _levelButtons = new LinkedList<Button>(levelButtons);
     }
     
     public override ViewCellData GetSymbol(int x, int y)
