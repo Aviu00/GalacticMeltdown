@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace GalacticMeltdown;
 
@@ -72,5 +73,16 @@ public static class Utility
         }
 
         return dictionary;
+    }
+
+    public static string RandomString(int size)
+    {
+        StringBuilder builder = new StringBuilder(size);
+        for (int i = 0; i < size; i++)
+        {
+            builder.Append((char) Random.Shared.Next('A', 'Z'));
+        }
+
+        return builder.ToString();
     }
 }
