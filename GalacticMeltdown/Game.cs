@@ -28,6 +28,11 @@ public static class Game
         //session.Start();
     }
 
+    private static void OpenLevelMenu()
+    {
+        
+    }
+
     private static void OpenBasicMenu(params Button[] buttons)
     {
         var buttonListView = new ButtonListView(buttons);
