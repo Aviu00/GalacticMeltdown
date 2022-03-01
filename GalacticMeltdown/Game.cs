@@ -23,20 +23,20 @@ public static class Game
 
     private static void OpenMainMenu()
     {
-        var playButton = new Button("Play", "", null);
-        var quitButton = new Button("Quit", "", Quit);
-        LinkedList<Button> mainMenuButtons = new();
-        mainMenuButtons.AddLast(playButton);
-        mainMenuButtons.AddLast(quitButton);
-        var mainMenuButtonsView = new ButtonListView(mainMenuButtons);
-        OpenMenu(mainMenuButtonsView, new Dictionary<SelectionControl, Action>
-        {
-            {SelectionControl.Up, mainMenuButtonsView.SelectPrev},
-            {SelectionControl.Down, mainMenuButtonsView.SelectNext},
-            {SelectionControl.Select, mainMenuButtonsView.PressCurrent}
-        });
+        OpenBasicMenu(new Button("Play", "", null), new Button("Quit", "", Quit));
         //var session = new PlaySession();
         //session.Start();
+    }
+
+    private static void OpenBasicMenu(params Button[] buttons)
+    {
+        var buttonListView = new ButtonListView(new LinkedList<Button>(buttons));
+        OpenMenu(buttonListView, new Dictionary<SelectionControl, Action>
+        {
+            {SelectionControl.Up, buttonListView.SelectPrev},
+            {SelectionControl.Down, buttonListView.SelectNext},
+            {SelectionControl.Select, buttonListView.PressCurrent}
+        });
     }
 
     private static void OpenMenu(ButtonListView buttonListView, Dictionary<SelectionControl, Action> bindings)
