@@ -5,13 +5,19 @@ namespace GalacticMeltdown;
 public static class Game
 {
     private static bool _playing;
-    static void Main()
+    public static void Main()
     {
         _playing = true;
-        var mainMenu = new MainMenu();
-        mainMenu.Start();
+        while (_playing)
+        {
+            OpenMainMenu();
+        }
+        Renderer.CleanUp();
+    }
+
+    private static void OpenMainMenu()
+    {
         var session = new PlaySession();
         session.Start();
-        Renderer.CleanUp();
     }
 }
