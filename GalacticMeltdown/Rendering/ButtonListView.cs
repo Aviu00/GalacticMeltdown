@@ -11,6 +11,7 @@ public class ButtonListView : View
 
     public ButtonListView(ICollection<Button> buttons)
     {
+        // TODO: this should have at least one button, check that
         _buttons = new LinkedList<Button>(buttons);
         _currentButtonNode = _buttons.First;
     }
