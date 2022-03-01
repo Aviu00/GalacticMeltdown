@@ -77,7 +77,7 @@ public class Renderer
                 {
                     ViewCellData viewCellData = func();
                     symbolData ??= viewCellData.SymbolData;
-                    if ((backgroundColor ??= viewCellData.BackgroundColor) is not null)
+                    if ((backgroundColor = viewCellData.BackgroundColor) is not null)
                     {
                         break;
                     }
