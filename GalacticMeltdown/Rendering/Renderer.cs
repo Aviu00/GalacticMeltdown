@@ -156,7 +156,7 @@ public class Renderer
 
     private int ConvertToConsoleY(int y)
     {
-        return Console.WindowHeight - y;
+        return _screenCells.GetLength(1) - 1 - y;
     }
 
     public static void CleanUp()
