@@ -14,6 +14,7 @@ public class Renderer
     private LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
     private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private ScreenCellData[,] _screenCells;
+    private Dictionary<View, (int, int)> _viewOffsets;
 
     public Renderer()
     {
@@ -21,6 +22,7 @@ public class Renderer
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
         _views = new LinkedList<(View, double, double, double, double)>();
+        _viewOffsets = new Dictionary<View, (int, int)>();
     }
 
     private void RecalculatePixelArrays(int windowWidth, int windowHeight)
@@ -33,6 +35,7 @@ public class Renderer
             int x1Screen = (int) Math.Round(windowWidth * x1Portion);
             int y1Screen = (int) Math.Round(windowHeight * y1Portion);
             view.Resize(x1Screen - x0Screen, y1Screen - y0Screen);
+            _viewOffsets.Add(view, (x0Screen, y0Screen));
             for (int x = x0Screen; x < x1Screen; x++)
             {
                 for (int y = y0Screen; y < y1Screen; y++)
