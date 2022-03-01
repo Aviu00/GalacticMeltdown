@@ -36,4 +36,10 @@ public class ButtonListView : View
         _currentButtonNode = _currentButtonNode.Previous ?? _buttons.Last;
         // TODO: update view
     }
+
+    public void SetNewButtons(LinkedList<Button> buttons)
+    {
+        _buttons = buttons;
+        ViewChanged?.Invoke(this);
+    }
 }
