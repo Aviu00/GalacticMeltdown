@@ -12,13 +12,33 @@ public class LevelSelectionView : View
     private LinkedListNode<Button> _currentManagementNode;
     private bool _isManagementSelected;
 
-    public LevelSelectionView(ICollection<Button> levelButtons)
+    public LevelSelectionView()
     {
-        _levelButtons = new LinkedList<Button>(levelButtons);
+        _isManagementSelected = false;
     }
     
     public override ViewCellData GetSymbol(int x, int y)
     {
         return new ViewCellData(null, null);
+    }
+    
+    public void PressCurrent()
+    {
+        
+    }
+
+    public void SelectNext()
+    {
+        
+    }
+
+    public void SelectPrev()
+    {
+        
+    }
+
+    public void SwitchButtonGroup()
+    {
+        
     }
 }
