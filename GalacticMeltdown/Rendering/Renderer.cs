@@ -88,6 +88,7 @@ public class Renderer
     private void OutputCells()
     {
         Console.SetCursorPosition(0, 0);
+        // do first step outside the loop to avoid working with nulls
         ScreenCellData screenCellData = _screenCells[0, 0];
         StringBuilder currentSequence = new StringBuilder($"{screenCellData.Symbol}");
         ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
