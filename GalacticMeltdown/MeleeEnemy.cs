@@ -29,7 +29,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         //Console.WriteLine(this.GetHashCode() + ":" + SeePlayer().ToString());
     }
 
-    protected bool SeePlayer()
+    private bool SeePlayer()
     {
         bool flag = true;
         foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, Player.X, Player.Y))
@@ -43,7 +43,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     }
 
     // makes many moves
-    protected void MoveToGoal(IEnumerable pathToPlayer)
+    private void MoveToGoal(IEnumerable pathToPlayer)
     {
         int costOfWay = 0;
         int diffX = 0, diffY = 0;
