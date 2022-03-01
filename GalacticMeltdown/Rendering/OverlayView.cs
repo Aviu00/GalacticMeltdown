@@ -9,6 +9,7 @@ public class OverlayView : View
     // Performance monitor? Coordinates of controlled object, player?
     private ViewCellData[,] _symbols;
     public override event ViewChangedEventHandler ViewChanged;
+    public override event CellsChangedEventHandler CellsChanged;
 
     public OverlayView(Map map)
     {

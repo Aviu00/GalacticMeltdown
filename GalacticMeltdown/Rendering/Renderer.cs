@@ -7,6 +7,8 @@ namespace GalacticMeltdown.Rendering;
 
 public delegate void ViewChangedEventHandler(View sender);
 
+public delegate void CellsChangedEventHandler(View sender, HashSet<(int, int, ViewCellData)> data);
+
 public class Renderer
 {
     private LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)

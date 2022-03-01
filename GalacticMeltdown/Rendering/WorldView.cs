@@ -10,6 +10,7 @@ public class WorldView : View
     private LinkedList<ICanSeeTiles> _tileRevealingObjects;
     private HashSet<(int, int)> _visiblePoints;
     public override event ViewChangedEventHandler ViewChanged;
+    public override event CellsChangedEventHandler CellsChanged;
 
     public WorldView(Map map)
     {
