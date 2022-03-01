@@ -23,7 +23,7 @@ public static class Game
 
     private static void OpenMainMenu()
     {
-        OpenBasicMenu(new Button("Select level", "", null), new Button("Quit", "", Quit));
+        OpenBasicMenu(new Button("Select level", "", OpenLevelMenu), new Button("Quit", "", Quit));
         //var session = new PlaySession();
         //session.Start();
     }

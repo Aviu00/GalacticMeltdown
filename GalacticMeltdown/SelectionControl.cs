@@ -7,5 +7,6 @@ public enum SelectionControl
     Left,
     Right,
     Select,
-    Back
+    Back,
+    SwitchButtonGroup,
 }

@@ -32,16 +32,19 @@ public class LevelSelectionView : View
     {
         if (_isManagementSelected) _currentManagementNode = _currentManagementNode.Next ?? _managementButtons.First;
         else _currentLevelNode = _currentLevelNode.Next ?? _levelButtons.First;
+        // TODO: notify renderer
     }
 
     public void SelectPrev()
     {
         if (_isManagementSelected) _currentManagementNode = _currentManagementNode.Previous ?? _managementButtons.Last;
         else _currentLevelNode = _currentLevelNode.Previous ?? _levelButtons.Last;
+        // TODO: notify renderer
     }
 
     public void SwitchButtonGroup()
     {
         _isManagementSelected = !_isManagementSelected;
+        // TODO: notify renderer
     }
 }

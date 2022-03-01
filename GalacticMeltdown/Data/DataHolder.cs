@@ -40,7 +40,8 @@ public static class DataHolder
             {ConsoleKey.LeftArrow, SelectionControl.Left},
             {ConsoleKey.RightArrow, SelectionControl.Right},
             {ConsoleKey.Enter, SelectionControl.Select},
-            {ConsoleKey.Escape, SelectionControl.Back}
+            {ConsoleKey.Escape, SelectionControl.Back},
+            {ConsoleKey.Tab, SelectionControl.SwitchButtonGroup},
         };
     }
 }
