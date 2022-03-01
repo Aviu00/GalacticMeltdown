@@ -9,14 +9,14 @@ public delegate void ViewChangedEventHandler(View sender);
 
 public delegate void CellsChangedEventHandler(View sender, HashSet<(int, int, ViewCellData)> data);
 
-public class Renderer
+public static class Renderer
 {
-    private LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
-    private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
-    private ScreenCellData[,] _screenCells;
-    private Dictionary<View, (int, int)> _viewOffsets;
+    private static LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
+    private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
+    private static ScreenCellData[,] _screenCells;
+    private static Dictionary<View, (int, int)> _viewOffsets;
 
-    public Renderer()
+    static Renderer()
     {
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
@@ -25,7 +25,7 @@ public class Renderer
         _viewOffsets = new Dictionary<View, (int, int)>();
     }
 
-    private void RecalculatePixelArrays(int windowWidth, int windowHeight)
+    private static void RecalculatePixelArrays(int windowWidth, int windowHeight)
     {
         FillPixelArrays(windowWidth, windowHeight);
         foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _views)
@@ -47,7 +47,7 @@ public class Renderer
         }
     }
 
-    private void FillPixelArrays(int windowWidth, int windowHeight)
+    private static void FillPixelArrays(int windowWidth, int windowHeight)
     {
         _screenCells = new ScreenCellData[windowWidth, windowHeight];
         _pixelFuncs = new LinkedList<Func<ViewCellData>>[windowWidth, windowHeight];
@@ -60,7 +60,7 @@ public class Renderer
         }
     }
 
-    private void UpdateCurrentCells()
+    private static void UpdateCurrentCells()
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
@@ -90,7 +90,7 @@ public class Renderer
         }
     }
 
-    private void OutputCells()
+    private static void OutputCells()
     {
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
@@ -122,18 +122,18 @@ public class Renderer
         Console.Write(currentSequence);
     }
 
-    public void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
+    public static void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
     {
         view.ViewChanged += ViewChangedHandler;
         _views.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
     }
 
-    private void ViewChangedHandler(View sender)
+    private static void ViewChangedHandler(View sender)
     {
         Redraw();  // The renderer is fast enough
     }
 
-    public void RemoveLastView()
+    public static void RemoveLastView()
     {
         if (_views.Any())
         {
@@ -141,12 +141,12 @@ public class Renderer
         }
     }
 
-    public void ClearViews()
+    public static void ClearViews()
     {
         _views.Clear();
     }
 
-    public void Redraw()
+    public static void Redraw()
     {
         UpdateCurrentCells();
         OutputCells();
@@ -160,7 +160,7 @@ public class Renderer
             Console.BackgroundColor = bgColor;
     }
 
-    private int ConvertToConsoleY(int y)
+    private static int ConvertToConsoleY(int y)
     {
         return _screenCells.GetLength(1) - 1 - y;
     }

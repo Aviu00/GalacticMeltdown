@@ -8,7 +8,6 @@ public partial class PlaySession
 {
     private static Player _player;
     private static IControllable _controlledObject;
-    private static Renderer _renderer;
     private static Map _map;
     private static WorldView _worldView;
 
@@ -17,13 +16,12 @@ public partial class PlaySession
         var map = GenerateMap();
         _player = _map.Player;
         _controlledObject = _player;
-        _renderer = new Renderer();
         _worldView = new WorldView(map);
         _worldView.AddTileRevealingObject(_player);
         _worldView.SetFocus(_player);
-        _renderer.AddView(_worldView, 0, 0, 0.8, 1);
-        _renderer.AddView(new OverlayView(map), 0.8, 0, 1, 1);
-        _renderer.Redraw();
+        Renderer.AddView(_worldView, 0, 0, 0.8, 1);
+        Renderer.AddView(new OverlayView(map), 0.8, 0, 1, 1);
+        Renderer.Redraw();
         InputProcessor.AddBinding(Data.Data.CurrentBindings.Player, PlayerActions);
         InputProcessor.StartProcessLoop();
     }
@@ -32,7 +30,7 @@ public partial class PlaySession
     {
         if (_controlledObject.TryMove(deltaX, deltaY))  // Temporary, keeps screen up to date
         {
-            _renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
+            Renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
         }
     }
 
