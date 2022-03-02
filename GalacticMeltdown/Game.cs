@@ -21,6 +21,11 @@ public static class Game
         Renderer.CleanUp();
     }
 
+    public static void GenerateLevel(int? seed)
+    {
+        
+    }
+
     public static void StartLevel(Map level)
     {
         var session = new PlaySession(level);
