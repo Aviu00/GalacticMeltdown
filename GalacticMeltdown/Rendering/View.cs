@@ -1,11 +1,9 @@
-using System;
-
 namespace GalacticMeltdown.Rendering;
 
 public abstract class View
 {
     public abstract ViewCellData GetSymbol(int x, int y);
-    public abstract event ViewChangedEventHandler ViewChanged;
+    public abstract event ViewChangedEventHandler NeedRedraw;
     public abstract event CellsChangedEventHandler CellsChanged;
 
     protected View()
@@ -17,7 +15,7 @@ public abstract class View
     protected int Height;
     private readonly string _id;
 
-    public virtual void Resize(int width, int height)  // Note: should not fire ViewChanged events
+    public virtual void Resize(int width, int height)  // Note: should not fire NeedRedraw events
     {
         Width = width;
         Height = height;

@@ -9,7 +9,7 @@ public class WorldView : View
     private IFocusPoint _focusObject;
     private LinkedList<ICanSeeTiles> _tileRevealingObjects;
     private HashSet<(int, int)> _visiblePoints;
-    public override event ViewChangedEventHandler ViewChanged;
+    public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
 
     public WorldView(Map map)
@@ -28,7 +28,7 @@ public class WorldView : View
             var tile = _map.GetTile(x, y);
             if (tile is not null) tile.Seen = true;
         }
-        ViewChanged?.Invoke(this);
+        NeedRedraw?.Invoke(this);
     }
 
     public void AddTileRevealingObject(ICanSeeTiles obj)
@@ -50,14 +50,14 @@ public class WorldView : View
         if (ReferenceEquals(focusObj, _focusObject)) return;
         _focusObject = focusObj;
         _focusObject.PositionChanged += FocusObjectMoved;
-        ViewChanged?.Invoke(this);
+        NeedRedraw?.Invoke(this);
     }
 
     private void FocusObjectMoved()
     {
         // Already re-rendered
         if (_focusObject is ICanSeeTiles focusObject && _tileRevealingObjects.Contains(focusObject)) return;
-        ViewChanged?.Invoke(this);
+        NeedRedraw?.Invoke(this);
     }
 
     public override ViewCellData GetSymbol(int x, int y)

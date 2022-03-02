@@ -6,7 +6,7 @@ namespace GalacticMeltdown.Rendering;
 
 public class LevelManagementView : View
 {
-    public override event ViewChangedEventHandler ViewChanged;
+    public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
     private readonly LinkedList<Button> _levelButtons;
     private readonly LinkedList<Button> _managementButtons;

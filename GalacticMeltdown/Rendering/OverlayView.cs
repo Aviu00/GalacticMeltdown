@@ -8,7 +8,7 @@ public class OverlayView : View
     private Player _player;  // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?
     private ViewCellData[,] _symbols;
-    public override event ViewChangedEventHandler ViewChanged;
+    public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
 
     public OverlayView(Map map)

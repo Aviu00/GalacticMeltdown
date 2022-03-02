@@ -124,11 +124,11 @@ public static class Renderer
 
     public static void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
     {
-        view.ViewChanged += ViewChangedHandler;
+        view.NeedRedraw += NeedRedrawHandler;
         _views.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
     }
 
-    private static void ViewChangedHandler(View sender)
+    private static void NeedRedrawHandler(View sender)
     {
         Redraw();  // The renderer is fast enough
     }

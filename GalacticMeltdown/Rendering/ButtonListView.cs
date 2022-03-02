@@ -4,7 +4,7 @@ namespace GalacticMeltdown.Rendering;
 
 public class ButtonListView : View
 {
-    public override event ViewChangedEventHandler ViewChanged;
+    public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
     private LinkedList<Button> _buttons;
     private LinkedListNode<Button> _currentButtonNode;
@@ -41,6 +41,6 @@ public class ButtonListView : View
     public void SetNewButtons(LinkedList<Button> buttons)
     {
         _buttons = buttons;
-        ViewChanged?.Invoke(this);
+        NeedRedraw?.Invoke(this);
     }
 }
