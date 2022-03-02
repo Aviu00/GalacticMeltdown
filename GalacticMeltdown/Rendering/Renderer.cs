@@ -40,7 +40,7 @@ public static class Renderer
             {
                 for (int y = y0Screen; y < y1Screen; y++)
                 {
-                    int saveX = x, saveY = y;  // x and y are modified in the loop above, so they need to be saved
+                    int saveX = x, saveY = y;  // x and y are modified outside this closure, so they need to be saved
                     _pixelFuncs[x, y].AddFirst(() => view.GetSymbol(saveX - x0Screen, saveY - y0Screen));
                 }
             }
