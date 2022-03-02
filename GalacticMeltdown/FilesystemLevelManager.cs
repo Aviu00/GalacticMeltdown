@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown;
 
@@ -25,15 +23,7 @@ public static class FilesystemLevelManager
 
     public static Map GetLevel(string path)
     {
-        Map map;
-        var tileTypes = new TileTypesExtractor().TileTypes;
-        var rooms = new RoomDataExtractor(tileTypes).Rooms;
-        MapGenerator mapGen = new MapGenerator(1);
-        map = mapGen.Generate();
-        rooms = null;
-        tileTypes = null;
-        mapGen = null;
-        GC.Collect();
+        Map map = new MapGenerator(1).Generate();
         return map;
     }
 }
