@@ -21,6 +21,11 @@ public static class Game
         Renderer.CleanUp();
     }
 
+    public static void StartLevel(Map level)
+    {
+        
+    }
+
     private static void OpenMainMenu()
     {
         OpenBasicMenu(new Button("Select level", "", OpenLevelMenu), new Button("Quit", "", Quit));
