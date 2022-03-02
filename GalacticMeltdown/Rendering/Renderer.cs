@@ -13,7 +13,6 @@ public static class Renderer
 {
     private static LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
     private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
-    private static ScreenCellData[,] _screenCells;
     private static Dictionary<View, (int, int, int, int)> _viewBoundaries;
 
     static Renderer()
@@ -50,24 +49,12 @@ public static class Renderer
 
     private static void FillPixelArrays(int windowWidth, int windowHeight)
     {
-        _screenCells = new ScreenCellData[windowWidth, windowHeight];
         _pixelFuncs = new LinkedList<Func<ViewCellData>>[windowWidth, windowHeight];
         for (int x = 0; x < _pixelFuncs.GetLength(0); x++)
         {
             for (int y = 0; y < _pixelFuncs.GetLength(1); y++)
             {
                 _pixelFuncs[x, y] = new LinkedList<Func<ViewCellData>>();
-            }
-        }
-    }
-
-    private static void UpdateCurrentCells()
-    {
-        for (int x = 0; x < _pixelFuncs.GetLength(0); x++)
-        {
-            for (int y = 0; y < _pixelFuncs.GetLength(1); y++)
-            {
-                _screenCells[x, y] = GetCell(x, y);
             }
         }
     }
@@ -95,8 +82,8 @@ public static class Renderer
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
-        if (_screenCells is null ||
-            !(windowWidth == _screenCells.GetLength(0) && windowHeight == _screenCells.GetLength(1)))
+        if (_pixelFuncs is null ||
+            !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
         {
             RecalculatePixelArrays(windowWidth, windowHeight);
             return true;
@@ -109,15 +96,15 @@ public static class Renderer
     {
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
-        ScreenCellData screenCellData = _screenCells[0, 0];
+        ScreenCellData screenCellData = GetCell(0, 0);
         StringBuilder currentSequence = new StringBuilder($"{screenCellData.Symbol}");
         ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
         int x = 1;
-        for (int areaY = _screenCells.GetLength(1) - 1; areaY >= 0; areaY--)
+        for (int areaY = _pixelFuncs.GetLength(1) - 1; areaY >= 0; areaY--)
         {
-            for (; x < _screenCells.GetLength(0); x++)
+            for (; x < _pixelFuncs.GetLength(0); x++)
             {
-                screenCellData = _screenCells[x, areaY];
+                screenCellData = GetCell(x, areaY);
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' ' 
                     || screenCellData.BgColor != curBgColor)
                 {
@@ -164,7 +151,7 @@ public static class Renderer
     public static void Redraw()
     {
         RedrawIfScreenSizeChanged();
-        UpdateCurrentCells();
+        //UpdateCurrentCells();
         OutputAllCells();
     }
     
@@ -178,7 +165,7 @@ public static class Renderer
 
     private static int ConvertToConsoleY(int y)
     {
-        return _screenCells.GetLength(1) - 1 - y;
+        return _pixelFuncs.GetLength(1) - 1 - y;
     }
 
     public static void CleanUp()
