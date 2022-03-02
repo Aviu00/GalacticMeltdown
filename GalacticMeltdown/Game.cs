@@ -64,8 +64,9 @@ public static class Game
     private static void OpenMenu(View view, Dictionary<SelectionControl, Action> bindings)
     {
         _menus.Push(view);
-        Renderer.AddView(view, 0, 0, 1, 1);
         InputProcessor.AddBinding(DataHolder.CurrentBindings.Selection, bindings);
+        Renderer.AddView(view, 0, 0, 1, 1);
+        Renderer.Redraw();
     }
 
     private static void CloseOpenedMenu()
