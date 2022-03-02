@@ -14,8 +14,21 @@ public class LevelSelectionView : View
 
     public LevelSelectionView()
     {
-        var Levels = FilesystemLevelManager.GetLevelInfo();
-        _isManagementSelected = false;
+        List<LevelInfo> levels = FilesystemLevelManager.GetLevelInfo();
+        _levelButtons = new LinkedList<Button>();
+        foreach (var levelInfo in levels)
+        {
+            _levelButtons.AddLast(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}", 
+                () => TryStartLevel(levelInfo.Path)));
+        }
+        
+        _isManagementSelected = levels.Count != 0;  // can't select a level when none exist
+    }
+
+    private void TryStartLevel(string path)
+    {
+        // TODO: error checking, animation on error.
+        Game.StartLevel(FilesystemLevelManager.GetLevel(path));
     }
     
     public override ViewCellData GetSymbol(int x, int y)
