@@ -62,11 +62,6 @@ public static class Renderer
 
     private static void UpdateCurrentCells()
     {
-        int windowWidth = Console.WindowWidth;
-        int windowHeight = Console.WindowHeight;
-        if (_screenCells is null || 
-            !(windowWidth == _screenCells.GetLength(0) && windowHeight == _screenCells.GetLength(1))) 
-            RecalculatePixelArrays(windowWidth, windowHeight);
         for (int x = 0; x < _pixelFuncs.GetLength(0); x++)
         {
             for (int y = 0; y < _pixelFuncs.GetLength(1); y++)
@@ -88,6 +83,20 @@ public static class Renderer
                     backgroundColor ?? ConsoleColor.Black);
             }
         }
+    }
+
+    private static bool RedrawIfScreenSizeChanged()
+    {
+        int windowWidth = Console.WindowWidth;
+        int windowHeight = Console.WindowHeight;
+        if (_screenCells is null ||
+            !(windowWidth == _screenCells.GetLength(0) && windowHeight == _screenCells.GetLength(1)))
+        {
+            RecalculatePixelArrays(windowWidth, windowHeight);
+            return true;
+        }
+
+        return false;
     }
 
     private static void OutputAllCells()
@@ -148,6 +157,7 @@ public static class Renderer
 
     public static void Redraw()
     {
+        RedrawIfScreenSizeChanged();
         UpdateCurrentCells();
         OutputAllCells();
     }
