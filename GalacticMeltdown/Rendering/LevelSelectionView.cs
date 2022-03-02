@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GalacticMeltdown.Rendering;
 
@@ -26,7 +28,10 @@ public class LevelSelectionView : View
         _managementButtons.AddLast(new Button("Create", "", null));
         _managementButtons.AddLast(new Button("Delete", "", null));
         
-        _isManagementSelected = levels.Count != 0;  // can't select a level when none exist
+        _currentLevelNode = _levelButtons.First;
+        _currentManagementNode = _managementButtons.First;
+        
+        _isManagementSelected = levels.Count == 0;  // can't select a level when none exist
     }
 
     private void TryStartLevel(string path)
@@ -62,7 +67,8 @@ public class LevelSelectionView : View
 
     public void SwitchButtonGroup()
     {
-        _isManagementSelected = !_isManagementSelected;
+        // can't select a level when none exist
+        _isManagementSelected = _levelButtons.Any() ? !_isManagementSelected : false;
         // TODO: notify renderer
     }
 }
