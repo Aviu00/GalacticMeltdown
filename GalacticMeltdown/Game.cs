@@ -39,7 +39,7 @@ public static class Game
 
     private static void OpenLevelMenu()
     {
-        var levelMenu = new LevelSelectionView();
+        var levelMenu = new LevelManagementView();
         OpenMenu(levelMenu, new Dictionary<SelectionControl, Action>
         {
             {SelectionControl.Up, levelMenu.SelectPrev},

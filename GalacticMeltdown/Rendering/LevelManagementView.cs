@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GalacticMeltdown.Rendering;
 
-public class LevelSelectionView : View
+public class LevelManagementView : View
 {
     public override event ViewChangedEventHandler ViewChanged;
     public override event CellsChangedEventHandler CellsChanged;
@@ -14,7 +14,7 @@ public class LevelSelectionView : View
     private LinkedListNode<Button> _currentManagementNode;
     private bool _isManagementSelected;
 
-    public LevelSelectionView()
+    public LevelManagementView()
     {
         List<LevelInfo> levels = FilesystemLevelManager.GetLevelInfo();
         _levelButtons = new LinkedList<Button>();
