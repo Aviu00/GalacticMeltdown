@@ -36,19 +36,4 @@ public partial class PlaySession
             Renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
         }
     }
-
-    private static Map GenerateMap(string seed = null)
-    {
-        if (seed == null || !int.TryParse(seed, out int mapSeed) || mapSeed < 0)
-            mapSeed = Random.Shared.Next(0, 1000000000);
-        var tileTypes = new TileTypesExtractor().TileTypes;
-        var rooms = new RoomDataExtractor(tileTypes).Rooms;
-        MapGenerator mapGen = new MapGenerator(mapSeed, tileTypes, rooms);
-        _map = mapGen.Generate();
-        rooms = null;
-        tileTypes = null;
-        mapGen = null;
-        GC.Collect();
-        return _map;
-    }
 }
