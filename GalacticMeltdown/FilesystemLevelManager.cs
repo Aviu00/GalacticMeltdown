@@ -10,7 +10,7 @@ public class FilesystemLevelManager
 {
     public List<LevelInfo> GetLevels()
     {
-        return new List<LevelInfo>() {new LevelInfo(".", 0, "ExampleName")};
+        return new List<LevelInfo> {new(".", 0, "ExampleName")};
     }
 
     public void RemoveLevel(string path)
