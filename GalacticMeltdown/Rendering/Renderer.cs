@@ -28,6 +28,7 @@ public static class Renderer
     private static void RecalculatePixelArrays(int windowWidth, int windowHeight)
     {
         FillPixelArrays(windowWidth, windowHeight);
+        _viewBoundaries.Clear();
         foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _views)
         {
             int x0Screen = (int) Math.Round(windowWidth * x0Portion);
