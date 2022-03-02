@@ -27,4 +27,6 @@ public static class InputProcessor
         Bindings.Push(Utility.JoinDictionaries(controlMode, actions));
 
     public static void RemoveLastBinding() => Bindings.Pop();
+
+    public static void ClearBindings() => Bindings.Clear();
 }
