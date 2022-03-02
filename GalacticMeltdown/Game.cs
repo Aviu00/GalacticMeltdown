@@ -23,14 +23,13 @@ public static class Game
 
     public static void StartLevel(Map level)
     {
-        
+        var session = new PlaySession(level);
+        session.Start();
     }
 
     private static void OpenMainMenu()
     {
         OpenBasicMenu(new Button("Select level", "", OpenLevelMenu), new Button("Quit", "", Quit));
-        //var session = new PlaySession();
-        //session.Start();
     }
 
     private static void OpenLevelMenu()
