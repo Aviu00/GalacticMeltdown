@@ -67,23 +67,28 @@ public static class Renderer
         {
             for (int y = 0; y < _pixelFuncs.GetLength(1); y++)
             {
-                (char symbol, ConsoleColor color)? symbolData = null;
-                ConsoleColor? backgroundColor = null;
-                foreach (var func in _pixelFuncs[x, y])
-                {
-                    ViewCellData viewCellData = func();
-                    symbolData ??= viewCellData.SymbolData;
-                    if ((backgroundColor = viewCellData.BackgroundColor) is not null)
-                    {
-                        break;
-                    }
-                }
-
-                symbolData ??= (' ', ConsoleColor.Black);
-                _screenCells[x, y] = new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color,
-                    backgroundColor ?? ConsoleColor.Black);
+                _screenCells[x, y] = GetCell(x, y);
             }
         }
+    }
+
+    private static ScreenCellData GetCell(int x, int y)
+    {
+        (char symbol, ConsoleColor color)? symbolData = null;
+        ConsoleColor? backgroundColor = null;
+        foreach (var func in _pixelFuncs[x, y])
+        {
+            ViewCellData viewCellData = func();
+            symbolData ??= viewCellData.SymbolData;
+            if ((backgroundColor = viewCellData.BackgroundColor) is not null)
+            {
+                break;
+            }
+        }
+
+        symbolData ??= (' ', ConsoleColor.Black);
+        backgroundColor ??= ConsoleColor.Black;
+        return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
     private static bool RedrawIfScreenSizeChanged()
