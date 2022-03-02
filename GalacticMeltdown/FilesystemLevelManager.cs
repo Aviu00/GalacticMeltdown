@@ -6,24 +6,24 @@ namespace GalacticMeltdown;
 
 public readonly record struct LevelInfo(string Path, int Seed, string Name); 
 
-public class FilesystemLevelManager
+public static class FilesystemLevelManager
 {
-    public List<LevelInfo> GetLevels()
+    public static List<LevelInfo> GetLevels()
     {
         return new List<LevelInfo> {new(".", 0, "ExampleName")};
     }
 
-    public void RemoveLevel(string path)
+    public static void RemoveLevel(string path)
     {
         
     }
 
-    public void SaveLevel(Map level)
+    public static void SaveLevel(Map level)
     {
         
     }
 
-    public Map GetLevel(string path)
+    public static Map GetLevel(string path)
     {
         Map map;
         var tileTypes = new TileTypesExtractor().TileTypes;
