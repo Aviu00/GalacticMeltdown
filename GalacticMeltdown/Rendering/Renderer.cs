@@ -7,13 +7,14 @@ namespace GalacticMeltdown.Rendering;
 
 public delegate void ViewChangedEventHandler(View sender);
 
-public delegate void CellsChangedEventHandler(View sender, HashSet<(int, int, ViewCellData)> data);
+public delegate void CellsChangedEventHandler((View, HashSet<(int, int, ViewCellData)>) animInfo);
 
 public static class Renderer
 {
     private static LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
     private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private static Dictionary<View, (int, int, int, int)> _viewBoundaries;
+    private static LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
 
     static Renderer()
     {
@@ -22,6 +23,7 @@ public static class Renderer
         Console.Clear();
         _views = new LinkedList<(View, double, double, double, double)>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
+        _animations = new LinkedList<(View, HashSet<(int, int, ViewCellData)>)>();
     }
 
     private static void RecalcAndRedraw(int windowWidth, int windowHeight)
@@ -128,6 +130,7 @@ public static class Renderer
     public static void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
     {
         view.NeedRedraw += NeedRedrawHandler;
+        view.CellsChanged += AddAnimation;
         _views.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
@@ -143,6 +146,7 @@ public static class Renderer
         {
             var (view, _, _, _, _) = _views.First();
             view.NeedRedraw -= NeedRedrawHandler;
+            view.CellsChanged -= AddAnimation;
             _views.RemoveFirst();
         }
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -153,6 +157,7 @@ public static class Renderer
         foreach (var (view, _, _, _, _) in _views)
         {
             view.NeedRedraw -= NeedRedrawHandler;
+            view.CellsChanged -= AddAnimation;
         }
         _views.Clear();
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -183,5 +188,47 @@ public static class Renderer
         Console.Clear();
         Console.CursorVisible = true;
         Console.SetCursorPosition(0, 0);
+    }
+
+    private static void AddAnimation((View, HashSet<(int, int, ViewCellData)>) animInfo)
+    {
+        _animations.AddLast(animInfo);
+    }
+
+    private static void PlayAnimations()
+    {
+        foreach (var (view, updatedCells) in _animations)
+        {
+            foreach (var (viewX, viewY, viewCellData) in updatedCells)
+            {
+                var (viewTopLeftScreenX, viewTopLeftScreenY, _, _) = _viewBoundaries[view];
+                var (screenX, screenY) = Utility.ConvertRelativeToAbsoluteCoords(viewX, viewY,
+                    viewTopLeftScreenX, viewTopLeftScreenY);
+                ScreenCellData screenCellData = GetCellAnimation(screenX, screenY, viewCellData, view);
+                Console.SetCursorPosition(screenX, screenY);
+                SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
+                Console.Write(screenCellData.Symbol);
+            }
+        }
+        _animations.Clear();
+    }
+    
+    private static ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View view)
+    {
+        (char symbol, ConsoleColor color)? symbolData = null;
+        ConsoleColor? backgroundColor = null;
+        foreach (var func in _pixelFuncs[x, y])
+        {
+            ViewCellData viewCellData = ReferenceEquals(func.Target, view) ? cellData : func();
+            symbolData ??= viewCellData.SymbolData;
+            if ((backgroundColor = viewCellData.BackgroundColor) is not null)
+            {
+                break;
+            }
+        }
+
+        symbolData ??= (' ', ConsoleColor.Black);
+        backgroundColor ??= ConsoleColor.Black;
+        return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 }
