@@ -24,7 +24,7 @@ public static class Renderer
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
     }
 
-    private static void RecalculatePixelFuncArr(int windowWidth, int windowHeight)
+    private static void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
@@ -45,6 +45,7 @@ public static class Renderer
                 }
             }
         }
+        OutputAllCells();
     }
 
     private static void InitPixelFuncArr(int windowWidth, int windowHeight)
@@ -78,14 +79,14 @@ public static class Renderer
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
-    private static bool UpdateFuncsOnScreenChange()
+    private static bool RedrawOnScreenSizeChange()
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
         if (_pixelFuncs is null ||
             !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
         {
-            RecalculatePixelFuncArr(windowWidth, windowHeight);
+            RecalcAndRedraw(windowWidth, windowHeight);
             return true;
         }
 
@@ -128,6 +129,7 @@ public static class Renderer
     {
         view.NeedRedraw += NeedRedrawHandler;
         _views.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
     private static void NeedRedrawHandler(View sender)
@@ -143,7 +145,7 @@ public static class Renderer
             view.NeedRedraw -= NeedRedrawHandler;
             _views.RemoveFirst();
         }
-        Redraw();
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
     public static void ClearViews()
@@ -153,12 +155,12 @@ public static class Renderer
             view.NeedRedraw -= NeedRedrawHandler;
         }
         _views.Clear();
-        Redraw();
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
     public static void Redraw()
     {
-        UpdateFuncsOnScreenChange();
+        if (RedrawOnScreenSizeChange()) return;
         OutputAllCells();
     }
     
