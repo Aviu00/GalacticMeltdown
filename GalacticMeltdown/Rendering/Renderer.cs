@@ -24,9 +24,9 @@ public static class Renderer
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
     }
 
-    private static void RecalculatePixelArrays(int windowWidth, int windowHeight)
+    private static void RecalculatePixelFuncArr(int windowWidth, int windowHeight)
     {
-        FillPixelArrays(windowWidth, windowHeight);
+        InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
         foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _views)
         {
@@ -47,7 +47,7 @@ public static class Renderer
         }
     }
 
-    private static void FillPixelArrays(int windowWidth, int windowHeight)
+    private static void InitPixelFuncArr(int windowWidth, int windowHeight)
     {
         _pixelFuncs = new LinkedList<Func<ViewCellData>>[windowWidth, windowHeight];
         for (int x = 0; x < _pixelFuncs.GetLength(0); x++)
@@ -85,7 +85,7 @@ public static class Renderer
         if (_pixelFuncs is null ||
             !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
         {
-            RecalculatePixelArrays(windowWidth, windowHeight);
+            RecalculatePixelFuncArr(windowWidth, windowHeight);
             return true;
         }
 
