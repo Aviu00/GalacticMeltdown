@@ -36,4 +36,11 @@ public partial class PlaySession
             Renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
         }
     }
+
+    private static void StopSession()
+    {
+        Renderer.ClearViews();
+        InputProcessor.ClearBindings();
+        InputProcessor.StopProcessLoop();
+    }
 }

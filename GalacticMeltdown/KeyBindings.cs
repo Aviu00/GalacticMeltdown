@@ -36,7 +36,7 @@ public partial class PlaySession
             {PlayerAction.ReduceViewRange, () => _player.ViewRadius--},
             {PlayerAction.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
             {PlayerAction.ActivateXRay, () => _player.Xray = !_player.Xray},
-            {PlayerAction.Quit, InputProcessor.StopProcessLoop},
+            {PlayerAction.Quit, StopSession},
             //{PlayerAction.OpenCloseInventory, () => ChangeBindings()}
         };
 }

@@ -139,19 +139,26 @@ public static class Renderer
     {
         if (_views.Any())
         {
+            var (view, _, _, _, _) = _views.First();
+            view.NeedRedraw -= NeedRedrawHandler;
             _views.RemoveFirst();
         }
+        Redraw();
     }
 
     public static void ClearViews()
     {
+        foreach (var (view, _, _, _, _) in _views)
+        {
+            view.NeedRedraw -= NeedRedrawHandler;
+        }
         _views.Clear();
+        Redraw();
     }
 
     public static void Redraw()
     {
         RedrawIfScreenSizeChanged();
-        //UpdateCurrentCells();
         OutputAllCells();
     }
     
