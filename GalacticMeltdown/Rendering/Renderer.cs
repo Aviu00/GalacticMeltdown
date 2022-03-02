@@ -90,7 +90,7 @@ public static class Renderer
         }
     }
 
-    private static void OutputCells()
+    private static void OutputAllCells()
     {
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
@@ -149,7 +149,7 @@ public static class Renderer
     public static void Redraw()
     {
         UpdateCurrentCells();
-        OutputCells();
+        OutputAllCells();
     }
     
     public static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
