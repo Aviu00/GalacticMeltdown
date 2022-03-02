@@ -6,8 +6,8 @@ public class LevelSelectionView : View
 {
     public override event ViewChangedEventHandler ViewChanged;
     public override event CellsChangedEventHandler CellsChanged;
-    private LinkedList<Button> _levelButtons;
-    private LinkedList<Button> _managementButtons;
+    private readonly LinkedList<Button> _levelButtons;
+    private readonly LinkedList<Button> _managementButtons;
     private LinkedListNode<Button> _currentLevelNode;
     private LinkedListNode<Button> _currentManagementNode;
     private bool _isManagementSelected;
@@ -21,6 +21,10 @@ public class LevelSelectionView : View
             _levelButtons.AddLast(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}", 
                 () => TryStartLevel(levelInfo.Path)));
         }
+
+        _managementButtons = new LinkedList<Button>();
+        _managementButtons.AddLast(new Button("Create", "", null));
+        _managementButtons.AddLast(new Button("Delete", "", null));
         
         _isManagementSelected = levels.Count != 0;  // can't select a level when none exist
     }
