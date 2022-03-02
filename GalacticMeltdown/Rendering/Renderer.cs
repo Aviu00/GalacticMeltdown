@@ -78,7 +78,7 @@ public static class Renderer
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
-    private static bool RedrawIfScreenSizeChanged()
+    private static bool UpdateFuncsOnScreenChange()
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
@@ -158,7 +158,7 @@ public static class Renderer
 
     public static void Redraw()
     {
-        RedrawIfScreenSizeChanged();
+        UpdateFuncsOnScreenChange();
         OutputAllCells();
     }
     
