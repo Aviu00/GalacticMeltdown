@@ -14,6 +14,7 @@ public class LevelSelectionView : View
 
     public LevelSelectionView()
     {
+        var Levels = FilesystemLevelManager.GetLevelInfo();
         _isManagementSelected = false;
     }
     
