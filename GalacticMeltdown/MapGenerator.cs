@@ -20,17 +20,13 @@ public class MapGenerator
     private Tile[] _southernWall;
     private int _seed;
     private readonly Dictionary<string, TileTypeData> _tileTypes;
-    private readonly List<Room> _rooms;
 
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
     private const int ConnectionChance = 50; //room connection chance(this probably shouldn't be touched)
 
-    public MapGenerator(int seed, Dictionary<string, TileTypeData> tileTypes, 
-        List<Room> rooms)
+    public MapGenerator(int seed)
     {
-        _tileTypes = tileTypes;
-        _rooms = rooms;
         ChangeSeed(seed);
     }
 
@@ -47,7 +43,7 @@ public class MapGenerator
         FillMap();
         FinalizeRooms();
         GenerateBorderWalls();
-        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall, _tileTypes, CalculateMapString());
+        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall, CalculateMapString());
     }
 
     private void GenerateBars()
@@ -127,7 +123,7 @@ public class MapGenerator
             {
                 for (int y = 0; y < _tempMap.GetLength(1); y++)
                 {
-                    _tempMap[i, y] = new SubMapGenerator(i,y, _tileTypes);
+                    _tempMap[i, y] = new SubMapGenerator(i, y);
                 }
                 continue;
             }
@@ -142,7 +138,7 @@ public class MapGenerator
             int max2 = _bars[x].max + lastMax - max1;
             for (int y = _minPoint-MapOffset, j = 0; y <= _maxPoint + MapOffset; j++, y++)
             {
-                _tempMap[i, j] = new SubMapGenerator(i,j, _tileTypes);
+                _tempMap[i, j] = new SubMapGenerator(i, j);
                 if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
                 
                 if (topStartRoom && x == startRoomPos && y == _bars[x].max || 
@@ -250,8 +246,9 @@ public class MapGenerator
     private void FinalizeRoom(int x, int y)
     {
         int roomType = CalculateRoomType(x, y);
-        var matchingRooms = 
-            _rooms.Where(room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng)).ToArray();
+        var matchingRooms = DataHolder.Rooms.Where(
+            room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng))
+            .ToArray();
         Room room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
         TileTypeData[,] roomData = (TileTypeData[,]) room.Pattern.Clone();
         RotateRoomPattern(x, y, roomData, room);
@@ -396,7 +393,7 @@ public class MapGenerator
                         parsedId[2] = p1;
                 }
 
-                roomData[x, y] = _tileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
+                roomData[x, y] = DataHolder.TileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
             }
         }
     }
@@ -412,7 +409,7 @@ public class MapGenerator
                 int tileX = mapX * 25 + x;
                 string wallKey = x == 24 
                     ? "wall_nesw" : _map[mapX, 0].Tiles[x, 0].ConnectToWalls ? "wall_new" : "wall_ew";
-                _southernWall[tileX] = new Tile(_tileTypes[wallKey]);
+                _southernWall[tileX] = new Tile(DataHolder.TileTypes[wallKey]);
             }
         }
         for (int mapY = 0; mapY < _map.GetLength(1); mapY++)
@@ -422,7 +419,7 @@ public class MapGenerator
                 int tileY = mapY * 25 + y;
                 string wallKey = y == 24 
                     ? "wall_nesw" : _map[0, mapY].Tiles[0, y].ConnectToWalls ? "wall_nes" : "wall_ns";
-                _westernWall[tileY] = new Tile(_tileTypes[wallKey]);
+                _westernWall[tileY] = new Tile(DataHolder.TileTypes[wallKey]);
             }
         }
     }

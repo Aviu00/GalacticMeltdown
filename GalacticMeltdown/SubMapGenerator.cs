@@ -16,7 +16,6 @@ public class SubMapGenerator
     public bool IsStartPoint;
     public bool IsEndPoint;
     public double Difficulty = -1;
-    private readonly Dictionary<string, TileTypeData> _tileTypes;
 
     public int ConnectionCount =>
         Convert.ToInt32(NorthConnection != null) + Convert.ToInt32(EastConnection != null) +
@@ -26,9 +25,8 @@ public class SubMapGenerator
     public int MapX { get; }
     public int MapY { get; }
 
-    public SubMapGenerator(int x, int y, Dictionary<string, TileTypeData> tileTypes)
+    public SubMapGenerator(int x, int y)
     {
-        _tileTypes = tileTypes;
         MapX = x;
         MapY = y;
     }
@@ -95,7 +93,7 @@ public class SubMapGenerator
         {
             TileTypeData terrainObject = NorthConnection == null || x is not (11 or 12)
                 ? GetConnectableData(roomData, x, 24, northernTileMap?[x, 0].ConnectToWalls, overrideId: "wall")
-                : _tileTypes["floor"]; //will be changed to "door" later
+                : DataHolder.TileTypes["floor"]; //will be changed to "door" later
             Tiles[x, 24] = new Tile(terrainObject);
         }
 
@@ -104,7 +102,7 @@ public class SubMapGenerator
             TileTypeData terrainObject = EastConnection == null || y is not (11 or 12)
                 ? GetConnectableData(roomData, 24, y,
                     easternTileConnectable: easternTileMap?[0, y].ConnectToWalls, overrideId: "wall")
-                : _tileTypes["floor"]; //will be changed to "door" later
+                : DataHolder.TileTypes["floor"]; //will be changed to "door" later
             Tiles[24, y] = new Tile(terrainObject);
         }
     }
@@ -115,7 +113,7 @@ public class SubMapGenerator
         string id = overrideId ?? roomData[x, y].Id;
         string newId = id + "_";
         if ((x, y) is (24, 24))
-            return _tileTypes[newId + "nesw"];
+            return DataHolder.TileTypes[newId + "nesw"];
         StringBuilder wallKey = new StringBuilder(newId);
         if (northernTileConnectable ?? CheckForConnectionInTile(roomData, x, y + 1))
             wallKey.Append('n');
@@ -128,7 +126,7 @@ public class SubMapGenerator
         string str = wallKey.ToString();
         if (str[^1] == '_')
             str = id;
-        return _tileTypes[str];
+        return DataHolder.TileTypes[str];
     }
 
     private static bool CheckForConnectionInTile(TileTypeData[,] roomData, int x, int y)
@@ -151,7 +149,7 @@ public class SubMapGenerator
         };
 
         string newId = !switchId ? parsedId[0] : parsedId[1];
-        roomData[x, y] = _tileTypes[newId];
+        roomData[x, y] = DataHolder.TileTypes[newId];
     }
     
     public char CalculateSymbol()

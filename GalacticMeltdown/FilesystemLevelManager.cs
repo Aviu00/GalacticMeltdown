@@ -28,7 +28,7 @@ public static class FilesystemLevelManager
         Map map;
         var tileTypes = new TileTypesExtractor().TileTypes;
         var rooms = new RoomDataExtractor(tileTypes).Rooms;
-        MapGenerator mapGen = new MapGenerator(1, tileTypes, rooms);
+        MapGenerator mapGen = new MapGenerator(1);
         map = mapGen.Generate();
         rooms = null;
         tileTypes = null;

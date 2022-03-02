@@ -5,9 +5,13 @@ namespace GalacticMeltdown.Data;
 
 public static class DataHolder
 {
+    public static readonly List<Room> Rooms;
+    public static readonly Dictionary<string, TileTypeData> TileTypes;
+    
     static DataHolder()
     {
-        
+        TileTypes = new TileTypesExtractor().TileTypes;
+        Rooms = new RoomDataExtractor(TileTypes).Rooms;
     }
 
     public struct CurrentBindings

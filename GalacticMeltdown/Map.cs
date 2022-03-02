@@ -12,12 +12,12 @@ public partial class Map
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
-    public readonly string MapString;//for debugging
+    public readonly string MapString;  //for debugging
     
     public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
-        Tile[] westernWall, Dictionary<string, TileTypeData> tileTypes, string mapString)
+        Tile[] westernWall, string mapString)
     {
-        _cornerTile = new Tile(tileTypes["wall_nesw"]);
+        _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _map = map;
         MapSeed = seed;
         _startPoint = startPoint;
