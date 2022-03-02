@@ -6,14 +6,14 @@ public class ButtonListView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
-    private LinkedList<Button> _buttons;
-    private LinkedListNode<Button> _currentButtonNode;
+    private readonly List<Button> _buttons;
+    private int _currentButtonIndex;
 
     public ButtonListView(ICollection<Button> buttons)
     {
         // TODO: this should have at least one button, check that
-        _buttons = new LinkedList<Button>(buttons);
-        _currentButtonNode = _buttons.First;
+        _buttons = new List<Button>(buttons);
+        _currentButtonIndex = 0;
     }
 
     public override ViewCellData GetSymbol(int x, int y)
@@ -23,24 +23,18 @@ public class ButtonListView : View
 
     public void PressCurrent()
     {
-        _currentButtonNode.Value.Press();
+        _buttons[_currentButtonIndex].Press();
     }
 
     public void SelectNext()
     {
-        _currentButtonNode = _currentButtonNode.Next ?? _buttons.First;
+        _currentButtonIndex = (_currentButtonIndex + 1) % _buttons.Count;
         // TODO: update view
     }
 
     public void SelectPrev()
     {
-        _currentButtonNode = _currentButtonNode.Previous ?? _buttons.Last;
+        _currentButtonIndex = (_buttons.Count + _currentButtonIndex - 1) % _buttons.Count;  // -1 should wrap
         // TODO: update view
-    }
-
-    public void SetNewButtons(LinkedList<Button> buttons)
-    {
-        _buttons = buttons;
-        NeedRedraw?.Invoke(this);
     }
 }

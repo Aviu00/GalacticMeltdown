@@ -8,28 +8,30 @@ public class LevelManagementView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
-    private readonly LinkedList<Button> _levelButtons;
-    private readonly LinkedList<Button> _managementButtons;
-    private LinkedListNode<Button> _currentLevelNode;
-    private LinkedListNode<Button> _currentManagementNode;
+    private readonly List<Button> _levelButtons;
+    private readonly List<Button> _managementButtons;
+    private int _levelIndex;
+    private int _managementIndex;
     private bool _isManagementSelected;
 
     public LevelManagementView()
     {
         List<LevelInfo> levels = FilesystemLevelManager.GetLevelInfo();
-        _levelButtons = new LinkedList<Button>();
+        _levelButtons = new List<Button>(levels.Count);
         foreach (var levelInfo in levels)
         {
-            _levelButtons.AddLast(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}", 
+            _levelButtons.Add(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
                 () => TryStartLevel(levelInfo.Path)));
         }
 
-        _managementButtons = new LinkedList<Button>();
-        _managementButtons.AddLast(new Button("Create", "", null));
-        _managementButtons.AddLast(new Button("Delete", "", null));
+        _managementButtons = new List<Button>
+        {
+            new Button("Create", "", null),
+            new Button("Delete", "", null)
+        };
         
-        _currentLevelNode = _levelButtons.First;
-        _currentManagementNode = _managementButtons.First;
+        _levelIndex = 0;
+        _managementIndex = 0;
         
         _isManagementSelected = levels.Count == 0;  // can't select a level when none exist
     }
@@ -47,21 +49,21 @@ public class LevelManagementView : View
     
     public void PressCurrent()
     {
-        if (_isManagementSelected) _currentManagementNode.Value.Press();
-        else _currentLevelNode.Value.Press();
+        if (_isManagementSelected) _managementButtons[_managementIndex].Press();
+        else _levelButtons[_levelIndex].Press();
     }
 
     public void SelectNext()
     {
-        if (_isManagementSelected) _currentManagementNode = _currentManagementNode.Next ?? _managementButtons.First;
-        else _currentLevelNode = _currentLevelNode.Next ?? _levelButtons.First;
+        if (_isManagementSelected) _managementIndex = (_managementIndex + 1) % _managementButtons.Count;
+        else _levelIndex = (_levelIndex + 1) % _levelButtons.Count;
         // TODO: notify renderer
     }
 
     public void SelectPrev()
     {
-        if (_isManagementSelected) _currentManagementNode = _currentManagementNode.Previous ?? _managementButtons.Last;
-        else _currentLevelNode = _currentLevelNode.Previous ?? _levelButtons.Last;
+        if (_isManagementSelected) _managementIndex = (_managementButtons.Count + _managementIndex - 1) % _managementButtons.Count;
+        else _levelIndex = (_levelButtons.Count + _levelIndex - 1) % _levelButtons.Count;
         // TODO: notify renderer
     }
 
