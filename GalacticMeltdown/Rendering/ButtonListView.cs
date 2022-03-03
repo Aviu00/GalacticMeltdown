@@ -42,17 +42,34 @@ public class ButtonListView : View
             const string ellipsis = "...";
             const string separator = "  ";
             const string noSpaceForRightText = $"{separator}{ellipsis}";
+            string rightText = _buttons[i].TextRight;
             int maxLeftStringLength = Width - noSpaceForRightText.Length;
             string leftText = _buttons[i].TextLeft;
             string screenText;
-            if (leftText.Length >= maxLeftStringLength)
+            if (rightText.Length == 0)
+            {
+                screenText = leftText.Length > Width - ellipsis.Length 
+                    ? leftText.Substring(0, Width - ellipsis.Length) 
+                    : leftText;
+            }
+            else if (leftText.Length == 0)
+            {
+                if (rightText.Length < Width)
+                {
+                    screenText = string.Join("", Enumerable.Repeat(" ", Width - rightText.Length)) + rightText;
+                }
+                else
+                {
+                    screenText = ellipsis + rightText.Substring(rightText.Length - (Width - ellipsis.Length));
+                }
+            }
+            else if (leftText.Length >= maxLeftStringLength)
             {
                 screenText = leftText.Substring(0, maxLeftStringLength) + noSpaceForRightText;
             }
             else
             {
                 screenText = leftText;
-                string rightText = _buttons[i].TextRight;
                 screenText += separator;
                 int spaceLeft = Width - screenText.Length;
                 if (rightText.Length >= spaceLeft)
