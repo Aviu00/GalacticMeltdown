@@ -140,7 +140,8 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         {
             //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
             pathToPlayer = AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
-            Console.WriteLine(this.GetHashCode() + " | " + "Moving");
+            //string for test
+            //Console.WriteLine(this.GetHashCode() + " | " + "Moving");
             MoveToGoal(pathToPlayer);
             // string for test
             //Console.WriteLine("Enenmy №-" + GetHashCode().ToString()+ "|||" + DiffX.ToString() + ":" + DiffY.ToString());
