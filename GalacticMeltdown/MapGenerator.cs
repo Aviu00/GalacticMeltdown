@@ -19,7 +19,6 @@ public class MapGenerator
     private Tile[] _westernWall;
     private Tile[] _southernWall;
     private int _seed;
-    private readonly Dictionary<string, TileTypeData> _tileTypes;
 
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
