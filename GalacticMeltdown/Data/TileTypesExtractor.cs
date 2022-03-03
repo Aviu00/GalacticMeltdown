@@ -55,7 +55,7 @@ public class TileTypesExtractor : XmlExtractor
                         isTransparent = Convert.ToBoolean(locNode.InnerText);
                         break;
                     case "Color":
-                        color = Utility.Colors[locNode.InnerText];
+                        color = DataHolder.Colors[locNode.InnerText];
                         break;
                     case "IsConnection":
                         isConnection = Convert.ToBoolean(locNode.InnerText);

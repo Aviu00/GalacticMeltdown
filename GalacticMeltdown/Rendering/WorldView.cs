@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown.Rendering;
 
@@ -85,7 +86,7 @@ public class WorldView : View
         drawableObj = _map.GetTile(coords.x, coords.y);
         if (drawableObj is not null && ((Tile) drawableObj).Seen)
         {
-            return new ViewCellData((drawableObj.SymbolData.symbol, Utility.OutOfVisionTileColor), drawableObj.BgColor);
+            return new ViewCellData((drawableObj.SymbolData.symbol, DataHolder.OutOfVisionTileColor), drawableObj.BgColor);
         }
 
         return new ViewCellData(null, null);
