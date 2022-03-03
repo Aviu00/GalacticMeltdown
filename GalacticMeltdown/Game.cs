@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
@@ -23,6 +24,8 @@ public static class Game
 
     public static void StartLevel(Map level)
     {
+        Renderer.ClearViews();
+        InputProcessor.ClearBindings();
         var session = new PlaySession(level);
         session.Start();
     }
@@ -58,6 +61,7 @@ public static class Game
 
     private static void OpenMenu(View view, Dictionary<SelectionControl, Action> bindings)
     {
+        if (_menus.Any()) Renderer.RemoveLastView();
         _menus.Push(view);
         InputProcessor.AddBinding(DataHolder.CurrentBindings.Selection, bindings);
         Renderer.AddView(view, 0, 0, 1, 1);
@@ -66,9 +70,10 @@ public static class Game
 
     private static void CloseOpenedMenu()
     {
-        _menus.Pop();
         Renderer.RemoveLastView();
         InputProcessor.RemoveLastBinding();
+        _menus.Pop();
+        Renderer.AddView(_menus.Peek(), 0, 0, 1, 1);
     }
 
     private static void Quit()
