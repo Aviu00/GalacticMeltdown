@@ -38,7 +38,7 @@ public class ButtonListView : View
     {
         base.Resize(width, height);
         CalculateButtonText();
-        UpdateOffsets();
+        UpdateOutVars();
     }
 
     public override ViewCellData GetSymbol(int x, int y)
@@ -59,18 +59,18 @@ public class ButtonListView : View
     public void SelectNext()
     {
         _currentButtonIndex = (_currentButtonIndex + 1) % _buttons.Count;
-        UpdateOffsets();
+        UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
 
     public void SelectPrev()
     {
         _currentButtonIndex = (_buttons.Count + _currentButtonIndex - 1) % _buttons.Count;  // -1 should wrap
-        UpdateOffsets();
+        UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
 
-    private void UpdateOffsets()
+    private void UpdateOutVars()
     {
         _topVisibleButtonIndex = Math.Max(0, _currentButtonIndex - Height + 1);
         _selectedButtonY = _currentButtonIndex - _topVisibleButtonIndex;

@@ -20,8 +20,6 @@ public class LevelManagementView : View
     private const ConsoleColor TextColor = ConsoleColor.Magenta;
     private const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
     private const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
-    private const int DivDistance = 2;
-    private const int EdgeDistance = 1;
 
     public LevelManagementView()
     {
@@ -53,7 +51,7 @@ public class LevelManagementView : View
     
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y == 0)
+        if (y < _managementButtons.Count)
         {
             
         }
@@ -88,6 +86,13 @@ public class LevelManagementView : View
         // TODO: notify renderer
     }
     
+    public override void Resize(int width, int height)
+    {
+        base.Resize(width, height);
+        UpdateOutVars();
+        CalculateVisibleButtonText();
+    }
+    
     private void CalculateVisibleButtonText()
     {
         for (int i = 0; i < _levelButtonText.Length; i++)
@@ -96,19 +101,11 @@ public class LevelManagementView : View
         }
         for (int i = 0; i < _managementButtonText.Length; i++)
         {
-            _managementButtonText[i] = _managementButtons[i].MakeText(
-                (Width - EdgeDistance) / _managementButtons.Count - DivDistance);
+            _managementButtonText[i] = _managementButtons[i].MakeText(Width);
         }
     }
     
-    public override void Resize(int width, int height)
-    {
-        base.Resize(width, height);
-        CalculateVisibleButtonText();
-        UpdateOffsets();
-    }
-    
-    private void UpdateOffsets()
+    private void UpdateOutVars()
     {
         _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - Height + 1);
         _selectedLevelButtonY = _levelIndex - _topVisibleLevelButtonIndex;
