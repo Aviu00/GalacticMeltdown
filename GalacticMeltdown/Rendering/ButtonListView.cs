@@ -44,9 +44,9 @@ public class ButtonListView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y > _buttons.Count) return new ViewCellData(null, null);
+        if (y > _buttons.Count - 1) return new ViewCellData(null, null);
         _selectedButtonY = _currentButtonIndex - _topVisibleButtonIndex;
-        char symbol = _buttonText[_currentButtonIndex][x];
+        char symbol = _buttonText[y - _topVisibleButtonIndex][x];
         ConsoleColor fgColor = TextColor;
         ConsoleColor bgColor = _selectedButtonY == y ? BackgroundColorSelected : BackgroundColorUnselected;
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
