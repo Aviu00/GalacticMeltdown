@@ -173,6 +173,31 @@ public static class Algorithms
             {(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1 ,0), (-1, 1)};
         return Neighbours;
     }
-    
-    
+
+    public static List<(int, int)> AStar(int x0, int y0, int x1, int y1)
+    {
+        List<(int, int)> path = new List<(int, int)>();
+        PriorityQueue<(int, int), int> priorQueue = new PriorityQueue<(int, int), int>();
+        Dictionary<(int, int), (int, int)?> cameFrom = new Dictionary<(int, int), (int, int)?>();
+        Dictionary<(int, int), int> localCost = new Dictionary<(int, int), int>();
+        bool finishedFindingWay = false;
+        priorQueue.Enqueue((x0, y0), 0);
+        cameFrom[(x0, y0)] = null;
+        localCost[(x0, y0)] = 0;
+        while (priorQueue.Count > 0)
+        {
+            (int, int) currentDot = priorQueue.Dequeue();
+            if (currentDot == (x1, y1))
+            {
+                finishedFindingWay = true;
+                break;
+            }
+
+            foreach ((int x, int y) in GetNeighbors(currentDot.Item1, currentDot.Item2))
+            {
+                
+            }
+        }
+        return path;
+    }
 }
