@@ -15,8 +15,8 @@ public class ButtonListView : View
     private string[] _buttonText;
     private int _selectedButtonY;
     private const ConsoleColor TextColor = ConsoleColor.Magenta;
-    private const ConsoleColor BackgroundColorUnselected = ConsoleColor.Yellow;
-    private const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkBlue;
+    private const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
+    private const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
 
     public ButtonListView(ICollection<Button> buttons)
     {
@@ -44,9 +44,9 @@ public class ButtonListView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y > _buttons.Count - 1) return new ViewCellData(null, null);
-        _selectedButtonY = _currentButtonIndex - _topVisibleButtonIndex;
-        char symbol = _buttonText[y - _topVisibleButtonIndex][x];
+        if (y < Height - _buttons.Count) return new ViewCellData(null, null);
+        _selectedButtonY = Height - (_currentButtonIndex - _topVisibleButtonIndex) - 1;
+        char symbol = _buttonText[Height - (y - _topVisibleButtonIndex) - 1][x];
         ConsoleColor fgColor = TextColor;
         ConsoleColor bgColor = _selectedButtonY == y ? BackgroundColorSelected : BackgroundColorUnselected;
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
