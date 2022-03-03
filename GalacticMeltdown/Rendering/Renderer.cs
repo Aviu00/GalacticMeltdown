@@ -99,15 +99,17 @@ public static class Renderer
     {
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
-        ScreenCellData screenCellData = GetCell(0, 0);
+        ScreenCellData screenCellData = GetCell(0, ConvertToConsoleY(0));
         StringBuilder currentSequence = new StringBuilder($"{screenCellData.Symbol}");
         ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
         int x = 1;
-        for (int areaY = _pixelFuncs.GetLength(1) - 1; areaY >= 0; areaY--)
+        // We want Y coordinate increasing by 1 to mean an object going up.
+        // However, in the console it means an object going down. This is why we go backwards here.  
+        for (int consoleY = _pixelFuncs.GetLength(1) - 1; consoleY >= 0; consoleY--)
         {
             for (; x < _pixelFuncs.GetLength(0); x++)
             {
-                screenCellData = GetCell(x, areaY);
+                screenCellData = GetCell(x, consoleY);
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' ' 
                     || screenCellData.BgColor != curBgColor)
                 {
@@ -201,11 +203,11 @@ public static class Renderer
         {
             foreach (var (viewX, viewY, viewCellData) in updatedCells)
             {
-                var (viewTopLeftScreenX, viewTopLeftScreenY, _, _) = _viewBoundaries[view];
+                var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
                 var (screenX, screenY) = Utility.ConvertRelativeToAbsoluteCoords(viewX, viewY,
-                    viewTopLeftScreenX, viewTopLeftScreenY);
+                    viewBottomLeftScreenX, viewBottomLeftScreenY);
                 ScreenCellData screenCellData = GetCellAnimation(screenX, screenY, viewCellData, view);
-                Console.SetCursorPosition(screenX, screenY);
+                Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
                 SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
                 Console.Write(screenCellData.Symbol);
             }
