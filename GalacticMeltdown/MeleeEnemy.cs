@@ -74,7 +74,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     private List<((int, int), int)> GetNeighbors(int x, int y)
     {
         List<(int, int)> neighbours = new List<(int, int)>
-            {(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1 ,0), (-1, 1)};
+            {(x, 1 + y), (1 + x, 1 + y), (1 + x, y), (1 + x, y - 1), (x, y - 1), (x - 1, y - 1), (x - 1 ,y), (x - 1,y + 1)};
         List<((int, int), int)> neighboursWithMoveCosts = new List<((int, int), int)>();
         foreach ((int xi, int yi) in neighbours)
         {
@@ -106,7 +106,8 @@ public class MeleeEnemy : Enemy, IMoveStrategy
             {
                 (int, int) nextDot = (x, y);
                 int newCost = moveCost + localCost[currentDot];
-                if (!localCost.TryGetValue(nextDot, out int oldCost) || newCost < oldCost)
+                if (Map.GetTile(nextDot.Item1, nextDot.Item2).IsWalkable &&
+                    (!localCost.TryGetValue(nextDot, out int oldCost) || newCost < oldCost))
                 {
                     localCost[nextDot] = newCost;
                     int priority = newCost + GetDistance(nextDot.Item1, nextDot.Item2, x1, y1);
@@ -137,14 +138,17 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         // acts only if see enemy
         if (SeePlayer())
         {
-            pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
+            //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
+            pathToPlayer = AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            Console.WriteLine(this.GetHashCode() + " | " + "Moving");
             MoveToGoal(pathToPlayer);
             // string for test
             //Console.WriteLine("Enenmy №-" + GetHashCode().ToString()+ "|||" + DiffX.ToString() + ":" + DiffY.ToString());
         }
         else
         {
-            pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            pathToPlayer = AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
             MoveToGoal(pathToPlayer);
         }
         //Console.WriteLine("Enemy №-" + GetHashCode().ToString()+ "|||" + (_lastSeenPlayerX - this.X).ToString() + ":" + (_lastSeenPlayerY - this.Y).ToString());
