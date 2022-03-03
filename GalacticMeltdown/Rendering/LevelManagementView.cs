@@ -16,7 +16,7 @@ public class LevelManagementView : View
 
     public LevelManagementView()
     {
-        List<LevelInfo> levels = FilesystemLevelManager.GetLevelInfo();
+        List<LevelInfo> levels = FilesystemLevelManager.GetLevelButtonInfo();
         _levelButtons = new List<Button>(levels.Count);
         foreach (var levelInfo in levels)
         {

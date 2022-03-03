@@ -6,7 +6,7 @@ public readonly record struct LevelInfo(string Path, int Seed, string Name);
 
 public static class FilesystemLevelManager
 {
-    public static List<LevelInfo> GetLevelInfo()
+    public static List<LevelInfo> GetLevelButtonInfo()
     {
         return new List<LevelInfo> {new(".", 0, "ExampleName")};
     }
