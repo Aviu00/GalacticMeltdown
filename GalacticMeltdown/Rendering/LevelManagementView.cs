@@ -17,9 +17,11 @@ public class LevelManagementView : View
     private string[] _levelButtonText;
     private string[] _managementButtonText;
     private int _selectedLevelButtonY;
+    
     private const ConsoleColor TextColor = ConsoleColor.Magenta;
     private const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
     private const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
+    private const ConsoleColor ManagementButtonsBorder = ConsoleColor.Yellow;
 
     public LevelManagementView()
     {
@@ -31,11 +33,14 @@ public class LevelManagementView : View
                 () => TryStartLevel(levelInfo.Path)));
         }
 
+        _levelButtonText = new string[_levelButtons.Count];
+
         _managementButtons = new List<Button>
         {
             new Button("Create", "", null),
             new Button("Delete", "", null)
         };
+        _managementButtonText = new string[_managementButtons.Count];
         
         _levelIndex = 0;
         _managementIndex = 0;
@@ -51,12 +56,28 @@ public class LevelManagementView : View
     
     public override ViewCellData GetSymbol(int x, int y)
     {
+        char symbol;
+        ConsoleColor fgColor;
+        ConsoleColor bgColor;
+        if (y == _managementButtons.Count) return new ViewCellData(('#', ManagementButtonsBorder), ConsoleColor.Black);
         if (y < _managementButtons.Count)
         {
+            symbol = _managementButtonText[y][x];
+            fgColor = TextColor;
+            bgColor = _isManagementSelected && y == _managementIndex
+                ? BackgroundColorSelected
+                : BackgroundColorUnselected;
             
         }
-        if (y < Height - _levelButtons.Count) return new ViewCellData(null, null);
-        return new ViewCellData(null, null);
+        else
+        {
+            if (Height - y > _levelButtonText.Length) return new ViewCellData(null, null);
+            symbol = _levelButtonText[Height - (y - _topVisibleLevelButtonIndex) - 1][x];
+            fgColor = TextColor;
+            bgColor = _selectedLevelButtonY == y ? BackgroundColorSelected : BackgroundColorUnselected;
+        }
+
+        return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
     }
     
     public void PressCurrent()
@@ -69,21 +90,21 @@ public class LevelManagementView : View
     {
         if (_isManagementSelected) _managementIndex = (_managementIndex + 1) % _managementButtons.Count;
         else _levelIndex = (_levelIndex + 1) % _levelButtons.Count;
-        // TODO: notify renderer
+        NeedRedraw?.Invoke(this);
     }
 
     public void SelectPrev()
     {
         if (_isManagementSelected) _managementIndex = (_managementButtons.Count + _managementIndex - 1) % _managementButtons.Count;
         else _levelIndex = (_levelButtons.Count + _levelIndex - 1) % _levelButtons.Count;
-        // TODO: notify renderer
+        NeedRedraw?.Invoke(this);
     }
 
     public void SwitchButtonGroup()
     {
         // can't select a level when none exist
         _isManagementSelected = _levelButtons.Any() ? !_isManagementSelected : false;
-        // TODO: notify renderer
+        NeedRedraw?.Invoke(this);
     }
     
     public override void Resize(int width, int height)
@@ -107,7 +128,7 @@ public class LevelManagementView : View
     
     private void UpdateOutVars()
     {
-        _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - Height + 1);
-        _selectedLevelButtonY = _levelIndex - _topVisibleLevelButtonIndex;
+        _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - (Height - (_managementButtons.Count + 1)) + 1);
+        _selectedLevelButtonY = Height - (_levelIndex - _topVisibleLevelButtonIndex) - 1;
     }
 }

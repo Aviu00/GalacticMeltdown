@@ -44,7 +44,6 @@ public class ButtonListView : View
     public override ViewCellData GetSymbol(int x, int y)
     {
         if (y < Height - _buttons.Count) return new ViewCellData(null, null);
-        _selectedButtonY = Height - (_currentButtonIndex - _topVisibleButtonIndex) - 1;
         char symbol = _buttonText[Height - (y - _topVisibleButtonIndex) - 1][x];
         ConsoleColor fgColor = TextColor;
         ConsoleColor bgColor = _selectedButtonY == y ? BackgroundColorSelected : BackgroundColorUnselected;
@@ -73,6 +72,6 @@ public class ButtonListView : View
     private void UpdateOutVars()
     {
         _topVisibleButtonIndex = Math.Max(0, _currentButtonIndex - Height + 1);
-        _selectedButtonY = _currentButtonIndex - _topVisibleButtonIndex;
+        _selectedButtonY = Height - (_currentButtonIndex - _topVisibleButtonIndex) - 1;
     }
 }
