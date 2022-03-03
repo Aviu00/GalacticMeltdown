@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 namespace GalacticMeltdown.Rendering;
 
@@ -27,7 +26,7 @@ public class ButtonListView : View
         _buttonText = new string[_buttons.Count];
     }
 
-    private void CalculateVisibleButtonText()
+    private void CalculateButtonText()
     {
         for (int i = 0; i < _buttonText.Length; i++)
         {
@@ -38,7 +37,7 @@ public class ButtonListView : View
     public override void Resize(int width, int height)
     {
         base.Resize(width, height);
-        CalculateVisibleButtonText();
+        CalculateButtonText();
         UpdateOffsets();
     }
 
