@@ -166,4 +166,13 @@ public static class Algorithms
     {
         return (int)(Math.Pow(x1 - x0, 2) + Math.Pow(y1 - y0, 2));
     }
+    
+    private static List<(int, int)> GetNeighbors(int x, int y)
+    {
+        List<(int, int)> Neighbours = new List<(int, int)>
+            {(0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1 ,0), (-1, 1)};
+        return Neighbours;
+    }
+    
+    
 }
