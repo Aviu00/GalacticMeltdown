@@ -13,6 +13,15 @@ public class LevelManagementView : View
     private int _levelIndex;
     private int _managementIndex;
     private bool _isManagementSelected;
+    private int _topVisibleLevelButtonIndex;
+    private string[] _levelButtonText;
+    private string[] _managementButtonText;
+    private int _selectedLevelButtonY;
+    private const ConsoleColor TextColor = ConsoleColor.Magenta;
+    private const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
+    private const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
+    private const int DivDistance = 2;
+    private const int EdgeDistance = 1;
 
     public LevelManagementView()
     {
@@ -44,6 +53,11 @@ public class LevelManagementView : View
     
     public override ViewCellData GetSymbol(int x, int y)
     {
+        if (y == 0)
+        {
+            
+        }
+        if (y < Height - _levelButtons.Count) return new ViewCellData(null, null);
         return new ViewCellData(null, null);
     }
     
@@ -72,5 +86,31 @@ public class LevelManagementView : View
         // can't select a level when none exist
         _isManagementSelected = _levelButtons.Any() ? !_isManagementSelected : false;
         // TODO: notify renderer
+    }
+    
+    private void CalculateVisibleButtonText()
+    {
+        for (int i = 0; i < _levelButtonText.Length; i++)
+        {
+            _levelButtonText[i] = _levelButtons[i].MakeText(Width);
+        }
+        for (int i = 0; i < _managementButtonText.Length; i++)
+        {
+            _managementButtonText[i] = _managementButtons[i].MakeText(
+                (Width - EdgeDistance) / _managementButtons.Count - DivDistance);
+        }
+    }
+    
+    public override void Resize(int width, int height)
+    {
+        base.Resize(width, height);
+        CalculateVisibleButtonText();
+        UpdateOffsets();
+    }
+    
+    private void UpdateOffsets()
+    {
+        _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - Height + 1);
+        _selectedLevelButtonY = _levelIndex - _topVisibleLevelButtonIndex;
     }
 }
