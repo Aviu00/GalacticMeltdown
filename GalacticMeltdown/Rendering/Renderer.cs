@@ -201,9 +201,9 @@ public static class Renderer
     {
         foreach (var (view, updatedCells) in _animations)
         {
+            var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
             foreach (var (viewX, viewY, viewCellData) in updatedCells)
             {
-                var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
                 var (screenX, screenY) = Utility.ConvertRelativeToAbsoluteCoords(viewX, viewY,
                     viewBottomLeftScreenX, viewBottomLeftScreenY);
                 ScreenCellData screenCellData = GetCellAnimation(screenX, screenY, viewCellData, view);
