@@ -10,7 +10,7 @@ namespace GalacticMeltdown
         public bool Seen = false;
         public bool IsTransparent { get; }
         public bool IsWalkable { get; }
-        public bool ConnectToWalls { get; } //used in map generation
+        public bool ConnectToWalls { get; } //used in level generation
         
         public string Name { get; }
 

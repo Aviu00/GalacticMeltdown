@@ -39,14 +39,14 @@ public static class FilesystemLevelManager
         
     }
 
-    public static void SaveLevel(Map level)
+    public static void SaveLevel(Level level)
     {
         
     }
 
-    public static Map GetLevel(string path)
+    public static Level GetLevel(string path)
     {
-        Map map = new MapGenerator(1).Generate();
-        return map;
+        Level level = new MapGenerator(1).Generate();
+        return level;
     }
 }

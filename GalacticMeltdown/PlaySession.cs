@@ -8,15 +8,15 @@ public partial class PlaySession
 {
     private static Player _player;
     private static IControllable _controlledObject;
-    private static Map _map;
+    private static Level _level;
     private static WorldView _worldView;
 
-    public PlaySession(Map level)
+    public PlaySession(Level level)
     {
-        _map = level;
-        _player = _map.Player;
+        _level = level;
+        _player = _level.Player;
         _controlledObject = _player;
-        _worldView = new WorldView(_map);
+        _worldView = new WorldView(_level);
         _worldView.AddTileRevealingObject(_player);
         _worldView.SetFocus(_player);
     }
@@ -24,7 +24,7 @@ public partial class PlaySession
     public void Start()
     {
         Renderer.AddView(_worldView, 0, 0, 0.8, 1);
-        Renderer.AddView(new OverlayView(_map), 0.8, 0, 1, 1);
+        Renderer.AddView(new OverlayView(_level), 0.8, 0, 1, 1);
         Renderer.Redraw();
         InputProcessor.AddBinding(DataHolder.CurrentBindings.Player, PlayerActions);
     }

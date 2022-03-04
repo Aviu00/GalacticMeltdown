@@ -6,27 +6,27 @@ namespace GalacticMeltdown.Rendering;
 
 public class WorldView : View
 {
-    private Map _map;
+    private Level _level;
     private IFocusPoint _focusObject;
     private LinkedList<ICanSeeTiles> _tileRevealingObjects;
     private HashSet<(int, int)> _visiblePoints;
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
 
-    public WorldView(Map map)
+    public WorldView(Level level)
     {
-        _map = map;
+        _level = level;
         _tileRevealingObjects = new LinkedList<ICanSeeTiles>();
     }
 
     private void UpdateVisiblePoints()
     {
         _visiblePoints = _tileRevealingObjects
-            .SelectMany((obj, _) => _map.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
+            .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
             .ToHashSet();
         foreach (var (x, y) in _visiblePoints)
         {
-            var tile = _map.GetTile(x, y);
+            var tile = _level.GetTile(x, y);
             if (tile is not null) tile.Seen = true;
         }
         NeedRedraw?.Invoke(this);
@@ -78,12 +78,12 @@ public class WorldView : View
         coords = Utility.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         if (_visiblePoints.Contains(coords))
         {
-            drawableObj = _map.GetDrawable(coords.x, coords.y);
+            drawableObj = _level.GetDrawable(coords.x, coords.y);
             if (drawableObj is null)
                 return new ViewCellData(null, null);
             return new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
         }
-        drawableObj = _map.GetTile(coords.x, coords.y);
+        drawableObj = _level.GetTile(coords.x, coords.y);
         if (drawableObj is not null && ((Tile) drawableObj).Seen)
         {
             return new ViewCellData((drawableObj.SymbolData.symbol, 

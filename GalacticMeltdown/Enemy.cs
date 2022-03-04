@@ -9,17 +9,17 @@ public abstract class Enemy : IEntity
     public int X { get; set; }
     public int Y { get; set; }
 
-    protected readonly Map Map;
+    protected readonly Level Level;
     protected readonly Player Player;
 
-    public Enemy(int x, int y, Map map, Player player)
+    public Enemy(int x, int y, Level level, Player player)
     {
-        Map = map;
+        Level = level;
         Player = player;
         X = x;
         Y = y;
         player.PerformedAction += TakeAction;
-        map.UpdateEnemyPosition(this, -1, -1);
+        level.UpdateEnemyPosition(this, -1, -1);
 
         SymbolData = ('W', ConsoleColor.Red);
         BgColor = null;

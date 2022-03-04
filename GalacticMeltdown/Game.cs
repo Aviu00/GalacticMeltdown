@@ -17,7 +17,7 @@ public static class Game
         Renderer.CleanUp();
     }
 
-    public static void StartLevel(Map level)
+    public static void StartLevel(Level level)
     {
         Renderer.ClearViews();
         InputProcessor.ClearBindings();

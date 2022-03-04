@@ -35,14 +35,14 @@ public class MapGenerator
         _seed = newSeed;
     }
     
-    public Map Generate()
+    public Level Generate()
     {
         GenerateBars();
         BuildMainRoute();
         FillMap();
         FinalizeRooms();
         GenerateBorderWalls();
-        return new Map(_map, _seed, _startPoint, _southernWall, _westernWall, CalculateMapString());
+        return new Level(_map, _seed, _startPoint, _southernWall, _westernWall, CalculateMapString());
     }
 
     private void GenerateBars()

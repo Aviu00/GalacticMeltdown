@@ -1,9 +1,8 @@
-using System.Collections.Generic;
 using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown;
 
-public partial class Map
+public partial class Level
 {
     public readonly int MapSeed;
     public Player Player { get; }
@@ -14,7 +13,7 @@ public partial class Map
     private readonly Tile _cornerTile;
     public readonly string MapString;  //for debugging
     
-    public Map(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
+    public Level(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
         Tile[] westernWall, string mapString)
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);

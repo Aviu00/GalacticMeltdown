@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown;
 
-public partial class Map
+public partial class Level
 {
     public HashSet<(int, int)> GetPointsVisibleAround(int x0, int y0, int radius, bool xray = false)
     {

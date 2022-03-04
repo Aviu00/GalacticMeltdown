@@ -4,17 +4,17 @@ namespace GalacticMeltdown.Rendering;
 
 public class OverlayView : View
 {
-    private Map _map;  // Minimap, Enemy-in-sight indicator, (?) Event log
+    private Level _level;  // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player;  // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?
     private ViewCellData[,] _symbols;
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
 
-    public OverlayView(Map map)
+    public OverlayView(Level level)
     {
-        _map = map;
-        _player = map.Player;
+        _level = level;
+        _player = level.Player;
         Width = 0;
         Height = 0;
         // TODO: subscribe to events

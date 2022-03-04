@@ -32,7 +32,7 @@ public class SubMapGenerator
     }
 
     public SubMapGenerator
-        GetNextRoom(SubMapGenerator previousRoom) //used in map generation, for main route calculations
+        GetNextRoom(SubMapGenerator previousRoom) //used in level generation, for main route calculations
     {
         if (NorthConnection != null && NorthConnection != previousRoom)
             return NorthConnection;
@@ -43,7 +43,7 @@ public class SubMapGenerator
         return WestConnection!;
     }
 
-    public void AccessMainRoute(double mainRouteDifficulty) //used in map generation
+    public void AccessMainRoute(double mainRouteDifficulty) //used in level generation
     {
         if (MainRoute)
             return;
