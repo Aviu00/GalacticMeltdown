@@ -2,7 +2,7 @@ using System;
 
 namespace GalacticMeltdown;
 
-public class Player : IEntity, IControllable, ISightedObject, IFocusable
+public class Player : IControllable, IEntity
 {
     public int X { get; set; }
     public int Y { get; set; }
