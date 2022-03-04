@@ -6,14 +6,14 @@ public partial class Level
 {
     public readonly int MapSeed;
     public Player Player { get; }
-    private SubMap[,] _map;
-    private readonly SubMap _startPoint;
+    private Chunk[,] _map;
+    private readonly Chunk _startPoint;
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
     public readonly string MapString;  //for debugging
     
-    public Level(SubMap[,] map, int seed, SubMap startPoint, Tile[] southernWall, 
+    public Level(Chunk[,] map, int seed, Chunk startPoint, Tile[] southernWall, 
         Tile[] westernWall, string mapString)
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);

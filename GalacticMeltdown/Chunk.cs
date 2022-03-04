@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GalacticMeltdown;
-public class SubMap
+public class Chunk
 {
     public double Difficulty { get; }
     public Tile[,] Tiles { get; }
@@ -11,7 +11,7 @@ public class SubMap
 
     public List<Enemy> Enemies = new();
 
-    public SubMap(Tile[,] tiles, double difficulty, int x, int y)
+    public Chunk(Tile[,] tiles, double difficulty, int x, int y)
     {
         MapX = x;
         MapY = y;

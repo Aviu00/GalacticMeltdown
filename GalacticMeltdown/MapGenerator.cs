@@ -11,11 +11,11 @@ public class MapGenerator
 {
     private Random _rng;
     private SubMapGenerator[,] _tempMap;
-    private SubMap[,] _map;
+    private Chunk[,] _map;
     private List<(int min, int max)> _bars;
     private int _maxPoint;
     private int _minPoint;
-    private SubMap _startPoint;
+    private Chunk _startPoint;
     private Tile[] _westernWall;
     private Tile[] _southernWall;
     private int _seed;
@@ -203,7 +203,7 @@ public class MapGenerator
             yStep = -yStep;
         }
         
-        _map = new SubMap[width, height];
+        _map = new Chunk[width, height];
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)

@@ -58,7 +58,7 @@ public class SubMapGenerator
         WestConnection?.AccessMainRoute(Difficulty);
     }
 
-    public SubMap GenerateSubMap
+    public Chunk GenerateSubMap
         (TileTypeData[,] roomData, Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
     {
         CalculateSymbol();
@@ -84,7 +84,7 @@ public class SubMapGenerator
         }
 
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
-        return new SubMap(Tiles, Difficulty, MapX, MapY);
+        return new Chunk(Tiles, Difficulty, MapX, MapY);
     }
 
     private void FillBorderWalls(TileTypeData[,] roomData, Tile[,] northernTileMap, Tile[,] easternTileMap)
