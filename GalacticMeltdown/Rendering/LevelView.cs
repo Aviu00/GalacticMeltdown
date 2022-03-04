@@ -8,7 +8,7 @@ public class LevelView : View
 {
     private Level _level;
     private IFocusable _focusObject;
-    private LinkedList<ISightedObject> _tileRevealingObjects;
+    private LinkedList<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
@@ -16,12 +16,12 @@ public class LevelView : View
     public LevelView(Level level)
     {
         _level = level;
-        _tileRevealingObjects = new LinkedList<ISightedObject>();
+        _sightedObjects = new LinkedList<ISightedObject>();
     }
 
     private void UpdateVisiblePoints()
     {
-        _visiblePoints = _tileRevealingObjects
+        _visiblePoints = _sightedObjects
             .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
             .ToHashSet();
         foreach (var (x, y) in _visiblePoints)
@@ -35,14 +35,14 @@ public class LevelView : View
     public void AddTileRevealingObject(ISightedObject obj)
     {
         obj.VisiblePointsChanged += UpdateVisiblePoints;
-        _tileRevealingObjects.AddFirst(obj);
+        _sightedObjects.AddFirst(obj);
         UpdateVisiblePoints();
     }
 
     public void RemoveTileRevealingObject(ISightedObject obj)
     {
         obj.VisiblePointsChanged -= UpdateVisiblePoints;
-        _tileRevealingObjects.Remove(obj);
+        _sightedObjects.Remove(obj);
         UpdateVisiblePoints();
     }
 
@@ -59,7 +59,7 @@ public class LevelView : View
     private void FocusObjectMoved()
     {
         // Already re-rendered
-        if (_focusObject is ISightedObject focusObject && _tileRevealingObjects.Contains(focusObject)) return;
+        if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this);
     }
 
