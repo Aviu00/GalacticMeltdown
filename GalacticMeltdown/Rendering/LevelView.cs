@@ -49,7 +49,9 @@ public class LevelView : View
     public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject)) return;
+        if (_focusObject is not null) _focusObject.InFocus = false;
         _focusObject = focusObj;
+        _focusObject.InFocus = true;
         _focusObject.PositionChanged += FocusObjectMoved;
         NeedRedraw?.Invoke(this);
     }
