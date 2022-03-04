@@ -21,6 +21,11 @@ public interface ISightedObject : IHasCoords
     public event VisiblePointsChangedEventHandler VisiblePointsChanged;
 }
 
+public interface IMovable : IHasCoords
+{
+    public event PositionChangedEventHandler PositionChanged;
+}
+
 public interface IFocusPoint : IHasCoords
 {
     public event PositionChangedEventHandler PositionChanged;
