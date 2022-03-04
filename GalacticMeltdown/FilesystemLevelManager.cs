@@ -54,8 +54,17 @@ public static class FilesystemLevelManager
         return level;
     }
 
-    public static string GetSavePath()
+    public static string GetSaveFolder()
     {
-        return $"{Utility.RandomString(16)}";
+        return $"~/GalacticMeltdown/levels/{Utility.RandomString(16)}";
+    }
+
+    public static (Level level, string path) CreateLevel(int seed, string name)
+    {
+        Level level = new MapGenerator(seed).Generate();
+        string path = GetSaveFolder();
+        // Save seed and name
+        SaveLevel(level, path);
+        return (level, path);
     }
 }

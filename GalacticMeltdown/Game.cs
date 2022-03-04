@@ -36,7 +36,7 @@ public static class Game
     public static void CreateLevel(int seed)
     {
         Level level = new MapGenerator(seed).Generate();
-        string savePath = FilesystemLevelManager.GetSavePath();
+        string savePath = FilesystemLevelManager.GetSaveFolder();
         FilesystemLevelManager.SaveLevel(level, savePath);
         StartLevel(level, savePath);
     }
