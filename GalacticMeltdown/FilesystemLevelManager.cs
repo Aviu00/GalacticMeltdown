@@ -58,10 +58,4 @@ public static class FilesystemLevelManager
     {
         return $"{Utility.RandomString(16)}";
     }
-
-    public static (Level level, string path) CreateLevel(int seed)
-    {
-        Level level = new MapGenerator(seed).Generate();
-        return (level, ".");
-    }
 }
