@@ -21,12 +21,12 @@ internal class LevelButtonInfo
 
 internal class ManagementButtonInfo
 {
-    public Button LevelButton { get; }
+    public Button Button { get; }
     public string RenderedText { get; set; }
 
     public ManagementButtonInfo(Button button)
     {
-        LevelButton = button;
+        Button = button;
         RenderedText = "";
     }
 }
@@ -37,13 +37,13 @@ public class LevelManagementView : View
     public override event CellsChangedEventHandler CellsChanged;
 
     private List<LevelButtonInfo> _menuLevels;
-    private readonly List<Button> _managementButtons;
+    private List<ManagementButtonInfo> _managementButtonInfos;
     
     private int _levelIndex;
     private int _managementIndex;
     private bool _isManagementSelected;
+    
     private int _topVisibleLevelButtonIndex;
-    private string[] _managementButtonText;
     private int _selectedLevelButtonY;
     
     private const ConsoleColor TextColor = ConsoleColor.Magenta;
@@ -61,12 +61,11 @@ public class LevelManagementView : View
                 () => TryStartLevel(levelInfo.Path)), levelInfo));
         }
 
-        _managementButtons = new List<Button>
+        _managementButtonInfos = new List<ManagementButtonInfo>
         {
-            new Button("Create", "", null),
-            new Button("Delete", "", DeleteLevel)
+            new ManagementButtonInfo(new Button("Create", "", null)),
+            new ManagementButtonInfo(new Button("Delete", "", DeleteLevel)),
         };
-        _managementButtonText = new string[_managementButtons.Count];
         
         _levelIndex = 0;
         _managementIndex = 0;
@@ -108,15 +107,15 @@ public class LevelManagementView : View
         char symbol;
         ConsoleColor fgColor;
         ConsoleColor bgColor;
-        if (y == _managementButtons.Count)
+        if (y == _managementButtonInfos.Count)
         {
             symbol = '#';
             fgColor = ManagementButtonsBorder;
             bgColor = ConsoleColor.Black;
         }
-        else if (y < _managementButtons.Count)
+        else if (y < _managementButtonInfos.Count)
         {
-            symbol = _managementButtonText[y][x];
+            symbol = _managementButtonInfos[y].RenderedText[x];
             fgColor = TextColor;
             bgColor = _isManagementSelected && y == _managementIndex
                 ? BackgroundColorSelected
@@ -136,13 +135,13 @@ public class LevelManagementView : View
     
     public void PressCurrent()
     {
-        if (_isManagementSelected) _managementButtons[_managementIndex].Press();
+        if (_isManagementSelected) _managementButtonInfos[_managementIndex].Button.Press();
         else _menuLevels[_levelIndex].LevelButton.Press();
     }
 
     public void SelectNext()
     {
-        if (_isManagementSelected) _managementIndex = (_managementIndex + 1) % _managementButtons.Count;
+        if (_isManagementSelected) _managementIndex = (_managementIndex + 1) % _managementButtonInfos.Count;
         else if (_menuLevels.Any()) _levelIndex = (_levelIndex + 1) % _menuLevels.Count;  // Avoid zero division
         UpdateOutVars();
         NeedRedraw?.Invoke(this);
@@ -153,7 +152,7 @@ public class LevelManagementView : View
         if (_isManagementSelected)
         {
             _managementIndex -= 1;
-            if (_managementIndex < 0) _managementIndex = _managementButtons.Count - 1;
+            if (_managementIndex < 0) _managementIndex = _managementButtonInfos.Count - 1;
         }
         else if (_menuLevels.Any())
         {
@@ -184,15 +183,15 @@ public class LevelManagementView : View
         {
             _menuLevels[i].RenderedText = _menuLevels[i].LevelButton.MakeText(Width);
         }
-        for (int i = 0; i < _managementButtonText.Length; i++)
+        for (int i = 0; i < _managementButtonInfos.Count; i++)
         {
-            _managementButtonText[i] = _managementButtons[i].MakeText(Width);
+            _managementButtonInfos[i].RenderedText = _managementButtonInfos[i].Button.MakeText(Width);
         }
     }
     
     private void UpdateOutVars()
     {
-        _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - (Height - (_managementButtons.Count + 1)) + 1);
+        _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - (Height - (_managementButtonInfos.Count + 1)) + 1);
         _selectedLevelButtonY = _menuLevels.Any() ? Height - (_levelIndex - _topVisibleLevelButtonIndex) - 1 : -1;
     }
 }
