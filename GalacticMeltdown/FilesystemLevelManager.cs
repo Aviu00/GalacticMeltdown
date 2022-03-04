@@ -41,10 +41,10 @@ public static class FilesystemLevelManager
         return true;
     }
 
-    public static bool SaveLevel(Level level)
+    public static string SaveLevel(Level level)
     {
-        // returns false on failure
-        return true;
+        // returns null on failure
+        return ".";
     }
 
     public static Level GetLevel(string path)
