@@ -17,11 +17,11 @@ public static class Game
         Renderer.CleanUp();
     }
 
-    public static void StartLevel(Level level, string path)
+    public static void StartLevel(Level level, string savePath)
     {
         Renderer.ClearViews();
         InputProcessor.ClearBindings();
-        var session = new PlaySession(level, path);
+        var session = new PlaySession(level, savePath);
         session.Start();
     }
 
