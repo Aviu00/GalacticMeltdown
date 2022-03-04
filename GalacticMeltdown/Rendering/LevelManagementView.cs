@@ -143,7 +143,7 @@ public class LevelManagementView : View
     public void SwitchButtonGroup()
     {
         // can't select a level when none exist
-        _isManagementSelected = _levelButtons.Any() ? !_isManagementSelected : false;
+        _isManagementSelected = _levelButtons.Any() ? !_isManagementSelected : true;
         NeedRedraw?.Invoke(this);
     }
     
