@@ -183,7 +183,7 @@ public class LevelManagementView : View
 
     private void RefreshLevelList()
     {
-        List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelButtonInfo();
+        List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelInfo();
         _menuLevels = new List<LevelButtonInfo>(levelInfos.Count);
         foreach (var levelInfo in levelInfos)
         {
