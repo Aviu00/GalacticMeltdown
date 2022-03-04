@@ -17,7 +17,7 @@ public static class Game
         Renderer.CleanUp();
     }
 
-    public static void StartLevel(Level level)
+    public static void StartLevel(Level level, string path)
     {
         Renderer.ClearViews();
         InputProcessor.ClearBindings();
@@ -36,8 +36,9 @@ public static class Game
     public static void CreateLevel(int seed)
     {
         Level level = new MapGenerator(seed).Generate();
-        FilesystemLevelManager.SaveLevel(level, FilesystemLevelManager.GetSavePath());
-        StartLevel(level);
+        string savePath = FilesystemLevelManager.GetSavePath();
+        FilesystemLevelManager.SaveLevel(level, savePath);
+        StartLevel(level, savePath);
     }
 
     private static void Quit()

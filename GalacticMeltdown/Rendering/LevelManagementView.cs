@@ -89,7 +89,7 @@ public class LevelManagementView : View
             // TODO: failure animation
             return;
         }
-        Game.StartLevel(level);
+        Game.StartLevel(level, path);
     }
     
     public override ViewCellData GetSymbol(int x, int y)
