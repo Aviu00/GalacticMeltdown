@@ -10,7 +10,7 @@ namespace GalacticMeltdown;
 public class MapGenerator
 {
     private Random _rng;
-    private SubMapGenerator[,] _tempMap;
+    private ChunkGenerator[,] _tempMap;
     private Chunk[,] _map;
     private List<(int min, int max)> _bars;
     private int _maxPoint;
@@ -107,14 +107,14 @@ public class MapGenerator
     
     private void BuildMainRoute()
     {
-        _tempMap = new SubMapGenerator[MapWidth + 1 + MapOffset*2, _maxPoint - _minPoint +1 + MapOffset*2];
+        _tempMap = new ChunkGenerator[MapWidth + 1 + MapOffset*2, _maxPoint - _minPoint +1 + MapOffset*2];
         int lastMin = 0;
         int lastMax = 0;
         int startRoomPos = _rng.Next(0,_bars.Count);
         bool topStartRoom = Chance(50, _rng);
         int mainRouteRoomCount = 0;
 
-        SubMapGenerator startPoint = null;
+        ChunkGenerator startPoint = null;
         for (int i = 0; i < _tempMap.GetLength(0); i++)
         {
             int x = i - MapOffset;
@@ -122,7 +122,7 @@ public class MapGenerator
             {
                 for (int y = 0; y < _tempMap.GetLength(1); y++)
                 {
-                    _tempMap[i, y] = new SubMapGenerator(i, y);
+                    _tempMap[i, y] = new ChunkGenerator(i, y);
                 }
                 continue;
             }
@@ -137,7 +137,7 @@ public class MapGenerator
             int max2 = _bars[x].max + lastMax - max1;
             for (int y = _minPoint-MapOffset, j = 0; y <= _maxPoint + MapOffset; j++, y++)
             {
-                _tempMap[i, j] = new SubMapGenerator(i, j);
+                _tempMap[i, j] = new ChunkGenerator(i, j);
                 if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
                 
                 if (topStartRoom && x == startRoomPos && y == _bars[x].max || 
@@ -167,20 +167,20 @@ public class MapGenerator
         int endRoomIndex = mainRouteRoomCount / 2;
         double addDifficulty = 1;
         double lastDifficulty = 0;
-        SubMapGenerator previousSubMap = null;
-        SubMapGenerator currentSubMap = startPoint!;
+        ChunkGenerator previousChunk = null;
+        ChunkGenerator currentChunk = startPoint!;
         for (int i = 0; i < mainRouteRoomCount; i++)
         {
             lastDifficulty += addDifficulty;
-            currentSubMap.Difficulty = lastDifficulty;
+            currentChunk.Difficulty = lastDifficulty;
             if (i == endRoomIndex)
             {
-                currentSubMap.IsEndPoint = true;
+                currentChunk.IsEndPoint = true;
                 addDifficulty = -1;
             }
-            SubMapGenerator newSubMap = currentSubMap.GetNextRoom(previousSubMap);
-            previousSubMap = currentSubMap;
-            currentSubMap = newSubMap;
+            ChunkGenerator newChunk = currentChunk.GetNextRoom(previousChunk);
+            previousChunk = currentChunk;
+            currentChunk = newChunk;
         }
         
     }
@@ -211,8 +211,8 @@ public class MapGenerator
                 if (_tempMap[x, y].HasAccessToMainRoute)
                     continue;
 
-                List<SubMapGenerator> adjAccessRooms = new();
-                List<SubMapGenerator> adjNoAccessRooms = new();
+                List<ChunkGenerator> adjAccessRooms = new();
+                List<ChunkGenerator> adjNoAccessRooms = new();
                 AddRoomToList(x + 1, y, adjAccessRooms, adjNoAccessRooms);
                 AddRoomToList(x - 1, y, adjAccessRooms, adjNoAccessRooms);
                 AddRoomToList(x, y + 1, adjAccessRooms, adjNoAccessRooms);
@@ -423,7 +423,7 @@ public class MapGenerator
         }
     }
     
-    private void AddRoomToList(int x, int y, List<SubMapGenerator> accessList, List<SubMapGenerator> noAccessList)
+    private void AddRoomToList(int x, int y, List<ChunkGenerator> accessList, List<ChunkGenerator> noAccessList)
     {
         if (x < 0 || x >= _tempMap.GetLength(0) || y < 0 || y >= _tempMap.GetLength(1)) return;
         
@@ -442,41 +442,41 @@ public class MapGenerator
         int startY = yStep == 1 ? 0 : _tempMap.GetLength(1) - 1;
         for (int i = 0, y = startY; i < _tempMap.GetLength(1); y += yStep, i++)
         {
-            SubMapGenerator subMap = _tempMap[x, y];
-            if (subMap.HasAccessToMainRoute)
+            ChunkGenerator chunk = _tempMap[x, y];
+            if (chunk.HasAccessToMainRoute)
             {
                 continue;
             }
             
-            SubMapGenerator yConnection = null;
-            SubMapGenerator xConnection = _tempMap[x + xStep, y];
+            ChunkGenerator yConnection = null;
+            ChunkGenerator xConnection = _tempMap[x + xStep, y];
             int difY = y + yStep;
             if (difY >= 0 && difY < _tempMap.GetLength(1))
             {
                 yConnection = _tempMap[x, difY];
             }
 
-            if (subMap.IsStartPoint || subMap.IsEndPoint)
+            if (chunk.IsStartPoint || chunk.IsEndPoint)
             {
-                ConnectRooms(subMap, xConnection);
+                ConnectRooms(chunk, xConnection);
                 if(yConnection != null)
-                    ConnectRooms(subMap, yConnection);
+                    ConnectRooms(chunk, yConnection);
                 return;
             }
 
-            if (Chance(ConnectionChance, _rng) && (!xConnection.HasAccessToMainRoute || !subMap.HasAccessToMainRoute))
+            if (Chance(ConnectionChance, _rng) && (!xConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
             {
-                ConnectRooms(subMap, xConnection);
+                ConnectRooms(chunk, xConnection);
             }
             if (yConnection != null 
-                && Chance(ConnectionChance, _rng) && (!yConnection.HasAccessToMainRoute || !subMap.HasAccessToMainRoute))
+                && Chance(ConnectionChance, _rng) && (!yConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
             {
-                ConnectRooms(subMap, yConnection);
+                ConnectRooms(chunk, yConnection);
             }
         }
     }
 
-    private void ConnectRooms(SubMapGenerator room1, SubMapGenerator room2)
+    private void ConnectRooms(ChunkGenerator room1, ChunkGenerator room2)
     {
         if (room1.MapX != room2.MapX)
         {

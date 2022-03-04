@@ -5,14 +5,14 @@ using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown;
 
-public class SubMapGenerator
+public class ChunkGenerator
 {
     public bool HasAccessToMainRoute;
     public bool MainRoute;
-    public SubMapGenerator NorthConnection = null;
-    public SubMapGenerator EastConnection = null;
-    public SubMapGenerator SouthConnection = null;
-    public SubMapGenerator WestConnection = null;
+    public ChunkGenerator NorthConnection = null;
+    public ChunkGenerator EastConnection = null;
+    public ChunkGenerator SouthConnection = null;
+    public ChunkGenerator WestConnection = null;
     public bool IsStartPoint;
     public bool IsEndPoint;
     public double Difficulty = -1;
@@ -25,14 +25,14 @@ public class SubMapGenerator
     public int MapX { get; }
     public int MapY { get; }
 
-    public SubMapGenerator(int x, int y)
+    public ChunkGenerator(int x, int y)
     {
         MapX = x;
         MapY = y;
     }
 
-    public SubMapGenerator
-        GetNextRoom(SubMapGenerator previousRoom) //used in level generation, for main route calculations
+    public ChunkGenerator
+        GetNextRoom(ChunkGenerator previousRoom) //used in level generation, for main route calculations
     {
         if (NorthConnection != null && NorthConnection != previousRoom)
             return NorthConnection;
