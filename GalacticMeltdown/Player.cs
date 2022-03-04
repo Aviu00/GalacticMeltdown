@@ -6,12 +6,17 @@ public class Player : IControllable, IEntity
 {
     public int X { get; set; }
     public int Y { get; set; }
+    
     public (char symbol, ConsoleColor color) SymbolData { get; }
     public ConsoleColor? BgColor { get; }
+    
     private int _viewRadius = 15;
+    private bool _xray;
+    
+    public bool InFocus { get; set; }
+    
     private Func<int, int, Tile> _tileAt;
     private Func<int, int, IEntity> _entityAt;
-    private bool _xray;
 
     public bool NoClip;//Temporary implementation of debugging "cheat codes"
 
