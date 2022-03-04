@@ -12,7 +12,7 @@ public partial class Level
     private Chunk[,] _chunks;
     
     public Player Player { get; }
-    public WorldView WorldView { get; }
+    public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
     
     public Level(Chunk[,] chunks, Chunk startPoint, Tile[] southernWall, Tile[] westernWall)
@@ -22,7 +22,7 @@ public partial class Level
         _southernWall = southernWall;
         _westernWall = westernWall;
         Player = new Player(startPoint.MapX * 25 + 12, startPoint.MapY * 25 + 12, GetTile, GetEntity);
-        WorldView = new WorldView(this);
+        LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
     }
 

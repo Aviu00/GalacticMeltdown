@@ -4,7 +4,7 @@ using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown.Rendering;
 
-public class WorldView : View
+public class LevelView : View
 {
     private Level _level;
     private IFocusable _focusObject;
@@ -13,7 +13,7 @@ public class WorldView : View
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
 
-    public WorldView(Level level)
+    public LevelView(Level level)
     {
         _level = level;
         _tileRevealingObjects = new LinkedList<ISightedObject>();
