@@ -54,7 +54,7 @@ public static class FilesystemLevelManager
         return level;
     }
 
-    public static string GetSaveFolder()
+    private static string GetSaveFolder()
     {
         return $"~/GalacticMeltdown/levels/{Utility.RandomString(16)}";
     }
