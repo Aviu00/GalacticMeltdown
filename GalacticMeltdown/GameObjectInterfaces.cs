@@ -14,7 +14,7 @@ public interface IHasCoords
     public int Y { get; set; }
 }
 
-public interface ICanSeeTiles : IHasCoords
+public interface ISightedObject : IHasCoords
 {
     int ViewRadius { get; set; }
     bool Xray { get; set; }

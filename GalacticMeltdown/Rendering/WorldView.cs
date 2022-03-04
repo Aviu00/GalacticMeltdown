@@ -8,7 +8,7 @@ public class WorldView : View
 {
     private Level _level;
     private IFocusPoint _focusObject;
-    private LinkedList<ICanSeeTiles> _tileRevealingObjects;
+    private LinkedList<ISightedObject> _tileRevealingObjects;
     private HashSet<(int, int)> _visiblePoints;
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
@@ -16,7 +16,7 @@ public class WorldView : View
     public WorldView(Level level)
     {
         _level = level;
-        _tileRevealingObjects = new LinkedList<ICanSeeTiles>();
+        _tileRevealingObjects = new LinkedList<ISightedObject>();
     }
 
     private void UpdateVisiblePoints()
@@ -32,14 +32,14 @@ public class WorldView : View
         NeedRedraw?.Invoke(this);
     }
 
-    public void AddTileRevealingObject(ICanSeeTiles obj)
+    public void AddTileRevealingObject(ISightedObject obj)
     {
         obj.VisiblePointsChanged += UpdateVisiblePoints;
         _tileRevealingObjects.AddFirst(obj);
         UpdateVisiblePoints();
     }
 
-    public void RemoveTileRevealingObject(ICanSeeTiles obj)
+    public void RemoveTileRevealingObject(ISightedObject obj)
     {
         obj.VisiblePointsChanged -= UpdateVisiblePoints;
         _tileRevealingObjects.Remove(obj);
@@ -57,7 +57,7 @@ public class WorldView : View
     private void FocusObjectMoved()
     {
         // Already re-rendered
-        if (_focusObject is ICanSeeTiles focusObject && _tileRevealingObjects.Contains(focusObject)) return;
+        if (_focusObject is ISightedObject focusObject && _tileRevealingObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this);
     }
 
