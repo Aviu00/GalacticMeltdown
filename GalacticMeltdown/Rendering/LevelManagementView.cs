@@ -37,24 +37,13 @@ public class LevelManagementView : View
 
     public LevelManagementView()
     {
-        List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelButtonInfo();
-        _menuLevels = new List<LevelButtonInfo>(levelInfos.Count);
-        foreach (var levelInfo in levelInfos)
-        {
-            _menuLevels.Add(new(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
-                () => TryStartLevel(levelInfo.Path)), levelInfo));
-        }
-
+        RefreshLevelList();
         _managementButtonInfos = new List<MenuButtonInfo>
         {
             new MenuButtonInfo(new Button("Create", "", CreateLevel)),
             new MenuButtonInfo(new Button("Delete", "", DeleteLevel)),
         };
-        
-        _levelIndex = 0;
         _managementIndex = 0;
-        
-        _isManagementSelected = _menuLevels.Count == 0;  // can't select a level when none exist
     }
 
     private void CreateLevel()
@@ -72,7 +61,11 @@ public class LevelManagementView : View
             return;
         }
         // TODO: confirmation dialog
-        FilesystemLevelManager.RemoveLevel(_menuLevels[_levelIndex].LevelInfo.Path);
+        if (!FilesystemLevelManager.RemoveLevel(_menuLevels[_levelIndex].LevelInfo.Path))
+        {
+            RefreshLevelList();
+            return;
+        }
         _menuLevels.RemoveAt(_levelIndex);
         if (!_menuLevels.Any())  // If there are no levels left, don't let the user select one
         {
@@ -89,8 +82,14 @@ public class LevelManagementView : View
 
     private void TryStartLevel(string path)
     {
-        // TODO: error checking, animation on error.
-        Game.StartLevel(FilesystemLevelManager.GetLevel(path));
+        Level level = FilesystemLevelManager.GetLevel(path);
+        if (level is null)
+        {
+            RefreshLevelList();
+            // TODO: failure animation
+            return;
+        }
+        Game.StartLevel(level);
     }
     
     public override ViewCellData GetSymbol(int x, int y)
@@ -180,6 +179,25 @@ public class LevelManagementView : View
         {
             _managementButtonInfos[i].RenderedText = _managementButtonInfos[i].Button.MakeText(Width);
         }
+    }
+
+    private void RefreshLevelList()
+    {
+        List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelButtonInfo();
+        _menuLevels = new List<LevelButtonInfo>(levelInfos.Count);
+        foreach (var levelInfo in levelInfos)
+        {
+            _menuLevels.Add(new(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
+                () => TryStartLevel(levelInfo.Path)), levelInfo));
+        }
+        _levelIndex = 0;
+        _isManagementSelected = _menuLevels.Count == 0;  // can't select a level when none exist
+        if (!(Width == 0 && Height == 0))  // View has size
+        {
+            UpdateOutVars();
+            CalculateVisibleButtonText();
+        }
+        NeedRedraw?.Invoke(this);
     }
     
     private void UpdateOutVars()

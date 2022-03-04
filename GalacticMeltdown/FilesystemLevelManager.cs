@@ -35,18 +35,21 @@ public static class FilesystemLevelManager
         };
     }
 
-    public static void RemoveLevel(string path)
+    public static bool RemoveLevel(string path)
     {
-        
+        // returns false on failure
+        return true;
     }
 
-    public static void SaveLevel(Level level)
+    public static bool SaveLevel(Level level)
     {
-        
+        // returns false on failure
+        return true;
     }
 
     public static Level GetLevel(string path)
     {
+        // Tries to restore the level from path, returns null on failure
         Level level = new MapGenerator(Random.Shared.Next(0, 1000000000)).Generate();
         return level;
     }
