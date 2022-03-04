@@ -4,10 +4,39 @@ using System.Linq;
 
 namespace GalacticMeltdown.Rendering;
 
+
+internal struct MenuLevel
+{
+    public Button LevelButton { get; }
+    public LevelInfo LevelInfo { get; }
+    public string RenderedText { get; set; }
+
+    public MenuLevel(Button button, LevelInfo levelInfo)
+    {
+        LevelButton = button;
+        LevelInfo = levelInfo;
+        RenderedText = "";
+    }
+}
+
+internal struct ManagementBtnInfo
+{
+    public Button LevelButton { get; }
+    public string RenderedText { get; set; }
+
+    public ManagementBtnInfo(Button button)
+    {
+        LevelButton = button;
+        RenderedText = "";
+    }
+}
+
 public class LevelManagementView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
+
+    private List<MenuLevel> _menuLevels;
     private List<LevelInfo> _levelInfos;
     private List<Button> _levelButtons;
     private readonly List<Button> _managementButtons;
@@ -15,7 +44,7 @@ public class LevelManagementView : View
     private int _managementIndex;
     private bool _isManagementSelected;
     private int _topVisibleLevelButtonIndex;
-    private string[] _levelButtonText;
+    private List<string> _levelButtonText;
     private string[] _managementButtonText;
     private int _selectedLevelButtonY;
     
@@ -27,14 +56,17 @@ public class LevelManagementView : View
     public LevelManagementView()
     {
         _levelInfos = FilesystemLevelManager.GetLevelButtonInfo();
+        _menuLevels = new List<MenuLevel>(_levelInfos.Count);
         _levelButtons = new List<Button>(_levelInfos.Count);
         foreach (var levelInfo in _levelInfos)
         {
+            _menuLevels.Add(new(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
+                () => TryStartLevel(levelInfo.Path)), levelInfo));
             _levelButtons.Add(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
                 () => TryStartLevel(levelInfo.Path)));
         }
 
-        _levelButtonText = new string[_levelButtons.Count];
+        _levelButtonText = new List<string>(_levelButtons.Count);
 
         _managementButtons = new List<Button>
         {
@@ -101,7 +133,7 @@ public class LevelManagementView : View
         }
         else
         {
-            if (Height - y > _levelButtonText.Length) return new ViewCellData(null, null);
+            if (Height - y > _levelButtonText.Count) return new ViewCellData(null, null);
             symbol = _levelButtonText[Height - (y - _topVisibleLevelButtonIndex) - 1][x];
             fgColor = TextColor;
             bgColor = _selectedLevelButtonY == y ? BackgroundColorSelected : BackgroundColorUnselected;
@@ -156,7 +188,7 @@ public class LevelManagementView : View
     
     private void CalculateVisibleButtonText()
     {
-        for (int i = 0; i < _levelButtonText.Length; i++)
+        for (int i = 0; i < _levelButtonText.Count; i++)
         {
             _levelButtonText[i] = _levelButtons[i].MakeText(Width);
         }
