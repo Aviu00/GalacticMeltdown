@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using GalacticMeltdown.Data;
 
@@ -8,7 +10,7 @@ public class LevelView : View
 {
     private Level _level;
     private IFocusable _focusObject;
-    private List<ISightedObject> _sightedObjects;
+    private ObservableCollection<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
@@ -17,7 +19,7 @@ public class LevelView : View
     {
         _level = level;
         _sightedObjects = _level.SightedObjects;
-        _level.SightedObjectsUpdate += SightedObjectUpdateHandler;
+        _sightedObjects.CollectionChanged += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
         {
             sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
@@ -25,10 +27,16 @@ public class LevelView : View
         UpdateVisiblePoints();
     }
 
-    private void SightedObjectUpdateHandler(ISightedObject sightedObject, bool removed)
+    private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
-        if (removed) sightedObject.VisiblePointsChanged -= UpdateVisiblePoints;
-        else sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
+        if (e.NewItems is not null) foreach (var sightedObject in e.NewItems)
+        {
+            ((ISightedObject) sightedObject).VisiblePointsChanged += UpdateVisiblePoints;
+        }
+        if (e.OldItems is not null) foreach (var sightedObject in e.OldItems)
+        {
+            ((ISightedObject) sightedObject).VisiblePointsChanged -= UpdateVisiblePoints;
+        }
     }
 
     private void UpdateVisiblePoints()

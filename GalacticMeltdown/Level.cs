@@ -1,10 +1,9 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
-
-public delegate void SightedObjectsUpdateHandler(ISightedObject sightedObject, bool removed);
 
 public partial class Level
 {
@@ -19,9 +18,7 @@ public partial class Level
     public OverlayView OverlayView { get; }
     
     public List<IControllable> ControllableObjects { get; }
-    public List<ISightedObject> SightedObjects { get; }
-
-    public event SightedObjectsUpdateHandler SightedObjectsUpdate;
+    public ObservableCollection<ISightedObject> SightedObjects { get; }
 
     public Level(Chunk[,] chunks, Chunk startPoint, Tile[] southernWall, Tile[] westernWall)
     {
@@ -31,7 +28,7 @@ public partial class Level
         _westernWall = westernWall;
         Player = new Player(startPoint.MapX * 25 + 12, startPoint.MapY * 25 + 12, GetTile, GetEntity);
         ControllableObjects = new List<IControllable> { Player };
-        SightedObjects = new List<ISightedObject> { Player };
+        SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
     }
