@@ -7,8 +7,7 @@ public partial class Level
     public Player Player { get; }
     
     private Chunk[,] _chunks;
-    
-    private readonly Chunk _startPoint;
+
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
@@ -17,11 +16,10 @@ public partial class Level
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _chunks = chunks;
-        _startPoint = startPoint;
         _southernWall = southernWall;
         _westernWall = westernWall;
-        Player = new Player(_startPoint.MapX * 25 + 12, _startPoint.MapY * 25 + 12, GetTile, GetEntity);
-        Enemy enemy = new MeleeEnemy(_startPoint.MapX * 25 + 13, _startPoint.MapY * 25 + 13, this, Player);
+        Player = new Player(startPoint.MapX * 25 + 12, startPoint.MapY * 25 + 12, GetTile, GetEntity);
+        Enemy enemy = new MeleeEnemy(startPoint.MapX * 25 + 13, startPoint.MapY * 25 + 13, this, Player);
     }
 
 
