@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace GalacticMeltdown;
@@ -46,7 +47,7 @@ public static class FilesystemLevelManager
 
     public static Level GetLevel(string path)
     {
-        Level level = new MapGenerator(1).Generate();
+        Level level = new MapGenerator(Random.Shared.Next(0, 1000000000)).Generate();
         return level;
     }
 }
