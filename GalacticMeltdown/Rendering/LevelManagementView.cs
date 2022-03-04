@@ -20,25 +20,13 @@ internal class LevelButtonInfo
     }
 }
 
-internal class ManagementButtonInfo
-{
-    public Button Button { get; }
-    public string RenderedText { get; set; }
-
-    public ManagementButtonInfo(Button button)
-    {
-        Button = button;
-        RenderedText = "";
-    }
-}
-
 public class LevelManagementView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
 
     private List<LevelButtonInfo> _menuLevels;
-    private List<ManagementButtonInfo> _managementButtonInfos;
+    private List<MenuButtonInfo> _managementButtonInfos;
     
     private int _levelIndex;
     private int _managementIndex;
@@ -57,10 +45,10 @@ public class LevelManagementView : View
                 () => TryStartLevel(levelInfo.Path)), levelInfo));
         }
 
-        _managementButtonInfos = new List<ManagementButtonInfo>
+        _managementButtonInfos = new List<MenuButtonInfo>
         {
-            new ManagementButtonInfo(new Button("Create", "", null)),
-            new ManagementButtonInfo(new Button("Delete", "", DeleteLevel)),
+            new MenuButtonInfo(new Button("Create", "", null)),
+            new MenuButtonInfo(new Button("Delete", "", DeleteLevel)),
         };
         
         _levelIndex = 0;
