@@ -26,17 +26,17 @@ public interface IMovable : IHasCoords
     public event PositionChangedEventHandler PositionChanged;
 }
 
-public interface IFocusable : IHasCoords
+public interface IFocusable : IMovable, IDrawable
 {
-    public event PositionChangedEventHandler PositionChanged;
+    
 }
 
-public interface IEntity : IDrawable, IHasCoords //Entity is an object that can be placed on a tile
+public interface IEntity : IDrawable, IHasCoords
 {
         
 }
 
-public interface IControllable : IHasCoords
+public interface IControllable : IFocusable, ISightedObject
 {
     public bool TryMove(int deltaX, int deltaY);
 }
