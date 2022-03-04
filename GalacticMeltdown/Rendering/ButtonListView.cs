@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown.Rendering;
 
@@ -8,14 +9,13 @@ public class ButtonListView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
+    
     private readonly ImmutableList<Button> _buttons;
+    
     private int _currentButtonIndex;
     private int _topVisibleButtonIndex;
     private string[] _buttonText;
     private int _selectedButtonY;
-    private const ConsoleColor TextColor = ConsoleColor.Magenta;
-    private const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
-    private const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
 
     public ButtonListView(ICollection<Button> buttons)
     {
@@ -45,8 +45,10 @@ public class ButtonListView : View
     {
         if (y < Height - _buttons.Count) return new ViewCellData(null, null);
         char symbol = _buttonText[Height - (y - _topVisibleButtonIndex) - 1][x];
-        ConsoleColor fgColor = TextColor;
-        ConsoleColor bgColor = _selectedButtonY == y ? BackgroundColorSelected : BackgroundColorUnselected;
+        ConsoleColor fgColor = DataHolder.Colors.TextColor;
+        ConsoleColor bgColor = _selectedButtonY == y 
+            ? DataHolder.Colors.BackgroundColorSelected 
+            : DataHolder.Colors.BackgroundColorUnselected;
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
     }
 

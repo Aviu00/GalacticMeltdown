@@ -7,7 +7,8 @@ public static class DataHolder
 {
     public static readonly List<Room> Rooms;
     public static readonly Dictionary<string, TileTypeData> TileTypes;
-    public static readonly Dictionary<string, ConsoleColor> Colors = new()
+    
+    public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {
         {"white", ConsoleColor.White},
         {"black", ConsoleColor.Black},
@@ -26,7 +27,15 @@ public static class DataHolder
         {"dark_red", ConsoleColor.DarkRed},
         {"dark_yellow", ConsoleColor.DarkYellow},
     };
-    public const ConsoleColor OutOfVisionTileColor = ConsoleColor.DarkGray;
+    
+    public struct Colors
+    {
+        public const ConsoleColor OutOfVisionTileColor = ConsoleColor.DarkGray;
+        public const ConsoleColor TextColor = ConsoleColor.Magenta;
+        public const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
+        public const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
+        public const ConsoleColor MenuBorderColor = ConsoleColor.Yellow;
+    }
     
     static DataHolder()
     {

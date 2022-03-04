@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown.Rendering;
 
@@ -45,11 +46,6 @@ public class LevelManagementView : View
     
     private int _topVisibleLevelButtonIndex;
     private int _selectedLevelButtonY;
-    
-    private const ConsoleColor TextColor = ConsoleColor.Magenta;
-    private const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
-    private const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
-    private const ConsoleColor ManagementButtonsBorder = ConsoleColor.Yellow;
 
     public LevelManagementView()
     {
@@ -110,24 +106,26 @@ public class LevelManagementView : View
         if (y == _managementButtonInfos.Count)
         {
             symbol = '#';
-            fgColor = ManagementButtonsBorder;
+            fgColor = DataHolder.Colors.MenuBorderColor;
             bgColor = ConsoleColor.Black;
         }
         else if (y < _managementButtonInfos.Count)
         {
             symbol = _managementButtonInfos[y].RenderedText[x];
-            fgColor = TextColor;
+            fgColor = DataHolder.Colors.TextColor;
             bgColor = _isManagementSelected && y == _managementIndex
-                ? BackgroundColorSelected
-                : BackgroundColorUnselected;
+                ? DataHolder.Colors.BackgroundColorSelected
+                : DataHolder.Colors.BackgroundColorUnselected;
             
         }
         else
         {
             if (Height - y > _menuLevels.Count) return new ViewCellData(null, null);
             symbol = _menuLevels[Height - (y - _topVisibleLevelButtonIndex) - 1].RenderedText[x];
-            fgColor = TextColor;
-            bgColor = _selectedLevelButtonY == y ? BackgroundColorSelected : BackgroundColorUnselected;
+            fgColor = DataHolder.Colors.TextColor;;
+            bgColor = _selectedLevelButtonY == y 
+                ? DataHolder.Colors.BackgroundColorSelected 
+                : DataHolder.Colors.BackgroundColorUnselected;
         }
 
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
