@@ -5,22 +5,19 @@ namespace GalacticMeltdown;
 
 public class Tile : IDrawable
 {
-    public (char symbol, ConsoleColor color) SymbolData { get; }
-    public ConsoleColor? BgColor { get; }
-    public bool Seen = false;
-    public bool IsTransparent { get; }
-    public bool IsWalkable { get; }
-    public bool ConnectToWalls { get; } //used in level generation
-        
-    public string Name { get; }
+    private TileTypeData _typeData;
+    public string Name => _typeData.Name;
+    public (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
+    public ConsoleColor? BgColor => null;
+    public bool IsTransparent => _typeData.IsTransparent;
+    public bool IsWalkable => _typeData.IsWalkable;
 
-    public Tile(TileTypeData tileTypeData)
+    public bool ConnectToWalls => _typeData.IsConnection;
+    
+    public bool Seen = false;
+
+    public Tile(TileTypeData typeData)
     {
-        SymbolData = (tileTypeData.Symbol, tileTypeData.Color);
-        BgColor = null;
-        IsTransparent = tileTypeData.IsTransparent;
-        IsWalkable = tileTypeData.IsWalkable;
-        ConnectToWalls = tileTypeData.IsConnection;
-        Name = tileTypeData.Name;
+        _typeData = typeData;
     }
 }
