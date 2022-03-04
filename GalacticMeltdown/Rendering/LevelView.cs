@@ -8,7 +8,7 @@ public class LevelView : View
 {
     private Level _level;
     private IFocusable _focusObject;
-    private LinkedList<ISightedObject> _sightedObjects;
+    private List<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
@@ -16,7 +16,12 @@ public class LevelView : View
     public LevelView(Level level)
     {
         _level = level;
-        _sightedObjects = new LinkedList<ISightedObject>();
+        _sightedObjects = _level.SightedObjects;
+        foreach (var sightedObject in _sightedObjects)
+        {
+            sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
+        }
+        UpdateVisiblePoints();
     }
 
     private void UpdateVisiblePoints()
@@ -30,20 +35,6 @@ public class LevelView : View
             if (tile is not null) tile.Seen = true;
         }
         NeedRedraw?.Invoke(this);
-    }
-
-    public void AddTileRevealingObject(ISightedObject obj)
-    {
-        obj.VisiblePointsChanged += UpdateVisiblePoints;
-        _sightedObjects.AddFirst(obj);
-        UpdateVisiblePoints();
-    }
-
-    public void RemoveTileRevealingObject(ISightedObject obj)
-    {
-        obj.VisiblePointsChanged -= UpdateVisiblePoints;
-        _sightedObjects.Remove(obj);
-        UpdateVisiblePoints();
     }
 
     public void SetFocus(IFocusable focusObj)

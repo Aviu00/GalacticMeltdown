@@ -18,7 +18,6 @@ public partial class PlaySession
         _player = _level.Player;
         _controlledObject = _player;
         _levelView = _level.LevelView;
-        _levelView.AddTileRevealingObject(_player);
         _levelView.SetFocus(_player);
     }
 
