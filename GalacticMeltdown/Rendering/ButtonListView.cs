@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown.Rendering;
@@ -10,27 +11,26 @@ public class ButtonListView : View
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
     
-    private readonly ImmutableList<Button> _buttons;
+    
+    private readonly ImmutableList<MenuButtonInfo> _buttons;
     
     private int _currentButtonIndex;
     private int _topVisibleButtonIndex;
-    private string[] _buttonText;
     private int _selectedButtonY;
 
     public ButtonListView(ICollection<Button> buttons)
     {
         // TODO: this should have at least one button, check that
-        _buttons = ImmutableList<Button>.Empty.AddRange(buttons);
+        _buttons = ImmutableList<MenuButtonInfo>.Empty.AddRange(buttons.Select(button => new MenuButtonInfo(button)));
         _currentButtonIndex = 0;
         _topVisibleButtonIndex = 0;
-        _buttonText = new string[_buttons.Count];
     }
 
     private void CalculateButtonText()
     {
-        for (int i = 0; i < _buttonText.Length; i++)
+        for (int i = 0; i < _buttons.Count; i++)
         {
-            _buttonText[i] = _buttons[i].MakeText(Width);
+            _buttons[i].RenderedText = _buttons[i].Button.MakeText(Width);
         }
     }
 
@@ -44,7 +44,7 @@ public class ButtonListView : View
     public override ViewCellData GetSymbol(int x, int y)
     {
         if (y < Height - _buttons.Count) return new ViewCellData(null, null);
-        char symbol = _buttonText[Height - (y - _topVisibleButtonIndex) - 1][x];
+        char symbol = _buttons[Height - (y - _topVisibleButtonIndex) - 1].RenderedText[x];
         ConsoleColor fgColor = DataHolder.Colors.TextColor;
         ConsoleColor bgColor = _selectedButtonY == y 
             ? DataHolder.Colors.BackgroundColorSelected 
@@ -54,7 +54,7 @@ public class ButtonListView : View
 
     public void PressCurrent()
     {
-        _buttons[_currentButtonIndex].Press();
+        _buttons[_currentButtonIndex].Button.Press();
     }
 
     public void SelectNext()
@@ -66,7 +66,8 @@ public class ButtonListView : View
 
     public void SelectPrev()
     {
-        _currentButtonIndex = (_buttons.Count + _currentButtonIndex - 1) % _buttons.Count;  // -1 should wrap
+        _currentButtonIndex -= 1;
+        if (_currentButtonIndex == -1) _currentButtonIndex = _buttons.Count - 1;
         UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
