@@ -1,18 +1,19 @@
-﻿using System;
-using GalacticMeltdown.Data;
+﻿using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
 public partial class PlaySession
 {
+    private string _savePath;
     private static Player _player;
     private static IControllable _controlledObject;
     private static Level _level;
     private static WorldView _worldView;
 
-    public PlaySession(Level level)
+    public PlaySession(Level level, string savePath)
     {
+        _savePath = savePath;
         _level = level;
         _player = _level.Player;
         _controlledObject = _player;

@@ -21,7 +21,7 @@ public static class Game
     {
         Renderer.ClearViews();
         InputProcessor.ClearBindings();
-        var session = new PlaySession(level);
+        var session = new PlaySession(level, path);
         session.Start();
     }
 
