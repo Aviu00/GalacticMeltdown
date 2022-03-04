@@ -60,7 +60,7 @@ public class LevelManagementView : View
     private void CreateLevel()
     {
         // TODO: open dialog asking for name and seed (optional)
-        int seed = Random.Shared.Next(0, 1000000000);;
+        int seed = Random.Shared.Next(0, 1000000000);
         Game.CreateLevel(seed);
     }
 
