@@ -70,7 +70,7 @@ public class LevelView : View
         // Draw object in focus on top of everything else
         if (x == centerScreenX && y == centerScreenY)
         {
-            drawableObj = _focusObject as IDrawable;
+            drawableObj = _focusObject;
             if (drawableObj is not null)
             {
                 return new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
