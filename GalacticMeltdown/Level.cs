@@ -24,7 +24,6 @@ public partial class Level
         Player = new Player(startPoint.MapX * 25 + 12, startPoint.MapY * 25 + 12, GetTile, GetEntity);
         WorldView = new WorldView(this);
         OverlayView = new OverlayView(this);
-        Enemy enemy = new MeleeEnemy(startPoint.MapX * 25 + 13, startPoint.MapY * 25 + 13, this, Player);
     }
 
 
