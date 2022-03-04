@@ -1,16 +1,19 @@
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
 public partial class Level
 {
-    public Player Player { get; }
-    
-    private Chunk[,] _chunks;
-
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
+    
+    private Chunk[,] _chunks;
+    
+    public Player Player { get; }
+    public WorldView WorldView { get; }
+    public OverlayView OverlayView { get; }
     
     public Level(Chunk[,] chunks, Chunk startPoint, Tile[] southernWall, Tile[] westernWall)
     {
@@ -19,6 +22,8 @@ public partial class Level
         _southernWall = southernWall;
         _westernWall = westernWall;
         Player = new Player(startPoint.MapX * 25 + 12, startPoint.MapY * 25 + 12, GetTile, GetEntity);
+        WorldView = new WorldView(this);
+        OverlayView = new OverlayView(this);
         Enemy enemy = new MeleeEnemy(startPoint.MapX * 25 + 13, startPoint.MapY * 25 + 13, this, Player);
     }
 

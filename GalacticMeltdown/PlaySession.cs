@@ -17,7 +17,7 @@ public partial class PlaySession
         _level = level;
         _player = _level.Player;
         _controlledObject = _player;
-        _worldView = new WorldView(_level);
+        _worldView = _level.WorldView;
         _worldView.AddTileRevealingObject(_player);
         _worldView.SetFocus(_player);
     }
@@ -25,7 +25,7 @@ public partial class PlaySession
     public void Start()
     {
         Renderer.AddView(_worldView, 0, 0, 0.8, 1);
-        Renderer.AddView(new OverlayView(_level), 0.8, 0, 1, 1);
+        Renderer.AddView(_level.OverlayView, 0.8, 0, 1, 1);
         Renderer.Redraw();
         InputProcessor.AddBinding(DataHolder.CurrentBindings.Player, PlayerActions);
     }
