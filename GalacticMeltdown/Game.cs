@@ -33,6 +33,13 @@ public static class Game
             new Button("Quit", "", Quit));
     }
 
+    public static void CreateLevel(int seed)
+    {
+        Level level = new MapGenerator(seed).Generate();
+        FilesystemLevelManager.SaveLevel(level);
+        StartLevel(level);
+    }
+
     private static void Quit()
     {
         _playing = false;

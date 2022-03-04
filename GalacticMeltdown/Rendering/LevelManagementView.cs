@@ -47,7 +47,7 @@ public class LevelManagementView : View
 
         _managementButtonInfos = new List<MenuButtonInfo>
         {
-            new MenuButtonInfo(new Button("Create", "", null)),
+            new MenuButtonInfo(new Button("Create", "", CreateLevel)),
             new MenuButtonInfo(new Button("Delete", "", DeleteLevel)),
         };
         
@@ -55,6 +55,13 @@ public class LevelManagementView : View
         _managementIndex = 0;
         
         _isManagementSelected = _menuLevels.Count == 0;  // can't select a level when none exist
+    }
+
+    private void CreateLevel()
+    {
+        // TODO: open dialog asking for name and seed (optional)
+        int seed = Random.Shared.Next(0, 1000000000);;
+        Game.CreateLevel(seed);
     }
 
     private void DeleteLevel()
