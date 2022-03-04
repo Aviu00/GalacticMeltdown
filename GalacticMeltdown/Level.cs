@@ -6,18 +6,18 @@ public partial class Level
 {
     public readonly int MapSeed;
     public Player Player { get; }
-    private Chunk[,] _map;
+    private Chunk[,] _chunks;
     private readonly Chunk _startPoint;
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
     public readonly string MapString;  //for debugging
     
-    public Level(Chunk[,] map, int seed, Chunk startPoint, Tile[] southernWall, 
+    public Level(Chunk[,] chunks, int seed, Chunk startPoint, Tile[] southernWall, 
         Tile[] westernWall, string mapString)
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
-        _map = map;
+        _chunks = chunks;
         MapSeed = seed;
         _startPoint = startPoint;
         _southernWall = southernWall;
@@ -43,12 +43,12 @@ public partial class Level
         int mapY = y / 25;
         int localX = x % 25;
         int localY = y % 25;
-        if (!(x >= 0 && mapX < _map.GetLength(0) && y >= 0 && mapY < _map.GetLength(1)))
+        if (!(x >= 0 && mapX < _chunks.GetLength(0) && y >= 0 && mapY < _chunks.GetLength(1)))
         {
             return null;
         }
 
-        return _map[mapX, mapY].Tiles[localX, localY];
+        return _chunks[mapX, mapY].Tiles[localX, localY];
     }
 
     public IEntity GetEntity(int x, int y)
@@ -56,11 +56,11 @@ public partial class Level
         if (x == Player.X && y == Player.Y) return Player;
         int mapX = x / 25;
         int mapY = y / 25;
-        if (!(x >= 0 && mapX < _map.GetLength(0) && y >= 0 && mapY < _map.GetLength(1)))
+        if (!(x >= 0 && mapX < _chunks.GetLength(0) && y >= 0 && mapY < _chunks.GetLength(1)))
         {
             return null;
         }
-        return _map[mapX, mapY].GetEntity(x, y);
+        return _chunks[mapX, mapY].GetEntity(x, y);
     }
 
     public IDrawable GetDrawable(int x, int y)
@@ -74,14 +74,14 @@ public partial class Level
         int mapY = enemy.Y / 25;
         int oldMapX = oldX / 25;
         int oldMapY = oldY / 25;
-        if (!(0 <= mapX && mapX < _map.GetLength(0) && 0 <= mapY && mapY < _map.GetLength(1))) return;
+        if (!(0 <= mapX && mapX < _chunks.GetLength(0) && 0 <= mapY && mapY < _chunks.GetLength(1))) return;
         if (mapX != oldMapX || oldY != oldMapY)
         {
             if (oldX >= 0 && oldY >= 0)
             {
-                _map[oldMapX, oldMapY].Enemies.Remove(enemy);
+                _chunks[oldMapX, oldMapY].Enemies.Remove(enemy);
             }
-            _map[mapX, mapY].Enemies.Add(enemy);
+            _chunks[mapX, mapY].Enemies.Add(enemy);
         }
     }
 }
