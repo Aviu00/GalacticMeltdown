@@ -28,7 +28,7 @@ public interface IMovable : IHasCoords
 
 public interface IFocusable : IMovable, IDrawable
 {
-    
+    bool InFocus { get; set; }
 }
 
 public interface IEntity : IDrawable, IHasCoords
