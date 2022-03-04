@@ -17,11 +17,18 @@ public class LevelView : View
     {
         _level = level;
         _sightedObjects = _level.SightedObjects;
+        _level.SightedObjectsUpdate += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
         {
             sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
         }
         UpdateVisiblePoints();
+    }
+
+    private void SightedObjectUpdateHandler(ISightedObject sightedObject, bool removed)
+    {
+        if (removed) sightedObject.VisiblePointsChanged -= UpdateVisiblePoints;
+        else sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
     }
 
     private void UpdateVisiblePoints()

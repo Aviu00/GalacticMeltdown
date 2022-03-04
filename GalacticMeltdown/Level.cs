@@ -4,6 +4,8 @@ using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
+public delegate void SightedObjectsUpdateHandler(ISightedObject sightedObject, bool removed);
+
 public partial class Level
 {
     private readonly Tile[] _southernWall;
@@ -18,6 +20,8 @@ public partial class Level
     
     public List<IControllable> ControllableObjects { get; }
     public List<ISightedObject> SightedObjects { get; }
+
+    public event SightedObjectsUpdateHandler SightedObjectsUpdate;
 
     public Level(Chunk[,] chunks, Chunk startPoint, Tile[] southernWall, Tile[] westernWall)
     {
