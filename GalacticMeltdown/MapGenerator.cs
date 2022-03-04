@@ -18,7 +18,6 @@ public class MapGenerator
     private Chunk _startPoint;
     private Tile[] _westernWall;
     private Tile[] _southernWall;
-    private int _seed;
 
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
@@ -32,7 +31,6 @@ public class MapGenerator
     public void ChangeSeed(int newSeed)
     {
         _rng = new Random(newSeed);
-        _seed = newSeed;
     }
     
     public Level Generate()
