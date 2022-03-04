@@ -26,7 +26,7 @@ public interface IMovable : IHasCoords
     public event PositionChangedEventHandler PositionChanged;
 }
 
-public interface IFocusPoint : IHasCoords
+public interface IFocusable : IHasCoords
 {
     public event PositionChangedEventHandler PositionChanged;
 }

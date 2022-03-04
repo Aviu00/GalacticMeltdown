@@ -7,7 +7,7 @@ namespace GalacticMeltdown.Rendering;
 public class WorldView : View
 {
     private Level _level;
-    private IFocusPoint _focusObject;
+    private IFocusable _focusObject;
     private LinkedList<ISightedObject> _tileRevealingObjects;
     private HashSet<(int, int)> _visiblePoints;
     public override event ViewChangedEventHandler NeedRedraw;
@@ -46,7 +46,7 @@ public class WorldView : View
         UpdateVisiblePoints();
     }
 
-    public void SetFocus(IFocusPoint focusObj)
+    public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject)) return;
         _focusObject = focusObj;
