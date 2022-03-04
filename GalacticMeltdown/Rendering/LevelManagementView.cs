@@ -6,17 +6,13 @@ using GalacticMeltdown.Data;
 namespace GalacticMeltdown.Rendering;
 
 
-internal class LevelButtonInfo
+internal class LevelButtonInfo : MenuButtonInfo
 {
-    public Button LevelButton { get; }
     public LevelInfo LevelInfo { get; }
-    public string RenderedText { get; set; }
 
-    public LevelButtonInfo(Button button, LevelInfo levelInfo)
+    public LevelButtonInfo(Button button, LevelInfo levelInfo) : base(button)
     {
-        LevelButton = button;
         LevelInfo = levelInfo;
-        RenderedText = "";
     }
 }
 
@@ -129,7 +125,7 @@ public class LevelManagementView : View
     public void PressCurrent()
     {
         if (_isManagementSelected) _managementButtonInfos[_managementIndex].Button.Press();
-        else _menuLevels[_levelIndex].LevelButton.Press();
+        else _menuLevels[_levelIndex].Button.Press();
     }
 
     public void SelectNext()
@@ -174,7 +170,7 @@ public class LevelManagementView : View
     {
         for (int i = 0; i < _menuLevels.Count; i++)
         {
-            _menuLevels[i].RenderedText = _menuLevels[i].LevelButton.MakeText(Width);
+            _menuLevels[i].RenderedText = _menuLevels[i].Button.MakeText(Width);
         }
         for (int i = 0; i < _managementButtonInfos.Count; i++)
         {
