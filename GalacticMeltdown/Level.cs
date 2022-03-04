@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
@@ -15,6 +16,9 @@ public partial class Level
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
     
+    public List<IControllable> ControllableObjects { get; }
+    public List<ISightedObject> SightedObjects { get; }
+
     public Level(Chunk[,] chunks, Chunk startPoint, Tile[] southernWall, Tile[] westernWall)
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
@@ -22,6 +26,8 @@ public partial class Level
         _southernWall = southernWall;
         _westernWall = westernWall;
         Player = new Player(startPoint.MapX * 25 + 12, startPoint.MapY * 25 + 12, GetTile, GetEntity);
+        ControllableObjects = new List<IControllable> { Player };
+        SightedObjects = new List<ISightedObject> { Player };
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
     }
