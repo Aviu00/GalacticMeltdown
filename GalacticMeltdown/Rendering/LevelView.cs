@@ -49,7 +49,7 @@ public class LevelView : View
 
     private void FocusObjectMoved()
     {
-        // Already re-rendered
+        // Already redrawn
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this);
     }
