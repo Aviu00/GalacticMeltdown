@@ -59,8 +59,13 @@ public class LevelManagementView : View
         char symbol;
         ConsoleColor fgColor;
         ConsoleColor bgColor;
-        if (y == _managementButtons.Count) return new ViewCellData(('#', ManagementButtonsBorder), ConsoleColor.Black);
-        if (y < _managementButtons.Count)
+        if (y == _managementButtons.Count)
+        {
+            symbol = '#';
+            fgColor = ManagementButtonsBorder;
+            bgColor = ConsoleColor.Black;
+        }
+        else if (y < _managementButtons.Count)
         {
             symbol = _managementButtonText[y][x];
             fgColor = TextColor;
@@ -90,6 +95,7 @@ public class LevelManagementView : View
     {
         if (_isManagementSelected) _managementIndex = (_managementIndex + 1) % _managementButtons.Count;
         else _levelIndex = (_levelIndex + 1) % _levelButtons.Count;
+        UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
 
@@ -97,6 +103,7 @@ public class LevelManagementView : View
     {
         if (_isManagementSelected) _managementIndex = (_managementButtons.Count + _managementIndex - 1) % _managementButtons.Count;
         else _levelIndex = (_levelButtons.Count + _levelIndex - 1) % _levelButtons.Count;
+        UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
 
