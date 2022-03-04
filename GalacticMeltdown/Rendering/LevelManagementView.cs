@@ -69,6 +69,8 @@ public class LevelManagementView : View
         {
             _levelIndex = _levelButtons.Count - 1;
         }
+        UpdateOutVars();
+        NeedRedraw?.Invoke(this);
     }
 
     private void TryStartLevel(string path)
@@ -167,6 +169,6 @@ public class LevelManagementView : View
     private void UpdateOutVars()
     {
         _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - (Height - (_managementButtons.Count + 1)) + 1);
-        _selectedLevelButtonY = Height - (_levelIndex - _topVisibleLevelButtonIndex) - 1;
+        _selectedLevelButtonY = _levelButtons.Any() ? Height - (_levelIndex - _topVisibleLevelButtonIndex) - 1 : -1;
     }
 }
