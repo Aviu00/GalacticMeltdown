@@ -4,25 +4,22 @@ namespace GalacticMeltdown;
 
 public partial class Level
 {
-    public readonly int MapSeed;
     public Player Player { get; }
+    
     private Chunk[,] _chunks;
+    
     private readonly Chunk _startPoint;
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
-    public readonly string MapString;  //for debugging
     
-    public Level(Chunk[,] chunks, int seed, Chunk startPoint, Tile[] southernWall, 
-        Tile[] westernWall, string mapString)
+    public Level(Chunk[,] chunks, Chunk startPoint, Tile[] southernWall, Tile[] westernWall)
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _chunks = chunks;
-        MapSeed = seed;
         _startPoint = startPoint;
         _southernWall = southernWall;
         _westernWall = westernWall;
-        MapString = mapString;
         Player = new Player(_startPoint.MapX * 25 + 12, _startPoint.MapY * 25 + 12, GetTile, GetEntity);
         Enemy enemy = new MeleeEnemy(_startPoint.MapX * 25 + 13, _startPoint.MapY * 25 + 13, this, Player);
     }

@@ -42,7 +42,7 @@ public class MapGenerator
         FillMap();
         FinalizeRooms();
         GenerateBorderWalls();
-        return new Level(_map, _seed, _startPoint, _southernWall, _westernWall, CalculateMapString());
+        return new Level(_map, _startPoint, _southernWall, _westernWall);
     }
 
     private void GenerateBars()
