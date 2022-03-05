@@ -5,6 +5,8 @@ using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
+public delegate void TurnFinishedEventHandler();
+
 public partial class Level
 {
     private const int PlayerHp = 100;
@@ -20,6 +22,8 @@ public partial class Level
 
     private int _finishX;
     private int _finishY;
+
+    public event TurnFinishedEventHandler TurnFinished;
     
     public Player Player { get; }
     public LevelView LevelView { get; }
