@@ -32,7 +32,7 @@ public partial class Level
         _southernWall = southernWall;
         _westernWall = westernWall;
         Player = new Player(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, startPoint.MapX * 25 + 12,
-            startPoint.MapY * 25 + 12, GetTile, GetEntity);
+            startPoint.MapY * 25 + 12, this);
         ControllableObjects = new List<IControllable> { Player };
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
