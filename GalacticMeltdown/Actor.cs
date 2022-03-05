@@ -6,35 +6,22 @@ public delegate void DiedEventHandler(Actor sender);
 
 public abstract class Actor
 {
-    private int _hp;
-    private int _maxHp;
-
-    protected int MaxHp
+    private LimitedStat _hp;
+    public int Hp
     {
-        get => _maxHp;
+        get => _hp.Value;
         set
         {
-            _maxHp = value;
-            Hp = _hp;  // Update hp
-        }
-    }
-    
-    protected int Hp
-    { 
-        get => _hp;
-        set
-        {
-            _hp = Math.Min(value, _maxHp);
-            if (_hp <= 0) Died?.Invoke(this);
+            _hp.Value = value;
+            if (value <= 0) Died?.Invoke(this);
         }
     }
 
-    private int _maxEnergy;
-    private int _energy;
-    protected int Energy
+    private LimitedStat _energy;
+    public int Energy
     {
-        get => _energy;
-        set => _energy = Math.Min(value, _maxEnergy);
+        get => _energy.Value;
+        set => _energy.Value = value;
     }
 
     public int Dex { get; protected set; }
@@ -49,10 +36,8 @@ public abstract class Actor
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y)
     {
-        _maxHp = maxHp;
-        _hp = maxHp;
-        _maxEnergy = maxEnergy;
-        Energy = maxEnergy;
+        _hp = new LimitedStat(maxHp, maxHp);
+        _energy = new LimitedStat(maxEnergy, maxEnergy);
         Dex = dex;
         Def = def;
         X = x;
