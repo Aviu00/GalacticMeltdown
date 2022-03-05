@@ -6,7 +6,7 @@ public delegate void DiedEventHandler(Actor sender);
 
 public abstract class Actor
 {
-    private LimitedStat _hp;
+    private LimitedNumber _hp;
     public int Hp
     {
         get => _hp.Value;
@@ -17,7 +17,7 @@ public abstract class Actor
         }
     }
 
-    private LimitedStat _energy;
+    private LimitedNumber _energy;
     public int Energy
     {
         get => _energy.Value;
@@ -36,8 +36,8 @@ public abstract class Actor
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y)
     {
-        _hp = new LimitedStat(maxHp, maxHp);
-        _energy = new LimitedStat(maxEnergy, maxEnergy);
+        _hp = new LimitedNumber(maxHp, maxHp);
+        _energy = new LimitedNumber(maxEnergy, maxEnergy);
         Dex = dex;
         Def = def;
         X = x;

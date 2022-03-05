@@ -2,7 +2,7 @@ using System;
 
 namespace GalacticMeltdown;
 
-public class LimitedStat
+public class LimitedNumber
 {
     private int _value;
     private int _maxValue;
@@ -23,7 +23,7 @@ public class LimitedStat
         }
     }
 
-    public LimitedStat(int value, int maxValue)
+    public LimitedNumber(int value, int maxValue)
     {
         _maxValue = maxValue;
         _value = Math.Min(value, _maxValue);
