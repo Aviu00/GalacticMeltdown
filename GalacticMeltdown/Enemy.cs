@@ -29,7 +29,7 @@ public abstract class Enemy : IEntity
         FgColor = ConsoleColor.Red;
         BgColor = ConsoleColor.Black;
     }
-    public bool SeePlayer()
+    protected bool SeePlayer()
     {
         if ((int)Math.Sqrt(Math.Pow(X - Player.X, 2) + Math.Pow(Y - Player.Y, 2)) > _viewRadius)
         {
