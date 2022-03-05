@@ -8,8 +8,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
 {
     public MoveStrategy MoveStrategy { get; set; }
 
-    private int _lastSeenPlayerX;
-    private int _lastSeenPlayerY;
+
 
     public MeleeEnemy(int x, int y, Map map, Player player) : base(x, y, map, player)
     {

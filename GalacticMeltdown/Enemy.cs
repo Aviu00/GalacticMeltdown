@@ -10,7 +10,9 @@ public abstract class Enemy : IEntity
     public int X { get; set; }
     public int Y { get; set; }
     public int Energy = 20;
-    public int _viewRadius;
+    public int _viewRadius;    
+    public int _lastSeenPlayerX;
+    public int _lastSeenPlayerY;
 
     protected readonly Map Map;
     protected readonly Player Player;
