@@ -4,7 +4,7 @@ namespace GalacticMeltdown;
 
 public delegate void DiedEventHandler(Actor sender);
 
-public abstract class Actor
+public abstract class Actor : IEntity
 {
     private LimitedNumber _hp;
     public int Hp
@@ -27,8 +27,11 @@ public abstract class Actor
     public int Dex { get; protected set; }
     public int Def { get; protected set; }
 
-    public int X { get; protected set; }
-    public int Y { get; protected set; }
+    public int X { get; set; }
+    public int Y { get; set; }
+    
+    public abstract (char symbol, ConsoleColor color) SymbolData { get; }
+    public abstract ConsoleColor? BgColor { get; }
 
     public event DiedEventHandler Died;
 
