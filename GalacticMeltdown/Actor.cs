@@ -37,6 +37,8 @@ public abstract class Actor : IEntity
     
     public virtual (char symbol, ConsoleColor color) SymbolData { get; }
     public virtual ConsoleColor? BgColor { get; }
+    
+    public Action DoAction { get; protected set; }
 
     public event DiedEventHandler Died;
     public event OutOfEnergyEventHandler RanOutOfEnergy;
