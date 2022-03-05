@@ -18,7 +18,6 @@ public abstract class Enemy : IEntity
         Player = player;
         X = x;
         Y = y;
-        player.PerformedAction += TakeAction;
         level.UpdateEnemyPosition(this, -1, -1);
 
         SymbolData = ('W', ConsoleColor.Red);

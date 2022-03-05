@@ -2,8 +2,6 @@ using System;
 
 namespace GalacticMeltdown;
 
-public delegate void PerformedActionEventHandler(int movePoints);
-
 public class Player : Actor, IControllable
 {
     public override (char symbol, ConsoleColor color) SymbolData { get; }
@@ -42,7 +40,6 @@ public class Player : Actor, IControllable
     }
     
     public event VisiblePointsChangedEventHandler VisiblePointsChanged;
-    public event PerformedActionEventHandler PerformedAction;
     public event PositionChangedEventHandler PositionChanged;
 
     public bool TryMove(int deltaX, int deltaY)
@@ -54,7 +51,6 @@ public class Player : Actor, IControllable
         Y += deltaY;
         VisiblePointsChanged?.Invoke();
         PositionChanged?.Invoke();
-        PerformedAction?.Invoke(100);
         return true;
     }
 
