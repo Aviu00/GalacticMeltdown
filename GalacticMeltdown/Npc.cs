@@ -5,7 +5,6 @@ namespace GalacticMeltdown;
 
 public abstract class Npc : Actor, IMoveStrategy
 {
-    public Level Level;
     public HashSet<Actor> Targets;
     public (int x, int y)? LastKnownTargetPosition;
     public Actor CurrentlyChasing;
@@ -24,9 +23,9 @@ public abstract class Npc : Actor, IMoveStrategy
         return ReferenceEquals(this, obj);
     }
 
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) : base(maxHp, maxEnergy, dex, def, x, y)
+    protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
+        : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
-        Level = level;
         _id = Utility.RandomString(16);
     }
 

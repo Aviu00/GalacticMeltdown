@@ -41,6 +41,8 @@ public abstract class Actor : IEntity
     
     public Action DoAction { get; protected set; }
 
+    public Level Level { get; }
+
     public event DiedEventHandler Died;
     public event OutOfEnergyEventHandler RanOutOfEnergy;
     public event MoveAbortedEventHandler MoveAborted;
@@ -49,8 +51,9 @@ public abstract class Actor : IEntity
 
     public void AbortMove() => MoveAborted?.Invoke(this);
 
-    public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y)
+    public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
+        Level = level;
         _hp = new LimitedNumber(maxHp, maxHp);
         _energy = new LimitedNumber(maxEnergy, maxEnergy);
         Dex = dex;

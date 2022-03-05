@@ -8,8 +8,6 @@ public class Player : Actor, IControllable
     private bool _xray;
     
     public bool InFocus { get; set; }
-    
-    private Level _level;
 
     public bool NoClip;  //Temporary implementation of debugging "cheat codes"
 
@@ -41,8 +39,8 @@ public class Player : Actor, IControllable
 
     public bool TryMove(int deltaX, int deltaY)
     {
-        var tile = _level.GetTile(X + deltaX, Y + deltaY);
-        if (!(NoClip || (tile is null || tile.IsWalkable) && _level.GetEntity(X + deltaX, Y + deltaY) is null))
+        var tile = Level.GetTile(X + deltaX, Y + deltaY);
+        if (!(NoClip || (tile is null || tile.IsWalkable) && Level.GetEntity(X + deltaX, Y + deltaY) is null))
             return false;
         X += deltaX;
         Y += deltaY;
@@ -52,9 +50,8 @@ public class Player : Actor, IControllable
     }
 
     public Player(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
-        : base(maxHp, maxEnergy, dex, def, x, y)
+        : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
-        _level = level;
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;
     }
