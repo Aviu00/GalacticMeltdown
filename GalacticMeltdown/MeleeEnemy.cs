@@ -65,72 +65,6 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         MoveStrategy.Move(diffX, diffY);
     }
     
-    // temporary Distance realisation 
-    private static int GetDistance(int x0, int y0, int x1, int y1)
-    {
-        return (int)(Math.Pow(x1 - x0, 2) + Math.Pow(y1 - y0, 2));
-    }
-    
-    private List<((int, int), int)> GetNeighbors(int x, int y)
-    {
-        List<(int, int)> neighbours = new List<(int, int)>
-            {(x, 1 + y), (1 + x, 1 + y), (1 + x, y), (1 + x, y - 1), (x, y - 1), (x - 1, y - 1), (x - 1 ,y), (x - 1,y + 1)};
-        List<((int, int), int)> neighboursWithMoveCosts = new List<((int, int), int)>();
-        foreach ((int xi, int yi) in neighbours)
-        {
-            neighboursWithMoveCosts.Add(((xi, yi), Map.GetTile(xi,yi).TileMoveCost));
-        }
-        return neighboursWithMoveCosts;
-    }
-
-    public  List<(int, int)> AStar(int x0, int y0, int x1, int y1)
-    {
-        List<(int, int)> path = new List<(int, int)>();
-        PriorityQueue<(int, int), int> priorQueue = new PriorityQueue<(int, int), int>();
-        Dictionary<(int, int), (int, int)?> cameFrom = new Dictionary<(int, int), (int, int)?>();
-        Dictionary<(int, int), int> localCost = new Dictionary<(int, int), int>();
-        bool finishedFindingWay = false;
-        priorQueue.Enqueue((x0, y0), 0);
-        cameFrom[(x0, y0)] = null;
-        localCost[(x0, y0)] = 0;
-        while (priorQueue.Count > 0)
-        {
-            (int, int) currentDot = priorQueue.Dequeue();
-            if (currentDot == (x1, y1))
-            {
-                finishedFindingWay = true;
-                break;
-            }
-
-            foreach (((int x, int y), int moveCost) in GetNeighbors(currentDot.Item1, currentDot.Item2))
-            {
-                (int, int) nextDot = (x, y);
-                int newCost = moveCost + localCost[currentDot];
-                if (Map.GetTile(nextDot.Item1, nextDot.Item2).IsWalkable &&
-                    (!localCost.TryGetValue(nextDot, out int oldCost) || newCost < oldCost))
-                {
-                    localCost[nextDot] = newCost;
-                    int priority = newCost + GetDistance(nextDot.Item1, nextDot.Item2, x1, y1);
-                    priorQueue.Enqueue(nextDot, priority);
-                    cameFrom[nextDot] = currentDot;
-                }
-            }
-        }
-
-        if (finishedFindingWay)
-        {
-            (int, int) goal = (x1, y1);
-            path.Add(goal);
-            while (goal != (x0, y0))
-            {
-                goal = (cameFrom[goal].Value.Item1, cameFrom[goal].Value.Item2);
-                path.Add(goal);
-            }
-            path.Reverse();
-        }
-        return path;
-    }
-    
     protected override void TakeAction(int movePoints)
     {
         this.Energy = movePoints;
@@ -139,7 +73,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         if (SeePlayer())
         {
             //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
-            pathToPlayer = AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            pathToPlayer = MoveStrategy.AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
             //string for test
             //Console.WriteLine(this.GetHashCode() + " | " + "Moving");
             MoveToGoal(pathToPlayer);
@@ -149,7 +83,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         else
         {
             //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
-            pathToPlayer = AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            pathToPlayer =MoveStrategy.AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
             MoveToGoal(pathToPlayer);
         }
         //Console.WriteLine("Enemy №-" + GetHashCode().ToString()+ "|||" + (_lastSeenPlayerX - this.X).ToString() + ":" + (_lastSeenPlayerY - this.Y).ToString());
