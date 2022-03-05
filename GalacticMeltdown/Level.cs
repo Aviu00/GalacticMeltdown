@@ -70,7 +70,7 @@ public partial class Level
         return _chunks[mapX, mapY].Tiles[localX, localY];
     }
 
-    public IObjectOnMap GetEntity(int x, int y)
+    public IObjectOnMap GetNonTileObject(int x, int y)
     {
         if (x == Player.X && y == Player.Y) return Player;
         int mapX = x / 25;
@@ -84,7 +84,7 @@ public partial class Level
 
     public IDrawable GetDrawable(int x, int y)
     {
-        return (IDrawable) GetEntity(x, y) ?? GetTile(x, y);
+        return (IDrawable) GetNonTileObject(x, y) ?? GetTile(x, y);
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)

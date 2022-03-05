@@ -40,7 +40,7 @@ public class Player : Actor, IControllable
     public bool TryMove(int deltaX, int deltaY)
     {
         var tile = Level.GetTile(X + deltaX, Y + deltaY);
-        if (!(NoClip || (tile is null || tile.IsWalkable) && Level.GetEntity(X + deltaX, Y + deltaY) is null))
+        if (!(NoClip || (tile is null || tile.IsWalkable) && Level.GetNonTileObject(X + deltaX, Y + deltaY) is null))
             return false;
         X += deltaX;
         Y += deltaY;
