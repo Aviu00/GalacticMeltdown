@@ -28,15 +28,14 @@ public partial class Level
     public List<IControllable> ControllableObjects { get; }
     public ObservableCollection<ISightedObject> SightedObjects { get; }
 
-    public Level(Chunk[,] chunks, Chunk startPoint, Tile[] southernWall, Tile[] westernWall, (int x, int y) finishPos)
+    public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall, (int x, int y) finishPos)
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _chunks = chunks;
         _southernWall = southernWall;
         _westernWall = westernWall;
         (_finishX, _finishY) = finishPos;
-        Player = new Player(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, startPoint.MapX * 25 + 12,
-            startPoint.MapY * 25 + 12, this);
+        Player = new Player(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, startPos.x, startPos.y, this);
         ControllableObjects = new List<IControllable> { Player };
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);

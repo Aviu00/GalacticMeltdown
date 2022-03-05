@@ -15,7 +15,7 @@ public class MapGenerator
     private List<(int min, int max)> _bars;
     private int _maxPoint;
     private int _minPoint;
-    private Chunk _startPoint;
+    private (int x, int y) _playerStartPoint;
     private Tile[] _westernWall;
     private Tile[] _southernWall;
     private (int x, int y) _endPoint;
@@ -41,7 +41,7 @@ public class MapGenerator
         FillMap();
         FinalizeRooms();
         GenerateBorderWalls();
-        return new Level(_map, _startPoint, _southernWall, _westernWall, _endPoint);
+        return new Level(_map, _playerStartPoint, _southernWall, _westernWall, _endPoint);
     }
 
     private void GenerateBars()
@@ -253,7 +253,8 @@ public class MapGenerator
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
         _map[x, y] = _tempMap[x, y].GenerateSubMap(roomData, northernTileMap, easternTileMap);
         if (_tempMap[x, y].IsStartPoint)
-            _startPoint = _map[x, y];
+            _playerStartPoint = (x * 25 + 12, y * 25 + 12);
+        //_startPoint = _map[x, y];
     }
     
     private int CalculateRoomType(int x, int y)
