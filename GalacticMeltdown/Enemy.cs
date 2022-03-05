@@ -10,9 +10,10 @@ public abstract class Enemy : IEntity
     public int X { get; set; }
     public int Y { get; set; }
     public int Energy = 20;
+    // May be view radius will be changed somethere changed
     public int _viewRadius;    
-    public int _lastSeenPlayerX;
-    public int _lastSeenPlayerY;
+    public int LastSeenPlayerX;
+    public int LastSeenPlayerY;
 
     protected readonly Map Map;
     protected readonly Player Player;
@@ -30,6 +31,8 @@ public abstract class Enemy : IEntity
         Symbol = 'W';
         FgColor = ConsoleColor.Red;
         BgColor = ConsoleColor.Black;
+        LastSeenPlayerX = X;
+        LastSeenPlayerY = Y;
     }
     protected bool SeePlayer()
     {

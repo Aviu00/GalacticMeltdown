@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using GalacticMeltdown.EntityBehaviors;
 
@@ -13,16 +12,14 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     public MeleeEnemy(int x, int y, Map map, Player player) : base(x, y, map, player)
     {
         MoveStrategy = new MoveStrategy(this, Map);
-        _lastSeenPlayerX = X;
-        _lastSeenPlayerY = Y;
     }
 
     protected override void UpdateLastSeenPosition()
     {
         if (SeePlayer())
         {
-            _lastSeenPlayerX = Player.X;
-            _lastSeenPlayerY = Player.Y;
+            LastSeenPlayerX = Player.X;
+            LastSeenPlayerY = Player.Y;
         }
     }
 
@@ -50,13 +47,13 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         if (SeePlayer())
         {
             //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
-            pathToPlayer = MoveStrategy.AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            pathToPlayer = MoveStrategy.AStar(X, Y, LastSeenPlayerX, LastSeenPlayerY);
             MoveToGoal(pathToPlayer);
         }
         else
         {
             //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
-            pathToPlayer =MoveStrategy.AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
+            pathToPlayer =MoveStrategy.AStar(X, Y, LastSeenPlayerX, LastSeenPlayerY);
             MoveToGoal(pathToPlayer);
         }
     }
