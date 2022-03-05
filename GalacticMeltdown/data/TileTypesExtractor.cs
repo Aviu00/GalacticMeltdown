@@ -35,6 +35,7 @@ public class TileTypesExtractor : XmlExtractor
             bool isConnectable = false;
             bool isDependingOnRoomConnection = false;
             char[] symbols = null;
+            int tileMoveCost = 10;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -69,12 +70,15 @@ public class TileTypesExtractor : XmlExtractor
                     case "ConnectionSymbols":
                         symbols = locNode.InnerText.Split().Select(char.Parse).ToArray();
                         break;
+                    case "TileMoveCost":
+                        tileMoveCost = Convert.ToInt32(locNode.InnerText);
+                        break;
                 }
             }
             //log an error if id is null or TileTypes contains id
             TileTypeData tileTypeData =
                 new TileTypeData(symbol, color, isWalkable, isTransparent, name, id, isConnection, isConnectable,
-                    isDependingOnRoomConnection);
+                    isDependingOnRoomConnection, tileMoveCost);
             TileTypes.Add(tileTypeData.Id, tileTypeData);
             if (symbols == null || !isConnectable) continue;
             //generate connections
@@ -83,7 +87,7 @@ public class TileTypesExtractor : XmlExtractor
             {
                 TileTypeData connectionData =
                     new TileTypeData(symbols[i], color, isWalkable, isTransparent, name, id + "_" + Directions[i],
-                        isConnection, false, false);
+                        isConnection, false, false, tileMoveCost);
                 TileTypes.Add(connectionData.Id, connectionData);
             }
         }
@@ -91,4 +95,4 @@ public class TileTypesExtractor : XmlExtractor
 }
 
 public readonly record struct TileTypeData(char Symbol, ConsoleColor Color, bool IsWalkable, bool IsTransparent, 
-    string Name, string Id, bool IsConnection, bool IsConnectable, bool IsDependingOnRoomConnection);
+    string Name, string Id, bool IsConnection, bool IsConnectable, bool IsDependingOnRoomConnection, int TileMoveCost);
