@@ -2,6 +2,8 @@ using System;
 
 namespace GalacticMeltdown;
 
+public delegate void PerformedActionEventHandler(int movePoints);
+
 public class Player : Actor, IControllable
 {
     public override (char symbol, ConsoleColor color) SymbolData { get; }
@@ -14,7 +16,7 @@ public class Player : Actor, IControllable
     
     private Level _level;
 
-    public bool NoClip;//Temporary implementation of debugging "cheat codes"
+    public bool NoClip;  //Temporary implementation of debugging "cheat codes"
 
     public bool Xray
     {
@@ -40,8 +42,6 @@ public class Player : Actor, IControllable
     }
     
     public event VisiblePointsChangedEventHandler VisiblePointsChanged;
-    public delegate void PerformedActionEventHandler(int movePoints);
-
     public event PerformedActionEventHandler PerformedAction;
     public event PositionChangedEventHandler PositionChanged;
 

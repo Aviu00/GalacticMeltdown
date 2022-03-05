@@ -18,6 +18,7 @@ public class MapGenerator
     private Chunk _startPoint;
     private Tile[] _westernWall;
     private Tile[] _southernWall;
+    private (int x, int y) _endPoint;
 
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
@@ -40,7 +41,7 @@ public class MapGenerator
         FillMap();
         FinalizeRooms();
         GenerateBorderWalls();
-        return new Level(_map, _startPoint, _southernWall, _westernWall);
+        return new Level(_map, _startPoint, _southernWall, _westernWall, _endPoint);
     }
 
     private void GenerateBars()
@@ -174,11 +175,10 @@ public class MapGenerator
             if (i == endRoomIndex)
             {
                 currentChunk.IsEndPoint = true;
+                _endPoint = (currentChunk.MapX * 25 + 12, currentChunk.MapY * 25 + 12);
                 addDifficulty = -1;
             }
-            ChunkGenerator newChunk = currentChunk.GetNextRoom(previousChunk);
-            previousChunk = currentChunk;
-            currentChunk = newChunk;
+            (previousChunk, currentChunk) = (currentChunk, currentChunk.GetNextRoom(previousChunk));
         }
         
     }
