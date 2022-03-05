@@ -3,6 +3,7 @@ using System;
 namespace GalacticMeltdown;
 
 public delegate void DiedEventHandler(Actor sender);
+public delegate void OutOfEnergyEventHandler(Actor sender);
 
 public abstract class Actor : IEntity
 {
@@ -21,7 +22,11 @@ public abstract class Actor : IEntity
     public int Energy
     {
         get => _energy.Value;
-        protected set => _energy.Value = value;
+        protected set
+        {
+            _energy.Value = value;
+            if (Energy <= 0) RanOutOfEnergy?.Invoke(this); 
+        }
     }
 
     public int Dex { get; protected set; }
@@ -34,6 +39,7 @@ public abstract class Actor : IEntity
     public virtual ConsoleColor? BgColor { get; }
 
     public event DiedEventHandler Died;
+    public event OutOfEnergyEventHandler RanOutOfEnergy;
 
     public abstract void Hit(Actor hitter, int damage);
 
