@@ -4,6 +4,7 @@ namespace GalacticMeltdown;
 
 public delegate void DiedEventHandler(Actor sender);
 public delegate void OutOfEnergyEventHandler(Actor sender);
+public delegate void MoveAbortedEventHandler(Actor sender);
 
 public abstract class Actor : IEntity
 {
@@ -42,8 +43,11 @@ public abstract class Actor : IEntity
 
     public event DiedEventHandler Died;
     public event OutOfEnergyEventHandler RanOutOfEnergy;
+    public event MoveAbortedEventHandler MoveAborted;
 
     public abstract void Hit(Actor hitter, int damage);
+
+    public void AbortMove() => MoveAborted?.Invoke(this);
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y)
     {
