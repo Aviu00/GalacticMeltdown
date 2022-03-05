@@ -10,7 +10,7 @@ public abstract class Actor : IEntity
     public int Hp
     {
         get => _hp.Value;
-        set
+        protected set
         {
             _hp.Value = value;
             if (value <= 0) Died?.Invoke(this);
@@ -21,7 +21,7 @@ public abstract class Actor : IEntity
     public int Energy
     {
         get => _energy.Value;
-        set => _energy.Value = value;
+        protected set => _energy.Value = value;
     }
 
     public int Dex { get; protected set; }
