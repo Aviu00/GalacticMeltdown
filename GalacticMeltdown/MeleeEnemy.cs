@@ -34,7 +34,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     {
         foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, Player.X, Player.Y))
         {
-            if (!Map.GetTile(coords.x, coords.y).IsWalkable)
+            if (!Map.GetTile(coords.x, coords.y).IsTransparent)
             {
                 return false;
             }
