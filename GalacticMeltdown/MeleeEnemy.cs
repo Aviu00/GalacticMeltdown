@@ -50,11 +50,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         foreach ((int x, int y) coords in pathToPlayer)
         {
             costOfWay += (Map.GetTile(coords.x, coords.y)).TileMoveCost;
-            if (costOfWay <= this.Energy)
-            {
-                continue;
-            }
-            else
+            if (costOfWay > this.Energy)
             {
                 diffX = coords.x - this.X;
                 diffY = coords.y - this.Y;
