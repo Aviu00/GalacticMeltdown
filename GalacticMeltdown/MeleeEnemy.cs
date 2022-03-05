@@ -32,6 +32,10 @@ public class MeleeEnemy : Enemy, IMoveStrategy
 
     private bool SeePlayer()
     {
+        if ((int)Math.Sqrt(Math.Pow(X - Player.X, 2) + Math.Pow(Y - Player.Y, 2)) > _viewRadius)
+        {
+            return false;
+        }
         foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, Player.X, Player.Y))
         {
             if (!Map.GetTile(coords.x, coords.y).IsTransparent)
