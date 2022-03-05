@@ -2,20 +2,16 @@ using System;
 
 namespace GalacticMeltdown;
 
-public abstract class Enemy : IEntity
+public abstract class Enemy : Npc
 {
-    public (char symbol, ConsoleColor color) SymbolData { get; }
-    public ConsoleColor? BgColor { get; }
-    public int X { get; set; }
-    public int Y { get; set; }
-
     protected readonly Level Level;
     protected readonly Player Player;
 
-    public Enemy(int x, int y, Level level, Player player)
+    public Enemy(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
+        : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
         Level = level;
-        Player = player;
+        Player = level.Player;
         X = x;
         Y = y;
         level.UpdateEnemyPosition(this, -1, -1);

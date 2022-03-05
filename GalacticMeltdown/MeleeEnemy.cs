@@ -2,11 +2,10 @@ using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown;
 
-public class MeleeEnemy : Enemy, IMoveStrategy
+public class MeleeEnemy : Enemy
 {
-    public MoveStrategy MoveStrategy { get; set; }
-
-    public MeleeEnemy(int x, int y, Level level, Player player) : base(x, y, level, player)
+    public MeleeEnemy(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
+        : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
         MoveStrategy = new MoveStrategy(this, Level);
     }
@@ -16,5 +15,11 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         //calculate actions
         
         MoveStrategy.Move(0, 1);
+    }
+
+    public override void Hit(Actor hitter, int damage)
+    {
+        Hp -= damage;
+        
     }
 }

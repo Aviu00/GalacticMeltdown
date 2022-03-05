@@ -4,9 +4,6 @@ namespace GalacticMeltdown;
 
 public class Player : Actor, IControllable
 {
-    public override (char symbol, ConsoleColor color) SymbolData { get; }
-    public override ConsoleColor? BgColor { get; }
-    
     private int _viewRadius = 15;
     private bool _xray;
     
