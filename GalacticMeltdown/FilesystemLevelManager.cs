@@ -56,7 +56,7 @@ public static class FilesystemLevelManager
 
     private static string GetSaveFolder()
     {
-        return $"~/GalacticMeltdown/levels/{Utility.RandomString(16)}";
+        return $"~/.galactic-meltdown/levels/{Utility.RandomString(16)}";
     }
 
     public static (Level level, string path) CreateLevel(int seed, string name)
