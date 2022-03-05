@@ -26,8 +26,6 @@ public class MeleeEnemy : Enemy, IMoveStrategy
             _lastSeenPlayerX = Player.X;
             _lastSeenPlayerY = Player.Y;
         }
-        // for tests
-        //Console.WriteLine(this.GetHashCode() + ":" + SeePlayer().ToString());
     }
 
     private bool SeePlayer()
@@ -45,8 +43,7 @@ public class MeleeEnemy : Enemy, IMoveStrategy
         }
         return true;
     }
-
-    // makes many moves
+    
     private void MoveToGoal(IEnumerable pathToPlayer)
     {
         int costOfWay = 0;
@@ -68,16 +65,11 @@ public class MeleeEnemy : Enemy, IMoveStrategy
     {
         this.Energy = movePoints;
         IEnumerable pathToPlayer;
-        // acts only if see enemy
         if (SeePlayer())
         {
             //pathToPlayer = Algorithms.BresenhamGetPointsOnLine(X, Y, this.Player.X, this.Player.Y);
             pathToPlayer = MoveStrategy.AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
-            //string for test
-            //Console.WriteLine(this.GetHashCode() + " | " + "Moving");
             MoveToGoal(pathToPlayer);
-            // string for test
-            //Console.WriteLine("Enenmy №-" + GetHashCode().ToString()+ "|||" + DiffX.ToString() + ":" + DiffY.ToString());
         }
         else
         {
@@ -85,6 +77,5 @@ public class MeleeEnemy : Enemy, IMoveStrategy
             pathToPlayer =MoveStrategy.AStar(X, Y, _lastSeenPlayerX, _lastSeenPlayerY);
             MoveToGoal(pathToPlayer);
         }
-        //Console.WriteLine("Enemy №-" + GetHashCode().ToString()+ "|||" + (_lastSeenPlayerX - this.X).ToString() + ":" + (_lastSeenPlayerY - this.Y).ToString());
     }
 }
