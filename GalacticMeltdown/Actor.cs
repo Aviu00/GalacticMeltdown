@@ -30,8 +30,8 @@ public abstract class Actor : IEntity
     public int X { get; set; }
     public int Y { get; set; }
     
-    public abstract (char symbol, ConsoleColor color) SymbolData { get; }
-    public abstract ConsoleColor? BgColor { get; }
+    public virtual (char symbol, ConsoleColor color) SymbolData { get; }
+    public virtual ConsoleColor? BgColor { get; }
 
     public event DiedEventHandler Died;
 

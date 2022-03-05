@@ -2,13 +2,10 @@ using System;
 
 namespace GalacticMeltdown;
 
-public class Player : IControllable, IEntity
+public class Player : Actor, IControllable
 {
-    public int X { get; set; }
-    public int Y { get; set; }
-    
-    public (char symbol, ConsoleColor color) SymbolData { get; }
-    public ConsoleColor? BgColor { get; }
+    public override (char symbol, ConsoleColor color) SymbolData { get; }
+    public override ConsoleColor? BgColor { get; }
     
     private int _viewRadius = 15;
     private bool _xray;
@@ -61,13 +58,17 @@ public class Player : IControllable, IEntity
         return true;
     }
 
-    public Player(int x, int y, Func<int, int, Tile> tileAt, Func<int, int, IEntity> entityAt)
+    public Player(int maxHp, int maxEnergy, int dex, int def, int x, int y, Func<int, int, Tile> tileAt,
+        Func<int, int, IEntity> entityAt) : base(maxHp, maxEnergy, dex, def, x, y)
     {
-        X = x;
-        Y = y;
         _tileAt = tileAt;
         _entityAt = entityAt;
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;
+    }
+
+    public override void Hit(Actor hitter, int damage)
+    {
+        Hp -= damage;
     }
 }

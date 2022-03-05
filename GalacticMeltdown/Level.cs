@@ -7,6 +7,11 @@ namespace GalacticMeltdown;
 
 public partial class Level
 {
+    private const int PlayerHp = 100;
+    private const int PlayerEnergy = 100;
+    private const int PlayerDex = 16;
+    private const int PlayerDef = 4;
+    
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
@@ -26,7 +31,8 @@ public partial class Level
         _chunks = chunks;
         _southernWall = southernWall;
         _westernWall = westernWall;
-        Player = new Player(startPoint.MapX * 25 + 12, startPoint.MapY * 25 + 12, GetTile, GetEntity);
+        Player = new Player(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, startPoint.MapX * 25 + 12,
+            startPoint.MapY * 25 + 12, GetTile, GetEntity);
         ControllableObjects = new List<IControllable> { Player };
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
