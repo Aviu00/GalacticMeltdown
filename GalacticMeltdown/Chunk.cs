@@ -19,10 +19,10 @@ public class Chunk
         Difficulty = difficulty;
     }
 
-    public IEntity GetEntity(int x, int y)
+    public IObjectOnMap GetEntity(int x, int y)
     {
-        IEntity entity = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
-        //Check other IEntity list here
-        return entity;
+        IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
+        //Check other IObjectOnMap list here
+        return objectOnMap;
     }
 }

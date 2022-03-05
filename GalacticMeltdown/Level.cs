@@ -70,7 +70,7 @@ public partial class Level
         return _chunks[mapX, mapY].Tiles[localX, localY];
     }
 
-    public IEntity GetEntity(int x, int y)
+    public IObjectOnMap GetEntity(int x, int y)
     {
         if (x == Player.X && y == Player.Y) return Player;
         int mapX = x / 25;

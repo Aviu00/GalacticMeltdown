@@ -26,14 +26,13 @@ public interface IMovable : IHasCoords
     public event PositionChangedEventHandler PositionChanged;
 }
 
+public interface IObjectOnMap : IHasCoords, IDrawable
+{
+}
+
 public interface IFocusable : IMovable, IDrawable
 {
     bool InFocus { get; set; }
-}
-
-public interface IEntity : IDrawable, IHasCoords
-{
-        
 }
 
 public interface IControllable : IFocusable, ISightedObject

@@ -6,7 +6,7 @@ public delegate void DiedEventHandler(Actor sender);
 public delegate void OutOfEnergyEventHandler(Actor sender);
 public delegate void MoveAbortedEventHandler(Actor sender);
 
-public abstract class Actor : IEntity
+public abstract class Actor : IObjectOnMap
 {
     private LimitedNumber _hp;
     public int Hp
