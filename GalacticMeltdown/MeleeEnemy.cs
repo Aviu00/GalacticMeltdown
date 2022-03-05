@@ -32,15 +32,14 @@ public class MeleeEnemy : Enemy, IMoveStrategy
 
     private bool SeePlayer()
     {
-        bool flag = true;
         foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, Player.X, Player.Y))
         {
             if (!Map.GetTile(coords.x, coords.y).IsWalkable)
             {
-                flag = false;
+                return false;
             }
         }
-        return flag;
+        return true;
     }
 
     // makes many moves
