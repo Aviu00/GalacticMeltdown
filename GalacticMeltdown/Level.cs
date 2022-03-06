@@ -45,12 +45,19 @@ public partial class Level
         _westernWall = westernWall;
         (_finishX, _finishY) = finishPos;
         Player = new Player(startPos.x, startPos.y, this);
+        Player.Died += PlayerDiedHandler;
         ControllableObjects = new List<IControllable> { Player };
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
         IsActive = true;
         PlayerWon = false;
+    }
+
+    private void PlayerDiedHandler(Actor actor)
+    {
+        PlayerWon = false;
+        IsActive = false;
     }
 
     private void SpawnEnemies()
