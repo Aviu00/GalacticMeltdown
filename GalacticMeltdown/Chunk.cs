@@ -26,14 +26,14 @@ public class Chunk
         return objectOnMap;
     }
 
-    private void MovedHandler(Actor sender, int x0, int y0, int x1, int y1)
+    private void MovedHandler(object sender, int x0, int y0, int x1, int y1)
     {
         SomethingMoved?.Invoke(sender, x0, y0, x1, y1);
     }
 
     private void DiedHandler(Actor sender)
     {
-        if (sender is Enemy enemy) Enemies.Remove(enemy);
+        RemoveNpc((Npc) sender);
     }
 
     public List<Npc> GetNpcs()
@@ -41,6 +41,18 @@ public class Chunk
         List <Npc> npcs = new();
         npcs.AddRange(Enemies);
         return npcs;
+    }
+
+    public void AddNpc(Npc npc)
+    {
+        if (npc is Enemy enemy) Enemies.Add(enemy);
+        npc.Moved += MovedHandler;
+    }
+
+    public void RemoveNpc(Npc npc)
+    {
+        if (npc is Enemy enemy) Enemies.Remove(enemy);
+        
     }
 
     public void SuggestEnemySpawn()
