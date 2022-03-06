@@ -71,24 +71,24 @@ public class LevelView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        IDrawable drawableObj;
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
         // Draw object in focus on top of everything else
-        if (x == centerScreenX && y == centerScreenY)
-        {
-            drawableObj = _focusObject;
-            return new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
-        }
+        if (x == centerScreenX && y == centerScreenY) 
+            return new ViewCellData(_focusObject.SymbolData, _focusObject.BgColor);
+
+        IDrawable drawableObj;
         
         var coords = Utility.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
         coords = Utility.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
+        
         if (_visiblePoints.Contains(coords))
         {
             drawableObj = _level.GetDrawable(coords.x, coords.y);
-            if (drawableObj is null)
-                return new ViewCellData(null, null);
-            return new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
+            return drawableObj is null 
+                ? new ViewCellData(null, null) 
+                : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
         }
+        
         drawableObj = _level.GetTile(coords.x, coords.y);
         if (drawableObj is not null && ((Tile) drawableObj).Seen)
         {
