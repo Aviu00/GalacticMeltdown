@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
 
@@ -29,14 +30,10 @@ public partial class Level
 
     public event TurnFinishedEventHandler TurnFinished;
 
-    private bool _active;
+    public bool GameEnded { get; private set; }
 
-    public bool CanSave
-    {
-        get => _active;
-        private set => _active = value;
-    }
-    
+    private HashSet<Actor> _inactiveThisTurn;
+
     public Player Player { get; }
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
@@ -56,7 +53,7 @@ public partial class Level
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
-        _active = true;
+        GameEnded = false;
     }
 
 
@@ -131,6 +128,7 @@ public partial class Level
 
         foreach (var controllable in ControllableObjects)
         {
+            if (controllable is Player) continue;
             (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
             foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))
             {
@@ -141,12 +139,32 @@ public partial class Level
         return npcs;
     }
 
-    public void NpcAction()
+    private List<Actor> GetActive()
     {
-        foreach (var npc in GetRespondingNpcs())
+        List<Actor> active = new() {Player};
+        active.AddRange(GetRespondingNpcs());
+        return active.Except(_inactiveThisTurn).ToList();
+    }
+
+    public void DoTurn()
+    {
+        if (GameEnded) return;
+        
+        _inactiveThisTurn = new HashSet<Actor>();
+        List<Actor> activeThisTurn;
+        while ((activeThisTurn = GetActive()).Any())
         {
-            npc.DoAction();
+            foreach (var actor in activeThisTurn)
+            {
+                // A player may have reached the finish or died
+                if (GameEnded) return;
+                // An actor could die due to actions of another actor
+                if (!_inactiveThisTurn.Contains(actor)) actor.DoAction();
+            }
         }
+
+        _inactiveThisTurn = new HashSet<Actor>();
+        TurnFinished?.Invoke();
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
@@ -165,6 +183,4 @@ public partial class Level
             _chunks[mapX, mapY].Enemies.Add(enemy);
         }
     }
-
-    public void AbortTurn() => _active = false;
 }
