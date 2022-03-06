@@ -84,7 +84,7 @@ public class ChunkGenerator
         }
 
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
-        return new Chunk(Tiles, Difficulty, MapX, MapY);
+        return new Chunk(Tiles, Difficulty);
     }
 
     private void FillBorderWalls(TileTypeData[,] roomData, Tile[,] northernTileMap, Tile[,] easternTileMap)
