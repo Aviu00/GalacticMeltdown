@@ -34,7 +34,13 @@ public partial class PlaySession
         Renderer.AddView(_level.OverlayView, 0.8, 0, 1, 1);
         Renderer.Redraw();
         _sesionActive = true;
-        while (_level.IsActive && _sesionActive) _level.DoTurn();
+        while (_sesionActive)
+        {
+            if (!_level.DoTurn())
+            {
+                break;
+            }
+        }
     }
     
     private static void MoveControlled(int deltaX, int deltaY)
