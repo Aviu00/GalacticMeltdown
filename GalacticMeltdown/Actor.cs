@@ -5,6 +5,7 @@ namespace GalacticMeltdown;
 public delegate void DiedEventHandler(Actor sender);
 public delegate void OutOfEnergyEventHandler(Actor sender);
 public delegate void StoppedEventHandler(Actor sender);
+public delegate void AffectedEventHandler(Actor sender);
 
 public abstract class Actor : IObjectOnMap
 {
@@ -47,6 +48,7 @@ public abstract class Actor : IObjectOnMap
     public event DiedEventHandler Died;
     public event OutOfEnergyEventHandler RanOutOfEnergy;
     public event StoppedEventHandler Stopped;
+    public event AffectedEventHandler Affected;
 
     public void StopTurn() => Stopped?.Invoke(this);
 
@@ -57,6 +59,8 @@ public abstract class Actor : IObjectOnMap
     }
 
     public void OutOfEnergy() => RanOutOfEnergy?.Invoke(this);
+
+    public void SendAffected() => Affected?.Invoke(this);
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
@@ -69,6 +73,9 @@ public abstract class Actor : IObjectOnMap
         Y = y;
         Dead = false;
     }
-    
-    public abstract void Hit(Actor hitter, int damage);
+
+    public virtual void Hit(Actor hitter, int damage)
+    {
+        SendAffected();
+    }
 }
