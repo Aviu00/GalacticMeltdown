@@ -10,6 +10,8 @@ public class Chunk
 
     public List<Enemy> Enemies { get; }
 
+    public event MovedEventHandler SomethingMoved;
+
     public Chunk(Tile[,] tiles, double difficulty)
     {
         Tiles = tiles;
@@ -22,6 +24,11 @@ public class Chunk
         IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
         //Check other IObjectOnMap list here
         return objectOnMap;
+    }
+
+    private void MovedHandler(Actor sender, int x0, int y0, int x1, int y1)
+    {
+        SomethingMoved?.Invoke(sender, x0, y0, x1, y1);
     }
 
     private void DiedHandler(Actor sender)
@@ -47,6 +54,6 @@ public class Chunk
         {
             // spawn with some low-ish chance
         }
-        // Sub to Died event
+        // Sub to Died and Moved events
     }
 }
