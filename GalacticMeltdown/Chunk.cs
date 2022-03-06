@@ -5,7 +5,7 @@ namespace GalacticMeltdown;
 public class Chunk
 {
     private bool _seededSpawn = true;
-    public double Difficulty { get; }
+    private double Difficulty { get; }
     public Tile[,] Tiles { get; }
 
     public List<Enemy> Enemies;
