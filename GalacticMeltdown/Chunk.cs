@@ -19,7 +19,7 @@ public class Chunk
         Difficulty = difficulty;
     }
 
-    public IObjectOnMap GetEntity(int x, int y)
+    public IObjectOnMap GetMapObject(int x, int y)
     {
         IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
         //Check other IObjectOnMap list here

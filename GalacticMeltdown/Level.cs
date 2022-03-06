@@ -83,7 +83,7 @@ public partial class Level
         {
             return null;
         }
-        return _chunks[mapX, mapY].GetEntity(x, y);
+        return _chunks[mapX, mapY].GetMapObject(x, y);
     }
 
     public IDrawable GetDrawable(int x, int y)
