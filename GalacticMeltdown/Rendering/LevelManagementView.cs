@@ -79,7 +79,7 @@ public class LevelManagementView : View
 
     private void TryStartLevel(string path)
     {
-        Level level = FilesystemLevelManager.GetLevel(path);
+        var (level, seed) = FilesystemLevelManager.GetLevel(path);
         if (level is null)
         {
             RefreshLevelList();

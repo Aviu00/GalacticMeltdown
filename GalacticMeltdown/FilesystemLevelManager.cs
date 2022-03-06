@@ -47,11 +47,12 @@ public static class FilesystemLevelManager
         return true;
     }
 
-    public static Level GetLevel(string path)
+    public static (Level level, int seed) GetLevel(string path)
     {
         // Tries to restore the level from path, returns null on failure
-        Level level = new MapGenerator(Random.Shared.Next(0, 1000000000)).Generate();
-        return level;
+        int seed = Random.Shared.Next(0, 1000000000);
+        Level level = new MapGenerator(seed).Generate();
+        return (level, seed);
     }
 
     private static string GetSaveFolder()
