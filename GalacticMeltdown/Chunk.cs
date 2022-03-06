@@ -11,6 +11,7 @@ public class Chunk
     public List<Enemy> Enemies { get; }
 
     public event MovedEventHandler SomethingMoved;
+    public event DiedEventHandler SomethingDied;
 
     public Chunk(Tile[,] tiles, double difficulty)
     {
@@ -34,6 +35,7 @@ public class Chunk
     private void DiedHandler(Actor sender)
     {
         RemoveNpc((Npc) sender);
+        SomethingDied?.Invoke(sender);
     }
 
     public List<Npc> GetNpcs()
@@ -52,7 +54,7 @@ public class Chunk
     public void RemoveNpc(Npc npc)
     {
         if (npc is Enemy enemy) Enemies.Remove(enemy);
-        
+        npc.Moved -= MovedHandler;
     }
 
     public void SuggestEnemySpawn()
