@@ -27,6 +27,8 @@ public partial class Level
     private int _finishY;
 
     public event TurnFinishedEventHandler TurnFinished;
+    public event DiedEventHandler NpcDied;
+    public event MovedEventHandler SomethingMoved;
 
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
@@ -42,6 +44,11 @@ public partial class Level
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _chunks = chunks;
+        foreach (var chunk in _chunks)
+        {
+            chunk.NpcDied += NpcDeathHandler;
+            chunk.SomethingMoved += SomethingMovedHandler;
+        }
         _southernWall = southernWall;
         _westernWall = westernWall;
         (_finishX, _finishY) = finishPos;
@@ -56,6 +63,24 @@ public partial class Level
         IsActive = true;
         PlayerWon = false;
     }
+
+    private void SomethingMovedHandler(IMovable movable, int x0, int y0, int x1, int y1)
+    {
+        if (movable is Npc npc)
+        {
+            var chunk0 = GetChunk(x0, y0);
+            var chunk1 = GetChunk(x1, y1);
+            if (chunk0 != chunk1)
+            {
+                _chunks[chunk0.chunkX, chunk0.chunkY].RemoveNpc(npc);
+                _chunks[chunk1.chunkX, chunk1.chunkY].AddNpc(npc);
+            }
+        }
+        
+        SomethingMoved?.Invoke(movable, x0, y0, x1, y1);
+    }
+
+    private void NpcDeathHandler(Actor npc) => NpcDied?.Invoke(npc);
 
     private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
