@@ -160,6 +160,9 @@ public partial class Level
             foreach (var actor in active.Where(actor => !_affectedThisTurn.Contains(actor)))
             {
                 _affectedThisTurn.Add(actor);
+                actor.Stopped += TurnStoppedHandler;
+                actor.Died += DeadEventHandler;
+                actor.RanOutOfEnergy += OutOfEnergyEventHandler;
             }
             foreach (var actor in active)
             {
@@ -172,6 +175,9 @@ public partial class Level
 
         foreach (var actor in _affectedThisTurn)
         {
+            actor.RanOutOfEnergy -= OutOfEnergyEventHandler;
+            actor.Stopped -= TurnStoppedHandler;
+            actor.Died -= DeadEventHandler;
             actor.FinishTurn();
         }
 
@@ -179,6 +185,21 @@ public partial class Level
         _affectedThisTurn = null;
         TurnFinished?.Invoke();
         return IsActive;
+    }
+
+    private void TurnStoppedHandler(Actor sender)
+    {
+        if (!_inactiveThisTurn.Contains(sender)) _inactiveThisTurn.Add(sender);
+    }
+    
+    private void DeadEventHandler(Actor sender)
+    {
+        if (!_inactiveThisTurn.Contains(sender)) _inactiveThisTurn.Add(sender);
+    }
+    
+    private void OutOfEnergyEventHandler(Actor sender)
+    {
+        if (!_inactiveThisTurn.Contains(sender)) _inactiveThisTurn.Add(sender);
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
