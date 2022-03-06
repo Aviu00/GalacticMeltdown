@@ -4,26 +4,26 @@ namespace GalacticMeltdown;
 
 public interface IDrawable
 {
-    public (char symbol, ConsoleColor color) SymbolData { get; }
-    public ConsoleColor? BgColor { get; }
+    (char symbol, ConsoleColor color) SymbolData { get; }
+    ConsoleColor? BgColor { get; }
 }
 
 public interface IHasCoords
 {
-    public int X { get; }
-    public int Y { get; }
+    int X { get; }
+    int Y { get; }
 }
 
 public interface ISightedObject : IHasCoords
 {
     int ViewRadius { get; set; }
     bool Xray { get; set; }
-    public event VisiblePointsChangedEventHandler VisiblePointsChanged;
+    event VisiblePointsChangedEventHandler VisiblePointsChanged;
 }
 
 public interface IMovable : IHasCoords
 {
-    public event PositionChangedEventHandler PositionChanged;
+    event PositionChangedEventHandler PositionChanged;
 }
 
 public interface IObjectOnMap : IHasCoords, IDrawable
@@ -37,7 +37,7 @@ public interface IFocusable : IMovable, IDrawable
 
 public interface IControllable : IFocusable, ISightedObject
 {
-    public bool TryMove(int deltaX, int deltaY);
+    bool TryMove(int deltaX, int deltaY);
 }
 
 public delegate void VisiblePointsChangedEventHandler();
