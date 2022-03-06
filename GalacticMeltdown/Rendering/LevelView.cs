@@ -77,11 +77,9 @@ public class LevelView : View
         if (x == centerScreenX && y == centerScreenY)
         {
             drawableObj = _focusObject;
-            if (drawableObj is not null)
-            {
-                return new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
-            }
+            return new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
         }
+        
         var coords = Utility.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
         coords = Utility.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         if (_visiblePoints.Contains(coords))
