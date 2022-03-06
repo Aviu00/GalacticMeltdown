@@ -86,6 +86,8 @@ public class LevelManagementView : View
             // TODO: failure animation
             return;
         }
+
+        DataHolder.CurrentSeed = seed;
         Game.StartLevel(level, path);
     }
     
