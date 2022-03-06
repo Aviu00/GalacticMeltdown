@@ -46,6 +46,7 @@ public partial class Level
         (_finishX, _finishY) = finishPos;
         Player = new Player(startPos.x, startPos.y, this);
         Player.Died += PlayerDiedHandler;
+        Player.Moved += ControllableMoved;
         ControllableObjects = new List<IControllable> { Player };
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
@@ -79,7 +80,7 @@ public partial class Level
         }
     }
 
-    private void ControllableMoved(IControllable sender, int x0, int y0, int x1, int y1)
+    private void ControllableMoved(IMovable sender, int x0, int y0, int x1, int y1)
     {
         if (GetChunk(x0, y0) != GetChunk(x1, y1))
         {
