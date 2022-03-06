@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using GalacticMeltdown.Data;
@@ -13,6 +14,9 @@ public partial class Level
     private const int PlayerEnergy = 100;
     private const int PlayerDex = 16;
     private const int PlayerDef = 4;
+
+    private const int EnemyRadiusPlayer = 3;
+    private const int EnemyRadiusControllable = 1;
     
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
@@ -85,6 +89,37 @@ public partial class Level
     public IDrawable GetDrawable(int x, int y)
     {
         return (IDrawable) GetNonTileObject(x, y) ?? GetTile(x, y);
+    }
+
+    private static (int chunkX, int chunkY) GetChunk(int x, int y)
+    {
+        return (x / 25, y / 25);
+    }
+
+    private IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
+    {
+        for (int chunkX = Math.Max(chunkXCenter - radius, 0);
+             chunkX < Math.Min(chunkXCenter + radius, _chunks.GetLength(0));
+             chunkX++)
+        {
+            for (int chunkY = Math.Max(chunkYCenter - radius, 0);
+                 chunkY < Math.Min(chunkYCenter + radius, _chunks.GetLength(1));
+                 chunkY++)
+            {
+                yield return _chunks[chunkX, chunkY];
+            }
+        }
+    }
+
+    private List<Npc> GetRespondingNpcs()
+    {
+        
+    }
+
+    public void NpcAction()
+    {
+        var (playerChunkX, playerChunkY) = GetChunk(Player.X, Player.Y);
+        
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
