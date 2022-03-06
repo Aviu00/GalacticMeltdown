@@ -64,7 +64,7 @@ public class LevelView : View
 
     private void FocusObjectMoved(object sender, int x0, int y0, int x1, int y1)
     {
-        // Already redrawn
+        // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this);
     }
