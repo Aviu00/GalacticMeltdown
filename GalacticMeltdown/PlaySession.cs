@@ -59,6 +59,7 @@ public partial class PlaySession
     private static void StopSession()
     {
         _sesionActive = false;
+        _player.StopTurn();
         Renderer.ClearViews();
         InputProcessor.ClearBindings();
         InputProcessor.StopProcessLoop();
