@@ -134,8 +134,10 @@ public partial class Level
 
     public void NpcAction()
     {
-        var (playerChunkX, playerChunkY) = GetChunk(Player.X, Player.Y);
-        
+        foreach (var npc in GetRespondingNpcs())
+        {
+            npc.DoAction();
+        }
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
