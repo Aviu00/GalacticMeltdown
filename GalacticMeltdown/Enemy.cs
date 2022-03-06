@@ -13,7 +13,6 @@ public abstract class Enemy : Npc
         X = x;
         Y = y;
         level.UpdateEnemyPosition(this, -1, -1);
+        DoAction = TakeAction;
     }
-
-    protected abstract void TakeAction();
 }

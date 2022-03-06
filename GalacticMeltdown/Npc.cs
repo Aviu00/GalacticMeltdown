@@ -40,4 +40,6 @@ public abstract class Npc : Actor, IMoveStrategy
     {
         
     }
+    
+    protected abstract void TakeAction();
 }

@@ -16,8 +16,6 @@ public class MeleeEnemy : Enemy
     protected override void TakeAction()
     {
         //calculate actions
-        
-        MoveStrategy.Move(0, 1);
     }
 
     public override void Hit(Actor hitter, int damage)
