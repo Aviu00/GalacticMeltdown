@@ -11,11 +11,18 @@ public partial class PlaySession
     private static Level _level;
     private static LevelView _levelView;
 
+    private static bool _sesionActive;
+
     public PlaySession(Level level, string savePath)
     {
         _savePath = savePath;
         _level = level;
         _player = _level.Player;
+        _player.SetControlFunc(() =>
+        {
+            InputProcessor.AddBinding(DataHolder.CurrentBindings.Player, PlayerActions);
+            InputProcessor.StartProcessLoop();
+        });
         _controlledObject = _player;
         _levelView = _level.LevelView;
         _levelView.SetFocus(_player);
@@ -26,7 +33,8 @@ public partial class PlaySession
         Renderer.AddView(_levelView, 0, 0, 0.8, 1);
         Renderer.AddView(_level.OverlayView, 0.8, 0, 1, 1);
         Renderer.Redraw();
-        InputProcessor.AddBinding(DataHolder.CurrentBindings.Player, PlayerActions);
+        _sesionActive = true;
+        while (_level.IsActive && _sesionActive) _level.DoTurn();
     }
     
     private static void MoveControlled(int deltaX, int deltaY)
@@ -35,10 +43,14 @@ public partial class PlaySession
         {
             Renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
         }
+        
+        InputProcessor.ClearBindings();
+        InputProcessor.StopProcessLoop();
     }
 
     private static void StopSession()
     {
+        _sesionActive = false;
         Renderer.ClearViews();
         InputProcessor.ClearBindings();
         InputProcessor.StopProcessLoop();
