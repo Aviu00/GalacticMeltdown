@@ -35,7 +35,7 @@ public class Player : Actor, IControllable
     }
     
     public event VisiblePointsChangedEventHandler VisiblePointsChanged;
-    public event PositionChangedEventHandler PositionChanged;
+    public event MovedEventHandler PositionChanged;
 
     public bool TryMove(int deltaX, int deltaY)
     {
