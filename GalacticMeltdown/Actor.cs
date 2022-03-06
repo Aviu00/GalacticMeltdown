@@ -8,25 +8,26 @@ public delegate void StoppedEventHandler(Actor sender);
 
 public abstract class Actor : IObjectOnMap
 {
-    private LimitedNumber _hp;
+    protected bool Dead;
+    protected LimitedNumber _hp;
     public int Hp
     {
         get => _hp.Value;
         protected set
         {
             _hp.Value = value;
-            if (value <= 0) Died?.Invoke(this);
+            if (value <= 0) Die();
         }
     }
 
-    private LimitedNumber _energy;
+    protected LimitedNumber _energy;
     public int Energy
     {
         get => _energy.Value;
         protected set
         {
             _energy.Value = value;
-            if (Energy <= 0) RanOutOfEnergy?.Invoke(this); 
+            if (Energy <= 0) OutOfEnergy();
         }
     }
 
@@ -47,9 +48,15 @@ public abstract class Actor : IObjectOnMap
     public event OutOfEnergyEventHandler RanOutOfEnergy;
     public event StoppedEventHandler Stopped;
 
-    public abstract void Hit(Actor hitter, int damage);
-
     public void StopTurn() => Stopped?.Invoke(this);
+
+    public void Die()
+    {
+        Dead = true;
+        Died?.Invoke(this);
+    }
+
+    public void OutOfEnergy() => RanOutOfEnergy?.Invoke(this);
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
@@ -60,5 +67,8 @@ public abstract class Actor : IObjectOnMap
         Def = def;
         X = x;
         Y = y;
+        Dead = false;
     }
+    
+    public abstract void Hit(Actor hitter, int damage);
 }
