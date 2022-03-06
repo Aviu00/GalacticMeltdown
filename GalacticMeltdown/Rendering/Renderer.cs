@@ -88,6 +88,7 @@ public static class Renderer
         if (_pixelFuncs is null ||
             !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
         {
+            _animations.Clear();
             RecalcAndRedraw(windowWidth, windowHeight);
             return true;
         }
@@ -168,6 +169,7 @@ public static class Renderer
     public static void Redraw()
     {
         if (RedrawOnScreenSizeChange()) return;
+        _animations.Clear();
         OutputAllCells();
     }
     
@@ -197,7 +199,7 @@ public static class Renderer
         _animations.AddLast(animInfo);
     }
 
-    private static void PlayAnimations()
+    public static void PlayAnimations()
     {
         foreach (var (view, updatedCells) in _animations)
         {
