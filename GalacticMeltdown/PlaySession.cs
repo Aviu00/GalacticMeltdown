@@ -45,13 +45,15 @@ public partial class PlaySession
     
     private static void MoveControlled(int deltaX, int deltaY)
     {
-        if (_controlledObject.TryMove(deltaX, deltaY))  // Temporary, keeps screen up to date
+        if (_controlledObject.TryMove(deltaX, deltaY))
         {
-            Renderer.Redraw();  // TODO: Redraw should happen after a MoveMade event instead
+            if (_controlledObject is Actor)
+            {
+                InputProcessor.ClearBindings();
+                InputProcessor.StopProcessLoop();
+            }
+            Renderer.Redraw();
         }
-        
-        InputProcessor.ClearBindings();
-        InputProcessor.StopProcessLoop();
     }
 
     private static void StopSession()
