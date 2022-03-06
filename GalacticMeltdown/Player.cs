@@ -4,6 +4,11 @@ namespace GalacticMeltdown;
 
 public class Player : Actor, IControllable
 {
+    private const int PlayerHp = 100;
+    private const int PlayerEnergy = 100;
+    private const int PlayerDex = 16;
+    private const int PlayerDef = 4;
+    
     private int _viewRadius = 15;
     private bool _xray;
     
@@ -47,8 +52,8 @@ public class Player : Actor, IControllable
         return true;
     }
 
-    public Player(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
-        : base(maxHp, maxEnergy, dex, def, x, y, level)
+    public Player(int x, int y, Level level) 
+        : base(PlayerHp,PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;

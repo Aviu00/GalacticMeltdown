@@ -11,11 +11,6 @@ public delegate void TurnFinishedEventHandler();
 
 public partial class Level
 {
-    private const int PlayerHp = 100;
-    private const int PlayerEnergy = 100;
-    private const int PlayerDex = 16;
-    private const int PlayerDef = 4;
-
     private const int EnemyRadiusPlayer = 3;
     private const int EnemyRadiusControllable = 1;
     
@@ -46,7 +41,7 @@ public partial class Level
         _southernWall = southernWall;
         _westernWall = westernWall;
         (_finishX, _finishY) = finishPos;
-        Player = new Player(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, startPos.x, startPos.y, this);
+        Player = new Player(startPos.x, startPos.y, this);
         ControllableObjects = new List<IControllable> { Player };
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
