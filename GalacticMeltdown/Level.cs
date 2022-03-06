@@ -28,6 +28,14 @@ public partial class Level
     private int _finishY;
 
     public event TurnFinishedEventHandler TurnFinished;
+
+    private bool _active;
+
+    public bool CanSave
+    {
+        get => _active;
+        private set => _active = value;
+    }
     
     public Player Player { get; }
     public LevelView LevelView { get; }
@@ -48,6 +56,7 @@ public partial class Level
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
+        _active = true;
     }
 
 
@@ -156,4 +165,6 @@ public partial class Level
             _chunks[mapX, mapY].Enemies.Add(enemy);
         }
     }
+
+    public void AbortTurn() => _active = false;
 }
