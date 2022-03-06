@@ -141,7 +141,8 @@ public partial class Level
 
     private List<Actor> GetActive()
     {
-        List<Actor> active = new() {Player};
+        List<Actor> active = new List<Actor>(ControllableObjects.FindAll(obj => obj is Actor)
+            .ConvertAll(obj => (Actor) obj));
         active.AddRange(GetRespondingNpcs());
         return active.Except(_inactiveThisTurn).ToList();
     }
