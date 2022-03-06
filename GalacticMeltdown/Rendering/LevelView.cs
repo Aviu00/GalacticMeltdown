@@ -37,6 +37,7 @@ public class LevelView : View
         {
             ((ISightedObject) sightedObject).VisiblePointsChanged -= UpdateVisiblePoints;
         }
+        UpdateVisiblePoints();
     }
 
     private void UpdateVisiblePoints()
