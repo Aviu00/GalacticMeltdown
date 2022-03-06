@@ -35,17 +35,18 @@ public class Player : Actor, IControllable
     }
     
     public event VisiblePointsChangedEventHandler VisiblePointsChanged;
-    public event MovedEventHandler PositionChanged;
+    public event MovedEventHandler Moved;
 
     public bool TryMove(int deltaX, int deltaY)
     {
+        int oldX = X, oldY = Y;
         var tile = Level.GetTile(X + deltaX, Y + deltaY);
         if (!(NoClip || (tile is null || tile.IsWalkable) && Level.GetNonTileObject(X + deltaX, Y + deltaY) is null))
             return false;
         X += deltaX;
         Y += deltaY;
         VisiblePointsChanged?.Invoke();
-        PositionChanged?.Invoke();
+        Moved?.Invoke(this, oldX, oldY, X, Y);
         return true;
     }
 

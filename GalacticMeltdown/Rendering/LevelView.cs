@@ -58,11 +58,11 @@ public class LevelView : View
         if (_focusObject is not null) _focusObject.InFocus = false;
         _focusObject = focusObj;
         _focusObject.InFocus = true;
-        _focusObject.PositionChanged += FocusObjectMoved;
+        _focusObject.Moved += FocusObjectMoved;
         NeedRedraw?.Invoke(this);
     }
 
-    private void FocusObjectMoved()
+    private void FocusObjectMoved(object sender, int x0, int y0, int x1, int y1)
     {
         // Already redrawn
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;

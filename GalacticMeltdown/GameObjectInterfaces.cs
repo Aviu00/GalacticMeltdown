@@ -23,7 +23,7 @@ public interface ISightedObject : IHasCoords
 
 public interface IMovable : IHasCoords
 {
-    event MovedEventHandler PositionChanged;
+    event MovedEventHandler Moved;
 }
 
 public interface IObjectOnMap : IHasCoords, IDrawable
@@ -42,4 +42,5 @@ public interface IControllable : IFocusable, ISightedObject
 
 public delegate void VisiblePointsChangedEventHandler();
 
-public delegate void MovedEventHandler();
+public delegate void MovedEventHandler(object sender, int x0, int y0, int x1, int x2);
+
