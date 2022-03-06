@@ -1,5 +1,3 @@
-using System;
-
 namespace GalacticMeltdown;
 
 public abstract class Enemy : Npc
@@ -15,9 +13,6 @@ public abstract class Enemy : Npc
         X = x;
         Y = y;
         level.UpdateEnemyPosition(this, -1, -1);
-
-        SymbolData = ('W', ConsoleColor.Red);
-        BgColor = null;
     }
 
     protected abstract void TakeAction(int movePoints);

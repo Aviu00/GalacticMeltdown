@@ -1,3 +1,4 @@
+using System;
 using GalacticMeltdown.EntityBehaviors;
 
 namespace GalacticMeltdown;
@@ -8,6 +9,8 @@ public class MeleeEnemy : Enemy
         : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
         MoveStrategy = new MoveStrategy(this, Level);
+        SymbolData = ('W', ConsoleColor.Red);
+        BgColor = null;
     }
 
     protected override void TakeAction(int movePoints)
