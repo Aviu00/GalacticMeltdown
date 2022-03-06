@@ -15,5 +15,5 @@ public abstract class Enemy : Npc
         level.UpdateEnemyPosition(this, -1, -1);
     }
 
-    protected abstract void TakeAction(int movePoints);
+    protected abstract void TakeAction();
 }

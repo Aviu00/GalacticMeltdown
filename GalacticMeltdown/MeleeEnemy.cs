@@ -13,7 +13,7 @@ public class MeleeEnemy : Enemy
         BgColor = null;
     }
 
-    protected override void TakeAction(int movePoints)
+    protected override void TakeAction()
     {
         //calculate actions
         
