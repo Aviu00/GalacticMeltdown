@@ -23,12 +23,17 @@ public partial class Level
 
     private Chunk[,] _chunks;
 
-    private int _finishX;
-    private int _finishY;
+    private readonly int _finishX;
+    private readonly int _finishY;
 
     public event TurnFinishedEventHandler TurnFinished;
     public event DiedEventHandler NpcDied;
     public event MovedEventHandler SomethingMoved;
+
+    public (int x, int y) Size
+    {
+        get => (_chunks.GetLength(0) * DataHolder.ChunkSize + 1, _chunks.GetLength(1) * DataHolder.ChunkSize + 1);
+    }
 
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
