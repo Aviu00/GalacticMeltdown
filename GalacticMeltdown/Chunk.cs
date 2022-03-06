@@ -4,6 +4,7 @@ using System.Linq;
 namespace GalacticMeltdown;
 public class Chunk
 {
+    private bool _seededSpawn = true;
     public double Difficulty { get; }
     public Tile[,] Tiles { get; }
 
@@ -28,5 +29,18 @@ public class Chunk
         List <Npc> npcs = new();
         npcs.AddRange(Enemies);
         return npcs;
+    }
+
+    public void SuggestEnemySpawn()
+    {
+        if (_seededSpawn)
+        {
+            // use DataHolder.CurrentSeed and Difficulty
+            _seededSpawn = false;
+        }
+        else
+        {
+            // spawn with some low-ish chance
+        }
     }
 }
