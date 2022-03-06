@@ -4,7 +4,7 @@ namespace GalacticMeltdown;
 
 public delegate void DiedEventHandler(Actor sender);
 public delegate void OutOfEnergyEventHandler(Actor sender);
-public delegate void MoveAbortedEventHandler(Actor sender);
+public delegate void StoppedEventHandler(Actor sender);
 
 public abstract class Actor : IObjectOnMap
 {
@@ -45,7 +45,7 @@ public abstract class Actor : IObjectOnMap
 
     public event DiedEventHandler Died;
     public event OutOfEnergyEventHandler RanOutOfEnergy;
-    public event MoveAbortedEventHandler Stopped;
+    public event StoppedEventHandler Stopped;
 
     public abstract void Hit(Actor hitter, int damage);
 
