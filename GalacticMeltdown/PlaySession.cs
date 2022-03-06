@@ -36,11 +36,14 @@ public partial class PlaySession
         _sesionActive = true;
         while (_sesionActive)
         {
-            if (!_level.DoTurn())
-            {
-                break;
-            }
+            SaveLevel();
+            if (!_level.DoTurn()) break;
         }
+    }
+
+    private void SaveLevel()
+    {
+        if (_sesionActive) FilesystemLevelManager.SaveLevel(_level, _savePath);
     }
     
     private static void MoveControlled(int deltaX, int deltaY)
