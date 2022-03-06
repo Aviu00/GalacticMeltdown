@@ -45,11 +45,11 @@ public abstract class Actor : IObjectOnMap
 
     public event DiedEventHandler Died;
     public event OutOfEnergyEventHandler RanOutOfEnergy;
-    public event MoveAbortedEventHandler MoveAborted;
+    public event MoveAbortedEventHandler Stopped;
 
     public abstract void Hit(Actor hitter, int damage);
 
-    public void AbortMove() => MoveAborted?.Invoke(this);
+    public void StopTurn() => Stopped?.Invoke(this);
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
