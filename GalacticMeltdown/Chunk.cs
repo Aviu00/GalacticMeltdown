@@ -26,7 +26,7 @@ public class Chunk
         return objectOnMap;
     }
 
-    private void MovedHandler(object sender, int x0, int y0, int x1, int y1)
+    private void MovedHandler(IMovable sender, int x0, int y0, int x1, int y1)
     {
         SomethingMoved?.Invoke(sender, x0, y0, x1, y1);
     }
