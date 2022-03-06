@@ -36,8 +36,8 @@ public class LevelManagementView : View
         RefreshLevelList();
         _managementButtonInfos = new List<MenuButtonInfo>
         {
-            new MenuButtonInfo(new Button("Create", "", CreateLevel)),
-            new MenuButtonInfo(new Button("Delete", "", DeleteLevel)),
+            new(new Button("Create", "", CreateLevel)),
+            new(new Button("Delete", "", DeleteLevel)),
         };
         _managementIndex = 0;
     }

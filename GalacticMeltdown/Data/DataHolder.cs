@@ -5,6 +5,8 @@ namespace GalacticMeltdown.Data;
 
 public static class DataHolder
 {
+    public static int CurrentSeed { get; set; }
+    
     public static readonly List<Room> Rooms;
     public static readonly Dictionary<string, TileTypeData> TileTypes;
     
