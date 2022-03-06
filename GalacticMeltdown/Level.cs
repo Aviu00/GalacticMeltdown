@@ -33,6 +33,7 @@ public partial class Level
     public bool IsActive { get; private set; }
 
     private HashSet<Actor> _inactiveThisTurn;
+    private HashSet<Actor> _affectedThisTurn;
 
     public Player Player { get; }
     public LevelView LevelView { get; }
@@ -152,6 +153,7 @@ public partial class Level
         if (!IsActive) return false;
         
         _inactiveThisTurn = new HashSet<Actor>();
+        _affectedThisTurn = new HashSet<Actor>();
         List<Actor> activeThisTurn;
         while ((activeThisTurn = GetActive()).Any())
         {
@@ -164,7 +166,8 @@ public partial class Level
             }
         }
 
-        _inactiveThisTurn = new HashSet<Actor>();
+        _inactiveThisTurn = null;
+        _affectedThisTurn = null;
         TurnFinished?.Invoke();
         return IsActive;
     }
