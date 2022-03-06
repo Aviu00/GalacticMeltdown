@@ -60,4 +60,9 @@ public class Player : Actor, IControllable
     {
         Hp -= damage;
     }
+
+    public void SetControlFunc(Action controlFunc)
+    {
+        DoAction = controlFunc;
+    }
 }
