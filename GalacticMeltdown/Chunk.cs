@@ -24,6 +24,11 @@ public class Chunk
         return objectOnMap;
     }
 
+    private void DiedHandler(Actor sender)
+    {
+        if (sender is Enemy enemy) Enemies.Remove(enemy);
+    }
+
     public List<Npc> GetNpcs()
     {
         List <Npc> npcs = new();
@@ -42,5 +47,6 @@ public class Chunk
         {
             // spawn with some low-ish chance
         }
+        // Sub to Died event
     }
 }
