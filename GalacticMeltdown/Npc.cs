@@ -27,6 +27,7 @@ public abstract class Npc : Actor, IMoveStrategy
         : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
         _id = Utility.RandomString(16);
+        DoAction = TakeAction;
     }
 
     public void Reset()
