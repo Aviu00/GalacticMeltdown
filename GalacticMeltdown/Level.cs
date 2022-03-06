@@ -15,11 +15,11 @@ public partial class Level
     private const int EnemyRadiusControllable = 1;
 
     private const int SpawnRadius = 5;
-    
+
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
-    
+
     private Chunk[,] _chunks;
 
     private int _finishX;
@@ -33,7 +33,7 @@ public partial class Level
     public Player Player { get; }
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
-    
+
     public List<IControllable> ControllableObjects { get; }
     public ObservableCollection<ISightedObject> SightedObjects { get; }
 
@@ -55,7 +55,21 @@ public partial class Level
 
     private void SpawnEnemies()
     {
-        
+        var chunkIndexes = ControllableObjects.ConvertAll(obj =>
+        {
+            var (chunkX, chunkY) = GetChunk(obj.X, obj.Y);
+            return Algorithms.GetPointsOnSquareBorder(chunkX, chunkY, SpawnRadius);
+        }).SelectMany(coords => coords).Select(coords => GetChunk(coords.x, coords.y))
+            .Where(match => ControllableObjects.All(obj =>
+            {
+                var (chunkX, chunkY) = GetChunk(obj.X, obj.Y);
+                return Math.Abs(chunkX - match.chunkX) >= SpawnRadius 
+                       && Math.Abs(chunkY - match.chunkY) >= SpawnRadius;
+            }));
+        foreach (var (chunkX, chunkY) in chunkIndexes)
+        {
+            _chunks[chunkX, chunkY].SuggestEnemySpawn();
+        }
     }
 
     private void ControllableMoved(IControllable sender, int x0, int y0, int x1, int y1)
