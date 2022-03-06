@@ -5,6 +5,8 @@ namespace GalacticMeltdown.Data;
 
 public static class DataHolder
 {
+    public const int ChunkSize = 25;
+    
     public static int CurrentSeed { get; set; }
     
     public static readonly List<Room> Rooms;
