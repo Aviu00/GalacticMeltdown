@@ -10,8 +10,8 @@ public interface IDrawable
 
 public interface IHasCoords
 {
-    public int X { get; set; }
-    public int Y { get; set; }
+    public int X { get; }
+    public int Y { get; }
 }
 
 public interface ISightedObject : IHasCoords
