@@ -13,6 +13,7 @@ public partial class PlaySession
         MoveSe,
         MoveSw,
         MoveNw,
+        StopTurn,
         IncreaseViewRange, //for fov testing
         ReduceViewRange, //for fov testing
         ActivateNoClip, //temporary cheat codes
