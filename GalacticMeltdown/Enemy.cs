@@ -12,6 +12,5 @@ public abstract class Enemy : Npc
         Player = level.Player;
         X = x;
         Y = y;
-        level.UpdateEnemyPosition(this, -1, -1);
     }
 }

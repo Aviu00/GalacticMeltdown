@@ -41,6 +41,8 @@ public abstract class Npc : Actor, IMoveStrategy
     {
         
     }
-    
+
+    public void MoveNpcTo(int x, int y) => MoveTo(x, y);
+
     protected abstract void TakeAction();
 }
