@@ -56,7 +56,7 @@ public abstract class Actor : IObjectOnMap
         int oldX = X, oldY = Y;
         X = x;
         Y = y;
-        Moved?.Invoke(this, oldX, oldY, X, Y);
+        Moved?.Invoke((IMovable) this, oldX, oldY, X, Y);
     }
 
     public void StopTurn() => Stopped?.Invoke(this);
