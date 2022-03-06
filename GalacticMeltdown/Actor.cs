@@ -78,4 +78,9 @@ public abstract class Actor : IObjectOnMap
     {
         SendAffected();
     }
+
+    public virtual void FinishTurn()
+    {
+        Energy += _energy.MaxValue;
+    }
 }

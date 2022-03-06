@@ -154,16 +154,25 @@ public partial class Level
         
         _inactiveThisTurn = new HashSet<Actor>();
         _affectedThisTurn = new HashSet<Actor>();
-        List<Actor> activeThisTurn;
-        while ((activeThisTurn = GetActive()).Any())
+        List<Actor> active;
+        while ((active = GetActive()).Any())
         {
-            foreach (var actor in activeThisTurn)
+            foreach (var actor in active.Where(actor => !_affectedThisTurn.Contains(actor)))
+            {
+                _affectedThisTurn.Add(actor);
+            }
+            foreach (var actor in active)
             {
                 // A player may have reached the finish or died
                 if (!IsActive) return false;
                 // An actor could die due to actions of another actor
                 if (!_inactiveThisTurn.Contains(actor)) actor.DoAction();
             }
+        }
+
+        foreach (var actor in _affectedThisTurn)
+        {
+            actor.FinishTurn();
         }
 
         _inactiveThisTurn = null;
