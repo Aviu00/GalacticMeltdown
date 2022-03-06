@@ -224,19 +224,4 @@ public partial class Level
             return active.Except(inactive).ToList();
         }
     }
-
-    public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
-    {
-        var (chunkX, chunkY) = GetChunk(enemy.X, enemy.Y);
-        var (oldChunkX, oldChunkY) = GetChunk(oldX, oldY);
-        if (!(0 <= chunkX && chunkX < _chunks.GetLength(0) && 0 <= chunkY && chunkY < _chunks.GetLength(1))) return;
-        if (chunkX != oldChunkX || oldY != oldChunkY)
-        {
-            if (oldX >= 0 && oldY >= 0)
-            {
-                _chunks[oldChunkX, oldChunkY].Enemies.Remove(enemy);
-            }
-            _chunks[chunkX, chunkY].Enemies.Add(enemy);
-        }
-    }
 }
