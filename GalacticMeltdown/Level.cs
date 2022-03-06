@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Rendering;
@@ -34,7 +35,7 @@ public partial class Level
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
 
-    public List<IControllable> ControllableObjects { get; }
+    public ObservableCollection<IControllable> ControllableObjects { get; }
     public ObservableCollection<ISightedObject> SightedObjects { get; }
 
     public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall, (int x, int y) finishPos)
@@ -47,12 +48,25 @@ public partial class Level
         Player = new Player(startPos.x, startPos.y, this);
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
-        ControllableObjects = new List<IControllable> { Player };
+        ControllableObjects = new ObservableCollection<IControllable> { Player };
+        ControllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
         IsActive = true;
         PlayerWon = false;
+    }
+
+    private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems is not null) foreach (var controllableObject in e.NewItems)
+        {
+            ((IControllable) controllableObject).Moved += ControllableMoved;
+        }
+        if (e.OldItems is not null) foreach (var controllableObject in e.OldItems)
+        {
+            ((IControllable) controllableObject).Moved -= ControllableMoved;
+        }
     }
 
     private void PlayerDiedHandler(Actor actor)
@@ -63,20 +77,28 @@ public partial class Level
 
     private void SpawnEnemies()
     {
-        var chunkIndexes = ControllableObjects.ConvertAll(obj =>
-        {
-            var (chunkX, chunkY) = GetChunk(obj.X, obj.Y);
-            return Algorithms.GetPointsOnSquareBorder(chunkX, chunkY, SpawnRadius);
-        }).SelectMany(coords => coords).Select(coords => GetChunk(coords.x, coords.y))
-            .Where(match => ControllableObjects.All(obj =>
-            {
-                var (chunkX, chunkY) = GetChunk(obj.X, obj.Y);
-                return Math.Abs(chunkX - match.chunkX) >= SpawnRadius 
-                       && Math.Abs(chunkY - match.chunkY) >= SpawnRadius;
-            }));
-        foreach (var (chunkX, chunkY) in chunkIndexes)
+        foreach (var (chunkX, chunkY) in GetChunkIndexes())
         {
             _chunks[chunkX, chunkY].SuggestEnemySpawn();
+        }
+        
+        IEnumerable<(int chunkX, int chunkY)> GetChunkIndexes()
+        {
+            foreach (var controllable in ControllableObjects)
+            {
+                var (controllableChunkX, controllableChunkY) = GetChunk(controllable.X, controllable.Y);
+                foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX,
+                             controllableChunkY, SpawnRadius))
+                {
+                    if (ControllableObjects.All(obj =>
+                        {
+                            var (objChunkX, objChunkY) = GetChunk(obj.X, obj.Y);
+                            return Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
+                                   && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
+                        }))
+                        yield return chunkCoords;
+                }
+            }
         }
     }
 
@@ -226,8 +248,7 @@ public partial class Level
 
         List<Actor> GetActive()
         {
-            List<Actor> active = new List<Actor>(ControllableObjects.FindAll(obj => obj is Actor)
-                .ConvertAll(obj => (Actor) obj));
+            List<Actor> active = new List<Actor>(ControllableObjects.OfType<Actor>());
             active.AddRange(GetRespondingNpcs());
             return active.Except(inactive).ToList();
         }
