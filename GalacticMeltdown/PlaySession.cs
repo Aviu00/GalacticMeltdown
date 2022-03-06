@@ -44,7 +44,7 @@ public partial class PlaySession
 
     private void SaveLevel()
     {
-        if (_sesionActive) FilesystemLevelManager.SaveLevel(_level, _savePath);
+        FilesystemLevelManager.SaveLevel(_level, _savePath);
     }
     
     private static void MoveControlled(int deltaX, int deltaY)
