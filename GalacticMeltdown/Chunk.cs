@@ -25,4 +25,11 @@ public class Chunk
         //Check other IObjectOnMap list here
         return objectOnMap;
     }
+
+    public List<Npc> GetNpcs()
+    {
+        List <Npc> npcs = new();
+        npcs.AddRange(Enemies);
+        return npcs;
+    }
 }

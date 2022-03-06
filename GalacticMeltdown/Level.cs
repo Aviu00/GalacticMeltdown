@@ -113,7 +113,23 @@ public partial class Level
 
     private List<Npc> GetRespondingNpcs()
     {
-        
+        List <Npc> npcs = new();
+        var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
+        foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusPlayer))
+        {
+            npcs.AddRange(chunk.GetNpcs());
+        }
+
+        foreach (var controllable in ControllableObjects)
+        {
+            (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
+            foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))
+            {
+                npcs.AddRange(chunk.GetNpcs());
+            }
+        }
+
+        return npcs;
     }
 
     public void NpcAction()
