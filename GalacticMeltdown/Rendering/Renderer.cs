@@ -173,7 +173,7 @@ public static class Renderer
         OutputAllCells();
     }
     
-    public static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
+    private static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
     {
         if (Console.ForegroundColor != fgColor)
             Console.ForegroundColor = fgColor;
@@ -203,6 +203,11 @@ public static class Renderer
     {
         foreach (var (view, updatedCells) in _animations)
         {
+            if (RedrawOnScreenSizeChange())
+            {
+                Redraw();
+                return;
+            }
             var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
             foreach (var (viewX, viewY, viewCellData) in updatedCells)
             {
