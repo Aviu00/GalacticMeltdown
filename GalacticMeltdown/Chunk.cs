@@ -8,7 +8,7 @@ public class Chunk
     private double Difficulty { get; }
     public Tile[,] Tiles { get; }
 
-    public List<Enemy> Enemies;
+    public List<Enemy> Enemies { get; }
 
     public Chunk(Tile[,] tiles, double difficulty)
     {
