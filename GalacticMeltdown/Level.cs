@@ -28,6 +28,7 @@ public partial class Level
     public event TurnFinishedEventHandler TurnFinished;
 
     public bool IsActive { get; private set; }
+    public bool PlayerWon { get; private set; }
 
     public Player Player { get; }
     public LevelView LevelView { get; }
@@ -49,8 +50,26 @@ public partial class Level
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
         IsActive = true;
+        PlayerWon = false;
     }
 
+    private void SpawnEnemies()
+    {
+        
+    }
+
+    private void ControllableMoved(IControllable sender, int x0, int y0, int x1, int y1)
+    {
+        if (GetChunk(x0, y0) != GetChunk(x1, y1))
+        {
+            SpawnEnemies();
+        }
+        if (ReferenceEquals(sender, Player) && Player.X == _finishX && Player.Y == _finishY)
+        {
+            IsActive = false;
+            PlayerWon = true;
+        }
+    }
 
     public Tile GetTile(int x, int y)
     {
