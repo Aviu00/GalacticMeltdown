@@ -32,9 +32,6 @@ public partial class Level
 
     public bool IsActive { get; private set; }
 
-    private HashSet<Actor> _inactiveThisTurn;
-    private HashSet<Actor> _affectedThisTurn;
-
     public Player Player { get; }
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
@@ -118,88 +115,85 @@ public partial class Level
         }
     }
 
-    private List<Npc> GetRespondingNpcs()
-    {
-        List <Npc> npcs = new();
-        var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
-        foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusPlayer))
-        {
-            npcs.AddRange(chunk.GetNpcs());
-        }
-
-        foreach (var controllable in ControllableObjects)
-        {
-            if (controllable is Player) continue;
-            (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
-            foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))
-            {
-                npcs.AddRange(chunk.GetNpcs());
-            }
-        }
-
-        return npcs;
-    }
-
-    private List<Actor> GetActive()
-    {
-        List<Actor> active = new List<Actor>(ControllableObjects.FindAll(obj => obj is Actor)
-            .ConvertAll(obj => (Actor) obj));
-        active.AddRange(GetRespondingNpcs());
-        return active.Except(_inactiveThisTurn).ToList();
-    }
-
     public bool DoTurn()
     {
         if (!IsActive) return false;
         
-        _inactiveThisTurn = new HashSet<Actor>();
-        _affectedThisTurn = new HashSet<Actor>();
-        List<Actor> active;
-        while ((active = GetActive()).Any())
+        HashSet<Actor> inactive = new();
+        HashSet<Actor> affected = new();
+        List<Actor> currentlyActive;
+        while ((currentlyActive = GetActive()).Any())
         {
-            foreach (var actor in active.Where(actor => !_affectedThisTurn.Contains(actor)))
+            foreach (var actor in currentlyActive.Where(actor => !affected.Contains(actor)))
             {
-                _affectedThisTurn.Add(actor);
-                actor.Stopped += TurnStoppedHandler;
-                actor.Died += DeadEventHandler;
-                actor.RanOutOfEnergy += OutOfEnergyEventHandler;
+                Watch(actor);
             }
-            foreach (var actor in active)
+            foreach (var actor in currentlyActive)
             {
                 // A player may have reached the finish or died
                 if (!IsActive) return false;
                 // An actor could die due to actions of another actor
-                if (!_inactiveThisTurn.Contains(actor)) actor.DoAction();
+                if (!inactive.Contains(actor)) actor.DoAction();
             }
         }
 
-        foreach (var actor in _affectedThisTurn)
+        foreach (var actor in affected)
         {
-            actor.RanOutOfEnergy -= OutOfEnergyEventHandler;
-            actor.Stopped -= TurnStoppedHandler;
-            actor.Died -= DeadEventHandler;
-            actor.FinishTurn();
+            FinishTurn(actor);
         }
-
-        _inactiveThisTurn = null;
-        _affectedThisTurn = null;
+        
         TurnFinished?.Invoke();
         return IsActive;
-    }
 
-    private void TurnStoppedHandler(Actor sender)
-    {
-        if (!_inactiveThisTurn.Contains(sender)) _inactiveThisTurn.Add(sender);
-    }
-    
-    private void DeadEventHandler(Actor sender)
-    {
-        if (!_inactiveThisTurn.Contains(sender)) _inactiveThisTurn.Add(sender);
-    }
-    
-    private void OutOfEnergyEventHandler(Actor sender)
-    {
-        if (!_inactiveThisTurn.Contains(sender)) _inactiveThisTurn.Add(sender);
+        void BecameInactiveHandler(Actor sender)
+        {
+            if (!inactive.Contains(sender)) inactive.Add(sender);
+        }
+
+        void Watch(Actor actor)
+        {
+            actor.Stopped += BecameInactiveHandler;
+            actor.Died += BecameInactiveHandler;
+            actor.RanOutOfEnergy += BecameInactiveHandler;
+            affected.Add(actor);
+        }
+
+        void FinishTurn(Actor actor)
+        {
+            actor.RanOutOfEnergy -= BecameInactiveHandler;
+            actor.Stopped -= BecameInactiveHandler;
+            actor.Died -= BecameInactiveHandler;
+            actor.FinishTurn();
+        }
+        
+        List<Npc> GetRespondingNpcs()
+        {
+            List <Npc> npcs = new();
+            var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
+            foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusPlayer))
+            {
+                npcs.AddRange(chunk.GetNpcs());
+            }
+
+            foreach (var controllable in ControllableObjects.Where(controllable => !ReferenceEquals(controllable, Player)))
+            {
+                (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
+                foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))
+                {
+                    npcs.AddRange(chunk.GetNpcs());
+                }
+            }
+
+            return npcs;
+        }
+
+        List<Actor> GetActive()
+        {
+            List<Actor> active = new List<Actor>(ControllableObjects.FindAll(obj => obj is Actor)
+                .ConvertAll(obj => (Actor) obj));
+            active.AddRange(GetRespondingNpcs());
+            return active.Except(inactive).ToList();
+        }
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
