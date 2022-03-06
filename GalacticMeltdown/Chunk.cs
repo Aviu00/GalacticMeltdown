@@ -49,16 +49,19 @@ public class Chunk
     {
         if (npc is Enemy enemy) Enemies.Add(enemy);
         npc.Moved += MovedHandler;
+        npc.Died += DiedHandler;
     }
 
     public void RemoveNpc(Npc npc)
     {
         if (npc is Enemy enemy) Enemies.Remove(enemy);
         npc.Moved -= MovedHandler;
+        npc.Died -= DiedHandler;
     }
 
     public void SuggestEnemySpawn()
     {
+        // use AddNpc
         if (_seededSpawn)
         {
             // use DataHolder.CurrentSeed and Difficulty
@@ -68,6 +71,5 @@ public class Chunk
         {
             // spawn with some low-ish chance
         }
-        // Sub to Died and Moved events
     }
 }
