@@ -30,7 +30,7 @@ public partial class Level
 
     public event TurnFinishedEventHandler TurnFinished;
 
-    public bool GameEnded { get; private set; }
+    public bool IsActive { get; private set; }
 
     private HashSet<Actor> _inactiveThisTurn;
 
@@ -53,7 +53,7 @@ public partial class Level
         SightedObjects = new ObservableCollection<ISightedObject> { Player };
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
-        GameEnded = false;
+        IsActive = true;
     }
 
 
@@ -146,9 +146,9 @@ public partial class Level
         return active.Except(_inactiveThisTurn).ToList();
     }
 
-    public void DoTurn()
+    public bool DoTurn()
     {
-        if (GameEnded) return;
+        if (!IsActive) return false;
         
         _inactiveThisTurn = new HashSet<Actor>();
         List<Actor> activeThisTurn;
@@ -157,7 +157,7 @@ public partial class Level
             foreach (var actor in activeThisTurn)
             {
                 // A player may have reached the finish or died
-                if (GameEnded) return;
+                if (!IsActive) return false;
                 // An actor could die due to actions of another actor
                 if (!_inactiveThisTurn.Contains(actor)) actor.DoAction();
             }
@@ -165,6 +165,7 @@ public partial class Level
 
         _inactiveThisTurn = new HashSet<Actor>();
         TurnFinished?.Invoke();
+        return IsActive;
     }
 
     public void UpdateEnemyPosition(Enemy enemy, int oldX, int oldY)
