@@ -46,8 +46,8 @@ public class LevelManagementView : View
     {
         // TODO: open dialog asking for name and seed (optional)
         int seed = Random.Shared.Next(0, 1000000000);
-        var (level, savePath) = FilesystemLevelManager.CreateLevel(seed, "test");
-        Game.StartLevel(level, savePath);
+        string savePath = FilesystemLevelManager.CreateLevel(seed, "test");
+        TryStartLevel(savePath);
     }
 
     private void DeleteLevel()
