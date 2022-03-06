@@ -13,6 +13,8 @@ public partial class Level
 {
     private const int EnemyRadiusPlayer = 3;
     private const int EnemyRadiusControllable = 1;
+
+    private const int SpawnRadius = 5;
     
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
