@@ -94,7 +94,9 @@ public partial class Level
                         {
                             var (objChunkX, objChunkY) = GetChunk(obj.X, obj.Y);
                             return Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
-                                   && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
+                                   && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius
+                                   && chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0)
+                                   && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1);
                         }))
                         yield return chunkCoords;
                 }
