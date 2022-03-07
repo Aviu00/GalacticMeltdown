@@ -47,13 +47,13 @@ public class MapGenerator
     private void GenerateBars()
     {
         //These 4 integers don't make much sense and probably should be left untouched
-        int minSize = 6;
-        int restrictionAddition = 7;
-        int firstMaxValue = 9;
-        int posMultiplierCeiling = 8;
+        const int minSize = 6;
+        const int restrictionAddition = 7;
+        const int firstMaxValue = 9;
+        const int posMultiplierCeiling = 8;
 
         int newSize = _rng.Next(minSize, firstMaxValue);
-        _bars = new() {(0, newSize)};
+        _bars = new List<(int min, int max)> {(0, newSize)};
         _maxPoint = newSize;
         int lastMinVector = -1;
         int lastMaxVector = 1;
@@ -171,13 +171,13 @@ public class MapGenerator
 
         int endRoomIndex = mainRouteRoomCount / 2;
         double addDifficulty = 1;
-        double lastDifficulty = 0;
+        double difficulty = 0;
         ChunkGenerator previousChunk = null;
         ChunkGenerator currentChunk = startPoint!;
         for (int i = 0; i < mainRouteRoomCount; i++)
         {
-            lastDifficulty += addDifficulty;
-            currentChunk.Difficulty = lastDifficulty;
+            difficulty += addDifficulty;
+            currentChunk.Difficulty = difficulty;
             if (i == endRoomIndex)
             {
                 currentChunk.IsEndPoint = true;
