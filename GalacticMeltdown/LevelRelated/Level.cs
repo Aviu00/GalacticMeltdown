@@ -58,15 +58,15 @@ public partial class Level
 
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
-
-    private readonly ChunkEventListener _listener;
-
+    
     public Player Player { get; }
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
 
     public ObservableCollection<IControllable> ControllableObjects { get; }
     public ObservableCollection<ISightedObject> SightedObjects { get; }
+
+    private readonly ChunkEventListener _listener;
 
     public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall,
         (int x, int y) finishPos)
@@ -91,89 +91,110 @@ public partial class Level
         IsActive = true;
         PlayerWon = false;
     }
-
-    private void SomethingMovedHandler(object sender, MoveEventArgs e)
+    
+    public bool DoTurn()
     {
-        if (sender is Npc npc)
+        if (!IsActive) return false;
+
+        HashSet<Actor> involved = new();
+        _listener.NpcInvolvedInTurn += NpcInvolvedInTurnHandler;
+
+        List<Actor> currentlyActive;
+        bool energySpent = false;
+        while ((currentlyActive = GetActive()).Any())
         {
-            var chunk0 = GetChunk(e.X0, e.Y0);
-            var chunk1 = GetChunk(e.X1, e.Y1);
-            if (chunk0 != chunk1)
+            foreach (var actor in currentlyActive.Where(actor => !involved.Contains(actor)))
             {
-                _chunks[chunk0.chunkX, chunk0.chunkY].RemoveNpc(npc);
-                _chunks[chunk1.chunkX, chunk1.chunkY].AddNpc(npc);
+                WatchActor(actor);
             }
+
+            foreach (var actor in currentlyActive)
+            {
+                // A player may have reached the finish or died
+                if (!IsActive) return FinishMapTurn();
+                // An actor could die due to actions of another actor
+                if (actor.IsActive) actor.DoAction();
+            }
+
+            if (!energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
+
+            energySpent = false;
         }
 
-        SomethingMoved?.Invoke(sender, e);
-    }
+        return FinishMapTurn();
 
-    private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
-
-    private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems is not null)
-            foreach (var controllableObject in e.NewItems)
-            {
-                ((IControllable) controllableObject).Moved += ControllableMoved;
-            }
-
-        if (e.OldItems is not null)
-            foreach (var controllableObject in e.OldItems)
-            {
-                ((IControllable) controllableObject).Moved -= ControllableMoved;
-            }
-    }
-
-    private void PlayerDiedHandler(object _, EventArgs __)
-    {
-        PlayerWon = false;
-        IsActive = false;
-    }
-
-    private void SpawnEnemies()
-    {
-        foreach (var (chunkX, chunkY) in GetChunkIndexes())
+        bool FinishMapTurn()
         {
-            _chunks[chunkX, chunkY].SuggestEnemySpawn();
+            _listener.NpcInvolvedInTurn -= NpcInvolvedInTurnHandler;
+            foreach (var actor in involved)
+            {
+                FinishActorTurn(actor);
+            }
+
+            TurnFinished?.Invoke(this, EventArgs.Empty);
+            return IsActive;
         }
 
-        IEnumerable<(int chunkX, int chunkY)> GetChunkIndexes()
+        List<Actor> GetActive()
         {
-            foreach (var controllable in ControllableObjects)
+            List<Actor> active = new List<Actor>(ControllableObjects.OfType<Actor>());
+            active.AddRange(GetNearbyNpcs());
+            foreach (var npc in GetNearbyNpcs())
             {
-                var (controllableChunkX, controllableChunkY) = GetChunk(controllable.X, controllable.Y);
-                foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX, controllableChunkY,
-                             SpawnRadius))
+                if (!involved.Contains(npc)) involved.Add(npc);
+                if (npc.IsActive) active.Add(npc);
+            }
+
+            return active;
+        }
+
+        List<Npc> GetNearbyNpcs()
+        {
+            List<Npc> npcs = new();
+            var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
+            foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusPlayer))
+            {
+                npcs.AddRange(chunk.GetNpcs());
+            }
+
+            foreach (var controllable in ControllableObjects.Where(controllable =>
+                         !ReferenceEquals(controllable, Player)))
+            {
+                (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
+                foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))
                 {
-                    if (ControllableObjects.All(obj =>
-                        {
-                            var (objChunkX, objChunkY) = GetChunk(obj.X, obj.Y);
-                            return chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0) 
-                                && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1)
-                                && Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
-                                && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
-                        }))
-                        yield return chunkCoords;
+                    npcs.AddRange(chunk.GetNpcs());
                 }
             }
-        }
-    }
 
-    private void ControllableMoved(object sender, MoveEventArgs e)
+            return npcs;
+        }
+        
+        void WatchActor(Actor actor)
+        {
+            actor.SpentEnergy += SpentEnergyHandler;
+            involved.Add(actor);
+        }
+
+        void FinishActorTurn(Actor actor)
+        {
+            actor.SpentEnergy -= SpentEnergyHandler;
+            actor.FinishTurn();
+        }
+        
+        void NpcInvolvedInTurnHandler(object npc, EventArgs _)
+        {
+            if (!involved.Contains(npc)) involved.Add((Npc) npc);
+        }
+        
+        void SpentEnergyHandler(object sender, EventArgs _) => energySpent = true;
+    }
+    
+    public IDrawable GetDrawable(int x, int y)
     {
-        if (GetChunk(e.X0, e.Y0) != GetChunk(e.X1, e.Y1))
-        {
-            SpawnEnemies();
-        }
-
-        if (ReferenceEquals(sender, Player) && Player.X == _finishX && Player.Y == _finishY)
-        {
-            IsActive = false;
-            PlayerWon = true;
-        }
+        return (IDrawable) GetNonTileObject(x, y) ?? GetTile(x, y);
     }
-
+    
     public Tile GetTile(int x, int y)
     {
         switch (x, y)
@@ -209,14 +230,62 @@ public partial class Level
         return _chunks[chunkX, chunkY].GetMapObject(x, y);
     }
 
-    public IDrawable GetDrawable(int x, int y)
+    private void ControllableMoved(object sender, MoveEventArgs e)
     {
-        return (IDrawable) GetNonTileObject(x, y) ?? GetTile(x, y);
+        if (GetChunk(e.X0, e.Y0) != GetChunk(e.X1, e.Y1))
+        {
+            SpawnEnemies();
+        }
+
+        if (ReferenceEquals(sender, Player) && Player.X == _finishX && Player.Y == _finishY)
+        {
+            IsActive = false;
+            PlayerWon = true;
+        }
+    }
+    
+    private void SpawnEnemies()
+    {
+        foreach (var (chunkX, chunkY) in GetChunkIndexes())
+        {
+            _chunks[chunkX, chunkY].SuggestEnemySpawn();
+        }
+
+        IEnumerable<(int chunkX, int chunkY)> GetChunkIndexes()
+        {
+            foreach (var controllable in ControllableObjects)
+            {
+                var (controllableChunkX, controllableChunkY) = GetChunk(controllable.X, controllable.Y);
+                foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX, controllableChunkY,
+                             SpawnRadius))
+                {
+                    if (ControllableObjects.All(obj =>
+                        {
+                            var (objChunkX, objChunkY) = GetChunk(obj.X, obj.Y);
+                            return chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0) 
+                                && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1)
+                                && Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
+                                && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
+                        }))
+                        yield return chunkCoords;
+                }
+            }
+        }
     }
 
-    private static (int chunkX, int chunkY) GetChunk(int x, int y)
+    private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
-        return (x / ChunkSize, y / ChunkSize);
+        if (e.NewItems is not null)
+            foreach (var controllableObject in e.NewItems)
+            {
+                ((IControllable) controllableObject).Moved += ControllableMoved;
+            }
+
+        if (e.OldItems is not null)
+            foreach (var controllableObject in e.OldItems)
+            {
+                ((IControllable) controllableObject).Moved -= ControllableMoved;
+            }
     }
 
     private IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
@@ -233,102 +302,33 @@ public partial class Level
             }
         }
     }
-
-    public bool DoTurn()
+    
+    private void PlayerDiedHandler(object _, EventArgs __)
     {
-        if (!IsActive) return false;
-
-        HashSet<Actor> involved = new();
-        _listener.NpcInvolvedInTurn += NpcInvolvedInTurnHandler;
-
-        List<Actor> currentlyActive;
-        bool energySpent = false;
-        while ((currentlyActive = GetActive()).Any())
-        {
-            foreach (var actor in currentlyActive.Where(actor => !involved.Contains(actor)))
-            {
-                WatchActor(actor);
-            }
-
-            foreach (var actor in currentlyActive)
-            {
-                // A player may have reached the finish or died
-                if (!IsActive) return FinishMapTurn();
-                // An actor could die due to actions of another actor
-                if (actor.IsActive) actor.DoAction();
-            }
-
-            if (!energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
-
-            energySpent = false;
-        }
-
-        return FinishMapTurn();
-
-        void SpentEnergyHandler(object sender, EventArgs _) => energySpent = true;
-
-        bool FinishMapTurn()
-        {
-            _listener.NpcInvolvedInTurn -= NpcInvolvedInTurnHandler;
-            foreach (var actor in involved)
-            {
-                FinishActorTurn(actor);
-            }
-
-            TurnFinished?.Invoke(this, EventArgs.Empty);
-            return IsActive;
-        }
-
-        void NpcInvolvedInTurnHandler(object npc, EventArgs _)
-        {
-            if (!involved.Contains(npc)) involved.Add((Npc) npc);
-        }
-
-        void WatchActor(Actor actor)
-        {
-            actor.SpentEnergy += SpentEnergyHandler;
-            involved.Add(actor);
-        }
-
-        void FinishActorTurn(Actor actor)
-        {
-            actor.SpentEnergy -= SpentEnergyHandler;
-            actor.FinishTurn();
-        }
-
-        List<Npc> GetNearbyNpcs()
-        {
-            List<Npc> npcs = new();
-            var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
-            foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusPlayer))
-            {
-                npcs.AddRange(chunk.GetNpcs());
-            }
-
-            foreach (var controllable in ControllableObjects.Where(controllable =>
-                         !ReferenceEquals(controllable, Player)))
-            {
-                (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
-                foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))
-                {
-                    npcs.AddRange(chunk.GetNpcs());
-                }
-            }
-
-            return npcs;
-        }
-
-        List<Actor> GetActive()
-        {
-            List<Actor> active = new List<Actor>(ControllableObjects.OfType<Actor>());
-            active.AddRange(GetNearbyNpcs());
-            foreach (var npc in GetNearbyNpcs())
-            {
-                if (!involved.Contains(npc)) involved.Add(npc);
-                if (npc.IsActive) active.Add(npc);
-            }
-
-            return active;
-        }
+        PlayerWon = false;
+        IsActive = false;
     }
+    
+    private void SomethingMovedHandler(object sender, MoveEventArgs e)
+    {
+        if (sender is Npc npc)
+        {
+            var chunk0 = GetChunk(e.X0, e.Y0);
+            var chunk1 = GetChunk(e.X1, e.Y1);
+            if (chunk0 != chunk1)
+            {
+                _chunks[chunk0.chunkX, chunk0.chunkY].RemoveNpc(npc);
+                _chunks[chunk1.chunkX, chunk1.chunkY].AddNpc(npc);
+            }
+        }
+
+        SomethingMoved?.Invoke(sender, e);
+    }
+    
+    private static (int chunkX, int chunkY) GetChunk(int x, int y)
+    {
+        return (x / ChunkSize, y / ChunkSize);
+    }
+
+    private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
 }
