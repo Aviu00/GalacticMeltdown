@@ -8,6 +8,8 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Frontend.Rendering;
 
+internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, ConsoleColor BgColor);
+
 public static class Renderer
 {
     private static LinkedList<(View, double, double, double, double)> _views;
