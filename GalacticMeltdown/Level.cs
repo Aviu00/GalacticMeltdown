@@ -8,6 +8,27 @@ using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
+internal class ChunkEventListener
+{
+    public event EventHandler NpcDied;
+    public event EventHandler<MoveEventArgs> SomethingMoved;
+    public event EventHandler NpcInvolvedInTurn;
+    private void SomethingMovedHandler(object sender, MoveEventArgs e) => SomethingMoved?.Invoke(sender, e);
+    
+    private void NpcDeathHandler(object npc, EventArgs e) => NpcDied?.Invoke(npc, e);
+    private void NpcInvolvedHandler(object npc, EventArgs e) => NpcInvolvedInTurn?.Invoke(npc, e);
+    
+    public ChunkEventListener(Chunk[,] chunks)
+    {
+        foreach (var chunk in chunks)
+        {
+            chunk.NpcDied += NpcDeathHandler;
+            chunk.SomethingMoved += SomethingMovedHandler;
+            chunk.NpcInvolvedInTurn += NpcInvolvedHandler;
+        }
+    }
+}
+
 public partial class Level
 {
     private const int EnemyRadiusPlayer = 3;
@@ -38,6 +59,8 @@ public partial class Level
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
 
+    private ChunkEventListener _listener;
+
     public Player Player { get; }
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
@@ -50,11 +73,9 @@ public partial class Level
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _chunks = chunks;
-        foreach (var chunk in _chunks)
-        {
-            chunk.NpcDied += NpcDeathHandler;
-            chunk.SomethingMoved += SomethingMovedHandler;
-        }
+        _listener = new ChunkEventListener(_chunks);
+        _listener.NpcDied += NpcDeathHandler;
+        _listener.SomethingMoved += SomethingMovedHandler;
 
         _southernWall = southernWall;
         _westernWall = westernWall;
