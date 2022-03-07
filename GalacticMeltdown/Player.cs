@@ -31,11 +31,9 @@ public class Player : Actor, IControllable
         get => _viewRadius;
         set
         {
-            if (value > 0)
-            {
-                _viewRadius = value;
-                VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
-            }
+            if (value <= 0) return;
+            _viewRadius = value;
+            VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -43,7 +41,7 @@ public class Player : Actor, IControllable
 
     public bool TryMove(int deltaX, int deltaY)
     {
-        var tile = Level.GetTile(X + deltaX, Y + deltaY);
+        Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
         if (!(NoClip || (tile is null || tile.IsWalkable) && Level.GetNonTileObject(X + deltaX, Y + deltaY) is null))
             return false;
 
