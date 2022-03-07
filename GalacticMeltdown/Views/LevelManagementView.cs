@@ -21,18 +21,18 @@ internal class LevelButtonInfo : MenuButtonInfo
 
 public class LevelManagementView : View
 {
-    public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangeEventArgs> CellsChanged;
-
-    private List<LevelButtonInfo> _menuLevels;
-    private readonly List<MenuButtonInfo> _managementButtonInfos;
-
     private int _levelIndex;
     private int _managementIndex;
     private bool _isManagementSelected;
 
     private int _topVisibleLevelButtonIndex;
     private int _selectedLevelButtonY;
+
+    private List<LevelButtonInfo> _menuLevels;
+    private readonly List<MenuButtonInfo> _managementButtonInfos;
+
+    public override event EventHandler NeedRedraw;
+    public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     public LevelManagementView()
     {
@@ -43,59 +43,7 @@ public class LevelManagementView : View
         };
         _managementIndex = 0;
     }
-
-    private void CreateLevel()
-    {
-        // TODO: open dialog asking for name and seed (optional)
-        int seed = Random.Shared.Next(0, 1000000000);
-        string savePath = FilesystemLevelManager.CreateLevel(seed, "test");
-        TryStartLevel(savePath);
-    }
-
-    private void DeleteLevel()
-    {
-        if (!_menuLevels.Any())
-        {
-            // TODO: error animation
-            return;
-        }
-
-        // TODO: confirmation dialog
-        if (!FilesystemLevelManager.RemoveLevel(_menuLevels[_levelIndex].LevelInfo.Path))
-        {
-            RefreshLevelList();
-            return;
-        }
-
-        _menuLevels.RemoveAt(_levelIndex);
-        if (!_menuLevels.Any()) // If there are no levels left, don't let the user select one
-        {
-            _isManagementSelected = true;
-            _levelIndex = 0;
-        }
-        else if (_levelIndex >= _menuLevels.Count)
-        {
-            _levelIndex = _menuLevels.Count - 1;
-        }
-
-        UpdateOutVars();
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void TryStartLevel(string path)
-    {
-        var (level, seed) = FilesystemLevelManager.GetLevel(path);
-        if (level is null)
-        {
-            RefreshLevelList();
-            // TODO: failure animation
-            return;
-        }
-
-        DataHolder.CurrentSeed = seed;
-        Game.StartLevel(level, path);
-    }
-
+    
     public override ViewCellData GetSymbol(int x, int y)
     {
         char symbol;
@@ -173,19 +121,58 @@ public class LevelManagementView : View
         CalculateVisibleButtonText();
     }
 
-    private void CalculateVisibleButtonText()
+    private void CreateLevel()
     {
-        foreach (LevelButtonInfo buttonInfo in _menuLevels)
+        // TODO: open dialog asking for name and seed (optional)
+        int seed = Random.Shared.Next(0, 1000000000);
+        string savePath = FilesystemLevelManager.CreateLevel(seed, "test");
+        TryStartLevel(savePath);
+    }
+    
+    private void TryStartLevel(string path)
+    {
+        var (level, seed) = FilesystemLevelManager.GetLevel(path);
+        if (level is null)
         {
-            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
+            RefreshLevelList();
+            // TODO: failure animation
+            return;
         }
 
-        foreach (MenuButtonInfo buttonInfo in _managementButtonInfos)
-        {
-            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
-        }
+        DataHolder.CurrentSeed = seed;
+        Game.StartLevel(level, path);
     }
 
+    private void DeleteLevel()
+    {
+        if (!_menuLevels.Any())
+        {
+            // TODO: error animation
+            return;
+        }
+
+        // TODO: confirmation dialog
+        if (!FilesystemLevelManager.RemoveLevel(_menuLevels[_levelIndex].LevelInfo.Path))
+        {
+            RefreshLevelList();
+            return;
+        }
+
+        _menuLevels.RemoveAt(_levelIndex);
+        if (!_menuLevels.Any()) // If there are no levels left, don't let the user select one
+        {
+            _isManagementSelected = true;
+            _levelIndex = 0;
+        }
+        else if (_levelIndex >= _menuLevels.Count)
+        {
+            _levelIndex = _menuLevels.Count - 1;
+        }
+
+        UpdateOutVars();
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+    
     private void RefreshLevelList()
     {
         List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelInfo();
@@ -198,13 +185,26 @@ public class LevelManagementView : View
 
         _levelIndex = 0;
         _isManagementSelected = _menuLevels.Count == 0; // can't select a level when none exist
-        if (!(Width == 0 && Height == 0)) // View has size
-        {
-            UpdateOutVars();
-            CalculateVisibleButtonText();
-        }
+        
+        if (Width == 0 && Height == 0) return;
+        
+        UpdateOutVars();
+        CalculateVisibleButtonText();
 
         NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void CalculateVisibleButtonText()
+    {
+        foreach (LevelButtonInfo buttonInfo in _menuLevels)
+        {
+            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
+        }
+
+        foreach (MenuButtonInfo buttonInfo in _managementButtonInfos)
+        {
+            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
+        }
     }
 
     private void UpdateOutVars()
