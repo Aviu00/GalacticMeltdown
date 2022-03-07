@@ -40,6 +40,13 @@ public partial class PlaySession
             SaveLevel();
             if (!_level.DoTurn())
             {
+                if (_level.PlayerWon)
+                {
+                }
+                else
+                {
+                }
+
                 break;
             }
         }
