@@ -217,15 +217,14 @@ public partial class Level
     {
         if (!IsActive) return false;
 
-        HashSet<Actor> inactive = new();
-        HashSet<Actor> affected = new();
+        HashSet<Actor> involved = new();
         List<Actor> currentlyActive;
         bool energySpent = false;
         while ((currentlyActive = GetActive()).Any())
         {
-            foreach (var actor in currentlyActive.Where(actor => !affected.Contains(actor)))
+            foreach (var actor in currentlyActive.Where(actor => !involved.Contains(actor)))
             {
-                Watch(actor);
+                WatchActor(actor);
             }
 
             foreach (var actor in currentlyActive)
@@ -233,7 +232,7 @@ public partial class Level
                 // A player may have reached the finish or died
                 if (!IsActive) return FinishMapTurn();
                 // An actor could die due to actions of another actor
-                if (!inactive.Contains(actor)) actor.DoAction();
+                if (actor.IsActive) actor.DoAction();
             }
 
             if (!energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
@@ -243,42 +242,31 @@ public partial class Level
 
         return FinishMapTurn();
 
-        void BecameInactiveHandler(object sender, EventArgs _)
-        {
-            if (!inactive.Contains(sender)) inactive.Add((Actor) sender);
-        }
-
         void SpentEnergyHandler(object sender, EventArgs _) => energySpent = true;
 
         bool FinishMapTurn()
         {
-            foreach (var actor in affected)
+            foreach (var actor in involved)
             {
-                FinishTurn(actor);
+                FinishActorTurn(actor);
             }
             TurnFinished?.Invoke(this, EventArgs.Empty);
             return IsActive;
         }
 
-        void Watch(Actor actor)
+        void WatchActor(Actor actor)
         {
-            actor.Stopped += BecameInactiveHandler;
-            actor.Died += BecameInactiveHandler;
-            actor.RanOutOfEnergy += BecameInactiveHandler;
             actor.SpentEnergy += SpentEnergyHandler;
-            affected.Add(actor);
+            involved.Add(actor);
         }
 
-        void FinishTurn(Actor actor)
+        void FinishActorTurn(Actor actor)
         {
-            actor.RanOutOfEnergy -= BecameInactiveHandler;
-            actor.Stopped -= BecameInactiveHandler;
-            actor.Died -= BecameInactiveHandler;
             actor.SpentEnergy -= SpentEnergyHandler;
             actor.FinishTurn();
         }
 
-        List<Npc> GetRespondingNpcs()
+        List<Npc> GetNearbyNpcs()
         {
             List<Npc> npcs = new();
             var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
@@ -303,8 +291,13 @@ public partial class Level
         List<Actor> GetActive()
         {
             List<Actor> active = new List<Actor>(ControllableObjects.OfType<Actor>());
-            active.AddRange(GetRespondingNpcs());
-            return active.Except(inactive).ToList();
+            active.AddRange(GetNearbyNpcs());
+            foreach (var npc in GetNearbyNpcs())
+            {
+                if (!involved.Contains(npc)) involved.Add(npc);
+                if (npc.IsActive) active.Add(npc);
+            }
+            return active;
         }
     }
 }

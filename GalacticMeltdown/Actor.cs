@@ -4,7 +4,10 @@ namespace GalacticMeltdown;
 
 public abstract class Actor : IObjectOnMap
 {
-    protected bool Dead;
+    protected bool TurnStopped;
+    
+    public bool IsActive => Hp > 0 && Energy > 0 && !TurnStopped;
+
     protected LimitedNumber HpLim;
 
     public int Hp
@@ -13,7 +16,7 @@ public abstract class Actor : IObjectOnMap
         protected set
         {
             HpLim.Value = value;
-            if (value <= 0) Die();
+            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -24,9 +27,8 @@ public abstract class Actor : IObjectOnMap
         get => EnergyLim.Value;
         protected set
         {
-            if (value < EnergyLim.Value) SendSpentEnergy();
             EnergyLim.Value = value;
-            if (Energy <= 0) OutOfEnergy();
+            if (value < EnergyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -44,10 +46,8 @@ public abstract class Actor : IObjectOnMap
     public Level Level { get; }
 
     public event EventHandler Died;
-    public event EventHandler RanOutOfEnergy;
-    public event EventHandler Stopped;
     public event EventHandler SpentEnergy;
-    public event EventHandler Affected;
+    public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
 
     protected void MoveTo(int x, int y)
@@ -57,20 +57,10 @@ public abstract class Actor : IObjectOnMap
         Y = y;
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
-    
-    public void SendSpentEnergy() => SpentEnergy?.Invoke(this, EventArgs.Empty);
 
-    public void StopTurn() => Stopped?.Invoke(this, EventArgs.Empty);
+    public void StopTurn() => TurnStopped = true;
 
-    public void Die()
-    {
-        Dead = true;
-        Died?.Invoke(this, EventArgs.Empty);
-    }
-
-    public void OutOfEnergy() => RanOutOfEnergy?.Invoke(this, EventArgs.Empty);
-
-    public void SendAffected() => Affected?.Invoke(this, EventArgs.Empty);
+    public void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
@@ -81,7 +71,7 @@ public abstract class Actor : IObjectOnMap
         Def = def;
         X = x;
         Y = y;
-        Dead = false;
+        TurnStopped = false;
     }
 
     public virtual void Hit(Actor hitter, int damage)
@@ -91,6 +81,8 @@ public abstract class Actor : IObjectOnMap
 
     public virtual void FinishTurn()
     {
+        if (Hp <= 0) return;
+        TurnStopped = false;
         Energy += EnergyLim.MaxValue;
     }
 }
