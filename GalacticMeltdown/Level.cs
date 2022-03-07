@@ -237,8 +237,10 @@ public partial class Level
     public bool DoTurn()
     {
         if (!IsActive) return false;
-
+        
         HashSet<Actor> involved = new();
+        _listener.NpcInvolvedInTurn += NpcInvolvedInTurnHandler;
+        
         List<Actor> currentlyActive;
         bool energySpent = false;
         while ((currentlyActive = GetActive()).Any())
@@ -267,12 +269,18 @@ public partial class Level
 
         bool FinishMapTurn()
         {
+            _listener.NpcInvolvedInTurn -= NpcInvolvedInTurnHandler;
             foreach (var actor in involved)
             {
                 FinishActorTurn(actor);
             }
             TurnFinished?.Invoke(this, EventArgs.Empty);
             return IsActive;
+        }
+
+        void NpcInvolvedInTurnHandler(object npc, EventArgs _)
+        {
+            if (!involved.Contains(npc)) involved.Add((Npc) npc);
         }
 
         void WatchActor(Actor actor)
