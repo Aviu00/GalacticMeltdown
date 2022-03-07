@@ -6,7 +6,11 @@ namespace GalacticMeltdown.Views;
 
 public abstract class View
 {
-    public abstract ViewCellData GetSymbol(int x, int y);
+    private readonly string _id;
+    
+    protected int Width;
+    protected int Height;
+    
     public abstract event EventHandler NeedRedraw;
     public abstract event EventHandler<CellChangeEventArgs> CellsChanged;
 
@@ -15,20 +19,18 @@ public abstract class View
         _id = UtilityFunctions.RandomString(16);
     }
 
-    protected int Width;
-    protected int Height;
-    private readonly string _id;
-
     public virtual void Resize(int width, int height)
     {
         Width = width;
         Height = height;
     }
 
-    public override int GetHashCode() => _id.GetHashCode();
-
     public override bool Equals(object obj)
     {
         return ReferenceEquals(this, obj);
     }
+    
+    public override int GetHashCode() => _id.GetHashCode();
+    
+    public abstract ViewCellData GetSymbol(int x, int y);
 }
