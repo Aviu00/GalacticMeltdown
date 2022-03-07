@@ -8,7 +8,7 @@ namespace GalacticMeltdown.Rendering;
 
 public class ButtonListView : View
 {
-    public override event ViewChangedEventHandler NeedRedraw;
+    public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     private readonly ImmutableList<MenuButtonInfo> _buttons;
@@ -60,7 +60,7 @@ public class ButtonListView : View
     {
         _currentButtonIndex = (_currentButtonIndex + 1) % _buttons.Count;
         UpdateOutVars();
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void SelectPrev()
@@ -68,7 +68,7 @@ public class ButtonListView : View
         _currentButtonIndex -= 1;
         if (_currentButtonIndex == -1) _currentButtonIndex = _buttons.Count - 1;
         UpdateOutVars();
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateOutVars()

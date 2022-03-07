@@ -14,7 +14,7 @@ public class LevelView : View
     private ObservableCollection<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
     private (char symbol, ConsoleColor color)?[,] _seenCells;
-    public override event ViewChangedEventHandler NeedRedraw;
+    public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     public LevelView(Level level)
@@ -102,7 +102,7 @@ public class LevelView : View
         return x >= 0 && x < _seenCells.GetLength(0) && y >= 0 && y < _seenCells.GetLength(1);
     }
 
-    private void UpdateVisiblePoints()
+    private void UpdateVisiblePoints(object sender = null, EventArgs _ = null)
     {
         _visiblePoints = _sightedObjects
             .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray)).ToHashSet();
@@ -113,7 +113,7 @@ public class LevelView : View
             if (tile is not null) _seenCells[x, y] = tile.SymbolData;
         }
 
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void SetFocus(IFocusable focusObj)
@@ -123,14 +123,14 @@ public class LevelView : View
         _focusObject = focusObj;
         _focusObject.InFocus = true;
         _focusObject.Moved += FocusObjectMoved;
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private void FocusObjectMoved(object sender, MoveEventArgs _)
     {
         // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public override ViewCellData GetSymbol(int x, int y)

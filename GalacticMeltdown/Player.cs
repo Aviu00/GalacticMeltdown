@@ -22,7 +22,7 @@ public class Player : Actor, IControllable
         set
         {
             _xray = value;
-            VisiblePointsChanged?.Invoke();
+            VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -34,12 +34,12 @@ public class Player : Actor, IControllable
             if (value > 0)
             {
                 _viewRadius = value;
-                VisiblePointsChanged?.Invoke();
+                VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
             }
         }
     }
 
-    public event VisiblePointsChangedEventHandler VisiblePointsChanged;
+    public event EventHandler VisiblePointsChanged;
 
     public bool TryMove(int deltaX, int deltaY)
     {
@@ -48,7 +48,7 @@ public class Player : Actor, IControllable
             return false;
 
         MoveTo(X + deltaX, Y + deltaY);
-        VisiblePointsChanged?.Invoke();
+        VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         return true;
     }
 

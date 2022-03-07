@@ -5,7 +5,7 @@ namespace GalacticMeltdown.Rendering;
 public abstract class View
 {
     public abstract ViewCellData GetSymbol(int x, int y);
-    public abstract event ViewChangedEventHandler NeedRedraw;
+    public abstract event EventHandler NeedRedraw;
     public abstract event EventHandler<CellChangeEventArgs> CellsChanged;
 
     protected View()

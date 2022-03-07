@@ -17,7 +17,7 @@ internal class LevelButtonInfo : MenuButtonInfo
 
 public class LevelManagementView : View
 {
-    public override event ViewChangedEventHandler NeedRedraw;
+    public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     private List<LevelButtonInfo> _menuLevels;
@@ -75,7 +75,7 @@ public class LevelManagementView : View
         }
 
         UpdateOutVars();
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private void TryStartLevel(string path)
@@ -135,7 +135,7 @@ public class LevelManagementView : View
         if (_isManagementSelected) _managementIndex = (_managementIndex + 1) % _managementButtonInfos.Count;
         else if (_menuLevels.Any()) _levelIndex = (_levelIndex + 1) % _menuLevels.Count; // Avoid zero division
         UpdateOutVars();
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void SelectPrev()
@@ -152,14 +152,14 @@ public class LevelManagementView : View
         }
 
         UpdateOutVars();
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void SwitchButtonGroup()
     {
         // can't select a level when none exist
         _isManagementSelected = _menuLevels.Any() ? !_isManagementSelected : true;
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public override void Resize(int width, int height)
@@ -200,7 +200,7 @@ public class LevelManagementView : View
             CalculateVisibleButtonText();
         }
 
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private void UpdateOutVars()

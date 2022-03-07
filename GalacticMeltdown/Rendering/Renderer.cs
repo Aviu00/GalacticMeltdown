@@ -7,8 +7,6 @@ namespace GalacticMeltdown.Rendering;
 
 public delegate void ViewChangedEventHandler(View sender);
 
-public delegate void CellsChangedEventHandler((View, HashSet<(int, int, ViewCellData)>) animInfo);
-
 public static class Renderer
 {
     private static LinkedList<(View, double, double, double, double)> _views;
@@ -140,7 +138,7 @@ public static class Renderer
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
-    private static void NeedRedrawHandler(View sender)
+    private static void NeedRedrawHandler(object sender, EventArgs _)
     {
         Redraw(); // The renderer is fast enough
     }

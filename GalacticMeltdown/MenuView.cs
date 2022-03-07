@@ -8,7 +8,7 @@ namespace GalacticMeltdown;
 
 public class MenuView : View
 {
-    public override event ViewChangedEventHandler NeedRedraw;
+    public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
     private Stack<View> _menus = new();
 
@@ -32,7 +32,7 @@ public class MenuView : View
         menu.Resize(Width, Height);
         menu.NeedRedraw += SendRedraw;
         menu.CellsChanged += SendAnim;
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
         InputProcessor.AddBinding(DataHolder.CurrentBindings.Selection, bindings);
         Renderer.Redraw();
     }
@@ -42,7 +42,7 @@ public class MenuView : View
         View menu = _menus.Pop();
         menu.NeedRedraw -= SendRedraw;
         menu.CellsChanged -= SendAnim;
-        NeedRedraw?.Invoke(this);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
         InputProcessor.RemoveLastBinding();
     }
 
@@ -72,7 +72,7 @@ public class MenuView : View
             });
     }
 
-    private void SendRedraw(View view) => NeedRedraw?.Invoke(this);
+    private void SendRedraw(object view, EventArgs _) => NeedRedraw?.Invoke(view, EventArgs.Empty);
 
     private void SendAnim(object sender, CellChangeEventArgs e) => CellsChanged?.Invoke(sender, e);
 }

@@ -87,7 +87,7 @@ public partial class Level
         SomethingMoved?.Invoke(sender, e);
     }
 
-    private void NpcDeathHandler(Actor npc) => NpcDied?.Invoke(npc, EventArgs.Empty);
+    private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
 
     private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
@@ -104,7 +104,7 @@ public partial class Level
             }
     }
 
-    private void PlayerDiedHandler(Actor actor)
+    private void PlayerDiedHandler(object _, EventArgs __)
     {
         PlayerWon = false;
         IsActive = false;
@@ -244,9 +244,9 @@ public partial class Level
         TurnFinished?.Invoke(this, EventArgs.Empty);
         return IsActive;
 
-        void BecameInactiveHandler(Actor sender)
+        void BecameInactiveHandler(object sender, EventArgs _)
         {
-            if (!inactive.Contains(sender)) inactive.Add(sender);
+            if (!inactive.Contains(sender)) inactive.Add((Actor) sender);
         }
 
         void Watch(Actor actor)

@@ -13,7 +13,7 @@ public class Chunk
     public List<Enemy> Enemies { get; }
 
     public event EventHandler<MoveEventArgs> SomethingMoved;
-    public event DiedEventHandler NpcDied;
+    public event EventHandler NpcDied;
 
     public Chunk(Tile[,] tiles, double difficulty)
     {
@@ -34,10 +34,10 @@ public class Chunk
         SomethingMoved?.Invoke(sender, e);
     }
 
-    private void DiedHandler(Actor sender)
+    private void DiedHandler(object sender, EventArgs _)
     {
         RemoveNpc((Npc) sender);
-        NpcDied?.Invoke(sender);
+        NpcDied?.Invoke(sender, EventArgs.Empty);
     }
 
     public List<Npc> GetNpcs()

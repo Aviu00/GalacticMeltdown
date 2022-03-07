@@ -2,14 +2,6 @@ using System;
 
 namespace GalacticMeltdown;
 
-public delegate void DiedEventHandler(Actor sender);
-
-public delegate void OutOfEnergyEventHandler(Actor sender);
-
-public delegate void StoppedEventHandler(Actor sender);
-
-public delegate void AffectedEventHandler(Actor sender);
-
 public abstract class Actor : IObjectOnMap
 {
     protected bool Dead;
@@ -50,10 +42,10 @@ public abstract class Actor : IObjectOnMap
 
     public Level Level { get; }
 
-    public event DiedEventHandler Died;
-    public event OutOfEnergyEventHandler RanOutOfEnergy;
-    public event StoppedEventHandler Stopped;
-    public event AffectedEventHandler Affected;
+    public event EventHandler Died;
+    public event EventHandler RanOutOfEnergy;
+    public event EventHandler Stopped;
+    public event EventHandler Affected;
     public event EventHandler<MoveEventArgs> Moved;
 
     protected void MoveTo(int x, int y)
@@ -64,17 +56,17 @@ public abstract class Actor : IObjectOnMap
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
 
-    public void StopTurn() => Stopped?.Invoke(this);
+    public void StopTurn() => Stopped?.Invoke(this, EventArgs.Empty);
 
     public void Die()
     {
         Dead = true;
-        Died?.Invoke(this);
+        Died?.Invoke(this, EventArgs.Empty);
     }
 
-    public void OutOfEnergy() => RanOutOfEnergy?.Invoke(this);
+    public void OutOfEnergy() => RanOutOfEnergy?.Invoke(this, EventArgs.Empty);
 
-    public void SendAffected() => Affected?.Invoke(this);
+    public void SendAffected() => Affected?.Invoke(this, EventArgs.Empty);
 
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {

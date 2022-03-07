@@ -18,7 +18,7 @@ public interface ISightedObject : IHasCoords
 {
     int ViewRadius { get; }
     bool Xray { get; }
-    event VisiblePointsChangedEventHandler VisiblePointsChanged;
+    event EventHandler VisiblePointsChanged;
 }
 
 public interface IMovable : IHasCoords
