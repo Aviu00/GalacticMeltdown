@@ -7,12 +7,12 @@ namespace GalacticMeltdown.Data;
 
 public class TileTypesExtractor : XmlExtractor
 {
+    public Dictionary<string, TileTypeData> TileTypes { get; }
+    
     private static readonly string[] Directions =
     {
         "nesw", "nes", "new", "nsw", "esw", "ns", "ew", "ne", "es", "sw", "nw", "n", "e", "s", "w"
     };
-
-    public Dictionary<string, TileTypeData> TileTypes { get; }
 
     public TileTypesExtractor()
     {

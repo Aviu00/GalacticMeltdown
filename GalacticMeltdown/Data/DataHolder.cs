@@ -42,12 +42,6 @@ public static class DataHolder
         public const ConsoleColor MenuBorderColor = ConsoleColor.Yellow;
     }
 
-    static DataHolder()
-    {
-        TileTypes = new TileTypesExtractor().TileTypes;
-        Rooms = new RoomDataExtractor(TileTypes).Rooms;
-    }
-
     public struct CurrentBindings
     {
         public static Dictionary<ConsoleKey, PlaySession.PlayerAction> Player = new()
@@ -81,5 +75,11 @@ public static class DataHolder
             {ConsoleKey.Escape, SelectionControl.Back},
             {ConsoleKey.Tab, SelectionControl.SwitchButtonGroup},
         };
+    }
+    
+    static DataHolder()
+    {
+        TileTypes = new TileTypesExtractor().TileTypes;
+        Rooms = new RoomDataExtractor(TileTypes).Rooms;
     }
 }
