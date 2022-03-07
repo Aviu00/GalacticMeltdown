@@ -10,14 +10,14 @@ namespace GalacticMeltdown.Views;
 
 public class ButtonListView : View
 {
-    public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangeEventArgs> CellsChanged;
-
     private readonly ImmutableList<MenuButtonInfo> _buttons;
 
     private int _currentButtonIndex;
     private int _topVisibleButtonIndex;
     private int _selectedButtonY;
+
+    public override event EventHandler NeedRedraw;
+    public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     public ButtonListView(ICollection<Button> buttons)
     {
@@ -25,21 +25,6 @@ public class ButtonListView : View
         _buttons = ImmutableList<MenuButtonInfo>.Empty.AddRange(buttons.Select(button => new MenuButtonInfo(button)));
         _currentButtonIndex = 0;
         _topVisibleButtonIndex = 0;
-    }
-
-    private void CalculateButtonText()
-    {
-        foreach (MenuButtonInfo buttonInfo in _buttons)
-        {
-            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
-        }
-    }
-
-    public override void Resize(int width, int height)
-    {
-        base.Resize(width, height);
-        CalculateButtonText();
-        UpdateOutVars();
     }
 
     public override ViewCellData GetSymbol(int x, int y)
@@ -53,10 +38,7 @@ public class ButtonListView : View
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
     }
 
-    public void PressCurrent()
-    {
-        _buttons[_currentButtonIndex].Button.Press();
-    }
+    public void PressCurrent() => _buttons[_currentButtonIndex].Button.Press();
 
     public void SelectNext()
     {
@@ -71,6 +53,21 @@ public class ButtonListView : View
         if (_currentButtonIndex == -1) _currentButtonIndex = _buttons.Count - 1;
         UpdateOutVars();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+
+    public override void Resize(int width, int height)
+    {
+        base.Resize(width, height);
+        CalculateButtonText();
+        UpdateOutVars();
+    }
+
+    private void CalculateButtonText()
+    {
+        foreach (MenuButtonInfo buttonInfo in _buttons)
+        {
+            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
+        }
     }
 
     private void UpdateOutVars()
