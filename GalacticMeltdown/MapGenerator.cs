@@ -23,6 +23,7 @@ public class MapGenerator
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
     private const int ConnectionChance = 50; //room connection chance(this probably shouldn't be touched)
+    private const int ChunkSize = DataHolder.ChunkSize;
 
     public MapGenerator(int seed)
     {
@@ -181,7 +182,8 @@ public class MapGenerator
             if (i == endRoomIndex)
             {
                 currentChunk.IsEndPoint = true;
-                _endPoint = (currentChunk.MapX * 25 + 12, currentChunk.MapY * 25 + 12);
+                _endPoint = (currentChunk.MapX * ChunkSize + ChunkSize / 2,
+                    currentChunk.MapY * ChunkSize + ChunkSize / 2);
                 addDifficulty = -1;
             }
 
@@ -256,8 +258,9 @@ public class MapGenerator
         RotateRoomPattern(x, y, roomData, room);
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
-        _map[x, y] = _tempMap[x, y].GenerateSubMap(roomData, northernTileMap, easternTileMap);
-        if (_tempMap[x, y].IsStartPoint) _playerStartPoint = (x * 25 + 12, y * 25 + 12);
+        _map[x, y] = _tempMap[x, y].GenerateChunk(roomData, northernTileMap, easternTileMap);
+        if (_tempMap[x, y].IsStartPoint)
+            _playerStartPoint = (x * ChunkSize + ChunkSize / 2, y * ChunkSize + ChunkSize / 2);
     }
 
     private int CalculateRoomType(int x, int y)
@@ -393,14 +396,14 @@ public class MapGenerator
 
     private void GenerateBorderWalls()
     {
-        _westernWall = new Tile[_map.GetLength(1) * 25];
-        _southernWall = new Tile[_map.GetLength(0) * 25];
+        _westernWall = new Tile[_map.GetLength(1) * ChunkSize];
+        _southernWall = new Tile[_map.GetLength(0) * ChunkSize];
         for (int mapX = 0; mapX < _map.GetLength(0); mapX++)
         {
-            for (int x = 0; x < 25; x++)
+            for (int x = 0; x < ChunkSize; x++)
             {
-                int tileX = mapX * 25 + x;
-                string wallKey = x == 24 ? "wall_nesw" :
+                int tileX = mapX * ChunkSize + x;
+                string wallKey = x == ChunkSize - 1 ? "wall_nesw" :
                     _map[mapX, 0].Tiles[x, 0].ConnectToWalls ? "wall_new" : "wall_ew";
                 _southernWall[tileX] = new Tile(DataHolder.TileTypes[wallKey]);
             }
@@ -408,10 +411,10 @@ public class MapGenerator
 
         for (int mapY = 0; mapY < _map.GetLength(1); mapY++)
         {
-            for (int y = 0; y < 25; y++)
+            for (int y = 0; y < ChunkSize; y++)
             {
-                int tileY = mapY * 25 + y;
-                string wallKey = y == 24 ? "wall_nesw" :
+                int tileY = mapY * ChunkSize + y;
+                string wallKey = y == ChunkSize - 1 ? "wall_nesw" :
                     _map[0, mapY].Tiles[0, y].ConnectToWalls ? "wall_nes" : "wall_ns";
                 _westernWall[tileY] = new Tile(DataHolder.TileTypes[wallKey]);
             }

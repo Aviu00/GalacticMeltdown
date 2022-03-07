@@ -16,6 +16,8 @@ public partial class Level
     private const int EnemyRadiusControllable = 1;
 
     private const int SpawnRadius = 5;
+    
+    private const int ChunkSize = DataHolder.ChunkSize;
 
     private readonly Tile[] _southernWall;
     private readonly Tile[] _westernWall;
@@ -32,7 +34,7 @@ public partial class Level
 
     public (int x, int y) Size
     {
-        get => (_chunks.GetLength(0) * DataHolder.ChunkSize + 1, _chunks.GetLength(1) * DataHolder.ChunkSize + 1);
+        get => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
     }
 
     public bool IsActive { get; private set; }
@@ -166,8 +168,8 @@ public partial class Level
         }
 
         var (chunkX, chunkY) = GetChunk(x, y);
-        int localX = x % DataHolder.ChunkSize;
-        int localY = y % DataHolder.ChunkSize;
+        int localX = x % ChunkSize;
+        int localY = y % ChunkSize;
         if (!(x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && chunkY < _chunks.GetLength(1)))
         {
             return null;
@@ -195,7 +197,7 @@ public partial class Level
 
     private static (int chunkX, int chunkY) GetChunk(int x, int y)
     {
-        return (x / DataHolder.ChunkSize, y / DataHolder.ChunkSize);
+        return (x / ChunkSize, y / ChunkSize);
     }
 
     private IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
