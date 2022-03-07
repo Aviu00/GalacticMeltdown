@@ -39,6 +39,17 @@ public class Player : Actor, IControllable
     }
 
     public event EventHandler VisiblePointsChanged;
+    
+    public Player(int x, int y, Level level) : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
+    {
+        SymbolData = ('@', ConsoleColor.White);
+        BgColor = null;
+    }
+    
+    public void SetControlFunc(Action controlFunc)
+    {
+        DoAction = controlFunc;
+    }
 
     public bool TryMove(int deltaX, int deltaY)
     {
@@ -51,19 +62,8 @@ public class Player : Actor, IControllable
         return true;
     }
 
-    public Player(int x, int y, Level level) : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
-    {
-        SymbolData = ('@', ConsoleColor.White);
-        BgColor = null;
-    }
-
     public override void Hit(Actor hitter, int damage)
     {
         Hp -= damage;
-    }
-
-    public void SetControlFunc(Action controlFunc)
-    {
-        DoAction = controlFunc;
     }
 }
