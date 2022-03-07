@@ -24,6 +24,7 @@ public abstract class Actor : IObjectOnMap
         get => EnergyLim.Value;
         protected set
         {
+            if (value < EnergyLim.Value) SendSpentEnergy();
             EnergyLim.Value = value;
             if (Energy <= 0) OutOfEnergy();
         }
@@ -45,6 +46,7 @@ public abstract class Actor : IObjectOnMap
     public event EventHandler Died;
     public event EventHandler RanOutOfEnergy;
     public event EventHandler Stopped;
+    public event EventHandler SpentEnergy;
     public event EventHandler Affected;
     public event EventHandler<MoveEventArgs> Moved;
 
@@ -55,6 +57,8 @@ public abstract class Actor : IObjectOnMap
         Y = y;
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
+    
+    public void SendSpentEnergy() => SpentEnergy?.Invoke(this, EventArgs.Empty);
 
     public void StopTurn() => Stopped?.Invoke(this, EventArgs.Empty);
 

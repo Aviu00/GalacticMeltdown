@@ -220,6 +220,7 @@ public partial class Level
         HashSet<Actor> inactive = new();
         HashSet<Actor> affected = new();
         List<Actor> currentlyActive;
+        bool energySpent = false;
         while ((currentlyActive = GetActive()).Any())
         {
             foreach (var actor in currentlyActive.Where(actor => !affected.Contains(actor)))
@@ -230,23 +231,33 @@ public partial class Level
             foreach (var actor in currentlyActive)
             {
                 // A player may have reached the finish or died
-                if (!IsActive) return false;
+                if (!IsActive) return FinishMapTurn();
                 // An actor could die due to actions of another actor
                 if (!inactive.Contains(actor)) actor.DoAction();
             }
+
+            if (!energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
+
+            energySpent = false;
         }
 
-        foreach (var actor in affected)
-        {
-            FinishTurn(actor);
-        }
-
-        TurnFinished?.Invoke(this, EventArgs.Empty);
-        return IsActive;
+        return FinishMapTurn();
 
         void BecameInactiveHandler(object sender, EventArgs _)
         {
             if (!inactive.Contains(sender)) inactive.Add((Actor) sender);
+        }
+
+        void SpentEnergyHandler(object sender, EventArgs _) => energySpent = true;
+
+        bool FinishMapTurn()
+        {
+            foreach (var actor in affected)
+            {
+                FinishTurn(actor);
+            }
+            TurnFinished?.Invoke(this, EventArgs.Empty);
+            return IsActive;
         }
 
         void Watch(Actor actor)
@@ -254,6 +265,7 @@ public partial class Level
             actor.Stopped += BecameInactiveHandler;
             actor.Died += BecameInactiveHandler;
             actor.RanOutOfEnergy += BecameInactiveHandler;
+            actor.SpentEnergy += SpentEnergyHandler;
             affected.Add(actor);
         }
 
@@ -262,6 +274,7 @@ public partial class Level
             actor.RanOutOfEnergy -= BecameInactiveHandler;
             actor.Stopped -= BecameInactiveHandler;
             actor.Died -= BecameInactiveHandler;
+            actor.SpentEnergy -= SpentEnergyHandler;
             actor.FinishTurn();
         }
 
