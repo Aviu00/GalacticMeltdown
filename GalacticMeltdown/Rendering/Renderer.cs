@@ -5,8 +5,6 @@ using System.Text;
 
 namespace GalacticMeltdown.Rendering;
 
-public delegate void ViewChangedEventHandler(View sender);
-
 public static class Renderer
 {
     private static LinkedList<(View, double, double, double, double)> _views;

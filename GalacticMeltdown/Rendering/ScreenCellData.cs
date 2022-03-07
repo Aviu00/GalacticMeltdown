@@ -2,8 +2,6 @@ using System;
 
 namespace GalacticMeltdown.Rendering;
 
-public delegate ScreenCellData GetSymbolAt(int x, int y);
-
 public struct ScreenCellData
 {
     public char Symbol;
