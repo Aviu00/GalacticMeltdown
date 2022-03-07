@@ -14,10 +14,10 @@ internal class ChunkEventListener
     public event EventHandler<MoveEventArgs> SomethingMoved;
     public event EventHandler NpcInvolvedInTurn;
     private void SomethingMovedHandler(object sender, MoveEventArgs e) => SomethingMoved?.Invoke(sender, e);
-    
+
     private void NpcDeathHandler(object npc, EventArgs e) => NpcDied?.Invoke(npc, e);
     private void NpcInvolvedHandler(object npc, EventArgs e) => NpcInvolvedInTurn?.Invoke(npc, e);
-    
+
     public ChunkEventListener(Chunk[,] chunks)
     {
         foreach (var chunk in chunks)
@@ -35,7 +35,7 @@ public partial class Level
     private const int EnemyRadiusControllable = 1;
 
     private const int SpawnRadius = 5;
-    
+
     private const int ChunkSize = DataHolder.ChunkSize;
 
     private readonly Tile[] _southernWall;
@@ -149,10 +149,10 @@ public partial class Level
                     if (ControllableObjects.All(obj =>
                         {
                             var (objChunkX, objChunkY) = GetChunk(obj.X, obj.Y);
-                            return Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius &&
-                                   Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius && chunkCoords.x >= 0 &&
-                                   chunkCoords.x < _chunks.GetLength(0) && chunkCoords.y >= 0 &&
-                                   chunkCoords.y < _chunks.GetLength(1);
+                            return chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0) 
+                                && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1)
+                                && Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
+                                && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
                         }))
                         yield return chunkCoords;
                 }
@@ -237,10 +237,10 @@ public partial class Level
     public bool DoTurn()
     {
         if (!IsActive) return false;
-        
+
         HashSet<Actor> involved = new();
         _listener.NpcInvolvedInTurn += NpcInvolvedInTurnHandler;
-        
+
         List<Actor> currentlyActive;
         bool energySpent = false;
         while ((currentlyActive = GetActive()).Any())
@@ -274,6 +274,7 @@ public partial class Level
             {
                 FinishActorTurn(actor);
             }
+
             TurnFinished?.Invoke(this, EventArgs.Empty);
             return IsActive;
         }
@@ -326,6 +327,7 @@ public partial class Level
                 if (!involved.Contains(npc)) involved.Add(npc);
                 if (npc.IsActive) active.Add(npc);
             }
+
             return active;
         }
     }
