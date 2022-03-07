@@ -77,7 +77,7 @@ public class TileTypesExtractor : XmlExtractor
             TileTypeData tileTypeData = new TileTypeData(symbol, color, isWalkable, isTransparent, name, id,
                 isConnection, isConnectable, isDependingOnRoomConnection);
             TileTypes.Add(tileTypeData.Id, tileTypeData);
-            if (symbols == null || !isConnectable) continue;
+            if (symbols is null || !isConnectable) continue;
             //generate connections
             //log an error if symbols length is not 15
             for (int i = 0; i < 15; i++)

@@ -87,7 +87,7 @@ public class ChunkGenerator
     {
         for (int x = 0; x < 25; x++)
         {
-            TileTypeData terrainObject = NorthConnection == null || x is not (11 or 12)
+            TileTypeData terrainObject = NorthConnection is null || x is not (11 or 12)
                 ? GetConnectableData(roomData, x, 24, northernTileMap?[x, 0].ConnectToWalls, overrideId: "wall")
                 : DataHolder.TileTypes["floor"]; //will be changed to "door" later
             Tiles[x, 24] = new Tile(terrainObject);
@@ -95,7 +95,7 @@ public class ChunkGenerator
 
         for (int y = 0; y < 24; y++)
         {
-            TileTypeData terrainObject = EastConnection == null || y is not (11 or 12)
+            TileTypeData terrainObject = EastConnection is null || y is not (11 or 12)
                 ? GetConnectableData(roomData, 24, y, easternTileConnectable: easternTileMap?[0, y].ConnectToWalls,
                     overrideId: "wall")
                 : DataHolder.TileTypes["floor"]; //will be changed to "door" later
@@ -130,10 +130,10 @@ public class ChunkGenerator
         string[] parsedId = roomData[x, y].Id.Split('_');
         bool switchId = parsedId[2] switch
         {
-            "north" => NorthConnection == null,
-            "east" => EastConnection == null,
-            "south" => SouthConnection == null,
-            "west" => WestConnection == null,
+            "north" => NorthConnection is null,
+            "east" => EastConnection is null,
+            "south" => SouthConnection is null,
+            "west" => WestConnection is null,
             _ => false
         };
 
@@ -162,7 +162,7 @@ public class ChunkGenerator
             '╵',
             '0'
         };
-        if (NorthConnection == null)
+        if (NorthConnection is null)
         {
             symbols.Remove('┼');
             symbols.Remove('├');
@@ -174,7 +174,7 @@ public class ChunkGenerator
             symbols.Remove('╵');
         }
 
-        if (SouthConnection == null)
+        if (SouthConnection is null)
         {
             symbols.Remove('┼');
             symbols.Remove('├');
@@ -186,7 +186,7 @@ public class ChunkGenerator
             symbols.Remove('╷');
         }
 
-        if (EastConnection == null)
+        if (EastConnection is null)
         {
             symbols.Remove('┼');
             symbols.Remove('├');
@@ -198,7 +198,7 @@ public class ChunkGenerator
             symbols.Remove('╶');
         }
 
-        if (WestConnection == null)
+        if (WestConnection is null)
         {
             symbols.Remove('┼');
             symbols.Remove('┤');
