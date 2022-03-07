@@ -13,8 +13,6 @@ public class Tile : IDrawable
     public bool IsWalkable => _typeData.IsWalkable;
 
     public bool ConnectToWalls => _typeData.IsConnection;
-    
-    public bool Seen = false;
 
     public Tile(TileTypeData typeData)
     {
