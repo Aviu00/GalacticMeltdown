@@ -38,32 +38,7 @@ public static class FilesystemLevelManager
             new("..", 5, "ExampleName22"),
         };
     }
-
-    public static bool RemoveLevel(string path)
-    {
-        // returns false on failure
-        return true;
-    }
-
-    public static bool SaveLevel(Level level, string path)
-    {
-        // returns false on failure
-        return true;
-    }
-
-    public static (Level level, int seed) GetLevel(string path)
-    {
-        // Tries to restore the level from path, returns null on failure
-        int seed = Random.Shared.Next(0, 1000000000);
-        Level level = new MapGenerator(seed).Generate();
-        return (level, seed);
-    }
-
-    private static string GetSaveFolder()
-    {
-        return $"~/.galactic-meltdown/levels/{UtilityFunctions.RandomString(16)}";
-    }
-
+    
     public static string CreateLevel(int seed, string name)
     {
         Level level = new MapGenerator(seed).Generate();
@@ -71,5 +46,30 @@ public static class FilesystemLevelManager
         // Save seed and name
         SaveLevel(level, path);
         return path;
+    }
+    
+    public static (Level level, int seed) GetLevel(string path)
+    {
+        // Tries to restore the level from path, returns null on failure
+        int seed = Random.Shared.Next(0, 1000000000);
+        Level level = new MapGenerator(seed).Generate();
+        return (level, seed);
+    }
+    
+    public static bool SaveLevel(Level level, string path)
+    {
+        // returns false on failure
+        return true;
+    }
+
+    public static bool RemoveLevel(string path)
+    {
+        // returns false on failure
+        return true;
+    }
+
+    private static string GetSaveFolder()
+    {
+        return $"~/.galactic-meltdown/levels/{UtilityFunctions.RandomString(16)}";
     }
 }
