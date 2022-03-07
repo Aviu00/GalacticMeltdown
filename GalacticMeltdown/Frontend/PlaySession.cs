@@ -62,15 +62,11 @@ public partial class PlaySession
 
     private static void MoveControlled(int deltaX, int deltaY)
     {
-        if (_controlledObject.TryMove(deltaX, deltaY))
+        if (!_controlledObject.TryMove(deltaX, deltaY)) return;
+        if (_controlledObject is Actor)
         {
-            if (_controlledObject is Actor)
-            {
-                InputProcessor.ClearBindings();
-                InputProcessor.StopProcessLoop();
-            }
-
-            Renderer.Redraw();
+            InputProcessor.ClearBindings();
+            InputProcessor.StopProcessLoop();
         }
     }
 

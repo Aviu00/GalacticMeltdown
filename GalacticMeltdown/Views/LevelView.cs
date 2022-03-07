@@ -34,7 +34,7 @@ public class LevelView : View
         }
 
         var (width, height) = _level.Size;
-        _seenCells = new (char symbol, ConsoleColor color)?[width, height];
+        _seenCells = new (char symbol, ConsoleColor color)?[width + 1, height + 1];
         UpdateVisiblePoints();
     }
 
@@ -113,9 +113,9 @@ public class LevelView : View
             .ToHashSet();
         foreach (var (x, y) in _visiblePoints)
         {
-            if (!Inbounds(x, y)) continue;
+            if (!Inbounds(x + 1, y + 1)) continue;
             var tile = _level.GetTile(x, y);
-            if (tile is not null) _seenCells[x, y] = tile.SymbolData;
+            if (tile is not null) _seenCells[x + 1, y + 1] = tile.SymbolData;
         }
 
         NeedRedraw?.Invoke(this, EventArgs.Empty);
@@ -155,8 +155,8 @@ public class LevelView : View
                 : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
         }
 
-        if (Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-            return new ViewCellData((_seenCells[levelX, levelY].Value.symbol, DataHolder.Colors.OutOfVisionTileColor),
+        if (Inbounds(levelX + 1, levelY + 1) && _seenCells[levelX + 1, levelY + 1] is not null)
+            return new ViewCellData((_seenCells[levelX + 1, levelY + 1].Value.symbol, DataHolder.Colors.OutOfVisionTileColor),
                 null);
         return new ViewCellData(null, null);
     }
