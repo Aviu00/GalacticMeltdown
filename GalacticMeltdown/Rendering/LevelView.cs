@@ -20,6 +20,8 @@ public class LevelView : View
     public LevelView(Level level)
     {
         _level = level;
+        _level.SomethingMoved += MoveHandler;
+        _level.NpcDied += DeathHandler;
         _sightedObjects = _level.SightedObjects;
         _sightedObjects.CollectionChanged += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
@@ -30,6 +32,44 @@ public class LevelView : View
         var (width, height) = _level.Size;
         _seenCells = new (char symbol, ConsoleColor color)?[width, height];
         UpdateVisiblePoints();
+    }
+
+    private (int screenX, int screenY) ToViewCoords(int xLevel, int yLevel)
+    {
+        return Utility.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, _focusObject.X, _focusObject.Y);
+    }
+
+    private void MoveHandler(IMovable movable, int x0, int y0, int x1, int y1)
+    {
+        HashSet<(int, int, ViewCellData)> updated = new(2);
+        if (_visiblePoints.Contains((x0, y0)))
+        {
+            IDrawable drawableObj = _level.GetDrawable(x0, y0);
+            var (viewX, viewY) = ToViewCoords(x0, y0);
+            updated.Add((viewX, viewY, drawableObj is null
+                ? new ViewCellData(null, null)
+                : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
+        }
+        if (_visiblePoints.Contains((x1, y1)))
+        {
+            IDrawable drawableObj = _level.GetDrawable(x1, y1);
+            var (viewX, viewY) = ToViewCoords(x1, y1);
+            updated.Add((viewX, viewY, drawableObj is null
+                ? new ViewCellData(null, null)
+                : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
+        }
+        if (updated.Any()) CellsChanged?.Invoke((this, updated));
+    }
+
+    private void DeathHandler(Actor actor)
+    {
+        if (!_visiblePoints.Contains((actor.X, actor.Y))) return;
+        IDrawable drawableObj = _level.GetDrawable(actor.X, actor.Y);
+        var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
+        CellsChanged?.Invoke((this, new HashSet<(int, int, ViewCellData)>
+        {
+            (viewX, viewY, new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor))
+        }));
     }
 
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
