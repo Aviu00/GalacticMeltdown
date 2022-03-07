@@ -14,6 +14,7 @@ public class Chunk
 
     public event EventHandler<MoveEventArgs> SomethingMoved;
     public event EventHandler NpcDied;
+    public event EventHandler NpcInvolvedInTurn;
 
     public Chunk(Tile[,] tiles, double difficulty)
     {
@@ -40,6 +41,11 @@ public class Chunk
         NpcDied?.Invoke(sender, EventArgs.Empty);
     }
 
+    private void InvolvedInTurnHandler(object sender, EventArgs e)
+    {
+        NpcInvolvedInTurn?.Invoke(sender, e);
+    }
+
     public List<Npc> GetNpcs()
     {
         List<Npc> npcs = new();
@@ -52,6 +58,7 @@ public class Chunk
         if (npc is Enemy enemy) Enemies.Add(enemy);
         npc.Moved += MovedHandler;
         npc.Died += DiedHandler;
+        npc.InvolvedInTurn += InvolvedInTurnHandler;
     }
 
     public void RemoveNpc(Npc npc)
@@ -59,6 +66,7 @@ public class Chunk
         if (npc is Enemy enemy) Enemies.Remove(enemy);
         npc.Moved -= MovedHandler;
         npc.Died -= DiedHandler;
+        npc.InvolvedInTurn -= InvolvedInTurnHandler;
     }
 
     public void SuggestEnemySpawn()
