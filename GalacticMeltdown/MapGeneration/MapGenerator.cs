@@ -11,21 +11,26 @@ namespace GalacticMeltdown.MapGeneration;
 
 public class MapGenerator
 {
-    private readonly Random _rng;
-    private ChunkGenerator[,] _tempMap;
-    private Chunk[,] _map;
-    private List<(int min, int max)> _bars;
-    private int _maxPoint;
-    private int _minPoint;
-    private (int x, int y) _playerStartPoint;
-    private Tile[] _westernWall;
-    private Tile[] _southernWall;
-    private (int x, int y) _endPoint;
-
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
     private const int MapWidth = 20; //width is specified; height is random
     private const int ConnectionChance = 50; //room connection chance(this probably shouldn't be touched)
     private const int ChunkSize = DataHolder.ChunkSize;
+    
+    private readonly Random _rng;
+    
+    private ChunkGenerator[,] _tempMap;
+    private Chunk[,] _map;
+    
+    private List<(int min, int max)> _bars;
+    
+    private int _maxPoint;
+    private int _minPoint;
+
+    private Tile[] _westernWall;
+    private Tile[] _southernWall;
+    
+    private (int x, int y) _playerStartPoint;
+    private (int x, int y) _endPoint;
 
     public MapGenerator(int seed)
     {
