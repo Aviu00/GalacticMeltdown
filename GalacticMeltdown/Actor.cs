@@ -13,26 +13,26 @@ public delegate void AffectedEventHandler(Actor sender);
 public abstract class Actor : IObjectOnMap
 {
     protected bool Dead;
-    protected LimitedNumber _hp;
+    protected LimitedNumber HpLim;
 
     public int Hp
     {
-        get => _hp.Value;
+        get => HpLim.Value;
         protected set
         {
-            _hp.Value = value;
+            HpLim.Value = value;
             if (value <= 0) Die();
         }
     }
 
-    protected LimitedNumber _energy;
+    protected LimitedNumber EnergyLim;
 
     public int Energy
     {
-        get => _energy.Value;
+        get => EnergyLim.Value;
         protected set
         {
-            _energy.Value = value;
+            EnergyLim.Value = value;
             if (Energy <= 0) OutOfEnergy();
         }
     }
@@ -79,8 +79,8 @@ public abstract class Actor : IObjectOnMap
     public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
         Level = level;
-        _hp = new LimitedNumber(maxHp, maxHp);
-        _energy = new LimitedNumber(maxEnergy, maxEnergy);
+        HpLim = new LimitedNumber(maxHp, maxHp);
+        EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dex = dex;
         Def = def;
         X = x;
@@ -95,6 +95,6 @@ public abstract class Actor : IObjectOnMap
 
     public virtual void FinishTurn()
     {
-        Energy += _energy.MaxValue;
+        Energy += EnergyLim.MaxValue;
     }
 }
