@@ -9,7 +9,7 @@ namespace GalacticMeltdown.Rendering;
 public class ButtonListView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
-    public override event CellsChangedEventHandler CellsChanged;
+    public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     private readonly ImmutableList<MenuButtonInfo> _buttons;
 

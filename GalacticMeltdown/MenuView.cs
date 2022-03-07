@@ -9,7 +9,7 @@ namespace GalacticMeltdown;
 public class MenuView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
-    public override event CellsChangedEventHandler CellsChanged;
+    public override event EventHandler<CellChangeEventArgs> CellsChanged;
     private Stack<View> _menus = new();
 
     public override ViewCellData GetSymbol(int x, int y)
@@ -74,6 +74,5 @@ public class MenuView : View
 
     private void SendRedraw(View view) => NeedRedraw?.Invoke(this);
 
-    private void SendAnim((View, HashSet<(int, int, ViewCellData)>) animInfo) =>
-        CellsChanged?.Invoke((this, animInfo.Item2));
+    private void SendAnim(object sender, CellChangeEventArgs e) => CellsChanged?.Invoke(sender, e);
 }

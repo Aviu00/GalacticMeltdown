@@ -18,7 +18,7 @@ internal class LevelButtonInfo : MenuButtonInfo
 public class LevelManagementView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
-    public override event CellsChangedEventHandler CellsChanged;
+    public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     private List<LevelButtonInfo> _menuLevels;
     private List<MenuButtonInfo> _managementButtonInfos;

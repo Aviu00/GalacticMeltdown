@@ -15,7 +15,7 @@ public class LevelView : View
     private HashSet<(int, int)> _visiblePoints;
     private (char symbol, ConsoleColor color)?[,] _seenCells;
     public override event ViewChangedEventHandler NeedRedraw;
-    public override event CellsChangedEventHandler CellsChanged;
+    public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     public LevelView(Level level)
     {
@@ -62,7 +62,7 @@ public class LevelView : View
                     : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
         }
 
-        if (updated.Any()) CellsChanged?.Invoke((this, updated));
+        if (updated.Any()) CellsChanged?.Invoke(this, new CellChangeEventArgs(updated));
     }
 
     private void DeathHandler(Actor actor)
@@ -70,8 +70,8 @@ public class LevelView : View
         if (!_visiblePoints.Contains((actor.X, actor.Y))) return;
         IDrawable drawableObj = _level.GetDrawable(actor.X, actor.Y);
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
-        CellsChanged?.Invoke((this,
-            new HashSet<(int, int, ViewCellData)>
+        CellsChanged?.Invoke(this,
+            new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)>
             {
                 (viewX, viewY, new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor))
             }));

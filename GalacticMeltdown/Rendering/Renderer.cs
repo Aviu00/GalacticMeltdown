@@ -196,9 +196,9 @@ public static class Renderer
         Console.SetCursorPosition(0, 0);
     }
 
-    private static void AddAnimation((View, HashSet<(int, int, ViewCellData)>) animInfo)
+    private static void AddAnimation(object sender, CellChangeEventArgs e)
     {
-        _animations.AddLast(animInfo);
+        _animations.AddLast(((View) sender, e.Cells));
     }
 
     public static void PlayAnimations()

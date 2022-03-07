@@ -10,7 +10,7 @@ public class OverlayView : View
     
     private ViewCellData[,] _symbols;
     public override event ViewChangedEventHandler NeedRedraw;
-    public override event CellsChangedEventHandler CellsChanged;
+    public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     public OverlayView(Level level)
     {
