@@ -1,4 +1,5 @@
 using GalacticMeltdown.Frontend.Rendering;
+using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Frontend;
@@ -20,7 +21,7 @@ public static class Game
         Renderer.CleanUp();
     }
 
-    public static void StartLevel(LevelRelated.Level level, string savePath)
+    public static void StartLevel(Level level, string savePath)
     {
         Renderer.ClearViews();
         InputProcessor.ClearBindings();

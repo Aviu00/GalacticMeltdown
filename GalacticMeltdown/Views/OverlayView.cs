@@ -1,12 +1,13 @@
 using System;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.LevelRelated;
 
 namespace GalacticMeltdown.Views;
 
 public class OverlayView : View
 {
-    private LevelRelated.Level _level; // Minimap, Enemy-in-sight indicator, (?) Event log
+    private Level _level; // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player; // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?
 
@@ -14,7 +15,7 @@ public class OverlayView : View
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
-    public OverlayView(LevelRelated.Level level)
+    public OverlayView(Level level)
     {
         _level = level;
         _player = level.Player;

@@ -1,12 +1,13 @@
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.LevelRelated;
 
 namespace GalacticMeltdown.Behaviors;
 
 public class MoveStrategy : Behavior
 {
-    private readonly LevelRelated.Level _level;
+    private readonly Level _level;
 
-    public MoveStrategy(Npc target, LevelRelated.Level level)
+    public MoveStrategy(Npc target, Level level)
     {
         Target = target;
         _level = level;

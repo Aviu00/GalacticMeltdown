@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using GalacticMeltdown.Behaviors;
+using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Actors;
@@ -14,7 +15,7 @@ public abstract class Npc : Actor
 
     public MoveStrategy MoveStrategy { get; set; }
     
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, LevelRelated.Level level) 
+    protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
         : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
