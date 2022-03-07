@@ -4,9 +4,9 @@ namespace GalacticMeltdown.Frontend.Rendering;
 
 public readonly struct Button
 {
+    private readonly Action _action;
     private string TextLeft { get; }
     private string TextRight { get; }
-    private readonly Action _action;
 
     public Button(string textLeft, string textRight, Action action)
     {
@@ -14,8 +14,6 @@ public readonly struct Button
         TextRight = textRight;
         _action = action;
     }
-
-    public void Press() => _action?.Invoke();
 
     public string MakeText(int width)
     {
@@ -52,4 +50,6 @@ public readonly struct Button
 
         return screenText;
     }
+    
+    public void Press() => _action?.Invoke();
 }
