@@ -65,9 +65,12 @@ public class LevelView : View
         if (updated.Any()) CellsChanged?.Invoke(this, new CellChangeEventArgs(updated));
     }
 
-    private void DeathHandler(Actor actor)
+    private void DeathHandler(object sender, EventArgs _)
     {
+        if (sender is not Actor actor) return;
+        
         if (!_visiblePoints.Contains((actor.X, actor.Y))) return;
+        
         IDrawable drawableObj = _level.GetDrawable(actor.X, actor.Y);
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
         CellsChanged?.Invoke(this,

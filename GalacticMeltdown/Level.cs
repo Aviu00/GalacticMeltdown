@@ -8,8 +8,6 @@ using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown;
 
-public delegate void TurnFinishedEventHandler();
-
 public partial class Level
 {
     private const int EnemyRadiusPlayer = 3;
@@ -28,8 +26,8 @@ public partial class Level
     private readonly int _finishX;
     private readonly int _finishY;
 
-    public event TurnFinishedEventHandler TurnFinished;
-    public event DiedEventHandler NpcDied;
+    public event EventHandler TurnFinished;
+    public event EventHandler NpcDied;
     public event EventHandler<MoveEventArgs> SomethingMoved;
 
     public (int x, int y) Size
@@ -89,7 +87,7 @@ public partial class Level
         SomethingMoved?.Invoke(sender, e);
     }
 
-    private void NpcDeathHandler(Actor npc) => NpcDied?.Invoke(npc);
+    private void NpcDeathHandler(Actor npc) => NpcDied?.Invoke(npc, EventArgs.Empty);
 
     private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
@@ -243,7 +241,7 @@ public partial class Level
             FinishTurn(actor);
         }
 
-        TurnFinished?.Invoke();
+        TurnFinished?.Invoke(this, EventArgs.Empty);
         return IsActive;
 
         void BecameInactiveHandler(Actor sender)
