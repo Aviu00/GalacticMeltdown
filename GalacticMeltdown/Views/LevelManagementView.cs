@@ -25,7 +25,7 @@ public class LevelManagementView : View
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     private List<LevelButtonInfo> _menuLevels;
-    private List<MenuButtonInfo> _managementButtonInfos;
+    private readonly List<MenuButtonInfo> _managementButtonInfos;
 
     private int _levelIndex;
     private int _managementIndex;
@@ -175,14 +175,14 @@ public class LevelManagementView : View
 
     private void CalculateVisibleButtonText()
     {
-        for (int i = 0; i < _menuLevels.Count; i++)
+        foreach (LevelButtonInfo buttonInfo in _menuLevels)
         {
-            _menuLevels[i].RenderedText = _menuLevels[i].Button.MakeText(Width);
+            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
         }
 
-        for (int i = 0; i < _managementButtonInfos.Count; i++)
+        foreach (MenuButtonInfo buttonInfo in _managementButtonInfos)
         {
-            _managementButtonInfos[i].RenderedText = _managementButtonInfos[i].Button.MakeText(Width);
+            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
         }
     }
 

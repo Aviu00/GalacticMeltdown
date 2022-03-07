@@ -13,7 +13,7 @@ public class Chunk
     private double Difficulty { get; }
     public Tile[,] Tiles { get; }
 
-    public List<Enemy> Enemies { get; }
+    private List<Enemy> Enemies { get; }
 
     public event EventHandler<MoveEventArgs> SomethingMoved;
     public event EventHandler NpcDied;

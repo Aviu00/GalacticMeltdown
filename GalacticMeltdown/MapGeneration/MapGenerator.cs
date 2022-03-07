@@ -11,7 +11,7 @@ namespace GalacticMeltdown.MapGeneration;
 
 public class MapGenerator
 {
-    private Random _rng;
+    private readonly Random _rng;
     private ChunkGenerator[,] _tempMap;
     private Chunk[,] _map;
     private List<(int min, int max)> _bars;
@@ -29,12 +29,7 @@ public class MapGenerator
 
     public MapGenerator(int seed)
     {
-        ChangeSeed(seed);
-    }
-
-    public void ChangeSeed(int newSeed)
-    {
-        _rng = new Random(newSeed);
+        _rng = new Random(seed);
     }
 
     public Level Generate()

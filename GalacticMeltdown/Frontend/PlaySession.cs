@@ -8,7 +8,7 @@ namespace GalacticMeltdown.Frontend;
 
 public partial class PlaySession
 {
-    private string _savePath;
+    private readonly string _savePath;
     private static Player _player;
     private static IControllable _controlledObject;
     private static Level _level;

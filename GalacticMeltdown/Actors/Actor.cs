@@ -6,46 +6,46 @@ namespace GalacticMeltdown.Actors;
 
 public abstract class Actor : IObjectOnMap
 {
-    protected bool TurnStopped;
+    private bool _turnStopped;
 
-    public bool IsActive => Hp > 0 && Energy > 0 && !TurnStopped;
+    public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
-    protected LimitedNumber HpLim;
+    private readonly LimitedNumber _hpLim;
 
-    public int Hp
+    protected int Hp
     {
-        get => HpLim.Value;
-        protected set
+        get => _hpLim.Value;
+        set
         {
-            HpLim.Value = value;
+            _hpLim.Value = value;
             if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    protected LimitedNumber EnergyLim;
+    private readonly LimitedNumber _energyLim;
 
-    public int Energy
+    private int Energy
     {
-        get => EnergyLim.Value;
-        protected set
+        get => _energyLim.Value;
+        set
         {
-            EnergyLim.Value = value;
-            if (value < EnergyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
+            _energyLim.Value = value;
+            if (value < _energyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
         }
     }
 
     public int Dex { get; protected set; }
     public int Def { get; protected set; }
 
-    public int X { get; set; }
-    public int Y { get; set; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
 
     public (char symbol, ConsoleColor color) SymbolData { get; protected init; }
     public ConsoleColor? BgColor { get; protected init; }
 
     public Action DoAction { get; protected set; }
 
-    public Level Level { get; }
+    protected Level Level { get; }
 
     public event EventHandler Died;
     public event EventHandler SpentEnergy;
@@ -60,20 +60,20 @@ public abstract class Actor : IObjectOnMap
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
 
-    public void StopTurn() => TurnStopped = true;
+    public void StopTurn() => _turnStopped = true;
 
-    public void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
+    protected void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
 
-    public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
+    protected Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
         Level = level;
-        HpLim = new LimitedNumber(maxHp, maxHp);
-        EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
+        _hpLim = new LimitedNumber(maxHp, maxHp);
+        _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dex = dex;
         Def = def;
         X = x;
         Y = y;
-        TurnStopped = false;
+        _turnStopped = false;
     }
 
     public virtual void Hit(Actor hitter, int damage)
@@ -84,7 +84,7 @@ public abstract class Actor : IObjectOnMap
     public virtual void FinishTurn()
     {
         if (Hp <= 0) return;
-        TurnStopped = false;
-        Energy += EnergyLim.MaxValue;
+        _turnStopped = false;
+        Energy += _energyLim.MaxValue;
     }
 }

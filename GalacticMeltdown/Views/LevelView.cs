@@ -13,7 +13,7 @@ namespace GalacticMeltdown.Views;
 
 public class LevelView : View
 {
-    private Level _level;
+    private readonly Level _level;
     private IFocusable _focusObject;
     private ObservableCollection<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;

@@ -28,7 +28,7 @@ public class MenuView : View
         }
     }
 
-    public void OpenMenu(View menu, Dictionary<SelectionControl, Action> bindings)
+    private void OpenMenu(View menu, Dictionary<SelectionControl, Action> bindings)
     {
         _menus.Push(menu);
         menu.Resize(Width, Height);
@@ -39,7 +39,7 @@ public class MenuView : View
         Renderer.Redraw();
     }
 
-    public void CloseMenu()
+    private void CloseMenu()
     {
         View menu = _menus.Pop();
         menu.NeedRedraw -= SendRedraw;

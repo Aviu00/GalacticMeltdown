@@ -29,9 +29,9 @@ public class ButtonListView : View
 
     private void CalculateButtonText()
     {
-        for (int i = 0; i < _buttons.Count; i++)
+        foreach (MenuButtonInfo buttonInfo in _buttons)
         {
-            _buttons[i].RenderedText = _buttons[i].Button.MakeText(Width);
+            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
         }
     }
 

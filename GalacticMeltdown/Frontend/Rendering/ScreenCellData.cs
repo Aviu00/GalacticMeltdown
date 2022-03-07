@@ -4,9 +4,9 @@ namespace GalacticMeltdown.Frontend.Rendering;
 
 public struct ScreenCellData
 {
-    public char Symbol;
-    public ConsoleColor FgColor;
-    public ConsoleColor BgColor;
+    public readonly char Symbol;
+    public readonly ConsoleColor FgColor;
+    public readonly ConsoleColor BgColor;
 
     public ScreenCellData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
     {

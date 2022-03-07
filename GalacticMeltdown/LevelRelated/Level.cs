@@ -45,7 +45,7 @@ public partial class Level
     private readonly Tile[] _westernWall;
     private readonly Tile _cornerTile;
 
-    private Chunk[,] _chunks;
+    private readonly Chunk[,] _chunks;
 
     private readonly int _finishX;
     private readonly int _finishY;
@@ -59,7 +59,7 @@ public partial class Level
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
 
-    private ChunkEventListener _listener;
+    private readonly ChunkEventListener _listener;
 
     public Player Player { get; }
     public LevelView LevelView { get; }

@@ -6,7 +6,7 @@ namespace GalacticMeltdown.Actors;
 
 public abstract class Npc : Actor, IMoveStrategy
 {
-    public HashSet<Actor> Targets { get; set; }
+    protected HashSet<Actor> Targets { get; set; }
     public (int x, int y)? LastKnownTargetPosition { get; set; }
     public Actor CurrentlyChasing { get; set; }
 

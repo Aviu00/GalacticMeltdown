@@ -4,8 +4,8 @@ namespace GalacticMeltdown.Frontend.Rendering;
 
 public readonly struct Button
 {
-    public string TextLeft { get; }
-    public string TextRight { get; }
+    private string TextLeft { get; }
+    private string TextRight { get; }
     private readonly Action _action;
 
     public Button(string textLeft, string textRight, Action action)
