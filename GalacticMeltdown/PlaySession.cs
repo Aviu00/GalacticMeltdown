@@ -38,7 +38,10 @@ public partial class PlaySession
         while (_sesionActive)
         {
             SaveLevel();
-            if (!_level.DoTurn()) break;
+            if (!_level.DoTurn())
+            {
+                break;
+            }
         }
     }
 
