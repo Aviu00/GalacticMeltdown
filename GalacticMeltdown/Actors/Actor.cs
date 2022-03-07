@@ -7,7 +7,7 @@ namespace GalacticMeltdown.Actors;
 public abstract class Actor : IObjectOnMap
 {
     protected bool TurnStopped;
-    
+
     public bool IsActive => Hp > 0 && Energy > 0 && !TurnStopped;
 
     protected LimitedNumber HpLim;
@@ -45,7 +45,7 @@ public abstract class Actor : IObjectOnMap
 
     public Action DoAction { get; protected set; }
 
-    public LevelRelated.Level Level { get; }
+    public Level Level { get; }
 
     public event EventHandler Died;
     public event EventHandler SpentEnergy;
@@ -64,7 +64,7 @@ public abstract class Actor : IObjectOnMap
 
     public void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
 
-    public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, LevelRelated.Level level)
+    public Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
     {
         Level = level;
         HpLim = new LimitedNumber(maxHp, maxHp);

@@ -23,8 +23,8 @@ public static class InputProcessor
 
     public static void StopProcessLoop() => _isActive = false;
 
-    public static void AddBinding<TEnum>(Dictionary<ConsoleKey, TEnum> controlMode,
-        Dictionary<TEnum, Action> actions) =>
+    public static void
+        AddBinding<TEnum>(Dictionary<ConsoleKey, TEnum> controlMode, Dictionary<TEnum, Action> actions) =>
         Bindings.Push(UtilityFunctions.JoinDictionaries(controlMode, actions));
 
     public static void RemoveLastBinding() => Bindings.Pop();

@@ -51,7 +51,7 @@ public class Player : Actor, IControllable
         return true;
     }
 
-    public Player(int x, int y, LevelRelated.Level level) : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
+    public Player(int x, int y, Level level) : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;

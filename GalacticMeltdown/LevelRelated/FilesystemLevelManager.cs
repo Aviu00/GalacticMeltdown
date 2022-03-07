@@ -45,17 +45,17 @@ public static class FilesystemLevelManager
         return true;
     }
 
-    public static bool SaveLevel(LevelRelated.Level level, string path)
+    public static bool SaveLevel(Level level, string path)
     {
         // returns false on failure
         return true;
     }
 
-    public static (LevelRelated.Level level, int seed) GetLevel(string path)
+    public static (Level level, int seed) GetLevel(string path)
     {
         // Tries to restore the level from path, returns null on failure
         int seed = Random.Shared.Next(0, 1000000000);
-        LevelRelated.Level level = new MapGenerator(seed).Generate();
+        Level level = new MapGenerator(seed).Generate();
         return (level, seed);
     }
 
@@ -66,7 +66,7 @@ public static class FilesystemLevelManager
 
     public static string CreateLevel(int seed, string name)
     {
-        LevelRelated.Level level = new MapGenerator(seed).Generate();
+        Level level = new MapGenerator(seed).Generate();
         string path = GetSaveFolder();
         // Save seed and name
         SaveLevel(level, path);

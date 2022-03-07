@@ -11,12 +11,12 @@ public partial class PlaySession
     private string _savePath;
     private static Player _player;
     private static IControllable _controlledObject;
-    private static LevelRelated.Level _level;
+    private static Level _level;
     private static LevelView _levelView;
 
-    private static bool _sesionActive;
+    private static bool _sessionActive;
 
-    public PlaySession(LevelRelated.Level level, string savePath)
+    public PlaySession(Level level, string savePath)
     {
         _savePath = savePath;
         _level = level;
@@ -24,7 +24,7 @@ public partial class PlaySession
         _player.SetControlFunc(() =>
         {
             Renderer.PlayAnimations();
-            InputProcessor.AddBinding<Frontend.PlaySession.PlayerAction>(DataHolder.CurrentBindings.Player, Frontend.PlaySession.PlayerActions);
+            InputProcessor.AddBinding(DataHolder.CurrentBindings.Player, PlayerActions);
             InputProcessor.StartProcessLoop();
         });
         _controlledObject = _player;
@@ -37,8 +37,8 @@ public partial class PlaySession
         Renderer.AddView(_levelView, 0, 0, 0.8, 1);
         Renderer.AddView(_level.OverlayView, 0.8, 0, 1, 1);
         Renderer.Redraw();
-        _sesionActive = true;
-        while (_sesionActive)
+        _sessionActive = true;
+        while (_sessionActive)
         {
             SaveLevel();
             if (!_level.DoTurn())
@@ -76,7 +76,7 @@ public partial class PlaySession
 
     private static void StopSession()
     {
-        _sesionActive = false;
+        _sessionActive = false;
         _player.StopTurn();
         Renderer.ClearViews();
         InputProcessor.ClearBindings();

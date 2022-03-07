@@ -37,14 +37,14 @@ public class MapGenerator
         _rng = new Random(newSeed);
     }
 
-    public LevelRelated.Level Generate()
+    public Level Generate()
     {
         GenerateBars();
         BuildMainRoute();
         FillMap();
         FinalizeRooms();
         GenerateBorderWalls();
-        return new LevelRelated.Level(_map, _playerStartPoint, _southernWall, _westernWall, _endPoint);
+        return new Level(_map, _playerStartPoint, _southernWall, _westernWall, _endPoint);
     }
 
     private void GenerateBars()
@@ -147,8 +147,8 @@ public class MapGenerator
                 _tempMap[i, j] = new ChunkGenerator(i, j);
                 if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
 
-                if (topStartRoom && x == startRoomPos && y == _bars[x].max ||
-                    !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
+                if (topStartRoom && x == startRoomPos && y == _bars[x].max
+                    || !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
                 {
                     _tempMap[i, j].IsStartPoint = true;
                     startPoint = _tempMap[i, j];
@@ -273,8 +273,8 @@ public class MapGenerator
             case 1:
                 return 0;
             case 2:
-                if ((_tempMap[x, y].NorthConnection is null || _tempMap[x, y].SouthConnection is null) &&
-                    (_tempMap[x, y].WestConnection is null || _tempMap[x, y].EastConnection is null))
+                if ((_tempMap[x, y].NorthConnection is null || _tempMap[x, y].SouthConnection is null)
+                    && (_tempMap[x, y].WestConnection is null || _tempMap[x, y].EastConnection is null))
                 {
                     return 2;
                 }
@@ -462,8 +462,8 @@ public class MapGenerator
                 ConnectRooms(chunk, xConnection);
             }
 
-            if (yConnection is not null && Chance(ConnectionChance, _rng) &&
-                (!yConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
+            if (yConnection is not null && Chance(ConnectionChance, _rng)
+                && (!yConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
             {
                 ConnectRooms(chunk, yConnection);
             }

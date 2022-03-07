@@ -13,7 +13,7 @@ namespace GalacticMeltdown.Views;
 
 public class LevelView : View
 {
-    private LevelRelated.Level _level;
+    private Level _level;
     private IFocusable _focusObject;
     private ObservableCollection<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
@@ -21,7 +21,7 @@ public class LevelView : View
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
-    public LevelView(LevelRelated.Level level)
+    public LevelView(Level level)
     {
         _level = level;
         _level.SomethingMoved += MoveHandler;
@@ -72,9 +72,9 @@ public class LevelView : View
     private void DeathHandler(object sender, EventArgs _)
     {
         if (sender is not Actor actor) return;
-        
+
         if (!_visiblePoints.Contains((actor.X, actor.Y))) return;
-        
+
         IDrawable drawableObj = _level.GetDrawable(actor.X, actor.Y);
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
         CellsChanged?.Invoke(this,
@@ -109,7 +109,8 @@ public class LevelView : View
     private void UpdateVisiblePoints(object sender = null, EventArgs _ = null)
     {
         _visiblePoints = _sightedObjects
-            .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray)).ToHashSet();
+            .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
+            .ToHashSet();
         foreach (var (x, y) in _visiblePoints)
         {
             if (!Inbounds(x, y)) continue;

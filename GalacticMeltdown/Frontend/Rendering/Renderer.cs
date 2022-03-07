@@ -85,8 +85,8 @@ public static class Renderer
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
-        if (_pixelFuncs is null ||
-            !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
+        if (_pixelFuncs is null
+            || !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
         {
             _animations.Clear();
             RecalcAndRedraw(windowWidth, windowHeight);
@@ -111,8 +111,8 @@ public static class Renderer
             for (; x < _pixelFuncs.GetLength(0); x++)
             {
                 screenCellData = GetCell(x, consoleY);
-                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' ' ||
-                    screenCellData.BgColor != curBgColor)
+                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
+                    || screenCellData.BgColor != curBgColor)
                 {
                     SetConsoleColor(curFgColor, curBgColor);
                     Console.Write(currentSequence);

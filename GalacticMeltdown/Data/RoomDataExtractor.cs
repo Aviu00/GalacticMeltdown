@@ -8,7 +8,7 @@ namespace GalacticMeltdown.Data;
 public class RoomDataExtractor : XmlExtractor
 {
     private const int ChunkSize = DataHolder.ChunkSize;
-    
+
     public List<Room> Rooms { get; }
 
     private readonly Dictionary<string, TileTypeData> _tileTypes;

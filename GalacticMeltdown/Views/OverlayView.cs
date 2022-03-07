@@ -9,7 +9,7 @@ public class OverlayView : View
     private LevelRelated.Level _level; // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player; // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?
-    
+
     private ViewCellData[,] _symbols;
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;

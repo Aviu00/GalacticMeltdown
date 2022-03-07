@@ -54,10 +54,7 @@ public partial class Level
     public event EventHandler NpcDied;
     public event EventHandler<MoveEventArgs> SomethingMoved;
 
-    public (int x, int y) Size
-    {
-        get => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
-    }
+    public (int x, int y) Size => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
 
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
