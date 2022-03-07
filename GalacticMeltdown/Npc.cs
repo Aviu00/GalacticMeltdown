@@ -39,7 +39,6 @@ public abstract class Npc : Actor, IMoveStrategy
 
     public void NotifyChange(Actor actor)
     {
-        
     }
 
     public void MoveNpcTo(int x, int y) => MoveTo(x, y);

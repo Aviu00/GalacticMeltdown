@@ -9,17 +9,22 @@ public class ChunkGenerator
 {
     public bool HasAccessToMainRoute;
     public bool MainRoute;
+    
     public ChunkGenerator NorthConnection = null;
     public ChunkGenerator EastConnection = null;
     public ChunkGenerator SouthConnection = null;
     public ChunkGenerator WestConnection = null;
+    
     public bool IsStartPoint;
     public bool IsEndPoint;
+    
     public double Difficulty = -1;
 
     public int ConnectionCount =>
-        Convert.ToInt32(NorthConnection is not null) + Convert.ToInt32(EastConnection is not null) +
-        Convert.ToInt32(SouthConnection is not null) + Convert.ToInt32(WestConnection is not null);
+        Convert.ToInt32(NorthConnection is not null)
+        + Convert.ToInt32(EastConnection is not null)
+        + Convert.ToInt32(SouthConnection is not null)
+        + Convert.ToInt32(WestConnection is not null);
 
     public Tile[,] Tiles { get; private set; }
     public int MapX { get; }
@@ -31,8 +36,7 @@ public class ChunkGenerator
         MapY = y;
     }
 
-    public ChunkGenerator
-        GetNextRoom(ChunkGenerator previousRoom) //used in level generation, for main route calculations
+    public ChunkGenerator GetNextRoom(ChunkGenerator previousRoom)
     {
         if (NorthConnection is not null && NorthConnection != previousRoom) return NorthConnection;
         if (EastConnection is not null && EastConnection != previousRoom) return EastConnection;
@@ -40,14 +44,12 @@ public class ChunkGenerator
         return WestConnection!;
     }
 
-    public void AccessMainRoute(double mainRouteDifficulty) //used in level generation
+    public void AccessMainRoute(double mainRouteDifficulty)
     {
-        if (MainRoute) return;
-        if (Difficulty < mainRouteDifficulty)
-            Difficulty = mainRouteDifficulty;
-        else
-            return;
+        if (MainRoute || Difficulty >= mainRouteDifficulty) return;
+
         HasAccessToMainRoute = true;
+        Difficulty = mainRouteDifficulty;
         NorthConnection?.AccessMainRoute(Difficulty);
         EastConnection?.AccessMainRoute(Difficulty);
         SouthConnection?.AccessMainRoute(Difficulty);
@@ -119,7 +121,7 @@ public class ChunkGenerator
 
     private static bool CheckForConnectionInTile(TileTypeData[,] roomData, int x, int y)
     {
-        if (x is < -1 or > 24 || y is < -1 or > 24) return false;
+        if (!(x is >= -1 and < 25 && y is >= -1 and < 25)) return false;
         return x is -1 or 24 || y is -1 or 24 || roomData[x, y].IsConnection;
     }
 
