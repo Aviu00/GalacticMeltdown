@@ -56,7 +56,7 @@ public static class UtilityFunctions
         StringBuilder builder = new StringBuilder(size);
         for (int i = 0; i < size; i++)
         {
-            builder.Append((char) Random.Shared.Next('A', 'Z'));
+            builder.Append((char) Random.Shared.Next('A', 'Z' + 1));
         }
 
         return builder.ToString();
