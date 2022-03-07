@@ -54,14 +54,14 @@ public abstract class Actor : IObjectOnMap
     public event OutOfEnergyEventHandler RanOutOfEnergy;
     public event StoppedEventHandler Stopped;
     public event AffectedEventHandler Affected;
-    public event MovedEventHandler Moved;
+    public event EventHandler<MoveEventArgs> Moved;
 
     protected void MoveTo(int x, int y)
     {
         int oldX = X, oldY = Y;
         X = x;
         Y = y;
-        Moved?.Invoke((IMovable) this, oldX, oldY, X, Y);
+        Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
 
     public void StopTurn() => Stopped?.Invoke(this);

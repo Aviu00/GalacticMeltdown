@@ -23,7 +23,7 @@ public interface ISightedObject : IHasCoords
 
 public interface IMovable : IHasCoords
 {
-    event MovedEventHandler Moved;
+    event EventHandler<MoveEventArgs> Moved;
 }
 
 public interface IObjectOnMap : IHasCoords, IDrawable

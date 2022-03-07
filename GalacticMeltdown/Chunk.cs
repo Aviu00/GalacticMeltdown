@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +12,7 @@ public class Chunk
 
     public List<Enemy> Enemies { get; }
 
-    public event MovedEventHandler SomethingMoved;
+    public event EventHandler<MoveEventArgs> SomethingMoved;
     public event DiedEventHandler NpcDied;
 
     public Chunk(Tile[,] tiles, double difficulty)
@@ -28,9 +29,9 @@ public class Chunk
         return objectOnMap;
     }
 
-    private void MovedHandler(IMovable sender, int x0, int y0, int x1, int y1)
+    private void MovedHandler(object sender, MoveEventArgs e)
     {
-        SomethingMoved?.Invoke(sender, x0, y0, x1, y1);
+        SomethingMoved?.Invoke(sender, e);
     }
 
     private void DiedHandler(Actor sender)

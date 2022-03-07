@@ -30,7 +30,7 @@ public partial class Level
 
     public event TurnFinishedEventHandler TurnFinished;
     public event DiedEventHandler NpcDied;
-    public event MovedEventHandler SomethingMoved;
+    public event EventHandler<MoveEventArgs> SomethingMoved;
 
     public (int x, int y) Size
     {
@@ -73,12 +73,12 @@ public partial class Level
         PlayerWon = false;
     }
 
-    private void SomethingMovedHandler(IMovable movable, int x0, int y0, int x1, int y1)
+    private void SomethingMovedHandler(object sender, MoveEventArgs e)
     {
-        if (movable is Npc npc)
+        if (sender is Npc npc)
         {
-            var chunk0 = GetChunk(x0, y0);
-            var chunk1 = GetChunk(x1, y1);
+            var chunk0 = GetChunk(e.X0, e.Y0);
+            var chunk1 = GetChunk(e.X1, e.Y1);
             if (chunk0 != chunk1)
             {
                 _chunks[chunk0.chunkX, chunk0.chunkY].RemoveNpc(npc);
@@ -86,7 +86,7 @@ public partial class Level
             }
         }
 
-        SomethingMoved?.Invoke(movable, x0, y0, x1, y1);
+        SomethingMoved?.Invoke(sender, e);
     }
 
     private void NpcDeathHandler(Actor npc) => NpcDied?.Invoke(npc);
@@ -141,9 +141,9 @@ public partial class Level
         }
     }
 
-    private void ControllableMoved(IMovable sender, int x0, int y0, int x1, int y1)
+    private void ControllableMoved(object sender, MoveEventArgs e)
     {
-        if (GetChunk(x0, y0) != GetChunk(x1, y1))
+        if (GetChunk(e.X0, e.Y0) != GetChunk(e.X1, e.Y1))
         {
             SpawnEnemies();
         }

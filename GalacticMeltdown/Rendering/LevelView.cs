@@ -39,23 +39,23 @@ public class LevelView : View
         return Utility.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, _focusObject.X, _focusObject.Y);
     }
 
-    private void MoveHandler(IMovable movable, int x0, int y0, int x1, int y1)
+    private void MoveHandler(object sender, MoveEventArgs e)
     {
         HashSet<(int, int, ViewCellData)> updated = new(2);
-        if (_visiblePoints.Contains((x0, y0)))
+        if (_visiblePoints.Contains((e.X0, e.Y0)))
         {
-            IDrawable drawableObj = _level.GetDrawable(x0, y0);
-            var (viewX, viewY) = ToViewCoords(x0, y0);
+            IDrawable drawableObj = _level.GetDrawable(e.X0, e.Y0);
+            var (viewX, viewY) = ToViewCoords(e.X0, e.Y0);
             updated.Add((viewX, viewY,
                 drawableObj is null
                     ? new ViewCellData(null, null)
                     : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
         }
 
-        if (_visiblePoints.Contains((x1, y1)))
+        if (_visiblePoints.Contains((e.X1, e.Y1)))
         {
-            IDrawable drawableObj = _level.GetDrawable(x1, y1);
-            var (viewX, viewY) = ToViewCoords(x1, y1);
+            IDrawable drawableObj = _level.GetDrawable(e.X1, e.Y1);
+            var (viewX, viewY) = ToViewCoords(e.X1, e.Y1);
             updated.Add((viewX, viewY,
                 drawableObj is null
                     ? new ViewCellData(null, null)
@@ -123,7 +123,7 @@ public class LevelView : View
         NeedRedraw?.Invoke(this);
     }
 
-    private void FocusObjectMoved(object sender, int x0, int y0, int x1, int y1)
+    private void FocusObjectMoved(object sender, MoveEventArgs _)
     {
         // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
