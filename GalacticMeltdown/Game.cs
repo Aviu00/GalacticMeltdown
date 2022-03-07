@@ -6,6 +6,7 @@ public static class Game
 {
     private static bool _playing;
     private static MenuView _menu;
+
     public static void Main()
     {
         _playing = true;
@@ -14,6 +15,7 @@ public static class Game
             OpenMainMenu();
             InputProcessor.StartProcessLoop();
         }
+
         Renderer.CleanUp();
     }
 
@@ -29,8 +31,7 @@ public static class Game
     {
         _menu = new MenuView();
         Renderer.AddView(_menu, 0, 0, 1, 1);
-        _menu.OpenBasicMenu(new Button("Select level", "", _menu.OpenLevelMenu), 
-            new Button("Quit", "", Quit));
+        _menu.OpenBasicMenu(new Button("Select level", "", _menu.OpenLevelMenu), new Button("Quit", "", Quit));
     }
 
     private static void Quit()

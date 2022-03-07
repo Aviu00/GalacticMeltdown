@@ -67,8 +67,7 @@ public class RoomDataExtractor : XmlExtractor
         Dictionary<char, string> roomTerrain = new();
         foreach (XmlNode node in terrainNode)
         {
-            if (node.Attributes is null)
-                continue;
+            if (node.Attributes is null) continue;
             char symbol = ' ';
             string id = "";
             foreach (XmlAttribute attribute in node.Attributes)
@@ -83,6 +82,7 @@ public class RoomDataExtractor : XmlExtractor
                         break;
                 }
             }
+
             roomTerrain.Add(symbol, id);
         }
 
@@ -105,8 +105,9 @@ public class RoomDataExtractor : XmlExtractor
                     j++;
                     continue;
             }
-            
-            TileTypeData data = roomTerrain is not null && roomTerrain.ContainsKey(c) ? _tileTypes[roomTerrain[c]] 
+
+            TileTypeData data = roomTerrain is not null && roomTerrain.ContainsKey(c)
+                ? _tileTypes[roomTerrain[c]]
                 : _tileTypes.Values.First(tileType => tileType.Symbol == c);
             terrainObjects[i, 23 - j] = data;
             i++;

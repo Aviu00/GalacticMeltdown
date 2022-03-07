@@ -46,18 +46,22 @@ public class LevelView : View
         {
             IDrawable drawableObj = _level.GetDrawable(x0, y0);
             var (viewX, viewY) = ToViewCoords(x0, y0);
-            updated.Add((viewX, viewY, drawableObj is null
-                ? new ViewCellData(null, null)
-                : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
+            updated.Add((viewX, viewY,
+                drawableObj is null
+                    ? new ViewCellData(null, null)
+                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
         }
+
         if (_visiblePoints.Contains((x1, y1)))
         {
             IDrawable drawableObj = _level.GetDrawable(x1, y1);
             var (viewX, viewY) = ToViewCoords(x1, y1);
-            updated.Add((viewX, viewY, drawableObj is null
-                ? new ViewCellData(null, null)
-                : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
+            updated.Add((viewX, viewY,
+                drawableObj is null
+                    ? new ViewCellData(null, null)
+                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
         }
+
         if (updated.Any()) CellsChanged?.Invoke((this, updated));
     }
 
@@ -66,22 +70,27 @@ public class LevelView : View
         if (!_visiblePoints.Contains((actor.X, actor.Y))) return;
         IDrawable drawableObj = _level.GetDrawable(actor.X, actor.Y);
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
-        CellsChanged?.Invoke((this, new HashSet<(int, int, ViewCellData)>
-        {
-            (viewX, viewY, new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor))
-        }));
+        CellsChanged?.Invoke((this,
+            new HashSet<(int, int, ViewCellData)>
+            {
+                (viewX, viewY, new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor))
+            }));
     }
 
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
-        if (e.NewItems is not null) foreach (var sightedObject in e.NewItems)
-        {
-            ((ISightedObject) sightedObject).VisiblePointsChanged += UpdateVisiblePoints;
-        }
-        if (e.OldItems is not null) foreach (var sightedObject in e.OldItems)
-        {
-            ((ISightedObject) sightedObject).VisiblePointsChanged -= UpdateVisiblePoints;
-        }
+        if (e.NewItems is not null)
+            foreach (var sightedObject in e.NewItems)
+            {
+                ((ISightedObject) sightedObject).VisiblePointsChanged += UpdateVisiblePoints;
+            }
+
+        if (e.OldItems is not null)
+            foreach (var sightedObject in e.OldItems)
+            {
+                ((ISightedObject) sightedObject).VisiblePointsChanged -= UpdateVisiblePoints;
+            }
+
         UpdateVisiblePoints();
     }
 
@@ -93,14 +102,14 @@ public class LevelView : View
     private void UpdateVisiblePoints()
     {
         _visiblePoints = _sightedObjects
-            .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
-            .ToHashSet();
+            .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray)).ToHashSet();
         foreach (var (x, y) in _visiblePoints)
         {
             if (!Inbounds(x, y)) continue;
             var tile = _level.GetTile(x, y);
             if (tile is not null) _seenCells[x, y] = tile.SymbolData;
         }
+
         NeedRedraw?.Invoke(this);
     }
 
@@ -125,25 +134,22 @@ public class LevelView : View
     {
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
         // Draw object in focus on top of everything else
-        if (x == centerScreenX && y == centerScreenY) 
+        if (x == centerScreenX && y == centerScreenY)
             return new ViewCellData(_focusObject.SymbolData, _focusObject.BgColor);
-        
         var coords = Utility.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
         coords = Utility.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         var (levelX, levelY) = coords;
-        
         if (_visiblePoints.Contains(coords))
         {
             IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
-            return drawableObj is null 
-                ? new ViewCellData(null, null) 
+            return drawableObj is null
+                ? new ViewCellData(null, null)
                 : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
         }
 
         if (Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
             return new ViewCellData((_seenCells[levelX, levelY].Value.symbol, DataHolder.Colors.OutOfVisionTileColor),
                 null);
-
         return new ViewCellData(null, null);
     }
 }

@@ -15,7 +15,7 @@ public abstract class View
     protected int Height;
     private readonly string _id;
 
-    public virtual void Resize(int width, int height)  // Note: should not fire NeedRedraw events
+    public virtual void Resize(int width, int height)
     {
         Width = width;
         Height = height;

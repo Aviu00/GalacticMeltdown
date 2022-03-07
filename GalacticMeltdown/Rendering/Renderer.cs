@@ -11,7 +11,7 @@ public delegate void CellsChangedEventHandler((View, HashSet<(int, int, ViewCell
 
 public static class Renderer
 {
-    private static LinkedList<(View, double, double, double, double)> _views;  // View, top-left and bottom-right corner coords (rel)
+    private static LinkedList<(View, double, double, double, double)> _views;
     private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private static Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private static LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
@@ -42,11 +42,12 @@ public static class Renderer
             {
                 for (int y = y0Screen; y < y1Screen; y++)
                 {
-                    int saveX = x, saveY = y;  // x and y are modified outside this closure, so they need to be saved
+                    int saveX = x, saveY = y; // x and y are modified outside this closure, so they need to be saved
                     _pixelFuncs[x, y].AddFirst(() => view.GetSymbol(saveX - x0Screen, saveY - y0Screen));
                 }
             }
         }
+
         OutputAllCells();
     }
 
@@ -111,8 +112,8 @@ public static class Renderer
             for (; x < _pixelFuncs.GetLength(0); x++)
             {
                 screenCellData = GetCell(x, consoleY);
-                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' ' 
-                    || screenCellData.BgColor != curBgColor)
+                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' ' ||
+                    screenCellData.BgColor != curBgColor)
                 {
                     SetConsoleColor(curFgColor, curBgColor);
                     Console.Write(currentSequence);
@@ -126,6 +127,7 @@ public static class Renderer
 
             x = 0;
         }
+
         SetConsoleColor(curFgColor, curBgColor);
         Console.Write(currentSequence);
     }
@@ -140,7 +142,7 @@ public static class Renderer
 
     private static void NeedRedrawHandler(View sender)
     {
-        Redraw();  // The renderer is fast enough
+        Redraw(); // The renderer is fast enough
     }
 
     public static void RemoveLastView()
@@ -152,6 +154,7 @@ public static class Renderer
             view.CellsChanged -= AddAnimation;
             _views.RemoveFirst();
         }
+
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
@@ -162,6 +165,7 @@ public static class Renderer
             view.NeedRedraw -= NeedRedrawHandler;
             view.CellsChanged -= AddAnimation;
         }
+
         _views.Clear();
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
@@ -172,13 +176,11 @@ public static class Renderer
         _animations.Clear();
         OutputAllCells();
     }
-    
+
     private static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
     {
-        if (Console.ForegroundColor != fgColor)
-            Console.ForegroundColor = fgColor;
-        if (Console.BackgroundColor != bgColor)
-            Console.BackgroundColor = bgColor;
+        if (Console.ForegroundColor != fgColor) Console.ForegroundColor = fgColor;
+        if (Console.BackgroundColor != bgColor) Console.BackgroundColor = bgColor;
     }
 
     private static int ConvertToConsoleY(int y)
@@ -208,6 +210,7 @@ public static class Renderer
                 Redraw();
                 return;
             }
+
             var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
             foreach (var (viewX, viewY, viewCellData) in updatedCells)
             {
@@ -219,9 +222,10 @@ public static class Renderer
                 Console.Write(screenCellData.Symbol);
             }
         }
+
         _animations.Clear();
     }
-    
+
     private static ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View view)
     {
         (char symbol, ConsoleColor color)? symbolData = null;

@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown;
 
-public readonly record struct LevelInfo(string Path, int Seed, string Name); 
+public readonly record struct LevelInfo(string Path, int Seed, string Name);
 
 public static class FilesystemLevelManager
 {
     public static List<LevelInfo> GetLevelInfo()
     {
-        return new List<LevelInfo> {new(".", 0, "ExampleName0"), 
+        return new List<LevelInfo>
+        {
+            new(".", 0, "ExampleName0"),
             new("..", 5, "ExampleName1"),
             new("..", 5, "ExampleName2"),
             new("..", 5, "ExampleName3"),

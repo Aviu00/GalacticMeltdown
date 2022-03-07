@@ -11,6 +11,7 @@ public class TileTypesExtractor : XmlExtractor
     {
         "nesw", "nes", "new", "nsw", "esw", "ns", "ew", "ne", "es", "sw", "nw", "n", "e", "s", "w"
     };
+
     public Dictionary<string, TileTypeData> TileTypes { get; }
 
     public TileTypesExtractor()
@@ -71,24 +72,23 @@ public class TileTypesExtractor : XmlExtractor
                         break;
                 }
             }
+
             //log an error if id is null or TileTypes contains id
-            TileTypeData tileTypeData =
-                new TileTypeData(symbol, color, isWalkable, isTransparent, name, id, isConnection, isConnectable,
-                    isDependingOnRoomConnection);
+            TileTypeData tileTypeData = new TileTypeData(symbol, color, isWalkable, isTransparent, name, id,
+                isConnection, isConnectable, isDependingOnRoomConnection);
             TileTypes.Add(tileTypeData.Id, tileTypeData);
             if (symbols == null || !isConnectable) continue;
             //generate connections
             //log an error if symbols length is not 15
             for (int i = 0; i < 15; i++)
             {
-                TileTypeData connectionData =
-                    new TileTypeData(symbols[i], color, isWalkable, isTransparent, name, id + "_" + Directions[i],
-                        isConnection, false, false);
+                TileTypeData connectionData = new TileTypeData(symbols[i], color, isWalkable, isTransparent, name,
+                    id + "_" + Directions[i], isConnection, false, false);
                 TileTypes.Add(connectionData.Id, connectionData);
             }
         }
     }
 }
 
-public readonly record struct TileTypeData(char Symbol, ConsoleColor Color, bool IsWalkable, bool IsTransparent, 
+public readonly record struct TileTypeData(char Symbol, ConsoleColor Color, bool IsWalkable, bool IsTransparent,
     string Name, string Id, bool IsConnection, bool IsConnectable, bool IsDependingOnRoomConnection);

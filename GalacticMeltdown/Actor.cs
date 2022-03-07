@@ -3,14 +3,18 @@ using System;
 namespace GalacticMeltdown;
 
 public delegate void DiedEventHandler(Actor sender);
+
 public delegate void OutOfEnergyEventHandler(Actor sender);
+
 public delegate void StoppedEventHandler(Actor sender);
+
 public delegate void AffectedEventHandler(Actor sender);
 
 public abstract class Actor : IObjectOnMap
 {
     protected bool Dead;
     protected LimitedNumber _hp;
+
     public int Hp
     {
         get => _hp.Value;
@@ -22,6 +26,7 @@ public abstract class Actor : IObjectOnMap
     }
 
     protected LimitedNumber _energy;
+
     public int Energy
     {
         get => _energy.Value;
@@ -37,10 +42,10 @@ public abstract class Actor : IObjectOnMap
 
     public int X { get; set; }
     public int Y { get; set; }
-    
+
     public (char symbol, ConsoleColor color) SymbolData { get; protected init; }
     public ConsoleColor? BgColor { get; protected init; }
-    
+
     public Action DoAction { get; protected set; }
 
     public Level Level { get; }

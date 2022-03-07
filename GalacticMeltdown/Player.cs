@@ -8,13 +8,13 @@ public class Player : Actor, IControllable
     private const int PlayerEnergy = 100;
     private const int PlayerDex = 16;
     private const int PlayerDef = 4;
-    
+
     private int _viewRadius = 15;
     private bool _xray;
-    
+
     public bool InFocus { get; set; }
 
-    public bool NoClip;  //Temporary implementation of debugging "cheat codes"
+    public bool NoClip; //Temporary implementation of debugging "cheat codes"
 
     public bool Xray
     {
@@ -38,7 +38,7 @@ public class Player : Actor, IControllable
             }
         }
     }
-    
+
     public event VisiblePointsChangedEventHandler VisiblePointsChanged;
 
     public bool TryMove(int deltaX, int deltaY)
@@ -46,14 +46,13 @@ public class Player : Actor, IControllable
         var tile = Level.GetTile(X + deltaX, Y + deltaY);
         if (!(NoClip || (tile is null || tile.IsWalkable) && Level.GetNonTileObject(X + deltaX, Y + deltaY) is null))
             return false;
-        
+
         MoveTo(X + deltaX, Y + deltaY);
         VisiblePointsChanged?.Invoke();
         return true;
     }
 
-    public Player(int x, int y, Level level) 
-        : base(PlayerHp,PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
+    public Player(int x, int y, Level level) : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;

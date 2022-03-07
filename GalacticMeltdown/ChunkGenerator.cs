@@ -18,8 +18,8 @@ public class ChunkGenerator
     public double Difficulty = -1;
 
     public int ConnectionCount =>
-        Convert.ToInt32(NorthConnection != null) + Convert.ToInt32(EastConnection != null) +
-        Convert.ToInt32(SouthConnection != null) + Convert.ToInt32(WestConnection != null);
+        Convert.ToInt32(NorthConnection is not null) + Convert.ToInt32(EastConnection is not null) +
+        Convert.ToInt32(SouthConnection is not null) + Convert.ToInt32(WestConnection is not null);
 
     public Tile[,] Tiles { get; private set; }
     public int MapX { get; }
@@ -34,19 +34,15 @@ public class ChunkGenerator
     public ChunkGenerator
         GetNextRoom(ChunkGenerator previousRoom) //used in level generation, for main route calculations
     {
-        if (NorthConnection != null && NorthConnection != previousRoom)
-            return NorthConnection;
-        if (EastConnection != null && EastConnection != previousRoom)
-            return EastConnection;
-        if (SouthConnection != null && SouthConnection != previousRoom)
-            return SouthConnection;
+        if (NorthConnection is not null && NorthConnection != previousRoom) return NorthConnection;
+        if (EastConnection is not null && EastConnection != previousRoom) return EastConnection;
+        if (SouthConnection is not null && SouthConnection != previousRoom) return SouthConnection;
         return WestConnection!;
     }
 
     public void AccessMainRoute(double mainRouteDifficulty) //used in level generation
     {
-        if (MainRoute)
-            return;
+        if (MainRoute) return;
         if (Difficulty < mainRouteDifficulty)
             Difficulty = mainRouteDifficulty;
         else
@@ -58,8 +54,7 @@ public class ChunkGenerator
         WestConnection?.AccessMainRoute(Difficulty);
     }
 
-    public Chunk GenerateSubMap
-        (TileTypeData[,] roomData, Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
+    public Chunk GenerateSubMap(TileTypeData[,] roomData, Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
     {
         CalculateSymbol();
         Tiles = new Tile[25, 25];
@@ -67,8 +62,7 @@ public class ChunkGenerator
         {
             for (int x = 0; x < 24; x++)
             {
-                if (roomData[x, y].IsDependingOnRoomConnection)
-                    ResolveRoomConnectionDependency(roomData, x, y);
+                if (roomData[x, y].IsDependingOnRoomConnection) ResolveRoomConnectionDependency(roomData, x, y);
             }
         }
 
@@ -100,8 +94,8 @@ public class ChunkGenerator
         for (int y = 0; y < 24; y++)
         {
             TileTypeData terrainObject = EastConnection == null || y is not (11 or 12)
-                ? GetConnectableData(roomData, 24, y,
-                    easternTileConnectable: easternTileMap?[0, y].ConnectToWalls, overrideId: "wall")
+                ? GetConnectableData(roomData, 24, y, easternTileConnectable: easternTileMap?[0, y].ConnectToWalls,
+                    overrideId: "wall")
                 : DataHolder.TileTypes["floor"]; //will be changed to "door" later
             Tiles[24, y] = new Tile(terrainObject);
         }
@@ -112,27 +106,20 @@ public class ChunkGenerator
     {
         string id = overrideId ?? roomData[x, y].Id;
         string newId = id + "_";
-        if ((x, y) is (24, 24))
-            return DataHolder.TileTypes[newId + "nesw"];
+        if ((x, y) is (24, 24)) return DataHolder.TileTypes[newId + "nesw"];
         StringBuilder wallKey = new StringBuilder(newId);
-        if (northernTileConnectable ?? CheckForConnectionInTile(roomData, x, y + 1))
-            wallKey.Append('n');
-        if (easternTileConnectable ?? CheckForConnectionInTile(roomData, x + 1, y))
-            wallKey.Append('e');
-        if (CheckForConnectionInTile(roomData, x, y - 1))
-            wallKey.Append('s');
-        if (CheckForConnectionInTile(roomData, x - 1, y))
-            wallKey.Append('w');
+        if (northernTileConnectable ?? CheckForConnectionInTile(roomData, x, y + 1)) wallKey.Append('n');
+        if (easternTileConnectable ?? CheckForConnectionInTile(roomData, x + 1, y)) wallKey.Append('e');
+        if (CheckForConnectionInTile(roomData, x, y - 1)) wallKey.Append('s');
+        if (CheckForConnectionInTile(roomData, x - 1, y)) wallKey.Append('w');
         string str = wallKey.ToString();
-        if (str[^1] == '_')
-            str = id;
+        if (str[^1] == '_') str = id;
         return DataHolder.TileTypes[str];
     }
 
     private static bool CheckForConnectionInTile(TileTypeData[,] roomData, int x, int y)
     {
-        if (x is < -1 or > 24 || y is < -1 or > 24)
-            return false;
+        if (x is < -1 or > 24 || y is < -1 or > 24) return false;
         return x is -1 or 24 || y is -1 or 24 || roomData[x, y].IsConnection;
     }
 
@@ -151,11 +138,28 @@ public class ChunkGenerator
         string newId = !switchId ? parsedId[0] : parsedId[1];
         roomData[x, y] = DataHolder.TileTypes[newId];
     }
-    
+
     public char CalculateSymbol()
     {
         List<char> symbols = new()
-            {'┼', '├', '┤', '┬', '┴', '┌', '└', '┐', '┘', '│', '─', '╴', '╶', '╷', '╵','0'};
+        {
+            '┼',
+            '├',
+            '┤',
+            '┬',
+            '┴',
+            '┌',
+            '└',
+            '┐',
+            '┘',
+            '│',
+            '─',
+            '╴',
+            '╶',
+            '╷',
+            '╵',
+            '0'
+        };
         if (NorthConnection == null)
         {
             symbols.Remove('┼');
@@ -167,6 +171,7 @@ public class ChunkGenerator
             symbols.Remove('│');
             symbols.Remove('╵');
         }
+
         if (SouthConnection == null)
         {
             symbols.Remove('┼');
@@ -178,6 +183,7 @@ public class ChunkGenerator
             symbols.Remove('│');
             symbols.Remove('╷');
         }
+
         if (EastConnection == null)
         {
             symbols.Remove('┼');
@@ -189,6 +195,7 @@ public class ChunkGenerator
             symbols.Remove('─');
             symbols.Remove('╶');
         }
+
         if (WestConnection == null)
         {
             symbols.Remove('┼');

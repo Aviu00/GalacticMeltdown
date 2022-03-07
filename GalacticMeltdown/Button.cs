@@ -16,8 +16,7 @@ public readonly struct Button
     }
 
     public void Press() => _action?.Invoke();
-    
-    
+
     public string MakeText(int width)
     {
         const string ellipsis = "...";
@@ -28,7 +27,7 @@ public readonly struct Button
         if (TextRight.Length == 0)
         {
             screenText = TextLeft.Length > width
-                ? TextLeft.Substring(0, width - ellipsis.Length) + ellipsis 
+                ? TextLeft.Substring(0, width - ellipsis.Length) + ellipsis
                 : TextLeft.PadRight(width);
         }
         else if (TextLeft.Length == 0)

@@ -23,25 +23,24 @@ public partial class Level
         }
 
         return visiblePoints;
-        
+
         void AddVisibleAdjacentWalls((int x, int y)? coords)
         {
-            if (coords is null)
-                return;
+            if (coords is null) return;
             var (x, y) = coords.Value;
-            int posToPlayerX = Math.Sign(x - x0);  // -1 - right, 0 - same X, 1 - left  
-            int posToPlayerY = Math.Sign(y - y0);  // -1 - above, 0 - same Y, 1 - below
+            int posToPlayerX = Math.Sign(x - x0); // -1 - right, 0 - same X, 1 - left  
+            int posToPlayerY = Math.Sign(y - y0); // -1 - above, 0 - same Y, 1 - below
             if (posToPlayerX == 0)
             {
                 AddVisibleWall(x + 1, y + posToPlayerY);
-                AddVisibleWall(x, y + posToPlayerY);      //  .
-                AddVisibleWall(x - 1, y + posToPlayerY);  // +*+
+                AddVisibleWall(x, y + posToPlayerY);     //  .
+                AddVisibleWall(x - 1, y + posToPlayerY); // +*+
             }
             else if (posToPlayerY == 0)
             {
-                AddVisibleWall(x + posToPlayerX, y + 1);  //  +
-                AddVisibleWall(x + posToPlayerX, y);      // .*
-                AddVisibleWall(x + posToPlayerX, y - 1);  //  +
+                AddVisibleWall(x + posToPlayerX, y + 1); //  +
+                AddVisibleWall(x + posToPlayerX, y);     // .*
+                AddVisibleWall(x + posToPlayerX, y - 1); //  +
             }
             else
             {

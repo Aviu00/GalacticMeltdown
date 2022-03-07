@@ -7,6 +7,7 @@ namespace GalacticMeltdown.Data;
 public abstract class XmlExtractor
 {
     private readonly string _projectDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location);
+
     protected XmlDocument GetXmlDocument(string name)
     {
         XmlDocument doc = new XmlDocument();

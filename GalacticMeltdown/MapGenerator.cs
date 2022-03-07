@@ -33,7 +33,7 @@ public class MapGenerator
     {
         _rng = new Random(newSeed);
     }
-    
+
     public Level Generate()
     {
         GenerateBars();
@@ -51,7 +51,7 @@ public class MapGenerator
         int restrictionAddition = 7;
         int firstMaxValue = 9;
         int posMultiplierCeiling = 8;
-        
+
         int newSize = _rng.Next(minSize, firstMaxValue);
         _bars = new() {(0, newSize)};
         _maxPoint = newSize;
@@ -60,9 +60,9 @@ public class MapGenerator
         for (int i = MapWidth; i > 0; i--)
         {
             int sizeRestriction = i + restrictionAddition;
-            
+
             //Main route distribution formulas
-            int dif = Chance(40, _rng) ? 0 : 
+            int dif = Chance(40, _rng) ? 0 :
                 Chance(newSize * 20 - 120 - Math.Abs(MapWidth / 2 - sizeRestriction) * 5, _rng) ? -1 : 1;
             int posMultiplier = Chance(50, _rng) ? Chance(40, _rng) ? 2 : 1 : 0;
 
@@ -75,12 +75,13 @@ public class MapGenerator
                 newSize = Math.Min(sizeRestriction, newSize + dif);
                 newSize = Math.Max(newSize, minSize);
             }
+
             int newMin;
             if (lastMinVector >= 0)
             {
                 if (lastMaxVector <= 0)
                 {
-                    newMin = _bars[^1].min + _rng.Next(-1,2) * posMultiplier;
+                    newMin = _bars[^1].min + _rng.Next(-1, 2) * posMultiplier;
                 }
                 else
                 {
@@ -88,7 +89,7 @@ public class MapGenerator
                     newMin = newMax - newSize;
                 }
             }
-            else if(lastMaxVector <= 0)
+            else if (lastMaxVector <= 0)
             {
                 newMin = _bars[^1].min + _rng.Next(-1, 0) * posMultiplier;
             }
@@ -96,6 +97,7 @@ public class MapGenerator
             {
                 newMin = _bars[^1].min;
             }
+
             lastMinVector = newMin - _bars[^1].min;
             lastMaxVector = newMin + newSize - _bars[^1].max;
             _bars.Add((newMin, newMin + newSize));
@@ -103,13 +105,13 @@ public class MapGenerator
             _minPoint = Math.Min(_minPoint, newMin);
         }
     }
-    
+
     private void BuildMainRoute()
     {
-        _tempMap = new ChunkGenerator[MapWidth + 1 + MapOffset*2, _maxPoint - _minPoint +1 + MapOffset*2];
+        _tempMap = new ChunkGenerator[MapWidth + 1 + MapOffset * 2, _maxPoint - _minPoint + 1 + MapOffset * 2];
         int lastMin = 0;
         int lastMax = 0;
-        int startRoomPos = _rng.Next(0,_bars.Count);
+        int startRoomPos = _rng.Next(0, _bars.Count);
         bool topStartRoom = Chance(50, _rng);
         int mainRouteRoomCount = 0;
 
@@ -123,23 +125,26 @@ public class MapGenerator
                 {
                     _tempMap[i, y] = new ChunkGenerator(i, y);
                 }
+
                 continue;
             }
+
             if (x == _bars.Count - 1)
             {
                 lastMin = _bars[x].max - 1;
                 lastMax = _bars[x].max;
             }
+
             int min1 = Math.Min(_bars[x].min, lastMin);
             int min2 = _bars[x].min + lastMin - min1;
             int max1 = Math.Min(_bars[x].max, lastMax);
             int max2 = _bars[x].max + lastMax - max1;
-            for (int y = _minPoint-MapOffset, j = 0; y <= _maxPoint + MapOffset; j++, y++)
+            for (int y = _minPoint - MapOffset, j = 0; y <= _maxPoint + MapOffset; j++, y++)
             {
                 _tempMap[i, j] = new ChunkGenerator(i, j);
                 if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
-                
-                if (topStartRoom && x == startRoomPos && y == _bars[x].max || 
+
+                if (topStartRoom && x == startRoomPos && y == _bars[x].max ||
                     !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
                 {
                     _tempMap[i, j].IsStartPoint = true;
@@ -149,16 +154,17 @@ public class MapGenerator
                 mainRouteRoomCount++;
                 _tempMap[i, j].MainRoute = true;
                 _tempMap[i, j].HasAccessToMainRoute = true;
-                if (x > 0 && (_bars[x-1].min == y || _bars[x-1].max == y))
+                if (x > 0 && (_bars[x - 1].min == y || _bars[x - 1].max == y))
                 {
-                    ConnectRooms(_tempMap[i, j], _tempMap[i-1,j]);
+                    ConnectRooms(_tempMap[i, j], _tempMap[i - 1, j]);
                 }
 
                 if (j > 0 && _tempMap[i, j - 1].MainRoute)
                 {
-                    ConnectRooms(_tempMap[i,j], _tempMap[i,j-1]);
+                    ConnectRooms(_tempMap[i, j], _tempMap[i, j - 1]);
                 }
             }
+
             lastMax = _bars[x].max;
             lastMin = _bars[x].min;
         }
@@ -178,9 +184,9 @@ public class MapGenerator
                 _endPoint = (currentChunk.MapX * 25 + 12, currentChunk.MapY * 25 + 12);
                 addDifficulty = -1;
             }
+
             (previousChunk, currentChunk) = (currentChunk, currentChunk.GetNextRoom(previousChunk));
         }
-        
     }
 
     private void FillMap()
@@ -194,20 +200,19 @@ public class MapGenerator
             FillColumn(x, 1, yStep);
             yStep = -yStep;
         }
-        
-        for (int x = width-1; x >= lastX; x--)
+
+        for (int x = width - 1; x >= lastX; x--)
         {
             FillColumn(x, -1, yStep);
             yStep = -yStep;
         }
-        
+
         _map = new Chunk[width, height];
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (_tempMap[x, y].HasAccessToMainRoute)
-                    continue;
+                if (_tempMap[x, y].HasAccessToMainRoute) continue;
 
                 List<ChunkGenerator> adjAccessRooms = new();
                 List<ChunkGenerator> adjNoAccessRooms = new();
@@ -217,7 +222,7 @@ public class MapGenerator
                 AddRoomToList(x, y - 1, adjAccessRooms, adjNoAccessRooms);
                 if (adjAccessRooms.Count != 0)
                 {
-                    ConnectRooms(_tempMap[x,y], adjAccessRooms[_rng.Next(0, adjAccessRooms.Count)]);
+                    ConnectRooms(_tempMap[x, y], adjAccessRooms[_rng.Next(0, adjAccessRooms.Count)]);
                     continue;
                 }
 
@@ -239,12 +244,12 @@ public class MapGenerator
             }
         }
     }
-    
+
     private void FinalizeRoom(int x, int y)
     {
         int roomType = CalculateRoomType(x, y);
         var matchingRooms = DataHolder.Rooms.Where(
-            room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng))
+                room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng))
             .ToArray();
         Room room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
         TileTypeData[,] roomData = (TileTypeData[,]) room.Pattern.Clone();
@@ -252,11 +257,9 @@ public class MapGenerator
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
         _map[x, y] = _tempMap[x, y].GenerateSubMap(roomData, northernTileMap, easternTileMap);
-        if (_tempMap[x, y].IsStartPoint)
-            _playerStartPoint = (x * 25 + 12, y * 25 + 12);
-        //_startPoint = _map[x, y];
+        if (_tempMap[x, y].IsStartPoint) _playerStartPoint = (x * 25 + 12, y * 25 + 12);
     }
-    
+
     private int CalculateRoomType(int x, int y)
     {
         int connections = _tempMap[x, y].ConnectionCount;
@@ -284,21 +287,16 @@ public class MapGenerator
 
     private void RotateRoomPattern(int x, int y, TileTypeData[,] roomData, Room room)
     {
-        if(room.RotationalSymmetry)
-            return;
-        List<int> possibleRotations = new(){0, 90, 180, 270};
+        if (room.RotationalSymmetry) return;
+        List<int> possibleRotations = new() {0, 90, 180, 270};
         var mapRoom = _tempMap[x, y];
         switch (room.Type)
         {
             case 0:
-                if (mapRoom.SouthConnection is null)
-                    possibleRotations.Remove(0);
-                if (mapRoom.EastConnection is null)
-                    possibleRotations.Remove(90);
-                if (mapRoom.NorthConnection is null)
-                    possibleRotations.Remove(180);
-                if (mapRoom.WestConnection is null)
-                    possibleRotations.Remove(270);
+                if (mapRoom.SouthConnection is null) possibleRotations.Remove(0);
+                if (mapRoom.EastConnection is null) possibleRotations.Remove(90);
+                if (mapRoom.NorthConnection is null) possibleRotations.Remove(180);
+                if (mapRoom.WestConnection is null) possibleRotations.Remove(270);
                 break;
             case 1:
                 if (mapRoom.NorthConnection is null && mapRoom.SouthConnection is null)
@@ -311,6 +309,7 @@ public class MapGenerator
                     possibleRotations.Remove(90);
                     possibleRotations.Remove(270);
                 }
+
                 break;
             case 2:
                 if (mapRoom.SouthConnection is not null)
@@ -318,41 +317,40 @@ public class MapGenerator
                     possibleRotations.Remove(180);
                     possibleRotations.Remove(90);
                 }
+
                 if (mapRoom.WestConnection is not null)
                 {
                     possibleRotations.Remove(0);
                     possibleRotations.Remove(90);
                 }
+
                 if (mapRoom.NorthConnection is not null)
                 {
                     possibleRotations.Remove(0);
                     possibleRotations.Remove(270);
                 }
+
                 if (mapRoom.EastConnection is not null)
                 {
                     possibleRotations.Remove(270);
                     possibleRotations.Remove(180);
                 }
+
                 break;
             case 3:
-                if (mapRoom.SouthConnection is not null)
-                    possibleRotations.Remove(180);
-                if (mapRoom.EastConnection is not null)
-                    possibleRotations.Remove(270);
-                if (mapRoom.NorthConnection is not null)
-                    possibleRotations.Remove(0);
-                if (mapRoom.WestConnection is not null)
-                    possibleRotations.Remove(90);
+                if (mapRoom.SouthConnection is not null) possibleRotations.Remove(180);
+                if (mapRoom.EastConnection is not null) possibleRotations.Remove(270);
+                if (mapRoom.NorthConnection is not null) possibleRotations.Remove(0);
+                if (mapRoom.WestConnection is not null) possibleRotations.Remove(90);
                 break;
         }
 
         if (room.CentralSymmetry)
         {
-            if(possibleRotations.Contains(0))
-                possibleRotations.Remove(180);
-            if (possibleRotations.Contains(90))
-                possibleRotations.Remove(270);
+            if (possibleRotations.Contains(0)) possibleRotations.Remove(180);
+            if (possibleRotations.Contains(90)) possibleRotations.Remove(270);
         }
+
         //matrix rotation: 90deg = transpose + rev rows; 270deg = transpose + rev cols; 180deg = rev rows + cols
         switch (possibleRotations[_rng.Next(0, possibleRotations.Count)])
         {
@@ -373,29 +371,26 @@ public class MapGenerator
                 break;
         }
     }
-    
+
     private void FlipPoles(TileTypeData[,] roomData, params (string p1, string p2)[] poles)
     {
         for (int x = 0; x < roomData.GetLength(0); x++)
         {
             for (int y = 0; y < roomData.GetLength(1); y++)
             {
-                if (!roomData[x, y].IsDependingOnRoomConnection)
-                    continue;
+                if (!roomData[x, y].IsDependingOnRoomConnection) continue;
                 string[] parsedId = roomData[x, y].Id.Split('_');
                 foreach (var (p1, p2) in poles)
                 {
-                    if (parsedId[2] == p1)
-                        parsedId[2] = p2;
-                    else if (parsedId[2] == p2)
-                        parsedId[2] = p1;
+                    if (parsedId[2] == p1) parsedId[2] = p2;
+                    else if (parsedId[2] == p2) parsedId[2] = p1;
                 }
 
                 roomData[x, y] = DataHolder.TileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
             }
         }
     }
-    
+
     private void GenerateBorderWalls()
     {
         _westernWall = new Tile[_map.GetLength(1) * 25];
@@ -405,35 +400,30 @@ public class MapGenerator
             for (int x = 0; x < 25; x++)
             {
                 int tileX = mapX * 25 + x;
-                string wallKey = x == 24 
-                    ? "wall_nesw" : _map[mapX, 0].Tiles[x, 0].ConnectToWalls ? "wall_new" : "wall_ew";
+                string wallKey = x == 24 ? "wall_nesw" :
+                    _map[mapX, 0].Tiles[x, 0].ConnectToWalls ? "wall_new" : "wall_ew";
                 _southernWall[tileX] = new Tile(DataHolder.TileTypes[wallKey]);
             }
         }
+
         for (int mapY = 0; mapY < _map.GetLength(1); mapY++)
         {
             for (int y = 0; y < 25; y++)
             {
                 int tileY = mapY * 25 + y;
-                string wallKey = y == 24 
-                    ? "wall_nesw" : _map[0, mapY].Tiles[0, y].ConnectToWalls ? "wall_nes" : "wall_ns";
+                string wallKey = y == 24 ? "wall_nesw" :
+                    _map[0, mapY].Tiles[0, y].ConnectToWalls ? "wall_nes" : "wall_ns";
                 _westernWall[tileY] = new Tile(DataHolder.TileTypes[wallKey]);
             }
         }
     }
-    
+
     private void AddRoomToList(int x, int y, List<ChunkGenerator> accessList, List<ChunkGenerator> noAccessList)
     {
         if (x < 0 || x >= _tempMap.GetLength(0) || y < 0 || y >= _tempMap.GetLength(1)) return;
-        
-        if (_tempMap[x, y].HasAccessToMainRoute)
-        {
-            accessList.Add(_tempMap[x,y]);
-        }
-        else
-        {
-            noAccessList.Add(_tempMap[x, y]);
-        }
+
+        if (_tempMap[x, y].HasAccessToMainRoute) accessList.Add(_tempMap[x, y]);
+        else noAccessList.Add(_tempMap[x, y]);
     }
 
     private void FillColumn(int x, int xStep, int yStep)
@@ -446,7 +436,7 @@ public class MapGenerator
             {
                 continue;
             }
-            
+
             ChunkGenerator yConnection = null;
             ChunkGenerator xConnection = _tempMap[x + xStep, y];
             int difY = y + yStep;
@@ -458,8 +448,7 @@ public class MapGenerator
             if (chunk.IsStartPoint || chunk.IsEndPoint)
             {
                 ConnectRooms(chunk, xConnection);
-                if(yConnection != null)
-                    ConnectRooms(chunk, yConnection);
+                if (yConnection is not null) ConnectRooms(chunk, yConnection);
                 return;
             }
 
@@ -467,8 +456,9 @@ public class MapGenerator
             {
                 ConnectRooms(chunk, xConnection);
             }
-            if (yConnection != null 
-                && Chance(ConnectionChance, _rng) && (!yConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
+
+            if (yConnection is not null && Chance(ConnectionChance, _rng) &&
+                (!yConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
             {
                 ConnectRooms(chunk, yConnection);
             }
@@ -512,10 +502,8 @@ public class MapGenerator
             }
         }
 
-        if (room1.HasAccessToMainRoute)
-            room2.AccessMainRoute(room1.Difficulty);
-        if(room2.HasAccessToMainRoute)
-            room1.AccessMainRoute(room2.Difficulty);
+        if (room1.HasAccessToMainRoute) room2.AccessMainRoute(room1.Difficulty);
+        if (room2.HasAccessToMainRoute) room1.AccessMainRoute(room2.Difficulty);
     }
 
     /// <summary>
@@ -535,8 +523,10 @@ public class MapGenerator
                     sb.Append('S');
                     continue;
                 }
+
                 sb.Append(_tempMap[x, y].CalculateSymbol());
             }
+
             sb.Append('\n');
         }
 

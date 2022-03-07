@@ -8,9 +8,9 @@ public abstract class Npc : Actor, IMoveStrategy
     public HashSet<Actor> Targets;
     public (int x, int y)? LastKnownTargetPosition;
     public Actor CurrentlyChasing;
-    
+
     private readonly string _id;
-    
+
     public MoveStrategy MoveStrategy { get; set; }
 
     public override int GetHashCode()

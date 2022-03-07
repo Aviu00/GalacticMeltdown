@@ -5,7 +5,6 @@ using GalacticMeltdown.Data;
 
 namespace GalacticMeltdown.Rendering;
 
-
 internal class LevelButtonInfo : MenuButtonInfo
 {
     public LevelInfo LevelInfo { get; }
@@ -23,11 +22,11 @@ public class LevelManagementView : View
 
     private List<LevelButtonInfo> _menuLevels;
     private List<MenuButtonInfo> _managementButtonInfos;
-    
+
     private int _levelIndex;
     private int _managementIndex;
     private bool _isManagementSelected;
-    
+
     private int _topVisibleLevelButtonIndex;
     private int _selectedLevelButtonY;
 
@@ -36,8 +35,7 @@ public class LevelManagementView : View
         RefreshLevelList();
         _managementButtonInfos = new List<MenuButtonInfo>
         {
-            new(new Button("Create", "", CreateLevel)),
-            new(new Button("Delete", "", DeleteLevel)),
+            new(new Button("Create", "", CreateLevel)), new(new Button("Delete", "", DeleteLevel)),
         };
         _managementIndex = 0;
     }
@@ -57,14 +55,16 @@ public class LevelManagementView : View
             // TODO: error animation
             return;
         }
+
         // TODO: confirmation dialog
         if (!FilesystemLevelManager.RemoveLevel(_menuLevels[_levelIndex].LevelInfo.Path))
         {
             RefreshLevelList();
             return;
         }
+
         _menuLevels.RemoveAt(_levelIndex);
-        if (!_menuLevels.Any())  // If there are no levels left, don't let the user select one
+        if (!_menuLevels.Any()) // If there are no levels left, don't let the user select one
         {
             _isManagementSelected = true;
             _levelIndex = 0;
@@ -73,6 +73,7 @@ public class LevelManagementView : View
         {
             _levelIndex = _menuLevels.Count - 1;
         }
+
         UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
@@ -90,7 +91,7 @@ public class LevelManagementView : View
         DataHolder.CurrentSeed = seed;
         Game.StartLevel(level, path);
     }
-    
+
     public override ViewCellData GetSymbol(int x, int y)
     {
         char symbol;
@@ -109,21 +110,20 @@ public class LevelManagementView : View
             bgColor = _isManagementSelected && y == _managementIndex
                 ? DataHolder.Colors.BackgroundColorSelected
                 : DataHolder.Colors.BackgroundColorUnselected;
-            
         }
         else
         {
             if (Height - y > _menuLevels.Count) return new ViewCellData(null, null);
             symbol = _menuLevels[Height - (y - _topVisibleLevelButtonIndex) - 1].RenderedText[x];
-            fgColor = DataHolder.Colors.TextColor;;
-            bgColor = _selectedLevelButtonY == y 
-                ? DataHolder.Colors.BackgroundColorSelected 
+            fgColor = DataHolder.Colors.TextColor;
+            bgColor = _selectedLevelButtonY == y
+                ? DataHolder.Colors.BackgroundColorSelected
                 : DataHolder.Colors.BackgroundColorUnselected;
         }
 
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
     }
-    
+
     public void PressCurrent()
     {
         if (_isManagementSelected) _managementButtonInfos[_managementIndex].Button.Press();
@@ -133,7 +133,7 @@ public class LevelManagementView : View
     public void SelectNext()
     {
         if (_isManagementSelected) _managementIndex = (_managementIndex + 1) % _managementButtonInfos.Count;
-        else if (_menuLevels.Any()) _levelIndex = (_levelIndex + 1) % _menuLevels.Count;  // Avoid zero division
+        else if (_menuLevels.Any()) _levelIndex = (_levelIndex + 1) % _menuLevels.Count; // Avoid zero division
         UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
@@ -150,6 +150,7 @@ public class LevelManagementView : View
             _levelIndex -= 1;
             if (_levelIndex < 0) _levelIndex = _menuLevels.Count - 1;
         }
+
         UpdateOutVars();
         NeedRedraw?.Invoke(this);
     }
@@ -160,20 +161,21 @@ public class LevelManagementView : View
         _isManagementSelected = _menuLevels.Any() ? !_isManagementSelected : true;
         NeedRedraw?.Invoke(this);
     }
-    
+
     public override void Resize(int width, int height)
     {
         base.Resize(width, height);
         UpdateOutVars();
         CalculateVisibleButtonText();
     }
-    
+
     private void CalculateVisibleButtonText()
     {
         for (int i = 0; i < _menuLevels.Count; i++)
         {
             _menuLevels[i].RenderedText = _menuLevels[i].Button.MakeText(Width);
         }
+
         for (int i = 0; i < _managementButtonInfos.Count; i++)
         {
             _managementButtonInfos[i].RenderedText = _managementButtonInfos[i].Button.MakeText(Width);
@@ -189,16 +191,18 @@ public class LevelManagementView : View
             _menuLevels.Add(new(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
                 () => TryStartLevel(levelInfo.Path)), levelInfo));
         }
+
         _levelIndex = 0;
-        _isManagementSelected = _menuLevels.Count == 0;  // can't select a level when none exist
-        if (!(Width == 0 && Height == 0))  // View has size
+        _isManagementSelected = _menuLevels.Count == 0; // can't select a level when none exist
+        if (!(Width == 0 && Height == 0)) // View has size
         {
             UpdateOutVars();
             CalculateVisibleButtonText();
         }
+
         NeedRedraw?.Invoke(this);
     }
-    
+
     private void UpdateOutVars()
     {
         _topVisibleLevelButtonIndex = Math.Max(0, _levelIndex - (Height - (_managementButtonInfos.Count + 1)) + 1);

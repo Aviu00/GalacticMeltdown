@@ -6,12 +6,12 @@ namespace GalacticMeltdown.Data;
 public static class DataHolder
 {
     public const int ChunkSize = 25;
-    
+
     public static int CurrentSeed { get; set; }
-    
+
     public static readonly List<Room> Rooms;
     public static readonly Dictionary<string, TileTypeData> TileTypes;
-    
+
     public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {
         {"white", ConsoleColor.White},
@@ -31,7 +31,7 @@ public static class DataHolder
         {"dark_red", ConsoleColor.DarkRed},
         {"dark_yellow", ConsoleColor.DarkYellow},
     };
-    
+
     public struct Colors
     {
         public const ConsoleColor OutOfVisionTileColor = ConsoleColor.DarkGray;
@@ -40,7 +40,7 @@ public static class DataHolder
         public const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
         public const ConsoleColor MenuBorderColor = ConsoleColor.Yellow;
     }
-    
+
     static DataHolder()
     {
         TileTypes = new TileTypesExtractor().TileTypes;

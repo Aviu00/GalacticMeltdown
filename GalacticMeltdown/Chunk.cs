@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace GalacticMeltdown;
+
 public class Chunk
 {
     private bool _seededSpawn = true;
@@ -40,7 +41,7 @@ public class Chunk
 
     public List<Npc> GetNpcs()
     {
-        List <Npc> npcs = new();
+        List<Npc> npcs = new();
         npcs.AddRange(Enemies);
         return npcs;
     }

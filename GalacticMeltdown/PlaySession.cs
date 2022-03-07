@@ -46,7 +46,7 @@ public partial class PlaySession
     {
         FilesystemLevelManager.SaveLevel(_level, _savePath);
     }
-    
+
     private static void MoveControlled(int deltaX, int deltaY)
     {
         if (_controlledObject.TryMove(deltaX, deltaY))
@@ -56,6 +56,7 @@ public partial class PlaySession
                 InputProcessor.ClearBindings();
                 InputProcessor.StopProcessLoop();
             }
+
             Renderer.Redraw();
         }
     }

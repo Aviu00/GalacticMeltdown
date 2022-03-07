@@ -45,33 +45,35 @@ public class MenuView : View
         NeedRedraw?.Invoke(this);
         InputProcessor.RemoveLastBinding();
     }
-    
+
     public void OpenBasicMenu(params Button[] buttons)
     {
         var buttonListView = new ButtonListView(buttons);
-        OpenMenu(buttonListView, new Dictionary<SelectionControl, Action>
-        {
-            {SelectionControl.Up, buttonListView.SelectPrev},
-            {SelectionControl.Down, buttonListView.SelectNext},
-            {SelectionControl.Select, buttonListView.PressCurrent}
-        });
+        OpenMenu(buttonListView,
+            new Dictionary<SelectionControl, Action>
+            {
+                {SelectionControl.Up, buttonListView.SelectPrev},
+                {SelectionControl.Down, buttonListView.SelectNext},
+                {SelectionControl.Select, buttonListView.PressCurrent}
+            });
     }
 
     public void OpenLevelMenu()
     {
         var levelMenu = new LevelManagementView();
-        OpenMenu(levelMenu, new Dictionary<SelectionControl, Action>
-        {
-            {SelectionControl.Up, levelMenu.SelectPrev},
-            {SelectionControl.Down, levelMenu.SelectNext},
-            {SelectionControl.SwitchButtonGroup, levelMenu.SwitchButtonGroup},
-            {SelectionControl.Select, levelMenu.PressCurrent},
-            {SelectionControl.Back, CloseMenu}
-        });
+        OpenMenu(levelMenu,
+            new Dictionary<SelectionControl, Action>
+            {
+                {SelectionControl.Up, levelMenu.SelectPrev},
+                {SelectionControl.Down, levelMenu.SelectNext},
+                {SelectionControl.SwitchButtonGroup, levelMenu.SwitchButtonGroup},
+                {SelectionControl.Select, levelMenu.PressCurrent},
+                {SelectionControl.Back, CloseMenu}
+            });
     }
 
     private void SendRedraw(View view) => NeedRedraw?.Invoke(this);
 
-    private void SendAnim((View, HashSet<(int, int, ViewCellData)>) animInfo) 
-        => CellsChanged?.Invoke((this, animInfo.Item2));
+    private void SendAnim((View, HashSet<(int, int, ViewCellData)>) animInfo) =>
+        CellsChanged?.Invoke((this, animInfo.Item2));
 }

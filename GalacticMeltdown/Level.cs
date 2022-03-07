@@ -45,7 +45,8 @@ public partial class Level
     public ObservableCollection<IControllable> ControllableObjects { get; }
     public ObservableCollection<ISightedObject> SightedObjects { get; }
 
-    public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall, (int x, int y) finishPos)
+    public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall,
+        (int x, int y) finishPos)
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _chunks = chunks;
@@ -54,15 +55,16 @@ public partial class Level
             chunk.NpcDied += NpcDeathHandler;
             chunk.SomethingMoved += SomethingMovedHandler;
         }
+
         _southernWall = southernWall;
         _westernWall = westernWall;
         (_finishX, _finishY) = finishPos;
         Player = new Player(startPos.x, startPos.y, this);
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
-        ControllableObjects = new ObservableCollection<IControllable> { Player };
+        ControllableObjects = new ObservableCollection<IControllable> {Player};
         ControllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
-        SightedObjects = new ObservableCollection<ISightedObject> { Player };
+        SightedObjects = new ObservableCollection<ISightedObject> {Player};
         LevelView = new LevelView(this);
         OverlayView = new OverlayView(this);
         IsActive = true;
@@ -81,7 +83,7 @@ public partial class Level
                 _chunks[chunk1.chunkX, chunk1.chunkY].AddNpc(npc);
             }
         }
-        
+
         SomethingMoved?.Invoke(movable, x0, y0, x1, y1);
     }
 
@@ -89,14 +91,17 @@ public partial class Level
 
     private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
-        if (e.NewItems is not null) foreach (var controllableObject in e.NewItems)
-        {
-            ((IControllable) controllableObject).Moved += ControllableMoved;
-        }
-        if (e.OldItems is not null) foreach (var controllableObject in e.OldItems)
-        {
-            ((IControllable) controllableObject).Moved -= ControllableMoved;
-        }
+        if (e.NewItems is not null)
+            foreach (var controllableObject in e.NewItems)
+            {
+                ((IControllable) controllableObject).Moved += ControllableMoved;
+            }
+
+        if (e.OldItems is not null)
+            foreach (var controllableObject in e.OldItems)
+            {
+                ((IControllable) controllableObject).Moved -= ControllableMoved;
+            }
     }
 
     private void PlayerDiedHandler(Actor actor)
@@ -111,22 +116,22 @@ public partial class Level
         {
             _chunks[chunkX, chunkY].SuggestEnemySpawn();
         }
-        
+
         IEnumerable<(int chunkX, int chunkY)> GetChunkIndexes()
         {
             foreach (var controllable in ControllableObjects)
             {
                 var (controllableChunkX, controllableChunkY) = GetChunk(controllable.X, controllable.Y);
-                foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX,
-                             controllableChunkY, SpawnRadius))
+                foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX, controllableChunkY,
+                             SpawnRadius))
                 {
                     if (ControllableObjects.All(obj =>
                         {
                             var (objChunkX, objChunkY) = GetChunk(obj.X, obj.Y);
-                            return Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
-                                   && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius
-                                   && chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0)
-                                   && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1);
+                            return Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius &&
+                                   Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius && chunkCoords.x >= 0 &&
+                                   chunkCoords.x < _chunks.GetLength(0) && chunkCoords.y >= 0 &&
+                                   chunkCoords.y < _chunks.GetLength(1);
                         }))
                         yield return chunkCoords;
                 }
@@ -140,6 +145,7 @@ public partial class Level
         {
             SpawnEnemies();
         }
+
         if (ReferenceEquals(sender, Player) && Player.X == _finishX && Player.Y == _finishY)
         {
             IsActive = false;
@@ -151,11 +157,11 @@ public partial class Level
     {
         switch (x, y)
         {
-            case(-1, -1):
+            case (-1, -1):
                 return _cornerTile;
-            case(-1, >= 0):
+            case (-1, >= 0):
                 return y >= _westernWall.Length ? null : _westernWall[y];
-            case(>= 0, -1):
+            case (>= 0, -1):
                 return x >= _southernWall.Length ? null : _southernWall[x];
         }
 
@@ -178,6 +184,7 @@ public partial class Level
         {
             return null;
         }
+
         return _chunks[chunkX, chunkY].GetMapObject(x, y);
     }
 
@@ -209,7 +216,7 @@ public partial class Level
     public bool DoTurn()
     {
         if (!IsActive) return false;
-        
+
         HashSet<Actor> inactive = new();
         HashSet<Actor> affected = new();
         List<Actor> currentlyActive;
@@ -219,6 +226,7 @@ public partial class Level
             {
                 Watch(actor);
             }
+
             foreach (var actor in currentlyActive)
             {
                 // A player may have reached the finish or died
@@ -232,7 +240,7 @@ public partial class Level
         {
             FinishTurn(actor);
         }
-        
+
         TurnFinished?.Invoke();
         return IsActive;
 
@@ -256,17 +264,18 @@ public partial class Level
             actor.Died -= BecameInactiveHandler;
             actor.FinishTurn();
         }
-        
+
         List<Npc> GetRespondingNpcs()
         {
-            List <Npc> npcs = new();
+            List<Npc> npcs = new();
             var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
             foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusPlayer))
             {
                 npcs.AddRange(chunk.GetNpcs());
             }
 
-            foreach (var controllable in ControllableObjects.Where(controllable => !ReferenceEquals(controllable, Player)))
+            foreach (var controllable in ControllableObjects.Where(controllable =>
+                         !ReferenceEquals(controllable, Player)))
             {
                 (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
                 foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))

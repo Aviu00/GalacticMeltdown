@@ -43,4 +43,3 @@ public interface IControllable : IFocusable, ISightedObject
 public delegate void VisiblePointsChangedEventHandler();
 
 public delegate void MovedEventHandler(IMovable sender, int x0, int y0, int x1, int y1);
-

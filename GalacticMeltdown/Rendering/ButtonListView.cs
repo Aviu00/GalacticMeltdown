@@ -10,10 +10,9 @@ public class ButtonListView : View
 {
     public override event ViewChangedEventHandler NeedRedraw;
     public override event CellsChangedEventHandler CellsChanged;
-    
-    
+
     private readonly ImmutableList<MenuButtonInfo> _buttons;
-    
+
     private int _currentButtonIndex;
     private int _topVisibleButtonIndex;
     private int _selectedButtonY;
@@ -46,8 +45,8 @@ public class ButtonListView : View
         if (y < Height - _buttons.Count) return new ViewCellData(null, null);
         char symbol = _buttons[Height - (y - _topVisibleButtonIndex) - 1].RenderedText[x];
         ConsoleColor fgColor = DataHolder.Colors.TextColor;
-        ConsoleColor bgColor = _selectedButtonY == y 
-            ? DataHolder.Colors.BackgroundColorSelected 
+        ConsoleColor bgColor = _selectedButtonY == y
+            ? DataHolder.Colors.BackgroundColorSelected
             : DataHolder.Colors.BackgroundColorUnselected;
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
     }

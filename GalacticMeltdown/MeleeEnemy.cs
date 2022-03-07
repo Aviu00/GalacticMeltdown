@@ -21,6 +21,5 @@ public class MeleeEnemy : Enemy
     public override void Hit(Actor hitter, int damage)
     {
         Hp -= damage;
-        
     }
 }
