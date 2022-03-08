@@ -41,8 +41,6 @@ public abstract class Actor : IObjectOnMap
     public (char symbol, ConsoleColor color) SymbolData { get; protected init; }
     public ConsoleColor? BgColor { get; protected init; }
 
-    public Action DoAction { get; protected set; }
-
     protected Level Level { get; }
 
     public event EventHandler Died;
@@ -85,4 +83,6 @@ public abstract class Actor : IObjectOnMap
     }
     
     protected void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
+
+    public abstract void TakeAction();
 }

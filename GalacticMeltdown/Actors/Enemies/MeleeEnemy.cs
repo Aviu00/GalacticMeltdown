@@ -14,7 +14,7 @@ public class MeleeEnemy : Enemy
         BgColor = null;
     }
 
-    protected override void TakeAction()
+    public override void TakeAction()
     {
         //calculate actions
     }

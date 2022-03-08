@@ -10,12 +10,14 @@ public class Player : Actor, IControllable
     private const int PlayerDex = 16;
     private const int PlayerDef = 4;
 
+    private Action _giveControlToUser;
+
     private int _viewRadius = 15;
     private bool _xray;
+    
+    public bool NoClip;
 
     public bool InFocus { get; set; }
-
-    public bool NoClip; //Temporary implementation of debugging "cheat codes"
 
     public bool Xray
     {
@@ -46,11 +48,6 @@ public class Player : Actor, IControllable
         BgColor = null;
     }
     
-    public void SetControlFunc(Action controlFunc)
-    {
-        DoAction = controlFunc;
-    }
-
     public bool TryMove(int deltaX, int deltaY)
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
@@ -60,6 +57,16 @@ public class Player : Actor, IControllable
         MoveTo(X + deltaX, Y + deltaY);
         VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         return true;
+    }
+
+    public override void TakeAction()
+    {
+        _giveControlToUser?.Invoke();
+    }
+
+    public void SetControlFunc(Action controlFunc)
+    {
+        _giveControlToUser = controlFunc;
     }
 
     public override void Hit(Actor hitter, int damage)

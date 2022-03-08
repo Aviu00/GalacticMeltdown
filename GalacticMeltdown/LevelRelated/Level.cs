@@ -113,7 +113,7 @@ public partial class Level
                 // A player may have reached the finish or died
                 if (!IsActive) return FinishMapTurn();
                 // An actor could die due to actions of another actor
-                if (actor.IsActive) actor.DoAction();
+                if (actor.IsActive) actor.TakeAction();
             }
 
             if (!energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
