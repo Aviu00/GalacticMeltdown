@@ -19,8 +19,7 @@ public static class UtilityFunctions
     public static bool Chance(int chance, Random rng = null)
     {
         rng ??= Random.Shared;
-        int val = rng.Next(1, 101);
-        return val <= chance;
+        return rng.Next(1, 101) <= chance;
     }
 
     public static int MultiChance(Random rng = null, params int[] chances)

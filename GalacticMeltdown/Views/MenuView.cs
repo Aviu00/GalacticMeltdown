@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
-using GalacticMeltdown.Frontend;
 using GalacticMeltdown.InputProcessing;
 using GalacticMeltdown.Rendering;
 

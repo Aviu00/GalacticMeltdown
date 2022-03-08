@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Actors;
-using GalacticMeltdown.Actors.Enemies;
 using GalacticMeltdown.Events;
 
 namespace GalacticMeltdown.LevelRelated;

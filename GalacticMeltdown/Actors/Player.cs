@@ -12,7 +12,7 @@ public class Player : Actor, IControllable
 
     private Action _giveControlToUser;
 
-    private int _viewRadius = 15;
+    private int _viewRadius = 20;
     private bool _xray;
     
     public bool NoClip;

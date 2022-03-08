@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -8,30 +9,28 @@ namespace GalacticMeltdown.Actors;
 public abstract class Npc : Actor
 {
     public HashSet<Actor> Targets { get; set; }
-    public (int x, int y)? WantsToGoTo { get; set; }
     public Actor CurrentTarget { get; set; }
 
     private readonly string _id;
 
-    protected abstract List<Behavior> Behaviors { get; }
+    private Behavior[] Behaviors { get; init; }
 
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
+    protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level, Behavior[] behaviors) 
         : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
+        foreach (Behavior behavior in behaviors)
+        {
+            behavior.SetTarget(this);
+        }
+        Behaviors = behaviors;
     }
     
     public void MoveNpcTo(int x, int y) => MoveTo(x, y);
     
     public override void TakeAction()
     {
-        foreach (var behavior in Behaviors)
-        {
-            if (behavior.TryAct())
-            {
-                return;
-            }
-        }
+        Behaviors.Any(behavior => behavior.TryAct());
     }
 
     public override int GetHashCode()

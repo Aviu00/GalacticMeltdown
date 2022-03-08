@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
@@ -86,76 +85,27 @@ public class ChunkGenerator
         return WestConnection!;
     }
 
-    public char CalculateSymbol()
+    public char CalculateSymbol()//will be used for minimap
     {
-        List<char> symbols = new()
+        return (NorthConnection, EastConnection, SouthConnection, WestConnection) switch
         {
-            '┼',
-            '├',
-            '┤',
-            '┬',
-            '┴',
-            '┌',
-            '└',
-            '┐',
-            '┘',
-            '│',
-            '─',
-            '╴',
-            '╶',
-            '╷',
-            '╵',
-            '0'
+            (not null, not null, not null, not null) => '┼',
+            (not null, not null, not null, null) => '├',
+            (not null, null, not null, not null) => '┤',
+            (null, not null, not null, not null) => '┬',
+            (not null, not null, null, not null) => '┴',
+            (null, not null, not null, null) => '┌',
+            (not null, not null, null, null) => '└',
+            (null, null, not null, not null) => '┐',
+            (not null, null, null, not null) => '┘',
+            (not null, null, not null, null) => '│',
+            (null, not null, null, not null) => '─',
+            (null, null, null, not null) => '╴',
+            (null, not null, null, null) => '╶',
+            (null, null, not null, null) => '╷',
+            (not null, null, null, null) => '╵',
+            _ => ' '
         };
-        if (NorthConnection is null)
-        {
-            symbols.Remove('┼');
-            symbols.Remove('├');
-            symbols.Remove('┤');
-            symbols.Remove('┴');
-            symbols.Remove('└');
-            symbols.Remove('┘');
-            symbols.Remove('│');
-            symbols.Remove('╵');
-        }
-
-        if (SouthConnection is null)
-        {
-            symbols.Remove('┼');
-            symbols.Remove('├');
-            symbols.Remove('┤');
-            symbols.Remove('┬');
-            symbols.Remove('┌');
-            symbols.Remove('┐');
-            symbols.Remove('│');
-            symbols.Remove('╷');
-        }
-
-        if (EastConnection is null)
-        {
-            symbols.Remove('┼');
-            symbols.Remove('├');
-            symbols.Remove('┬');
-            symbols.Remove('┴');
-            symbols.Remove('┌');
-            symbols.Remove('└');
-            symbols.Remove('─');
-            symbols.Remove('╶');
-        }
-
-        if (WestConnection is null)
-        {
-            symbols.Remove('┼');
-            symbols.Remove('┤');
-            symbols.Remove('┬');
-            symbols.Remove('┴');
-            symbols.Remove('┐');
-            symbols.Remove('┘');
-            symbols.Remove('─');
-            symbols.Remove('╴');
-        }
-
-        return symbols[0];
     }
 
     private void FillBorderWalls(TileTypeData[,] roomData, Tile[,] northernTileMap, Tile[,] easternTileMap)

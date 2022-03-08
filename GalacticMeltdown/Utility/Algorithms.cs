@@ -13,6 +13,7 @@ public static class Algorithms
     public static IEnumerable<(int x, int y)> BresenhamGetPointsOnLine(int x0, int y0, int x1, int y1,
         int maxLength = 0)
     {
+        if (maxLength > 0) maxLength++;
         int dx = Math.Abs(x1 - x0);
         int dy = Math.Abs(y1 - y0);
         int addX = dx >= dy ? 1 : 0;
@@ -49,39 +50,26 @@ public static class Algorithms
             yield return (x, y);
 
             error -= dy;
-            if (error < 0)
-            {
-                y += ySide * addX;
-                x += xSide * addY;
-                error += dx;
-            }
+            if (error >= 0) continue;
+            y += ySide * addX;
+            x += xSide * addY;
+            error += dx;
         }
     }
 
     public static IEnumerable<(int x, int y)> GetPointsOnSquareBorder(int x0, int y0, int radius)
     {
-        List<(int x, int y)> coords = new List<(int x, int y)>();
-        int xMin = x0 - radius;
-        int xMax = x0 + radius;
-        int yMin = y0 - radius;
-        int yMax = y0 + radius;
-        for (int x = xMin; x <= xMax; x++)
+        for (int i = 0; i < radius * 2; i++)
         {
-            coords.Add((x, yMin));
-            coords.Add((x, yMax));
+            yield return (x0 - radius + i, y0 + radius);
+            yield return (x0 + radius - i, y0 - radius);
+            yield return (x0 + radius, y0 + radius - i);
+            yield return (x0 - radius, y0 - radius + i);
         }
-
-        for (int y = yMin + 1; y <= yMax - 1; y++)
-        {
-            coords.Add((xMin, y));
-            coords.Add((xMax, y));
-        }
-
-        return coords;
     }
 
     /// <summary>
-    /// Bresenham's circle algorithm
+    /// Bresenham's circle algorithm; target for termination
     /// </summary>
     public static IEnumerable<(int x, int y)> GetPointsOnCircleBorder(int x0, int y0, int radius)
     {
@@ -141,6 +129,7 @@ public static class Algorithms
         }
     }
 
+    //target for termination
     private static void FillCirclePoints(List<(int x, int y)> coords, int x0, int y0, int x, int y)
     {
         TransposePointsToList(coords, x0 + x, y0 + y);
@@ -153,6 +142,7 @@ public static class Algorithms
         TransposePointsToList(coords, x0 - y, y0 - x);
     }
 
+    //target for termination
     private static void TransposePointsToList(List<(int, int)> coords, int x, int y)
     {
         if (!coords.Contains((x, y)))

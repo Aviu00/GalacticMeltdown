@@ -1,6 +1,7 @@
 using System;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Actors;
 
@@ -62,6 +63,7 @@ public abstract class Actor : IObjectOnMap
     
     public virtual void Hit(Actor hitter, int damage)
     {
+        Hp -= damage;
         SendAffected();
     }
 

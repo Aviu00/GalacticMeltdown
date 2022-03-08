@@ -20,7 +20,7 @@ public class RoomDataExtractor : XmlExtractor
         ParseDocument("Rooms.xml");
     }
 
-    protected sealed override void ParseDocument(string docName)
+    protected virtual void ParseDocument(string docName)
     {
         XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)

@@ -1,6 +1,6 @@
 using System;
 
-namespace GalacticMeltdown.Actors;
+namespace GalacticMeltdown.Utility;
 
 public class LimitedNumber
 {

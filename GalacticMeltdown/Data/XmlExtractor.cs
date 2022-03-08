@@ -14,6 +14,4 @@ public abstract class XmlExtractor
         doc.Load($"{_projectDirectory}/../../../Data/xml/{name}");
         return doc;
     }
-
-    protected abstract void ParseDocument(string docName);
 }

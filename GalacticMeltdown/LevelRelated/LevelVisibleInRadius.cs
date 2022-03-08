@@ -14,7 +14,7 @@ public partial class Level
             (int x, int y)? prevTileCoords = null;
             foreach (var pointCoords in Algorithms.BresenhamGetPointsOnLine(x0, y0, x, y, radius))
             {
-                AddVisibleAdjacentWalls(prevTileCoords);
+                AddVisibleAdjacentPoints(prevTileCoords);
                 if (!visiblePoints.Contains(pointCoords)) visiblePoints.Add(pointCoords);
                 if (!(pointCoords.x == x0 && pointCoords.y == y0)) prevTileCoords = pointCoords;
                 Tile tile = GetTile(pointCoords.x, pointCoords.y);
@@ -25,7 +25,7 @@ public partial class Level
 
         return visiblePoints;
 
-        void AddVisibleAdjacentWalls((int x, int y)? coords)
+        void AddVisibleAdjacentPoints((int x, int y)? coords)
         {
             if (coords is null) return;
             var (x, y) = coords.Value;
@@ -33,28 +33,20 @@ public partial class Level
             int posToPlayerY = Math.Sign(y - y0); // -1 - above, 0 - same Y, 1 - below
             if (posToPlayerX == 0)
             {
-                AddVisibleWall(x + 1, y + posToPlayerY);
-                AddVisibleWall(x, y + posToPlayerY);     //  .
-                AddVisibleWall(x - 1, y + posToPlayerY); // +*+
+                visiblePoints.Add((x + 1, y + posToPlayerY));
+                visiblePoints.Add((x, y + posToPlayerY));     //  .
+                visiblePoints.Add((x - 1, y + posToPlayerY)); // +*+
             }
             else if (posToPlayerY == 0)
             {
-                AddVisibleWall(x + posToPlayerX, y + 1); //  +
-                AddVisibleWall(x + posToPlayerX, y);     // .*
-                AddVisibleWall(x + posToPlayerX, y - 1); //  +
+                visiblePoints.Add((x + posToPlayerX, y + 1)); //  +
+                visiblePoints.Add((x + posToPlayerX, y));     // .*
+                visiblePoints.Add((x + posToPlayerX, y - 1)); //  +
             }
             else
             {
-                AddVisibleWall(x + posToPlayerX, y + posToPlayerY);
+                visiblePoints.Add((x + posToPlayerX, y + posToPlayerY));
             }
-        }
-
-        void AddVisibleWall(int x, int y)
-        {
-            if (visiblePoints.Contains((x, y))) return;
-            Tile tile = GetTile(x, y);
-            if (tile is null || tile.IsTransparent) return;
-            visiblePoints.Add((x, y));
         }
     }
 }
