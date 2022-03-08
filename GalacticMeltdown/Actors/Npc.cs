@@ -13,8 +13,6 @@ public abstract class Npc : Actor
 
     private readonly string _id;
 
-    protected MovementStrategy MovementStrategy { get; set; }
-
     protected abstract List<Behavior> Behaviors { get; }
 
     protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 

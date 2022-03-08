@@ -12,7 +12,7 @@ public class MeleeEnemy : Enemy
     public MeleeEnemy(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
         : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
-        MovementStrategy = new MovementStrategy(this, Level);
+        Behaviors = new List<Behavior> {new MovementStrategy(this, Level)};
         SymbolData = ('W', ConsoleColor.Red);
         BgColor = null;
     }
