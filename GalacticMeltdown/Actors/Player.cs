@@ -9,10 +9,10 @@ public class Player : Actor, IControllable
     private const int PlayerEnergy = 100;
     private const int PlayerDex = 16;
     private const int PlayerDef = 4;
+    private const int PlayerViewRange = 20;
 
     private Action _giveControlToUser;
-
-    private int _viewRadius = 20;
+    
     private bool _xray;
     
     public bool NoClip;
@@ -31,18 +31,19 @@ public class Player : Actor, IControllable
 
     public int ViewRadius
     {
-        get => _viewRadius;
+        get => _viewRange;
         set
         {
             if (value <= 0) return;
-            _viewRadius = value;
+            _viewRange = value;
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
     public event EventHandler VisiblePointsChanged;
     
-    public Player(int x, int y, Level level) : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, x, y, level)
+    public Player(int x, int y, Level level)
+        : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, PlayerViewRange, x, y, level)
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;

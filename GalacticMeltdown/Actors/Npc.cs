@@ -15,8 +15,8 @@ public abstract class Npc : Actor
 
     private Behavior[] Behaviors { get; init; }
 
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level, Behavior[] behaviors) 
-        : base(maxHp, maxEnergy, dex, def, x, y, level)
+    protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level, 
+        Behavior[] behaviors) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
         foreach (Behavior behavior in behaviors)

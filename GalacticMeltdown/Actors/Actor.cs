@@ -8,6 +8,8 @@ namespace GalacticMeltdown.Actors;
 public abstract class Actor : IObjectOnMap
 {
     private bool _turnStopped;
+    
+    protected int _viewRange;
 
     public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
@@ -49,13 +51,14 @@ public abstract class Actor : IObjectOnMap
     public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
     
-    protected Actor(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level)
+    protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
     {
         Level = level;
         _hpLim = new LimitedNumber(maxHp, maxHp);
         _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dex = dex;
         Def = def;
+        _viewRange = viewRange;
         X = x;
         Y = y;
         _turnStopped = false;
