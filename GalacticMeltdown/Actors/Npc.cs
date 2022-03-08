@@ -15,13 +15,12 @@ public abstract class Npc : Actor
 
     protected MovementStrategy MovementStrategy { get; set; }
 
-    protected List<Behavior> Behaviors { get; }
+    protected abstract List<Behavior> Behaviors { get; }
 
     protected Npc(int maxHp, int maxEnergy, int dex, int def, int x, int y, Level level) 
         : base(maxHp, maxEnergy, dex, def, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
-        Behaviors = new List<Behavior>();
     }
     
     public void MoveNpcTo(int x, int y) => MoveTo(x, y);
