@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Utility;
 
-namespace GalacticMeltdown.Frontend;
+namespace GalacticMeltdown.InputProcessing;
 
 public static class InputProcessor
 {
