@@ -4,7 +4,7 @@ using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Frontend;
-using GalacticMeltdown.Frontend.Rendering;
+using GalacticMeltdown.Rendering;
 
 namespace GalacticMeltdown.Views;
 

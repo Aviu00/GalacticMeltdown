@@ -1,5 +1,5 @@
-using GalacticMeltdown.Frontend.Rendering;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.Rendering;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Frontend;

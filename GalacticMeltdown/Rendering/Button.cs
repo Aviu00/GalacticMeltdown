@@ -1,6 +1,6 @@
 using System;
 
-namespace GalacticMeltdown.Frontend.Rendering;
+namespace GalacticMeltdown.Rendering;
 
 public readonly struct Button
 {
