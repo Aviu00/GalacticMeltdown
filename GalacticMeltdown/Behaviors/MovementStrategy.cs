@@ -3,11 +3,11 @@ using GalacticMeltdown.LevelRelated;
 
 namespace GalacticMeltdown.Behaviors;
 
-public class MoveStrategy : Behavior
+public class MovementStrategy : Behavior
 {
     private readonly Level _level;
 
-    public MoveStrategy(Npc target, Level level)
+    public MovementStrategy(Npc target, Level level)
     {
         Target = target;
         _level = level;
