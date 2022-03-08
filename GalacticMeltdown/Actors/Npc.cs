@@ -8,8 +8,8 @@ namespace GalacticMeltdown.Actors;
 public abstract class Npc : Actor
 {
     public HashSet<Actor> Targets { get; set; }
-    public (int x, int y)? LastKnownTargetPosition { get; set; }
-    public Actor CurrentlyChasing { get; set; }
+    public (int x, int y)? WantsToGoTo { get; set; }
+    public Actor CurrentTarget { get; set; }
 
     private readonly string _id;
 
