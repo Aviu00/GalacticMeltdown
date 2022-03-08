@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GalacticMeltdown.Frontend;
+namespace GalacticMeltdown.Launchers;
 
 public partial class PlaySession
 {
@@ -34,8 +34,8 @@ public partial class PlaySession
         {PlayerAction.MoveSe, () => PlaySession.MoveControlled(1, -1)},
         {PlayerAction.MoveSw, () => PlaySession.MoveControlled(-1, -1)},
         {PlayerAction.MoveNw, () => PlaySession.MoveControlled(-1, 1)},
-        {PlayerAction.IncreaseViewRange, () => PlaySession._player.ViewRadius++},
-        {PlayerAction.ReduceViewRange, () => PlaySession._player.ViewRadius--},
+        {PlayerAction.IncreaseViewRange, () => PlaySession._player.ViewRange++},
+        {PlayerAction.ReduceViewRange, () => PlaySession._player.ViewRange--},
         {PlayerAction.ActivateNoClip, () => PlaySession._player.NoClip = !PlaySession._player.NoClip},
         {PlayerAction.ActivateXRay, () => PlaySession._player.Xray = !PlaySession._player.Xray},
         {PlayerAction.Quit, PlaySession.StopSession},

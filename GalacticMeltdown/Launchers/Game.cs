@@ -3,7 +3,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Rendering;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.Frontend;
+namespace GalacticMeltdown.Launchers;
 
 public static class Game
 {

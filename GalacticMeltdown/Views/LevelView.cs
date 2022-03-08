@@ -120,7 +120,7 @@ public class LevelView : View
     private void UpdateVisiblePoints(object sender = null, EventArgs _ = null)
     {
         _visiblePoints = _sightedObjects
-            .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRadius, obj.Xray))
+            .SelectMany((obj, _) => _level.GetPointsVisibleAround(obj.X, obj.Y, obj.ViewRange, obj.Xray))
             .ToHashSet();
         foreach (var (x, y) in _visiblePoints)
         {

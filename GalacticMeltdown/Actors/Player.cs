@@ -29,7 +29,7 @@ public class Player : Actor, IControllable
         }
     }
 
-    public int ViewRadius
+    public int ViewRange
     {
         get => _viewRange;
         set
