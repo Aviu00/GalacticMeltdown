@@ -21,7 +21,7 @@ public class TileTypesExtractor : XmlExtractor
         ParseDocument("TilesExtra.xml");
     }
 
-    protected virtual void ParseDocument(string docName)
+    private void ParseDocument(string docName)
     {
         XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
