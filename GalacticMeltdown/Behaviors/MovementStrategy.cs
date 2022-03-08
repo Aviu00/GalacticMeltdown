@@ -13,8 +13,9 @@ public class MovementStrategy : Behavior
         _level = level;
     }
 
-    public void Move(int deltaX, int deltaY)
+    public override bool TryAct()
     {
-        Target.MoveNpcTo(Target.X + deltaX, Target.Y + deltaY);
+        Target.MoveNpcTo(Target.X + 1, Target.Y + 1);
+        return true;
     }
 }

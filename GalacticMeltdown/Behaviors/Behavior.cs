@@ -5,4 +5,6 @@ namespace GalacticMeltdown.Behaviors;
 public abstract class Behavior
 {
     protected Npc Target { get; init; }
+
+    public abstract bool TryAct();
 }

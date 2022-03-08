@@ -17,11 +17,6 @@ public class MeleeEnemy : Enemy
         BgColor = null;
     }
 
-    public override void TakeAction()
-    {
-        //calculate actions
-    }
-
     public override void Hit(Actor hitter, int damage)
     {
         Hp -= damage;

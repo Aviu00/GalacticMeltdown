@@ -24,6 +24,17 @@ public abstract class Npc : Actor
     }
     
     public void MoveNpcTo(int x, int y) => MoveTo(x, y);
+    
+    public override void TakeAction()
+    {
+        foreach (var behavior in Behaviors)
+        {
+            if (behavior.TryAct())
+            {
+                return;
+            }
+        }
+    }
 
     public override int GetHashCode()
     {
