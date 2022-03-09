@@ -91,8 +91,6 @@ public partial class Level
         IsActive = true;
         PlayerWon = false;
 
-        SortedSet<Behavior> behaviors = new(new Behavior.BehaviorComparer()) {new MovementStrategy(this)};
-
         ActiveChunks = new();
         UpdateActiveChunks();
     }
