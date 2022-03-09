@@ -4,11 +4,13 @@ namespace GalacticMeltdown.Behaviors;
 
 public class MovementStrategy : Behavior
 {
+    private const int DefaultPriority = 10;
     private readonly Level _level;
     private (int x, int y)? _wantsToGoTo = null;
 
-    public MovementStrategy(Level level)
+    public MovementStrategy(Level level, int? priority = null)
     {
+        _priority = priority ?? DefaultPriority;
         _level = level;
     }
 

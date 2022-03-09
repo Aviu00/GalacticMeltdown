@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
@@ -89,6 +90,8 @@ public partial class Level
         OverlayView = new OverlayView(this);
         IsActive = true;
         PlayerWon = false;
+
+        SortedSet<Behavior> behaviors = new(new Behavior.BehaviorComparer()) {new MovementStrategy(this)};
 
         ActiveChunks = new();
         UpdateActiveChunks();

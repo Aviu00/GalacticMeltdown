@@ -13,10 +13,10 @@ public abstract class Npc : Actor
 
     private readonly string _id;
 
-    private Behavior[] Behaviors { get; init; }
+    private SortedSet<Behavior> Behaviors { get; init; }
 
     protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level, 
-        Behavior[] behaviors) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
+        SortedSet<Behavior> behaviors) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
         foreach (Behavior behavior in behaviors)
