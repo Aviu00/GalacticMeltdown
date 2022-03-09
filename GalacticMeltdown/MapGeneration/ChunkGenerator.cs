@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
@@ -62,7 +63,12 @@ public class ChunkGenerator
         }
 
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
-        return new Chunk(Tiles, Difficulty);
+        var neighborCoords = new List<(int x, int y)>();
+        if(NorthConnection != null) neighborCoords.Add((NorthConnection.MapX, NorthConnection.MapY));
+        if(EastConnection != null) neighborCoords.Add((EastConnection.MapX, EastConnection.MapY));
+        if(SouthConnection != null) neighborCoords.Add((SouthConnection.MapX, SouthConnection.MapY));
+        if(WestConnection != null) neighborCoords.Add((WestConnection.MapX, WestConnection.MapY));
+        return new Chunk(Tiles, neighborCoords, Difficulty, MapX, MapY);
     }
 
     public void AccessMainRoute(double mainRouteDifficulty)

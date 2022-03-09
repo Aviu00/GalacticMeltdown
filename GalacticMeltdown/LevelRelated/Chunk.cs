@@ -2,42 +2,67 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.LevelRelated;
 
 public class Chunk
 {
-    private bool _seededSpawn = true;
-    
     public event EventHandler<MoveEventArgs> SomethingMoved;
     public event EventHandler NpcDied;
     public event EventHandler NpcInvolvedInTurn;
+    
+    public int MapX { get; }
+    public int MapY { get; }
     
     private double Difficulty { get; }
     public Tile[,] Tiles { get; }
 
     private List<Enemy> Enemies { get; }
+    
+    private bool _wasActiveBefore;
 
-    public Chunk(Tile[,] tiles, double difficulty)
+    public List<(int x, int y)> NeighborCoords { get; }
+
+    public bool WasActiveBefore
+    {
+        get => _wasActiveBefore;
+        set
+        {
+            if(!_wasActiveBefore && value) SpawnEnemies();
+            _wasActiveBefore = value;
+        }
+    }
+
+    public Chunk(Tile[,] tiles, List<(int x, int y)> neighborCoords, double difficulty, int x, int y)
     {
         Tiles = tiles;
         Difficulty = difficulty;
+        MapX = x;
+        MapY = y;
+        NeighborCoords = neighborCoords;
         Enemies = new List<Enemy>();
     }
-    
-    public void SuggestEnemySpawn()
+
+    public List<(int, int)> GetFloorTileCoords()
     {
-        // use AddNpc
-        if (_seededSpawn)
+        List<(int, int)> coords = new();
+        for (int x = 0; x < DataHolder.ChunkSize; x++)
         {
-            // use DataHolder.CurrentSeed and Difficulty
-            _seededSpawn = false;
+            for (int y = 0; y < DataHolder.ChunkSize; y++)
+            {
+                if (Tiles[x, y].Id == "floor")
+                    coords.Add((x + MapX * DataHolder.ChunkSize, y + MapY * DataHolder.ChunkSize));
+            }
         }
-        else
-        {
-            // spawn with some low-ish chance
-        }
+        return coords;
+    }
+
+    public void SpawnEnemies()
+    {
+        
     }
 
     public IObjectOnMap GetMapObject(int x, int y)

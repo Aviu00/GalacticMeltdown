@@ -17,6 +17,8 @@ public class Tile : IDrawable
 
     public bool ConnectToWalls => _typeData.IsConnection;
 
+    public string Id => _typeData.Id;
+
     public Tile(TileTypeData typeData)
     {
         _typeData = typeData;

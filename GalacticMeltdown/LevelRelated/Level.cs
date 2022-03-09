@@ -34,10 +34,7 @@ internal class ChunkEventListener
 
 public partial class Level
 {
-    private const int EnemyRadiusPlayer = 3;
-    private const int EnemyRadiusControllable = 1;
-
-    private const int SpawnRadius = 5;
+    private const int ActiveChunkRadius = 3;
 
     private const int ChunkSize = DataHolder.ChunkSize;
 
@@ -62,6 +59,8 @@ public partial class Level
     public Player Player { get; }
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
+
+    public List<Chunk> ActiveChunks { get; private set; }
 
     public ObservableCollection<IControllable> ControllableObjects { get; }
     public ObservableCollection<ISightedObject> SightedObjects { get; }
@@ -90,6 +89,9 @@ public partial class Level
         OverlayView = new OverlayView(this);
         IsActive = true;
         PlayerWon = false;
+
+        ActiveChunks = new();
+        UpdateActiveChunks();
     }
     
     public bool DoTurn()
@@ -151,22 +153,7 @@ public partial class Level
         List<Npc> GetNearbyNpcs()
         {
             List<Npc> npcs = new();
-            var (chunkX, chunkY) = GetChunk(Player.X, Player.Y);
-            foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusPlayer))
-            {
-                npcs.AddRange(chunk.GetNpcs());
-            }
-
-            foreach (var controllable in ControllableObjects.Where(controllable =>
-                         !ReferenceEquals(controllable, Player)))
-            {
-                (chunkX, chunkY) = GetChunk(controllable.X, controllable.Y);
-                foreach (var chunk in GetChunksAround(chunkX, chunkY, EnemyRadiusControllable))
-                {
-                    npcs.AddRange(chunk.GetNpcs());
-                }
-            }
-
+            ActiveChunks.ForEach(chunk => npcs.AddRange(chunk.GetNpcs()));
             return npcs;
         }
         
@@ -207,7 +194,7 @@ public partial class Level
                 return x >= _southernWall.Length ? null : _southernWall[x];
         }
 
-        var (chunkX, chunkY) = GetChunk(x, y);
+        var (chunkX, chunkY) = GetChunkCoords(x, y);
         int localX = x % ChunkSize;
         int localY = y % ChunkSize;
         if (!(x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && chunkY < _chunks.GetLength(1)))
@@ -221,7 +208,7 @@ public partial class Level
     public IObjectOnMap GetNonTileObject(int x, int y)
     {
         if (x == Player.X && y == Player.Y) return Player;
-        var (chunkX, chunkY) = GetChunk(x, y);
+        var (chunkX, chunkY) = GetChunkCoords(x, y);
         if (!(x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && chunkY < _chunks.GetLength(1)))
         {
             return null;
@@ -232,9 +219,9 @@ public partial class Level
 
     private void ControllableMoved(object sender, MoveEventArgs e)
     {
-        if (GetChunk(e.X0, e.Y0) != GetChunk(e.X1, e.Y1))
+        if (GetChunkCoords(e.X0, e.Y0) != GetChunkCoords(e.X1, e.Y1))
         {
-            SpawnEnemies();
+            UpdateActiveChunks();
         }
 
         if (ReferenceEquals(sender, Player) && Player.X == _finishX && Player.Y == _finishY)
@@ -243,35 +230,85 @@ public partial class Level
             PlayerWon = true;
         }
     }
-    
-    private void SpawnEnemies()
-    {
-        foreach (var (chunkX, chunkY) in GetChunkIndexes())
-        {
-            _chunks[chunkX, chunkY].SuggestEnemySpawn();
-        }
 
-        IEnumerable<(int chunkX, int chunkY)> GetChunkIndexes()
+    private void UpdateActiveChunks()
+    {
+        //remove out of range chunks from ActiveChunkRadius
+        ActiveChunks = ActiveChunks.Where(chunk => ControllableObjects.Any(controllable =>
         {
-            foreach (var controllable in ControllableObjects)
+            var (x, y) = GetChunkCoords(controllable.X, controllable.Y);
+            return Math.Abs(x - chunk.MapX) <= ActiveChunkRadius && Math.Abs(y - chunk.MapY) <= ActiveChunkRadius;
+        })).ToList();
+        
+        //add new chunks to list
+        foreach (var obj in ControllableObjects)
+        {
+            var (x, y) = GetChunkCoords(obj.X, obj.Y);
+            foreach (var chunk in GetChunksAround(x, y, ActiveChunkRadius))
             {
-                var (controllableChunkX, controllableChunkY) = GetChunk(controllable.X, controllable.Y);
-                foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX, controllableChunkY,
-                             SpawnRadius))
-                {
-                    if (ControllableObjects.All(obj =>
-                        {
-                            var (objChunkX, objChunkY) = GetChunk(obj.X, obj.Y);
-                            return chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0) 
-                                && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1)
-                                && Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
-                                && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
-                        }))
-                        yield return chunkCoords;
-                }
+                if (ActiveChunks.Contains(chunk)) continue;
+                ActiveChunks.Add(chunk);
+                chunk.WasActiveBefore = true;
             }
         }
     }
+
+    
+    /// <summary>
+    /// Get the neighboring chunks of a chunk
+    /// </summary>
+    /// <param name="chunkX">x coordinate of a base chunk</param>
+    /// <param name="chunkY">y coordinate of a base chunk(used in recursion)</param>
+    /// <param name="amount">amount of iterations. 1: get neighboring chunks; 2: get neighboring chunks and their
+    /// neighboring chunks; and so on...</param>
+    /// <returns></returns>
+    public HashSet<Chunk> GetChunkNeighbors(int chunkX, int chunkY, int amount = 1)
+    {
+        return GetChunkNeighbors(_chunks[chunkX, chunkY], amount);
+    }
+    private HashSet<Chunk> GetChunkNeighbors(Chunk chunk, int amount, (int x, int y)? prevChunkCoords = null)
+    {
+        if (amount <= 0) return null;
+        HashSet<Chunk> hashSet = new();
+        foreach ((int x, int y) in chunk.NeighborCoords)
+        {
+            if(prevChunkCoords != null && (x, y) == prevChunkCoords.Value) continue; 
+            Chunk newChunk = _chunks[x, y];
+            hashSet.Add(newChunk);
+            HashSet<Chunk> newSet = GetChunkNeighbors(newChunk, amount - 1, (chunk.MapX, chunk.MapY));
+            if(newSet != null) hashSet.UnionWith(newSet);
+        }
+        return hashSet;
+    }
+    
+    //private void SpawnEnemies()
+    //{
+    //    foreach (var (chunkX, chunkY) in GetChunkIndexes())
+    //    {
+    //        _chunks[chunkX, chunkY].SpawnEnemies();
+    //    }
+//
+    //    IEnumerable<(int chunkX, int chunkY)> GetChunkIndexes()
+    //    {
+    //        foreach (var controllable in ControllableObjects)
+    //        {
+    //            var (controllableChunkX, controllableChunkY) = GetChunkCoords(controllable.X, controllable.Y);
+    //            foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX, controllableChunkY,
+    //                         SpawnRadius))
+    //            {
+    //                if (ControllableObjects.All(obj =>
+    //                    {
+    //                        var (objChunkX, objChunkY) = GetChunkCoords(obj.X, obj.Y);
+    //                        return chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0) 
+    //                            && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1)
+    //                            && Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
+    //                            && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
+    //                    }))
+    //                    yield return chunkCoords;
+    //            }
+    //        }
+    //    }
+    //}
 
     private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
@@ -313,8 +350,8 @@ public partial class Level
     {
         if (sender is Npc npc)
         {
-            var chunk0 = GetChunk(e.X0, e.Y0);
-            var chunk1 = GetChunk(e.X1, e.Y1);
+            var chunk0 = GetChunkCoords(e.X0, e.Y0);
+            var chunk1 = GetChunkCoords(e.X1, e.Y1);
             if (chunk0 != chunk1)
             {
                 _chunks[chunk0.chunkX, chunk0.chunkY].RemoveNpc(npc);
@@ -325,7 +362,7 @@ public partial class Level
         SomethingMoved?.Invoke(sender, e);
     }
     
-    private static (int chunkX, int chunkY) GetChunk(int x, int y)
+    private static (int chunkX, int chunkY) GetChunkCoords(int x, int y)
     {
         return (x / ChunkSize, y / ChunkSize);
     }
