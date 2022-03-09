@@ -253,29 +253,33 @@ public partial class Level
         }
     }
 
-    
+
     /// <summary>
     /// Get the neighboring chunks of a chunk
     /// </summary>
     /// <param name="chunkX">x coordinate of a base chunk</param>
     /// <param name="chunkY">y coordinate of a base chunk(used in recursion)</param>
+    /// <param name="includeBaseChunk">set false to not include chunk with chunkX, chunkY coords</param>
     /// <param name="amount">amount of iterations. 1: get neighboring chunks; 2: get neighboring chunks and their
     /// neighboring chunks; and so on...</param>
     /// <returns></returns>
-    public HashSet<Chunk> GetChunkNeighbors(int chunkX, int chunkY, int amount = 1)
+    public HashSet<Chunk> GetChunkNeighbors(int chunkX, int chunkY, bool includeBaseChunk = true, int amount = 1)
     {
-        return GetChunkNeighbors(_chunks[chunkX, chunkY], amount);
+        Chunk chunk = _chunks[chunkX, chunkY];
+        HashSet<Chunk> chunks = GetChunkNeighbors(chunk, amount);
+        if(includeBaseChunk) chunks.Add(chunk);
+        return chunks;
     }
-    private HashSet<Chunk> GetChunkNeighbors(Chunk chunk, int amount, (int x, int y)? prevChunkCoords = null)
+    private HashSet<Chunk> GetChunkNeighbors(Chunk chunk, int amount, Chunk prevChunk = null)
     {
         if (amount <= 0) return null;
         HashSet<Chunk> hashSet = new();
         foreach ((int x, int y) in chunk.NeighborCoords)
         {
-            if(prevChunkCoords != null && (x, y) == prevChunkCoords.Value) continue; 
+            if(prevChunk != null && (x, y) == (prevChunk.MapX, prevChunk.MapY)) continue; 
             Chunk newChunk = _chunks[x, y];
             hashSet.Add(newChunk);
-            HashSet<Chunk> newSet = GetChunkNeighbors(newChunk, amount - 1, (chunk.MapX, chunk.MapY));
+            HashSet<Chunk> newSet = GetChunkNeighbors(newChunk, amount - 1, chunk);
             if(newSet != null) hashSet.UnionWith(newSet);
         }
         return hashSet;
