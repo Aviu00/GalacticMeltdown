@@ -78,6 +78,11 @@ public class MovementStrategy : Behavior
     }
     public override bool TryAct()
     {
+        /*if (Target == null)
+        {
+            return false;
+        }*/
+
         //if CurrentTarget is not null, then move towards CurrentTarget;
         //else if _wantsToGoTo is not null, then move there; else Idle movement
         Target.MoveNpcTo(Target.X + 1, Target.Y + 1);
