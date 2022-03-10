@@ -89,7 +89,10 @@ public partial class Level
         Player = new Player(startPos.x, startPos.y, this);
         // test enemy
         Enemy enemy1 = 
-            new Enemy(100, 100, 10, 10, 20, startPos.x + 5, startPos.y + 5, this, new SortedSet<Behavior>());
+            new Enemy(100, 100, 10, 10, 20,
+                startPos.x + 5, startPos.y + 5, this, 
+                new(new Behavior.BehaviorComparer()){new MovementStrategy(this)});
+        enemy1.Targets = new HashSet<Actor>(){Player};
         TestAddEnemy(startPos.x + 1, startPos.y + 1, enemy1);
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;

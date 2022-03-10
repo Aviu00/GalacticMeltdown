@@ -19,13 +19,16 @@ public class Enemy : Npc
 
     public override void TakeAction()
     {
-        if (SeePoint(Level.Player.X, Level.Player.Y))
+        if (CurrentTarget is null)
         {
-            CurrentTarget = Level.Player;
-        }
-        else
-        {
-            CurrentTarget = null;
+            foreach(var target in Targets)
+            {
+                if (SeePoint(target.X, target.Y))
+                {
+                    CurrentTarget = target;
+                    break;
+                }
+            }
         }
         base.TakeAction();
     }

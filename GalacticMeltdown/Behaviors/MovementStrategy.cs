@@ -54,7 +54,8 @@ public class MovementStrategy : Behavior
                 (int, int) nextDot = (x, y);
                 int newCost = moveCost + localCost[currentDot];
                 if (_level.GetTile(nextDot.Item1, nextDot.Item2).IsWalkable &&
-                    (!localCost.TryGetValue(nextDot, out int oldCost) || newCost < oldCost))
+                    /*(_level.GetNonTileObject(nextDot.Item1, nextDot.Item2) is not null &&*/
+                     (!localCost.TryGetValue(nextDot, out int oldCost) || newCost < oldCost))
                 {
                     localCost[nextDot] = newCost;
                     int priority = newCost + GetDistance(nextDot.Item1, nextDot.Item2, x1, y1);
@@ -79,7 +80,7 @@ public class MovementStrategy : Behavior
     }
     public override bool TryAct()
     {
-        if(Target.CurrentTarget != null)
+        if((_wantsToGoTo is null) || (_wantsToGoTo == (Target.X, Target.Y)))
         {
             List<(int, int)> path = AStar(Target.X, Target.Y, Target.CurrentTarget.X, Target.CurrentTarget.Y);
             foreach ((int x, int y) coords in path)
