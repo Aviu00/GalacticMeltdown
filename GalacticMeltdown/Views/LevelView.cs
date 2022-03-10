@@ -161,7 +161,7 @@ public class LevelView : View
     private bool IsPointInsideView(int x, int y)
     {
         return x > _focusObject.X - (Width - 1) / 2 && x < _focusObject.X + Width / 2
-            && y > _focusObject.Y - (Width - 1) / 2 && y < _focusObject.Y + Width / 2;
+            && y > _focusObject.Y - (Height - 1) / 2 && y < _focusObject.Y + Height / 2;
     }
 
     private (int screenX, int screenY) ToViewCoords(int xLevel, int yLevel)
