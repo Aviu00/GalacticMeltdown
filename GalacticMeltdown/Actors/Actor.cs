@@ -25,7 +25,7 @@ public abstract class Actor : IObjectOnMap
     }
 
     private readonly LimitedNumber _energyLim;
-    private int Energy
+    public int Energy
     {
         get => _energyLim.Value;
         set
