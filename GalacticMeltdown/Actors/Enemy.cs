@@ -14,7 +14,7 @@ public class Enemy : Npc
         //temporary stuff
         SymbolData = ('W', ConsoleColor.Red);
         BgColor = null;
-        //CurrentTarget = this;
+        CurrentTarget = level.Player;
     }
 
     public override void TakeAction()
