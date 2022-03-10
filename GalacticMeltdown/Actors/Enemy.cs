@@ -2,6 +2,7 @@ using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 
 namespace GalacticMeltdown.Actors;
 
@@ -14,22 +15,17 @@ public class Enemy : Npc
         //temporary stuff
         SymbolData = ('W', ConsoleColor.Red);
         BgColor = null;
-        CurrentTarget = level.Player;
     }
 
     public override void TakeAction()
     {
-        if (SeePoint(CurrentTarget.X, CurrentTarget.Y))
+        if (SeePoint(Level.Player.X, Level.Player.Y))
         {
-            int tempX = X;
-            int tempY = Y;
-            int tempEnergy = this.Energy;
-            MovementStrategy currentStrategy = new MovementStrategy(Level);
-            foreach (var coord in currentStrategy.AStar(this.X, this.Y, CurrentTarget.X,CurrentTarget.Y))
-            {
-                tempEnergy -= Level.GetTile(coord.Item1, coord.Item2).TileMoveCost;
-                currentStrategy.TryAct();
-            }
+            CurrentTarget = Level.Player;
+        }
+        else
+        {
+            CurrentTarget = null;
         }
         base.TakeAction();
     }
