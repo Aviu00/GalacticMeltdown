@@ -4,7 +4,6 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
-using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.LevelRelated;
 
@@ -13,58 +12,45 @@ public class Chunk
     public event EventHandler<MoveEventArgs> SomethingMoved;
     public event EventHandler NpcDied;
     public event EventHandler NpcInvolvedInTurn;
-    
-    public int MapX { get; }
-    public int MapY { get; }
-    
-    private double Difficulty { get; }
-    public Tile[,] Tiles { get; }
+
+    public readonly int MapX;
+    public readonly int MapY;
+
+    public readonly int Difficulty;
+    public readonly Tile[,] Tiles;
+    public readonly int Seed;
 
     private List<Enemy> Enemies { get; }
     
-    private bool _wasActiveBefore;
+    public bool _wasActiveBefore;
 
-    public List<(int x, int y)> NeighborCoords { get; }
+    public readonly List<(int x, int y)> NeighborCoords;
 
-    public bool WasActiveBefore
-    {
-        get => _wasActiveBefore;
-        set
-        {
-            if(!_wasActiveBefore && value) SpawnEnemies();
-            _wasActiveBefore = value;
-        }
-    }
-
-    public Chunk(Tile[,] tiles, List<(int x, int y)> neighborCoords, double difficulty, int x, int y)
+    public Chunk(Tile[,] tiles, List<(int x, int y)> neighborCoords, int difficulty, int seed, int x, int y)
     {
         Tiles = tiles;
         Difficulty = difficulty;
         MapX = x;
         MapY = y;
         NeighborCoords = neighborCoords;
+        Seed = seed;
         Enemies = new List<Enemy>();
     }
 
-    public List<(int, int)> GetFloorTileCoords()
+    public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
     {
         List<(int, int)> coords = new();
         for (int x = 0; x < DataHolder.ChunkSize; x++)
         {
             for (int y = 0; y < DataHolder.ChunkSize; y++)
             {
-                if (Tiles[x, y].Id == "floor")
+                if (Tiles[x, y].Id == "floor" && (ignoreObjectsOnMap || GetMapObject(x, y) is null))
                     coords.Add((x + MapX * DataHolder.ChunkSize, y + MapY * DataHolder.ChunkSize));
             }
         }
         return coords;
     }
-
-    public void SpawnEnemies()
-    {
-        
-    }
-
+    
     public IObjectOnMap GetMapObject(int x, int y)
     {
         IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);

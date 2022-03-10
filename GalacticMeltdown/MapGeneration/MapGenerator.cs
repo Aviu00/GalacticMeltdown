@@ -173,8 +173,8 @@ public class MapGenerator
         }
 
         int endRoomIndex = mainRouteRoomCount / 2;
-        double addDifficulty = 1;
-        double difficulty = 0;
+        int addDifficulty = 1;
+        int difficulty = 0;
         ChunkGenerator previousChunk = null;
         ChunkGenerator currentChunk = startPoint!;
         for (int i = 0; i < mainRouteRoomCount; i++)
@@ -260,7 +260,7 @@ public class MapGenerator
         RotateRoomPattern(x, y, roomData, room);
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
-        _map[x, y] = _tempMap[x, y].GenerateChunk(roomData, northernTileMap, easternTileMap);
+        _map[x, y] = _tempMap[x, y].GenerateChunk(roomData, _rng.Next(0, 1000000), northernTileMap, easternTileMap);
         if (_tempMap[x, y].IsStartPoint)
             _playerStartPoint = (x * ChunkSize + ChunkSize / 2, y * ChunkSize + ChunkSize / 2);
     }

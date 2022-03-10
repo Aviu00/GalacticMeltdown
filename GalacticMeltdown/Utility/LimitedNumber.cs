@@ -28,4 +28,9 @@ public class LimitedNumber
         _maxValue = maxValue;
         _value = Math.Min(value, _maxValue);
     }
+    public LimitedNumber(int value)
+    {
+        _maxValue = value;
+        _value = value;
+    }
 }

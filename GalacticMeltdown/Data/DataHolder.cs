@@ -7,6 +7,7 @@ namespace GalacticMeltdown.Data;
 public static class DataHolder
 {
     public const int ChunkSize = 25;
+    public const int ActiveChunkRadius = 3;
 
     public static int CurrentSeed { get; set; }
 

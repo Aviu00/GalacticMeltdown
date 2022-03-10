@@ -33,8 +33,7 @@ internal class ChunkEventListener
 
 public partial class Level
 {
-    private const int ActiveChunkRadius = 3;
-
+    private const int ActiveChunkRadius = DataHolder.ActiveChunkRadius;
     private const int ChunkSize = DataHolder.ChunkSize;
 
     private readonly Tile[] _southernWall;
@@ -54,7 +53,8 @@ public partial class Level
 
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
-    
+
+    private EnemySpawner _enemySpawner;
     public Player Player { get; }
     public LevelView LevelView { get; }
     public OverlayView OverlayView { get; }
@@ -89,6 +89,7 @@ public partial class Level
         IsActive = true;
         PlayerWon = false;
 
+        _enemySpawner = new EnemySpawner(this);
         ActiveChunks = new();
         UpdateActiveChunks();
     }
@@ -215,6 +216,7 @@ public partial class Level
 
     private void UpdateActiveChunks()
     {
+        _enemySpawner.TargetChunks = null;
         //remove out of range chunks from ActiveChunkRadius
         ActiveChunks = ActiveChunks.Where(chunk => ControllableObjects.Any(controllable =>
         {
@@ -230,7 +232,8 @@ public partial class Level
             {
                 if (ActiveChunks.Contains(chunk)) continue;
                 ActiveChunks.Add(chunk);
-                chunk.WasActiveBefore = true;
+                chunk._wasActiveBefore = true;
+                _enemySpawner.SpawnEnemiesInChunk(chunk);
             }
         }
     }
@@ -249,7 +252,8 @@ public partial class Level
     {
         Chunk chunk = _chunks[chunkX, chunkY];
         HashSet<Chunk> chunks = GetChunkNeighbors(chunk, amount);
-        if(includeBaseChunk) chunks.Add(chunk);
+        if (includeBaseChunk) chunks.Add(chunk);
+        else chunks.Remove(chunk);
         return chunks;
     }
     private HashSet<Chunk> GetChunkNeighbors(Chunk chunk, int amount, Chunk prevChunk = null)
@@ -266,35 +270,30 @@ public partial class Level
         }
         return hashSet;
     }
-    
-    //private void SpawnEnemies()
-    //{
-    //    foreach (var (chunkX, chunkY) in GetChunkIndexes())
-    //    {
-    //        _chunks[chunkX, chunkY].SpawnEnemies();
-    //    }
-//
-    //    IEnumerable<(int chunkX, int chunkY)> GetChunkIndexes()
-    //    {
-    //        foreach (var controllable in ControllableObjects)
-    //        {
-    //            var (controllableChunkX, controllableChunkY) = GetChunkCoords(controllable.X, controllable.Y);
-    //            foreach (var chunkCoords in Algorithms.GetPointsOnSquareBorder(controllableChunkX, controllableChunkY,
-    //                         SpawnRadius))
-    //            {
-    //                if (ControllableObjects.All(obj =>
-    //                    {
-    //                        var (objChunkX, objChunkY) = GetChunkCoords(obj.X, obj.Y);
-    //                        return chunkCoords.x >= 0 && chunkCoords.x < _chunks.GetLength(0) 
-    //                            && chunkCoords.y >= 0 && chunkCoords.y < _chunks.GetLength(1)
-    //                            && Math.Abs(chunkCoords.x - objChunkX) >= SpawnRadius
-    //                            && Math.Abs(chunkCoords.y - objChunkY) >= SpawnRadius;
-    //                    }))
-    //                    yield return chunkCoords;
-    //            }
-    //        }
-    //    }
-    //}
+
+    public HashSet<Chunk> GetChunksAroundControllable(int amount = 1, bool includeBaseChunks = true)
+    {
+        HashSet<Chunk> hashSet = new();
+        List<(int x, int y)> prevChunks = new();
+        foreach (var controllable in ControllableObjects)
+        {
+            (int x, int y) = GetChunkCoords(controllable.X, controllable.Y);
+            if(prevChunks.Contains((x, y)) || x < 0 || y < 0 || x >= _chunks.GetLength(0) || y >= _chunks.GetLength(1)) 
+                continue;
+            prevChunks.Add((x, y));
+            hashSet.UnionWith(GetChunkNeighbors(_chunks[x, y], amount));
+            if (includeBaseChunks) hashSet.Add(_chunks[x, y]);
+        }
+
+        if (includeBaseChunks) return hashSet;
+        
+        foreach (var prevChunk in prevChunks)
+        {
+            hashSet.Remove(_chunks[prevChunk.x, prevChunk.y]);
+        }
+        
+        return hashSet;
+    }
 
     private void ControllableObjectsUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {

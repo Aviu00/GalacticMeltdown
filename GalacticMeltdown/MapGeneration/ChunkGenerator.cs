@@ -21,7 +21,7 @@ public class ChunkGenerator
     public bool IsStartPoint;
     public bool IsEndPoint;
 
-    public double Difficulty = -1;
+    public int Difficulty = -1;
 
     public int ConnectionCount =>
         Convert.ToInt32(NorthConnection is not null)
@@ -39,7 +39,8 @@ public class ChunkGenerator
         MapY = y;
     }
 
-    public Chunk GenerateChunk(TileTypeData[,] roomData, Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
+    public Chunk GenerateChunk(TileTypeData[,] roomData, int seed, 
+        Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
     {
         CalculateSymbol();
         Tiles = new Tile[ChunkSize, ChunkSize];
@@ -68,10 +69,10 @@ public class ChunkGenerator
         if(EastConnection != null) neighborCoords.Add((EastConnection.MapX, EastConnection.MapY));
         if(SouthConnection != null) neighborCoords.Add((SouthConnection.MapX, SouthConnection.MapY));
         if(WestConnection != null) neighborCoords.Add((WestConnection.MapX, WestConnection.MapY));
-        return new Chunk(Tiles, neighborCoords, Difficulty, MapX, MapY);
+        return new Chunk(Tiles, neighborCoords, Difficulty, seed, MapX, MapY);
     }
 
-    public void AccessMainRoute(double mainRouteDifficulty)
+    public void AccessMainRoute(int mainRouteDifficulty)
     {
         if (MainRoute || Difficulty >= mainRouteDifficulty) return;
 
