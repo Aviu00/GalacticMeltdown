@@ -106,10 +106,7 @@ public partial class Level
         bool energySpent = false;
         while ((currentlyActive = GetActive()).Any())
         {
-            foreach (var actor in currentlyActive.Where(actor => !involved.Contains(actor)))
-            {
-                WatchActor(actor);
-            }
+            foreach (var actor in currentlyActive.Where(actor => !involved.Contains(actor))) WatchActor(actor);
 
             foreach (var actor in currentlyActive)
             {
@@ -129,33 +126,19 @@ public partial class Level
         bool FinishMapTurn()
         {
             _listener.NpcInvolvedInTurn -= NpcInvolvedInTurnHandler;
-            foreach (var actor in involved)
-            {
-                FinishActorTurn(actor);
-            }
-
+            foreach (var actor in involved) FinishActorTurn(actor);
             TurnFinished?.Invoke(this, EventArgs.Empty);
             return IsActive;
         }
 
         List<Actor> GetActive()
         {
-            List<Actor> active = new List<Actor>(ControllableObjects.OfType<Actor>());
-            active.AddRange(GetNearbyNpcs());
-            foreach (var npc in GetNearbyNpcs())
-            {
-                if (!involved.Contains(npc)) involved.Add(npc);
-                if (npc.IsActive) active.Add(npc);
-            }
-
-            return active;
+            return ControllableObjects.OfType<Actor>().Concat(GetNearbyNpcs()).Where(actor => actor.IsActive).ToList();
         }
 
-        List<Npc> GetNearbyNpcs()
+        IEnumerable<Npc> GetNearbyNpcs()
         {
-            List<Npc> npcs = new();
-            ActiveChunks.ForEach(chunk => npcs.AddRange(chunk.GetNpcs()));
-            return npcs;
+            return ActiveChunks.SelectMany(chunk => chunk.GetNpcs());
         }
         
         void WatchActor(Actor actor)
