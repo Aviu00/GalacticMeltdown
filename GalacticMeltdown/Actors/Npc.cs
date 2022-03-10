@@ -3,7 +3,7 @@ using System.Linq;
 using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
-
+using System;
 namespace GalacticMeltdown.Actors;
 
 public abstract class Npc : Actor
@@ -24,6 +24,21 @@ public abstract class Npc : Actor
             behavior.SetTarget(this);
         }
         Behaviors = behaviors;
+    }
+    protected bool SeePoint(int x, int y)
+    {
+        if ((int)Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2)) > _viewRange)
+        {
+            return false;
+        }
+        foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, x, y))
+        {
+            if (!Level.GetTile(coords.x, coords.y).IsTransparent)
+            {
+                return false;
+            }
+        }
+        return true;
     }
     
     public void MoveNpcTo(int x, int y) => MoveTo(x, y);
