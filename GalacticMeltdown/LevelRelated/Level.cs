@@ -67,6 +67,12 @@ public partial class Level
     public ObservableCollection<ISightedObject> SightedObjects { get; }
 
     private readonly ChunkEventListener _listener;
+    // test functions
+    private void TestAddEnemy(int x, int y, Enemy enemy)
+    {
+        var (chunkX, chunkY) = GetChunkCoords(x, y);
+        _chunks[chunkX, chunkY].AddNpc(enemy);
+    }
 
     public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall,
         (int x, int y) finishPos)
@@ -81,6 +87,10 @@ public partial class Level
         _westernWall = westernWall;
         (_finishX, _finishY) = finishPos;
         Player = new Player(startPos.x, startPos.y, this);
+        // test enemy
+        Enemy enemy1 = 
+            new Enemy(100, 100, 10, 10, 20, startPos.x + 5, startPos.y + 5, this, new SortedSet<Behavior>());
+        TestAddEnemy(startPos.x + 1, startPos.y + 1, enemy1);
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
         ControllableObjects = new ObservableCollection<IControllable> {Player};
@@ -90,7 +100,6 @@ public partial class Level
         OverlayView = new OverlayView(this);
         IsActive = true;
         PlayerWon = false;
-
         ActiveChunks = new();
         UpdateActiveChunks();
     }

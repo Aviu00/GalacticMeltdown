@@ -14,11 +14,12 @@ public class Enemy : Npc
         //temporary stuff
         SymbolData = ('W', ConsoleColor.Red);
         BgColor = null;
+        //CurrentTarget = this;
     }
 
     public override void TakeAction()
     {
-        if (SeePoint(CurrentTarget.X, CurrentTarget.Y))
+        if (CurrentTarget != null && SeePoint(CurrentTarget.X, CurrentTarget.Y))
         {
             int tempX = X;
             int tempY = Y;
@@ -35,8 +36,8 @@ public class Enemy : Npc
                 }
             }
             MoveTo(tempX, tempY);
+            //calculate target (CurrentTarget)
+            base.TakeAction();
         }
-        //calculate target (CurrentTarget)
-        base.TakeAction();
     }
 }
