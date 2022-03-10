@@ -19,7 +19,7 @@ public class Enemy : Npc
 
     public override void TakeAction()
     {
-        if (CurrentTarget != null && SeePoint(CurrentTarget.X, CurrentTarget.Y))
+        if (SeePoint(CurrentTarget.X, CurrentTarget.Y))
         {
             int tempX = X;
             int tempY = Y;
@@ -28,16 +28,9 @@ public class Enemy : Npc
             foreach (var coord in currentStrategy.AStar(this.X, this.Y, CurrentTarget.X,CurrentTarget.Y))
             {
                 tempEnergy -= Level.GetTile(coord.Item1, coord.Item2).TileMoveCost;
-                if (tempEnergy < 0)
-                {
-                    tempX = coord.Item1;
-                    tempY = coord.Item2;
-                    break;
-                }
+                currentStrategy.TryAct();
             }
-            MoveTo(tempX, tempY);
-            //calculate target (CurrentTarget)
-            base.TakeAction();
         }
+        base.TakeAction();
     }
 }

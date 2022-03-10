@@ -1,6 +1,8 @@
 using GalacticMeltdown.LevelRelated;
 using System;
 using System.Collections.Generic;
+using GalacticMeltdown.Utility;
+
 namespace GalacticMeltdown.Behaviors;
 
 public class MovementStrategy : Behavior
@@ -76,8 +78,28 @@ public class MovementStrategy : Behavior
         }
         return path;
     }
+    protected bool SeePoint(int x0, int y0, int x1, int y1, int viewRange = 0)
+    {
+        if ((int)Math.Sqrt(Math.Pow(x0 - x1, 2) + Math.Pow(y0 - y1, 2)) > viewRange)
+        {
+            return false;
+        }
+        foreach (var coords in Algorithms.BresenhamGetPointsOnLine(x0, y0, x1, y1))
+        {
+            if (!_level.GetTile(coords.x, coords.y).IsTransparent)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
     public override bool TryAct()
     {
+        if (Target.Energy > 0)
+        {
+            Target.MoveNpcTo(_wantsToGoTo.Value.x- Target.X, _wantsToGoTo.Value.y - Target.Y);
+            //calculate target (CurrentTarget)
+        }
         /*if (Target == null)
         {
             return false;
@@ -85,7 +107,6 @@ public class MovementStrategy : Behavior
 
         //if CurrentTarget is not null, then move towards CurrentTarget;
         //else if _wantsToGoTo is not null, then move there; else Idle movement
-        Target.MoveNpcTo(Target.X + 1, Target.Y + 1);
         return true;
     }
 }
