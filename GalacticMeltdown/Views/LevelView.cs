@@ -11,6 +11,29 @@ using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Views;
 
+internal class SeenTilesArray
+{
+    private const int offset = 1;
+    private (char symbol, ConsoleColor color)?[,] _array;
+
+    public SeenTilesArray(int mapWidth, int mapHeight)
+    {
+        _array = new (char symbol, ConsoleColor color)?[mapWidth + offset, mapHeight + offset];
+    }
+
+    public (char symbol, ConsoleColor color)? this[int x, int y]
+    {
+        get => _array[x - offset, y - offset];
+        set => _array[x - offset, y - offset] = value;
+    }
+
+    public bool Inbounds(int x, int y)
+    {
+        return x - offset > 0 && x - offset < _array.GetLength(0)
+            && y - offset > 0 && y - offset < _array.GetLength(1);
+    }
+}
+
 public class LevelView : View
 {
     private readonly Level _level;
