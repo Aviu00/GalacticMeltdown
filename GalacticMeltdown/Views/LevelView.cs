@@ -44,6 +44,24 @@ public class LevelView : View
     private HashSet<(int, int)> _visiblePoints;
     private SeenTilesArray _seenCells;
 
+    private Cursor _cursor;
+
+    public Cursor Cursor
+    {
+        get
+        {
+            if (_cursor is null)
+            {
+                _cursor = new Cursor();
+            }
+            return _cursor;
+        }
+        set
+        {
+            _cursor = value;
+        }
+    }
+
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
