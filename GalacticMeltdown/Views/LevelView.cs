@@ -54,15 +54,15 @@ public class LevelView : View
     {
         get
         {
-            if (_cursor is null)
-            {
-                _cursor = new Cursor();
-            }
+            if (_cursor is not null) return _cursor;
+            _cursor = new Cursor();
+            SetCursorBounds();
             return _cursor;
         }
         set
         {
             _cursor = value;
+            SetCursorBounds();
         }
     }
 
@@ -191,6 +191,7 @@ public class LevelView : View
     private void FocusObjectMoved(object sender, MoveEventArgs _)
     {
         // Redraw happens on visible tile calculation already
+        SetCursorBounds();
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
@@ -210,5 +211,12 @@ public class LevelView : View
     {
         var (minX, minY, _, _) = ViewBounds;
         return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, minX, minY);
+    }
+
+    private void SetCursorBounds()
+    {
+        if (_cursor is null) return;
+        var (minX, minY, maxX, maxY) = ViewBounds;
+        _cursor.SetBounds(minX, minY, maxX, maxY);
     }
 }
