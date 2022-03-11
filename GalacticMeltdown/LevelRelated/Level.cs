@@ -248,15 +248,17 @@ public partial class Level
     /// <param name="amount">amount of iterations. 1: get neighboring chunks; 2: get neighboring chunks and their
     /// neighboring chunks; and so on...</param>
     /// <returns></returns>
-    public HashSet<Chunk> GetChunkNeighbors(int chunkX, int chunkY, bool includeBaseChunk = true, int amount = 1)
+    public HashSet<Chunk> GetChunkNeighbors(int chunkX, int chunkY, bool includeBaseChunk = true, 
+        bool returnNotActiveChunks = true, int amount = 1)
     {
         Chunk chunk = _chunks[chunkX, chunkY];
-        HashSet<Chunk> chunks = GetChunkNeighbors(chunk, amount);
-        if (includeBaseChunk) chunks.Add(chunk);
+        HashSet<Chunk> chunks = GetChunkNeighbors(chunk, amount, includeBaseChunk);
+        if (includeBaseChunk && (returnNotActiveChunks || ActiveChunks.Contains(chunk))) chunks.Add(chunk);
         else chunks.Remove(chunk);
         return chunks;
     }
-    private HashSet<Chunk> GetChunkNeighbors(Chunk chunk, int amount, Chunk prevChunk = null)
+    private HashSet<Chunk> GetChunkNeighbors(Chunk chunk, int amount, bool returnNotActiveChunks,
+        Chunk prevChunk = null)
     {
         if (amount <= 0) return null;
         HashSet<Chunk> hashSet = new();
@@ -264,8 +266,9 @@ public partial class Level
         {
             if(prevChunk != null && (x, y) == (prevChunk.MapX, prevChunk.MapY)) continue; 
             Chunk newChunk = _chunks[x, y];
+            if(!returnNotActiveChunks && !ActiveChunks.Contains(chunk)) continue;
             hashSet.Add(newChunk);
-            HashSet<Chunk> newSet = GetChunkNeighbors(newChunk, amount - 1, chunk);
+            HashSet<Chunk> newSet = GetChunkNeighbors(newChunk, amount - 1, returnNotActiveChunks, chunk);
             if(newSet != null) hashSet.UnionWith(newSet);
         }
         return hashSet;
@@ -281,7 +284,7 @@ public partial class Level
             if(prevChunks.Contains((x, y)) || x < 0 || y < 0 || x >= _chunks.GetLength(0) || y >= _chunks.GetLength(1)) 
                 continue;
             prevChunks.Add((x, y));
-            hashSet.UnionWith(GetChunkNeighbors(_chunks[x, y], amount));
+            hashSet.UnionWith(GetChunkNeighbors(_chunks[x, y], amount, true));
             if (includeBaseChunks) hashSet.Add(_chunks[x, y]);
         }
 
