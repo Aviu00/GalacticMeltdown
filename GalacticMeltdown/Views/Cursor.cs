@@ -6,6 +6,11 @@ namespace GalacticMeltdown.Views;
 
 public class Cursor : IControllable
 {
+    private int _minX;
+    private int _minY;
+    private int _maxX;
+    private int _maxY;
+    
     public (char symbol, ConsoleColor color) SymbolData => ('*', ConsoleColor.DarkYellow);
     public ConsoleColor? BgColor => ConsoleColor.White;
     
@@ -18,12 +23,19 @@ public class Cursor : IControllable
     
     public bool TryMove(int deltaX, int deltaY)
     {
-        if (true)
-        {
-            MoveTo(X + deltaX, Y + deltaY);
-            return true;
-        }
-        return false;
+        int newX = X + deltaX, newY = Y + deltaY;
+        if (!(newX >= _minX && newX <= _maxX && newY >= _minY && newY <= _maxY)) return false;
+        MoveTo(newX, newY);
+        return true;
+    }
+
+    public void SetBounds(int minX, int minY, int maxX, int maxY)
+    {
+        _minX = minX;
+        _minY = minY;
+        _maxX = maxX;
+        _maxY = maxY;
+        MoveTo(Math.Min(Math.Max(X, _minX), _maxX), Math.Min(Math.Max(Y, _minY), _maxY));
     }
 
     private void MoveTo(int x, int y)
