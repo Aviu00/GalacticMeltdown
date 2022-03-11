@@ -6,8 +6,8 @@ namespace GalacticMeltdown.Views;
 
 public class Cursor : IControllable
 {
-    public (char symbol, ConsoleColor color) SymbolData { get; }
-    public ConsoleColor? BgColor { get; }
+    public (char symbol, ConsoleColor color) SymbolData => ('*', ConsoleColor.DarkYellow);
+    public ConsoleColor? BgColor => ConsoleColor.White;
     
     public int X { get; private set; }
     public int Y { get; private set; }
