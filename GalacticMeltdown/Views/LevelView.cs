@@ -13,24 +13,24 @@ namespace GalacticMeltdown.Views;
 
 internal class SeenTilesArray
 {
-    private const int offset = 1;
+    private const int Offset = 1;
     private (char symbol, ConsoleColor color)?[,] _array;
 
     public SeenTilesArray(int mapWidth, int mapHeight)
     {
-        _array = new (char symbol, ConsoleColor color)?[mapWidth + offset, mapHeight + offset];
+        _array = new (char symbol, ConsoleColor color)?[mapWidth + Offset, mapHeight + Offset];
     }
 
     public (char symbol, ConsoleColor color)? this[int x, int y]
     {
-        get => _array[x - offset, y - offset];
-        set => _array[x - offset, y - offset] = value;
+        get => _array[x - Offset, y - Offset];
+        set => _array[x - Offset, y - Offset] = value;
     }
 
     public bool Inbounds(int x, int y)
     {
-        return x - offset > 0 && x - offset < _array.GetLength(0)
-            && y - offset > 0 && y - offset < _array.GetLength(1);
+        return x - Offset > 0 && x - Offset < _array.GetLength(0)
+            && y - Offset > 0 && y - Offset < _array.GetLength(1);
     }
 }
 
