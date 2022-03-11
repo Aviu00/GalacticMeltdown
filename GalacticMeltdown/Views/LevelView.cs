@@ -112,9 +112,15 @@ public class LevelView : View
     public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject)) return;
-        if (_focusObject is not null) _focusObject.InFocus = false;
+        if (_focusObject is not null)
+        {
+            _focusObject.InFocus = false;
+            if (ReferenceEquals(_focusObject, _cursor)) SetCursorBounds();
+        }
+
         _focusObject = focusObj;
         _focusObject.InFocus = true;
+        if (ReferenceEquals(_focusObject, _cursor)) SetCursorBounds();
         _focusObject.Moved += FocusObjectMoved;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
@@ -190,8 +196,8 @@ public class LevelView : View
 
     private void FocusObjectMoved(object sender, MoveEventArgs _)
     {
-        // Redraw happens on visible tile calculation already
         SetCursorBounds();
+        // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
@@ -216,7 +222,18 @@ public class LevelView : View
     private void SetCursorBounds()
     {
         if (_cursor is null) return;
-        var (minX, minY, maxX, maxY) = ViewBounds;
+        int minX, minY, maxX, maxY;
+        if (_cursor.InFocus)
+        {
+            minX = -1;
+            minY = -1;
+            (maxX, maxY) = _level.Size;
+        }
+        else
+        {
+            (minX, minY, maxX, maxY) = ViewBounds;
+        }
+
         _cursor.SetBounds(minX, minY, maxX, maxY);
     }
 }
