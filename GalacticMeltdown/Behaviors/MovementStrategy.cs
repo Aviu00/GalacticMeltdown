@@ -110,11 +110,6 @@ public class MovementStrategy : Behavior
             }
         }
         return true;
-        /*if (Target == null)
-        {
-            return false;
-        }*/
-
         //if CurrentTarget is not null, then move towards CurrentTarget;
         //else if _wantsToGoTo is not null, then move there; else Idle movement
     }
