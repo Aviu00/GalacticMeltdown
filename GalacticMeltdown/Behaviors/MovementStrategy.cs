@@ -30,7 +30,7 @@ public class MovementStrategy : Behavior
         }
         return neighboursWithMoveCosts;
     }
-    public  List<(int, int)> AStar(int x0, int y0, int x1, int y1)
+    private  List<(int, int)> AStar(int x0, int y0, int x1, int y1)
     {
         List<(int, int)> path = new List<(int, int)>();
         PriorityQueue<(int, int), int> priorQueue = new PriorityQueue<(int, int), int>();
@@ -80,20 +80,36 @@ public class MovementStrategy : Behavior
     }
     public override bool TryAct()
     {
-        if((_wantsToGoTo is null) || (_wantsToGoTo == (Target.X, Target.Y)))
+        // setting wantsToGoTo point
+        if(Target.CurrentTarget is not null) /*&&
+           _level.GetTile(Target.CurrentTarget.X, Target.CurrentTarget.Y).IsWalkable)*/ // temporary stuff for debug with cheats
         {
-            List<(int, int)> path = AStar(Target.X, Target.Y, Target.CurrentTarget.X, Target.CurrentTarget.Y);
-            foreach ((int x, int y) coords in path)
-            {
-                //Target.MoveNpcTo(coords.x - Target.X, coords.y - Target.Y);
-                Target.MoveNpcTo(coords.x, coords.y);
-            }
+            _wantsToGoTo = (Target.CurrentTarget.X, Target.CurrentTarget.Y);
         }
         else
         {
-            // here is place for moving without CurrentTarget
-            return false;
+            if (_wantsToGoTo == (Target.X, Target.Y) || _wantsToGoTo is null)
+            {
+                return false;
+            }
+            // temporary idle movement realisation
         }
+        // moving to wantsToGoTo point
+        List<(int, int)> path = AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y);
+        foreach ((int x, int y) coords in path)
+        {
+            if (Target.Energy > 0 && coords != _wantsToGoTo)
+            {
+                Target.MoveNpcTo(coords.x, coords.y);
+                Target.Energy -= _level.GetTile(coords.x, coords.y).TileMoveCost;
+            }
+            else
+            {
+                // there is place for Idle movement
+                break;
+            }
+        }
+        return true;
         /*if (Target == null)
         {
             return false;
@@ -101,6 +117,5 @@ public class MovementStrategy : Behavior
 
         //if CurrentTarget is not null, then move towards CurrentTarget;
         //else if _wantsToGoTo is not null, then move there; else Idle movement
-        return true;
     }
 }
