@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TileTypes>
+    <TileType>
+        <Id>melee</Id>
+        <Name>melee attacker</Name>
+        <Symbol>W</Symbol>
+        <Color>red</Color>
+        <BgColor>black</BgColor>>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>100</MaxEnergy>
+        <Dex>10</Dex>
+        <Def>10</Def>
+        <ViewRange>15</ViewRange>
+    </TileType>
+    <TileType>
+        <Id>melee</Id>
+        <Name>folower</Name>
+        <Symbol>P</Symbol>
+        <Color>purple</Color>
+        <BgColor>black</BgColor>>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>100</MaxEnergy>
+        <Dex>10</Dex>
+        <Def>10</Def>
+        <ViewRange>15</ViewRange>
+    </TileType>
+</TileTypes>
