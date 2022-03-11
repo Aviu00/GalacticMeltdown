@@ -91,7 +91,8 @@ public class LevelView : View
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
         // Draw object in focus on top of everything else
         if (x == centerScreenX && y == centerScreenY)
-            return new ViewCellData(_focusObject.SymbolData, _focusObject.BgColor);
+            if (_focusObject is IDrawable drawable) 
+                return new ViewCellData(drawable.SymbolData, drawable.BgColor);
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
         coords = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         var (levelX, levelY) = coords;
