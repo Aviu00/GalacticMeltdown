@@ -100,7 +100,7 @@ public class LevelView : View
     private void MoveHandler(object sender, MoveEventArgs e)
     {
         HashSet<(int, int, ViewCellData)> updated = new(2);
-        if (_visiblePoints.Contains((e.X0, e.Y0)))
+        if (_visiblePoints.Contains((e.X0, e.Y0)) && IsPointInsideView(e.X0, e.Y0))
         {
             IDrawable drawableObj = _level.GetDrawable(e.X0, e.Y0);
             var (viewX, viewY) = ToViewCoords(e.X0, e.Y0);
@@ -110,7 +110,7 @@ public class LevelView : View
                     : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
         }
 
-        if (_visiblePoints.Contains((e.X1, e.Y1)))
+        if (_visiblePoints.Contains((e.X1, e.Y1)) && IsPointInsideView(e.X1, e.Y1))
         {
             IDrawable drawableObj = _level.GetDrawable(e.X1, e.Y1);
             var (viewX, viewY) = ToViewCoords(e.X1, e.Y1);
@@ -159,7 +159,7 @@ public class LevelView : View
     {
         if (sender is not Actor actor) return;
 
-        if (!_visiblePoints.Contains((actor.X, actor.Y))) return;
+        if (!(_visiblePoints.Contains((actor.X, actor.Y)) && IsPointInsideView(actor.X, actor.Y))) return;
 
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
         CellsChanged?.Invoke(this,
@@ -173,8 +173,15 @@ public class LevelView : View
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
+    private bool IsPointInsideView(int x, int y)
+    {
+        return x > _focusObject.X - (Width - 1) / 2 && x < _focusObject.X + Width / 2
+            && y > _focusObject.Y - (Height - 1) / 2 && y < _focusObject.Y + Height / 2;
+    }
+
     private (int screenX, int screenY) ToViewCoords(int xLevel, int yLevel)
     {
-        return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, _focusObject.X, _focusObject.Y);
+        return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, _focusObject.X - Width / 2,
+            _focusObject.Y - Height / 2);
     }
 }
