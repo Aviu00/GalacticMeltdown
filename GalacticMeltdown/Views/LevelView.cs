@@ -44,6 +44,10 @@ public class LevelView : View
     private HashSet<(int, int)> _visiblePoints;
     private SeenTilesArray _seenCells;
 
+    private (int minX, int minY, int maxX, int maxY) ViewBounds => 
+        (_focusObject.X - Width / 2, _focusObject.Y - Height / 2,
+            _focusObject.X + (Width - 1) / 2, _focusObject.Y + (Height - 1) / 2);
+
     private Cursor _cursor;
 
     public Cursor Cursor
@@ -198,13 +202,13 @@ public class LevelView : View
 
     private bool IsPointInsideView(int x, int y)
     {
-        return x > _focusObject.X - (Width - 1) / 2 && x < _focusObject.X + Width / 2
-            && y > _focusObject.Y - (Height - 1) / 2 && y < _focusObject.Y + Height / 2;
+        var (minX, minY, maxX, maxY) = ViewBounds;
+        return x >= minX && x <= maxX && y >= minY && y <= maxY;
     }
 
     private (int screenX, int screenY) ToViewCoords(int xLevel, int yLevel)
     {
-        return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, _focusObject.X - Width / 2,
-            _focusObject.Y - Height / 2);
+        var (minX, minY, _, _) = ViewBounds;
+        return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, minX, minY);
     }
 }
