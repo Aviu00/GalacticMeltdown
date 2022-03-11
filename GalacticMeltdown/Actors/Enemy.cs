@@ -2,7 +2,6 @@ using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using System;
 using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace GalacticMeltdown.Actors;
 
@@ -19,15 +18,13 @@ public class Enemy : Npc
 
     public override void TakeAction()
     {
-        if (CurrentTarget is null)
+        CurrentTarget = null;
+        foreach (var target in Targets)
         {
-            foreach(var target in Targets)
+            if (SeePoint(target.X, target.Y))
             {
-                if (SeePoint(target.X, target.Y))
-                {
-                    CurrentTarget = target;
-                    break;
-                }
+                CurrentTarget = target;
+                break;
             }
         }
         base.TakeAction();
