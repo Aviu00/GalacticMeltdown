@@ -23,14 +23,14 @@ internal class SeenTilesArray
 
     public (char symbol, ConsoleColor color)? this[int x, int y]
     {
-        get => _array[x - Offset, y - Offset];
-        set => _array[x - Offset, y - Offset] = value;
+        get => _array[x + Offset, y + Offset];
+        set => _array[x + Offset, y + Offset] = value;
     }
 
     public bool Inbounds(int x, int y)
     {
-        return x - Offset > 0 && x - Offset < _array.GetLength(0)
-            && y - Offset > 0 && y - Offset < _array.GetLength(1);
+        return x + Offset >= 0 && x + Offset < _array.GetLength(0)
+            && y + Offset >= 0 && y + Offset < _array.GetLength(1);
     }
 }
 
@@ -100,7 +100,7 @@ public class LevelView : View
     private void MoveHandler(object sender, MoveEventArgs e)
     {
         HashSet<(int, int, ViewCellData)> updated = new(2);
-        if (_visiblePoints.Contains((e.X0, e.Y0)) && IsPointInsideView(e.X0, e.Y0))
+        if (CanPlayerSeePoint(e.X0, e.Y0))
         {
             IDrawable drawableObj = _level.GetDrawable(e.X0, e.Y0);
             var (viewX, viewY) = ToViewCoords(e.X0, e.Y0);
@@ -110,7 +110,7 @@ public class LevelView : View
                     : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
         }
 
-        if (_visiblePoints.Contains((e.X1, e.Y1)) && IsPointInsideView(e.X1, e.Y1))
+        if (CanPlayerSeePoint(e.X1, e.Y1))
         {
             IDrawable drawableObj = _level.GetDrawable(e.X1, e.Y1);
             var (viewX, viewY) = ToViewCoords(e.X1, e.Y1);
@@ -159,7 +159,7 @@ public class LevelView : View
     {
         if (sender is not Actor actor) return;
 
-        if (!(_visiblePoints.Contains((actor.X, actor.Y)) && IsPointInsideView(actor.X, actor.Y))) return;
+        if (!CanPlayerSeePoint(actor.X, actor.Y)) return;
 
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
         CellsChanged?.Invoke(this,
@@ -171,6 +171,11 @@ public class LevelView : View
         // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+
+    private bool CanPlayerSeePoint(int x, int y)
+    {
+        return _visiblePoints.Contains((x, y)) && IsPointInsideView(x, y);
     }
 
     private bool IsPointInsideView(int x, int y)
