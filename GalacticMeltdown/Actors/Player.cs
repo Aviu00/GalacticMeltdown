@@ -3,7 +3,7 @@ using GalacticMeltdown.LevelRelated;
 
 namespace GalacticMeltdown.Actors;
 
-public class Player : Actor, IControllable
+public class Player : Actor, ISightedObject, IControllable
 {
     private const int PlayerHp = 100;
     private const int PlayerEnergy = 100;

@@ -36,7 +36,7 @@ public interface IFocusable : IMovable, IDrawable
     bool InFocus { get; set; }
 }
 
-public interface IControllable : IFocusable, ISightedObject
+public interface IControllable : IFocusable
 {
     bool TryMove(int deltaX, int deltaY);
 }
