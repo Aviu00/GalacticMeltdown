@@ -37,13 +37,13 @@ internal class SeenTilesArray
 public class LevelView : View
 {
     private readonly Level _level;
-    
+
     private IFocusable _focusObject;
-    
+
     private ObservableCollection<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
-    private (char symbol, ConsoleColor color)?[,] _seenCells;
-    
+    private SeenTilesArray _seenCells;
+
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
@@ -60,10 +60,10 @@ public class LevelView : View
         }
 
         var (width, height) = _level.Size;
-        _seenCells = new (char symbol, ConsoleColor color)?[width + 1, height + 1];
+        _seenCells = new SeenTilesArray(width, height);
         UpdateVisiblePoints();
     }
-    
+
     public override ViewCellData GetSymbol(int x, int y)
     {
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
@@ -81,12 +81,12 @@ public class LevelView : View
                 : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
         }
 
-        if (Inbounds(levelX + 1, levelY + 1) && _seenCells[levelX + 1, levelY + 1] is not null)
-            return new ViewCellData((_seenCells[levelX + 1, levelY + 1].Value.symbol, DataHolder.Colors.OutOfVisionTileColor),
+        if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
+            return new ViewCellData((_seenCells[levelX, levelY].Value.symbol, DataHolder.Colors.OutOfVisionTileColor),
                 null);
         return new ViewCellData(null, null);
     }
-    
+
     public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject)) return;
@@ -122,7 +122,7 @@ public class LevelView : View
 
         if (updated.Any()) CellsChanged?.Invoke(this, new CellChangeEventArgs(updated));
     }
-    
+
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is not null)
@@ -147,9 +147,9 @@ public class LevelView : View
             .ToHashSet();
         foreach (var (x, y) in _visiblePoints)
         {
-            if (!Inbounds(x + 1, y + 1)) continue;
+            if (!_seenCells.Inbounds(x, y)) continue;
             var tile = _level.GetTile(x, y);
-            if (tile is not null) _seenCells[x + 1, y + 1] = tile.SymbolData;
+            if (tile is not null) _seenCells[x, y] = tile.SymbolData;
         }
 
         NeedRedraw?.Invoke(this, EventArgs.Empty);
@@ -163,10 +163,7 @@ public class LevelView : View
 
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
         CellsChanged?.Invoke(this,
-            new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)>
-            {
-                (viewX, viewY, GetSymbol(viewX, viewY))
-            }));
+            new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)> {(viewX, viewY, GetSymbol(viewX, viewY))}));
     }
 
     private void FocusObjectMoved(object sender, MoveEventArgs _)
@@ -175,12 +172,7 @@ public class LevelView : View
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
-    
-    private bool Inbounds(int x, int y)
-    {
-        return x >= 0 && x < _seenCells.GetLength(0) && y >= 0 && y < _seenCells.GetLength(1);
-    }
-    
+
     private (int screenX, int screenY) ToViewCoords(int xLevel, int yLevel)
     {
         return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, _focusObject.X, _focusObject.Y);
