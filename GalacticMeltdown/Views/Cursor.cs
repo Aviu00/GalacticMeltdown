@@ -1,4 +1,5 @@
 using System;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 
@@ -11,8 +12,7 @@ public class Cursor : IControllable
     private int _maxX;
     private int _maxY;
     
-    public (char symbol, ConsoleColor color) SymbolData => ('*', ConsoleColor.DarkYellow);
-    public ConsoleColor? BgColor => ConsoleColor.White;
+    public ConsoleColor Color => DataHolder.Colors.CursorColor;
     
     public int X { get; private set; }
     public int Y { get; private set; }

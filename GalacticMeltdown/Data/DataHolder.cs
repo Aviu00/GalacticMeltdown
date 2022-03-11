@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using GalacticMeltdown.InputProcessing;
 using GalacticMeltdown.Launchers;
 
@@ -41,6 +42,11 @@ public static class DataHolder
         public const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
         public const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
         public const ConsoleColor MenuBorderColor = ConsoleColor.Yellow;
+        public const ConsoleColor CursorColor = ConsoleColor.White;
+        public const ConsoleColor HighlightedNothingColor = ConsoleColor.Cyan;
+        public const ConsoleColor HighlightedItemColor = ConsoleColor.DarkCyan;
+        public const ConsoleColor HighlightedEnemyColor = ConsoleColor.DarkRed;
+        public const ConsoleColor HighlightedFriendColor = ConsoleColor.DarkGreen;
     }
 
     public struct CurrentBindings
