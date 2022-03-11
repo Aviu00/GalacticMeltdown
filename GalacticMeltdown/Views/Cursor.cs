@@ -20,6 +20,12 @@ public class Cursor : IControllable
     public event EventHandler<MoveEventArgs> Moved;
     
     public bool InFocus { get; set; }
+
+    public Cursor(int x, int y)
+    {
+        X = x;
+        Y = y;
+    }
     
     public bool TryMove(int deltaX, int deltaY)
     {

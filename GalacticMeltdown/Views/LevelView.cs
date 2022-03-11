@@ -55,7 +55,7 @@ public class LevelView : View
         get
         {
             if (_cursor is not null) return _cursor;
-            _cursor = new Cursor();
+            _cursor = new Cursor(_focusObject.X, _focusObject.Y);
             SetCursorBounds();
             return _cursor;
         }
