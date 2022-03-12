@@ -34,7 +34,7 @@ internal class SeenTilesArray
     }
 }
 
-public class LevelView : View
+public partial class LevelView : View
 {
     private readonly Level _level;
 
@@ -47,24 +47,6 @@ public class LevelView : View
     private (int minX, int minY, int maxX, int maxY) ViewBounds => 
         (_focusObject.X - Width / 2, _focusObject.Y - Height / 2,
             _focusObject.X + (Width - 1) / 2, _focusObject.Y + (Height - 1) / 2);
-
-    private Cursor _cursor;
-
-    public Cursor Cursor
-    {
-        get
-        {
-            if (_cursor is not null) return _cursor;
-            _cursor = new Cursor(_focusObject.X, _focusObject.Y);
-            SetCursorBounds();
-            return _cursor;
-        }
-        set
-        {
-            _cursor = value;
-            SetCursorBounds();
-        }
-    }
 
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
@@ -218,23 +200,5 @@ public class LevelView : View
     {
         var (minX, minY, _, _) = ViewBounds;
         return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, minX, minY);
-    }
-
-    private void SetCursorBounds()
-    {
-        if (_cursor is null) return;
-        int minX, minY, maxX, maxY;
-        if (_cursor.InFocus)
-        {
-            minX = -1;
-            minY = -1;
-            (maxX, maxY) = _level.Size;
-        }
-        else
-        {
-            (minX, minY, maxX, maxY) = ViewBounds;
-        }
-
-        _cursor.SetBounds(minX, minY, maxX, maxY);
     }
 }
