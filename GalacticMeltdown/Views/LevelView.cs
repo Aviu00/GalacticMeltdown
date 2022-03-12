@@ -71,25 +71,35 @@ public partial class LevelView : View
     public override ViewCellData GetSymbol(int x, int y)
     {
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
-        // Draw object in focus on top of everything else
-        if (x == centerScreenX && y == centerScreenY)
-            if (_focusObject is IDrawable drawable) 
-                return new ViewCellData(drawable.SymbolData, drawable.BgColor);
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
         coords = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
         var (levelX, levelY) = coords;
+        
+        ConsoleColor? backgroundColor = null;
+        if (DrawCursorLine && _cursorLinePoints.Contains(coords)) 
+            backgroundColor = GetCursorLineColor(levelX, levelY);
+        
+        if (x == centerScreenX && y == centerScreenY)
+        {
+            if (_cursor is not null && _cursor.X == levelX && _cursor.Y == levelY) backgroundColor = _cursor.Color;
+            // Draw object in focus on top of everything else
+            if (_focusObject is IDrawable drawable)
+                return new ViewCellData(drawable.SymbolData, backgroundColor ?? drawable.BgColor);
+        }
+        
         if (_visiblePoints.Contains(coords))
         {
             IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
             return drawableObj is null
                 ? new ViewCellData(null, null)
-                : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
+                : new ViewCellData(drawableObj.SymbolData, backgroundColor ?? drawableObj.BgColor);
         }
 
         if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
             return new ViewCellData((_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
-                null);
-        return new ViewCellData(null, null);
+                backgroundColor);
+        
+        return new ViewCellData(null, backgroundColor);
     }
 
     public void SetFocus(IFocusable focusObj)

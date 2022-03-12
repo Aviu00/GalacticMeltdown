@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Actors;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -80,5 +82,16 @@ public partial class LevelView
     {
         if (_drawCursorLine) CalculateCursorLinePoints();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+
+    private ConsoleColor? GetCursorLineColor(int x, int y)
+    {
+        if (!_visiblePoints.Contains((x, y))) return DataHolder.Colors.HighlightedNothingColor;
+        
+        if (_level.GetNonTileObject(x, y) is Enemy) return DataHolder.Colors.HighlightedEnemyColor;
+        if (_level.GetTile(x, y) is {IsWalkable: false}) return DataHolder.Colors.HighlightedSolidTileColor;
+        if (_level.Player.X == x && _level.Player.Y == y) return DataHolder.Colors.HighlightedFriendColor;
+        
+        return DataHolder.Colors.HighlightedNothingColor;
     }
 }
