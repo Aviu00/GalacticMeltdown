@@ -14,14 +14,14 @@ namespace GalacticMeltdown.Views;
 internal class SeenTilesArray
 {
     private const int Offset = 1;
-    private (char symbol, ConsoleColor color)?[,] _array;
+    private char?[,] _array;
 
     public SeenTilesArray(int mapWidth, int mapHeight)
     {
-        _array = new (char symbol, ConsoleColor color)?[mapWidth + Offset, mapHeight + Offset];
+        _array = new char?[mapWidth + Offset, mapHeight + Offset];
     }
 
-    public (char symbol, ConsoleColor color)? this[int x, int y]
+    public char? this[int x, int y]
     {
         get => _array[x + Offset, y + Offset];
         set => _array[x + Offset, y + Offset] = value;
@@ -87,7 +87,7 @@ public partial class LevelView : View
         }
 
         if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-            return new ViewCellData((_seenCells[levelX, levelY].Value.symbol, DataHolder.Colors.OutOfVisionTileColor),
+            return new ViewCellData((_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
                 null);
         return new ViewCellData(null, null);
     }
@@ -160,7 +160,7 @@ public partial class LevelView : View
         {
             if (!_seenCells.Inbounds(x, y)) continue;
             var tile = _level.GetTile(x, y);
-            if (tile is not null) _seenCells[x, y] = tile.SymbolData;
+            if (tile is not null) _seenCells[x, y] = tile.SymbolData.symbol;
         }
 
         NeedRedraw?.Invoke(this, EventArgs.Empty);
