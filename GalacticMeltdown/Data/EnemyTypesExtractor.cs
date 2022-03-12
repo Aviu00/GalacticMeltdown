@@ -4,13 +4,13 @@ using System.Xml;
 
 namespace GalacticMeltdown.Data;
 
-public class EnemiesTypesExtractor:XmlExtractor
+public class EnemyTypesExtractor : XmlExtractor
 {
-    public Dictionary<string, EnemiesTypeData> EnemiesTypes { get; }
+    public Dictionary<string, EnemyTypeData> EnemiesTypes { get; }
     
-    public EnemiesTypesExtractor()
+    public EnemyTypesExtractor()
     {
-        EnemiesTypes = new Dictionary<string, EnemiesTypeData>();
+        EnemiesTypes = new Dictionary<string, EnemyTypeData>();
         ParseDocument("Enemies.xml");
     }
     private void ParseDocument(string docName)
@@ -25,8 +25,8 @@ public class EnemiesTypesExtractor:XmlExtractor
             ConsoleColor bgColor = ConsoleColor.Black;
             int maxHp = 10;
             int maxEnergy = 20;
-            int dev = 0;
-            int dex = 0;
+            int defence = 0;
+            int dexterity  = 0;
             int viewRange = 1;
             foreach (XmlNode locNode in node)
             {
@@ -53,11 +53,11 @@ public class EnemiesTypesExtractor:XmlExtractor
                     case "MaxHp":
                         maxHp = Convert.ToInt32(locNode.InnerText);
                         break;
-                    case "Dev":
-                        dev = Convert.ToInt32(locNode.InnerText);
+                    case "Defence":
+                        defence = Convert.ToInt32(locNode.InnerText);
                         break;
-                    case "Dex":
-                        dex = Convert.ToInt32(locNode.InnerText);
+                    case "Dexterity":
+                        dexterity  = Convert.ToInt32(locNode.InnerText);
                         break;
                     case "ViewRange":
                         viewRange = Convert.ToInt32(locNode.InnerText);
@@ -67,18 +67,12 @@ public class EnemiesTypesExtractor:XmlExtractor
             }
 
             //log an error if id is null or TileTypes contains id
-            EnemiesTypeData enemiesTypeData = new EnemiesTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy, 
-                dev, dex,  viewRange);
+            EnemyTypeData enemiesTypeData = new EnemyTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy, 
+                defence, dexterity ,  viewRange);
             EnemiesTypes.Add(enemiesTypeData.Id, enemiesTypeData);
-            for (int i = 0; i < 15; i++)
-            {
-                EnemiesTypeData connectionData = new EnemiesTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy,
-                    dev, dex, viewRange);
-                EnemiesTypes.Add(connectionData.Id, connectionData);
-            }
         }
 
     }
 }
-public readonly record struct EnemiesTypeData(string Id, string Name, char Symbol, ConsoleColor Color, ConsoleColor BgColor,  
-    int MaxHp, int MaxEnergy,  int Dev, int Dex, int ViewRange);
+public readonly record struct EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color, ConsoleColor BgColor,  
+    int MaxHp, int MaxEnergy,  int Def, int Dex, int ViewRange);
