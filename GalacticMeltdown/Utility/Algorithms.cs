@@ -175,13 +175,13 @@ public static class Algorithms
                 while (goal != (x0, y0))
                 {
                     goal = (previousNodes[goal].Value.Item1, previousNodes[goal].Value.Item2);
-                    path.AddBefore(path.First, goal);
+                    path.AddFirst(goal);
                 }
 
                 if (path.Count > 2)
                 {
-                    path.Remove(path.First);
-                    path.Remove(path.Last);
+                    path.RemoveFirst();
+                    path.RemoveLast();
                     return path;
                 }
                 else
