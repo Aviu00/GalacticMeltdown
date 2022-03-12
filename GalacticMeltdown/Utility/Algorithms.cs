@@ -191,14 +191,13 @@ public static class Algorithms
             }
             foreach (((int x, int y), int moveCost) in getNeighbors.Invoke(currenPoint.x, currenPoint.y))
             {
-                (int, int) nextPoint = (x, y);
                 int newCost = moveCost + minCosts[currenPoint];
-                if (!minCosts.TryGetValue(nextPoint, out int oldCost) || newCost < oldCost)
+                if (!minCosts.TryGetValue((x, y), out int oldCost) || newCost < oldCost)
                 {
-                    minCosts[nextPoint] = newCost;
-                    int priority = newCost + GetDistance(nextPoint.Item1, nextPoint.Item2, x1, y1);
-                    pendingPoints.Enqueue(nextPoint, priority);
-                    previousNodes[nextPoint] = currenPoint;
+                    minCosts[(x, y)] = newCost;
+                    int priority = newCost + GetDistance(x, y, x1, y1);
+                    pendingPoints.Enqueue((x, y), priority);
+                    previousNodes[(x, y)] = currenPoint;
                 }
             }
         }
