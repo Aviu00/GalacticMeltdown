@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ItemDatas>
+    <Item>
+        <Id>metal_bar</Id>
+        <Name>metal bar</Name>
+        <Symbol>/</Symbol>
+    </Item>
+    <Item>
+        <Id>wood_plank</Id>
+        <Name>woold plank</Name>
+        <Symbol>/</Symbol>
+    </Item>
+</ItemDatas>

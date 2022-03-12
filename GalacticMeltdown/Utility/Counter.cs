@@ -14,7 +14,7 @@ public class Counter
     {
         level.TurnFinished += NextTurn;
         Level = level;
-        Timer = new LimitedNumber(timer);
+        Timer = new LimitedNumber(timer, timer, 0);
         Action = action;
     }
 
@@ -32,7 +32,7 @@ public class Counter
 
     public void ResetTimer()
     {
-        Timer.Value = Timer.MaxValue;
+        Timer.Value = Timer.MaxValue.Value;
     }
 
     public void StopTimer()

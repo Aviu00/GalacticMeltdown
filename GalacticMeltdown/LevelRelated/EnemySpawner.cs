@@ -34,7 +34,7 @@ public class EnemySpawner
 
     public void SpawnEnemiesInChunk(Chunk chunk)
     {
-        Random rng = new Random(chunk.Seed);
+        Random rng = chunk.Rng;
         double currency = chunk.Difficulty * 10;
         currency *= (rng.NextDouble() + 1);
         var points = chunk.GetFloorTileCoords();

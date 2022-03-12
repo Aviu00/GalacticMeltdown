@@ -7,7 +7,7 @@ namespace GalacticMeltdown.Data;
 
 public class TileTypesExtractor : XmlExtractor
 {
-    public Dictionary<string, TileTypeData> TileTypes { get; }
+    public readonly Dictionary<string, TileTypeData> TileTypes;
     
     private static readonly string[] Directions =
     {

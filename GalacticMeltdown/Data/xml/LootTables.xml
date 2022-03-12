@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LootTables>
+    <LootTable>
+        <Id>storage_1</Id>
+        <Items>
+            <Item id="metal_bar" chance="50" min="1" max="10"/>
+            <Item id="wood_plank" chance="50" min="1" max="10"/>
+        </Items>
+    </LootTable>
+</LootTables>

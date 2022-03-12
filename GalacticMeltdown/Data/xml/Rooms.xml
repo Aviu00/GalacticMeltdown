@@ -91,7 +91,7 @@
         <Type>4</Type>
         <CentralSymmetry>True</CentralSymmetry>
         <Terrain>
-            <Tile char="," tileId="nospawnfloor"/>
+            <Tile char="," tile_id="nospawnfloor"/>
         </Terrain>
     </Room>
     <Room>
@@ -154,15 +154,15 @@
         <RotationalSymmetry>True</RotationalSymmetry>
         <CentralSymmetry>True</CentralSymmetry>
         <Terrain>
-            <Tile char="`" tileId="void"/>
-            <Tile char="N" tileId="wall_void_north"/>
-            <Tile char="E" tileId="wall_void_east"/>
-            <Tile char="S" tileId="wall_void_south"/>
-            <Tile char="W" tileId="wall_void_west"/>
-            <Tile char="u" tileId="floor_void_north"/>
-            <Tile char="r" tileId="floor_void_east"/>
-            <Tile char="d" tileId="floor_void_south"/>
-            <Tile char="l" tileId="floor_void_west"/>
+            <Tile char="`" tile_id="void"/>
+            <Tile char="N" tile_id="wall_void_north"/>
+            <Tile char="E" tile_id="wall_void_east"/>
+            <Tile char="S" tile_id="wall_void_south"/>
+            <Tile char="W" tile_id="wall_void_west"/>
+            <Tile char="u" tile_id="floor_void_north"/>
+            <Tile char="r" tile_id="floor_void_east"/>
+            <Tile char="d" tile_id="floor_void_south"/>
+            <Tile char="l" tile_id="floor_void_west"/>
         </Terrain>
     </Room>
     <Room>
@@ -311,7 +311,7 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="`" tileId="void"/>
+            <Tile char="`" tile_id="void"/>
         </Terrain>
     </Room>
     <Room>
@@ -411,7 +411,7 @@
             ..........#.............
             ....HHHHHH########..####
             ....H........#...#..#...
-            ....H........#..........
+            ....H........#.1......1.
             ....H........#...#..#...
             ....H........#####..####
             ....H........#..........
@@ -420,17 +420,20 @@
             ....#........#..........
             ....#######..#####..####
             ..........#..#...#..#...
-            ..........#..#..........
+            ..........#..#.1......1.
             ....#.....#..#...#..#...
             ....#.....#..#####..####
             ....#.....#..#...#..#...
-            ....#.....#..#..........
+            ....#.....#..#.1......1.
             ....#.....#..#...#..#...
             ....#.....#..#####..####
             ....#...................
             ....#...................
         </Pattern>
         <Type>4</Type>
+        <Terrain>
+            <Tile char="1" tile_id="floor" loot_table_id="storage_1" loot_table_chance="60"/>
+        </Terrain>
     </Room>
     <Room>
         <Pattern>
@@ -463,15 +466,15 @@
         <RotationalSymmetry>True</RotationalSymmetry>
         <CentralSymmetry>True</CentralSymmetry>
         <Terrain>
-            <Tile char="`" tileId="void"/>
-            <Tile char="U" tileId="wall_void_north"/>
-            <Tile char="R" tileId="wall_void_east"/>
-            <Tile char="D" tileId="wall_void_south"/>
-            <Tile char="L" tileId="wall_void_west"/>
-            <Tile char="u" tileId="floor_void_north"/>
-            <Tile char="r" tileId="floor_void_east"/>
-            <Tile char="d" tileId="floor_void_south"/>
-            <Tile char="l" tileId="floor_void_west"/>
+            <Tile char="`" tile_id="void"/>
+            <Tile char="U" tile_id="wall_void_north"/>
+            <Tile char="R" tile_id="wall_void_east"/>
+            <Tile char="D" tile_id="wall_void_south"/>
+            <Tile char="L" tile_id="wall_void_west"/>
+            <Tile char="u" tile_id="floor_void_north"/>
+            <Tile char="r" tile_id="floor_void_east"/>
+            <Tile char="d" tile_id="floor_void_south"/>
+            <Tile char="l" tile_id="floor_void_west"/>
         </Terrain>
     </Room>
     <Room>
@@ -536,10 +539,10 @@
         <Type>4</Type>
         <Chance>50</Chance>
         <Terrain>
-            <Tile char="u" tileId="floor_water_north"/>
-            <Tile char="r" tileId="floor_water_east"/>
-            <Tile char="d" tileId="floor_water_south"/>
-            <Tile char="l" tileId="floor_water_west"/>
+            <Tile char="u" tile_id="floor_water_north"/>
+            <Tile char="r" tile_id="floor_water_east"/>
+            <Tile char="d" tile_id="floor_water_south"/>
+            <Tile char="l" tile_id="floor_water_west"/>
         </Terrain>
     </Room>
     <Room>

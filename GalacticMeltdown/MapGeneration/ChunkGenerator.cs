@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.MapGeneration;
 
 public class ChunkGenerator
 {
+    private Random _rng;
     private const int ChunkSize = DataHolder.ChunkSize;
 
     public bool HasAccessToMainRoute;
@@ -39,16 +43,19 @@ public class ChunkGenerator
         MapY = y;
     }
 
-    public Chunk GenerateChunk(TileTypeData[,] roomData, int seed, 
+    public Chunk GenerateChunk(TileInformation[,] roomData, int seed, 
         Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
     {
+        _rng = new Random(seed);
+        List<ItemObject> items = new();
         CalculateSymbol();
         Tiles = new Tile[ChunkSize, ChunkSize];
         for (int y = 0; y < ChunkSize - 1; y++)
         {
             for (int x = 0; x < ChunkSize - 1; x++)
             {
-                if (roomData[x, y].IsDependingOnRoomConnection) ResolveRoomConnectionDependency(roomData, x, y);
+                if (roomData[x, y].TileTypeData.IsDependingOnRoomConnection) 
+                    ResolveRoomConnectionDependency(roomData, x, y);
             }
         }
 
@@ -56,20 +63,26 @@ public class ChunkGenerator
         {
             for (int x = 0; x < ChunkSize - 1; x++)
             {
-                TileTypeData tileTypeData = roomData[x, y].IsConnectable
+                TileTypeData tileTypeData = roomData[x, y].TileTypeData.IsConnectable
                     ? GetConnectableData(roomData, x, y)
-                    : roomData[x, y];
+                    : roomData[x, y].TileTypeData;
                 Tiles[x, y] = new Tile(tileTypeData);
+                CalculateLoot(items, roomData, x, y);
             }
         }
 
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
+        return new Chunk(Tiles, items, GetNeighborCoords(), Difficulty, _rng, MapX, MapY);
+    }
+    
+    private List<(int x, int y)> GetNeighborCoords()
+    {
         var neighborCoords = new List<(int x, int y)>();
         if(NorthConnection != null) neighborCoords.Add((NorthConnection.MapX, NorthConnection.MapY));
         if(EastConnection != null) neighborCoords.Add((EastConnection.MapX, EastConnection.MapY));
         if(SouthConnection != null) neighborCoords.Add((SouthConnection.MapX, SouthConnection.MapY));
         if(WestConnection != null) neighborCoords.Add((WestConnection.MapX, WestConnection.MapY));
-        return new Chunk(Tiles, neighborCoords, Difficulty, seed, MapX, MapY);
+        return neighborCoords;
     }
 
     public void AccessMainRoute(int mainRouteDifficulty)
@@ -115,7 +128,30 @@ public class ChunkGenerator
         };
     }
 
-    private void FillBorderWalls(TileTypeData[,] roomData, Tile[,] northernTileMap, Tile[,] easternTileMap)
+    private void CalculateLoot(List<ItemObject> items, TileInformation[,] roomData, int x, int y)
+    {
+        string id = roomData[x, y].LootTableId;
+        if(id == null || !UtilityFunctions.Chance(roomData[x, y].LootTableChance, _rng)) return;
+        foreach (var itemObj in DataHolder.LootTables[id].Items)
+        {
+            int amount = _rng.Next(itemObj.min, itemObj.max + 1);
+            if(amount <= 0) continue;
+            ItemData data = DataHolder.ItemDatas[itemObj.id];
+            int newX = x + MapX * DataHolder.ChunkSize;
+            int newY = y + MapY * DataHolder.ChunkSize;
+            ItemObject itemObject = 
+                items.FirstOrDefault(item => item.X == newX && item.Y == newY && item.ItemData.Id == data.Id);
+            if (itemObject != null)
+            {
+                itemObject.Amount.Value += amount;
+                continue;
+            }
+            items.Add(new ItemObject(data, amount, newX, newY));
+        }
+    }
+    
+    private void FillBorderWalls(TileInformation[,] roomData, Tile[,] northernTileMap, 
+        Tile[,] easternTileMap)
     {
         for (int x = 0; x < ChunkSize; x++)
         {
@@ -136,10 +172,10 @@ public class ChunkGenerator
         }
     }
 
-    private TileTypeData GetConnectableData(TileTypeData[,] roomData, int x, int y,
+    private TileTypeData GetConnectableData(TileInformation[,] roomData, int x, int y,
         bool? northernTileConnectable = null, bool? easternTileConnectable = null, string overrideId = null)
     {
-        string id = overrideId ?? roomData[x, y].Id;
+        string id = overrideId ?? roomData[x, y].TileTypeData.Id;
         string newId = id + "_";
         if ((x, y) is (ChunkSize - 1, ChunkSize - 1)) return DataHolder.TileTypes[newId + "nesw"];
         StringBuilder wallKey = new StringBuilder(newId);
@@ -152,9 +188,9 @@ public class ChunkGenerator
         return DataHolder.TileTypes[str];
     }
 
-    private void ResolveRoomConnectionDependency(TileTypeData[,] roomData, int x, int y)
+    private void ResolveRoomConnectionDependency(TileInformation[,] tileInfo, int x, int y)
     {
-        string[] parsedId = roomData[x, y].Id.Split('_');
+        string[] parsedId = tileInfo[x, y].TileTypeData.Id.Split('_');
         bool switchId = parsedId[2] switch
         {
             "north" => NorthConnection is null,
@@ -165,12 +201,12 @@ public class ChunkGenerator
         };
 
         string newId = !switchId ? parsedId[0] : parsedId[1];
-        roomData[x, y] = DataHolder.TileTypes[newId];
+        tileInfo[x, y].TileTypeData = DataHolder.TileTypes[newId];
     }
 
-    private static bool CheckForConnectionInTile(TileTypeData[,] roomData, int x, int y)
+    private static bool CheckForConnectionInTile(TileInformation[,] roomData, int x, int y)
     {
         if (!(x is >= -1 and < ChunkSize && y is >= -1 and < ChunkSize)) return false;
-        return x is -1 or ChunkSize - 1 || y is -1 or ChunkSize - 1 || roomData[x, y].IsConnection;
+        return x is -1 or ChunkSize - 1 || y is -1 or ChunkSize - 1 || roomData[x, y].TileTypeData.IsConnection;
     }
 }

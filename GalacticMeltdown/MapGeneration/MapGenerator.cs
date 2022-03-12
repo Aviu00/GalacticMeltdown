@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
+using GalacticMeltdown.Data;
 using static GalacticMeltdown.Utility.UtilityFunctions;
 
 namespace GalacticMeltdown.MapGeneration;
@@ -256,7 +256,7 @@ public class MapGenerator
                 room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng))
             .ToArray();
         Room room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
-        TileTypeData[,] roomData = (TileTypeData[,]) room.Pattern.Clone();
+        var roomData = (TileInformation[,]) room.RoomInterior.Clone();
         RotateRoomPattern(x, y, roomData, room);
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
         Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
@@ -290,7 +290,7 @@ public class MapGenerator
         return roomType >= validator && (roomType, validator) is not (1, 2) and not (2, 1);
     }
 
-    private void RotateRoomPattern(int x, int y, TileTypeData[,] roomData, Room room)
+    private void RotateRoomPattern(int x, int y, TileInformation[,] roomData, Room room)
     {
         if (room.RotationalSymmetry) return;
         List<int> possibleRotations = new() {0, 90, 180, 270};
@@ -377,21 +377,21 @@ public class MapGenerator
         }
     }
 
-    private void FlipPoles(TileTypeData[,] roomData, params (string p1, string p2)[] poles)
+    private void FlipPoles(TileInformation[,] roomData, params (string p1, string p2)[] poles)
     {
         for (int x = 0; x < roomData.GetLength(0); x++)
         {
             for (int y = 0; y < roomData.GetLength(1); y++)
             {
-                if (!roomData[x, y].IsDependingOnRoomConnection) continue;
-                string[] parsedId = roomData[x, y].Id.Split('_');
+                if (!roomData[x, y].TileTypeData.IsDependingOnRoomConnection) continue;
+                string[] parsedId = roomData[x, y].TileTypeData.Id.Split('_');
                 foreach (var (p1, p2) in poles)
                 {
                     if (parsedId[2] == p1) parsedId[2] = p2;
                     else if (parsedId[2] == p2) parsedId[2] = p1;
                 }
 
-                roomData[x, y] = DataHolder.TileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
+                roomData[x, y].TileTypeData = DataHolder.TileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
             }
         }
     }

@@ -13,6 +13,8 @@ public static class DataHolder
 
     public static readonly List<Room> Rooms;
     public static readonly Dictionary<string, TileTypeData> TileTypes;
+    public static readonly Dictionary<string, ItemData> ItemDatas;
+    public static readonly Dictionary<string, LootTable> LootTables;
 
     public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {
@@ -111,5 +113,7 @@ public static class DataHolder
     {
         TileTypes = new TileTypesExtractor().TileTypes;
         Rooms = new RoomDataExtractor(TileTypes).Rooms;
+        ItemDatas = new ItemDataExtractor().ItemData;
+        LootTables = new LootTableDataExtractor().LootTables;
     }
 }

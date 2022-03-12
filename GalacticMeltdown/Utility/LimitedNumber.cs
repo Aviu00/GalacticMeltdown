@@ -5,32 +5,47 @@ namespace GalacticMeltdown.Utility;
 public class LimitedNumber
 {
     private int _value;
-    private int _maxValue;
+    private int? _maxValue;
+    private int? _minValue;
 
     public int Value
     {
         get => _value;
-        set => _value = Math.Min(value, _maxValue);
+        set
+        {
+            if(_maxValue != null)
+                _value = Math.Min(value, _maxValue.Value);
+            if(_minValue != null)
+                _value = Math.Max(value, _minValue.Value);
+        }
     }
 
-    public int MaxValue
+    public int? MaxValue
     {
         get => _maxValue;
         set
         {
             _maxValue = value;
-            _value = Math.Min(_value, _maxValue);
+            if(value != null)
+                _value = Math.Min(_value, value.Value);
+        }
+    }
+    
+    public int? MinValue
+    {
+        get => _minValue;
+        set
+        {
+            _minValue = value;
+            if(value != null)
+                _value = Math.Max(_value, value.Value);
         }
     }
 
-    public LimitedNumber(int value, int maxValue)
+    public LimitedNumber(int value, int? maxValue = null, int? minValue = null)
     {
-        _maxValue = maxValue;
-        _value = Math.Min(value, _maxValue);
-    }
-    public LimitedNumber(int value)
-    {
-        _maxValue = value;
         _value = value;
+        MaxValue = maxValue;
+        MinValue = minValue;
     }
 }

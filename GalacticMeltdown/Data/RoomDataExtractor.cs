@@ -4,12 +4,13 @@ using System.Linq;
 using System.Xml;
 
 namespace GalacticMeltdown.Data;
+using TerrainInformation = Dictionary<char, (string tileId, string lootTableId, int lootTableChance)>;
 
 public class RoomDataExtractor : XmlExtractor
 {
     private const int ChunkSize = DataHolder.ChunkSize;
 
-    public List<Room> Rooms { get; }
+    public readonly List<Room> Rooms;
 
     private readonly Dictionary<string, TileTypeData> _tileTypes;
 
@@ -30,7 +31,7 @@ public class RoomDataExtractor : XmlExtractor
             int chance = 100;
             bool rotationalSymmetry = false;
             bool centralSymmetry = false;
-            Dictionary<char, string> roomTerrain = null;
+            TerrainInformation terrainInfo = null;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -45,7 +46,7 @@ public class RoomDataExtractor : XmlExtractor
                         type = Convert.ToInt32(locNode.InnerText);
                         break;
                     case "Terrain":
-                        roomTerrain = ParseTerrain(locNode);
+                        terrainInfo = ParseTerrain(locNode);
                         break;
                     case "RotationalSymmetry":
                         rotationalSymmetry = Convert.ToBoolean(locNode.InnerText);
@@ -56,22 +57,21 @@ public class RoomDataExtractor : XmlExtractor
                 }
             }
 
-            TileTypeData[,] pattern = ConvertPattern(stringPattern, roomTerrain);
-            Rooms.Add(new Room(pattern, type, chance, rotationalSymmetry, centralSymmetry));
+            TileInformation[,] interior = ConvertPattern(stringPattern, terrainInfo);
+            Rooms.Add(new Room(interior, type, chance, rotationalSymmetry, centralSymmetry));
         }
     }
-
-    /// <summary>
-    /// This will be used later to get information about loot table placement
-    /// </summary>
-    private Dictionary<char, string> ParseTerrain(XmlNode terrainNode)
+    
+    private TerrainInformation ParseTerrain(XmlNode terrainNode)
     {
-        Dictionary<char, string> roomTerrain = new();
+        TerrainInformation terrainInfo = new();
         foreach (XmlNode node in terrainNode)
         {
             if (node.Attributes is null) continue;
             char symbol = ' ';
-            string id = "";
+            string tileId = "";
+            string lootTableId = null;
+            int lootTableChance = 0;
             foreach (XmlAttribute attribute in node.Attributes)
             {
                 switch (attribute.Name)
@@ -79,23 +79,29 @@ public class RoomDataExtractor : XmlExtractor
                     case "char":
                         symbol = Convert.ToChar(attribute.InnerText);
                         break;
-                    case "tileId":
-                        id = attribute.InnerText;
+                    case "tile_id":
+                        tileId = attribute.InnerText;
+                        break;
+                    case "loot_table_id":
+                        lootTableId = attribute.InnerText;
+                        break;
+                    case "loot_table_chance":
+                        lootTableChance = Convert.ToInt32(attribute.InnerText);
                         break;
                 }
             }
 
-            roomTerrain.Add(symbol, id);
+            terrainInfo.Add(symbol, (tileId, lootTableId, lootTableChance));
         }
 
-        return roomTerrain;
+        return terrainInfo;
     }
 
-    private TileTypeData[,] ConvertPattern(string stringPattern, Dictionary<char, string> roomTerrain)
+    private TileInformation[,] ConvertPattern(string stringPattern, TerrainInformation terrainInfo)
     {
         int i = 0;
         int j = -1;
-        TileTypeData[,] terrainObjects = new TileTypeData[ChunkSize - 1, ChunkSize - 1];
+        var roomInterior = new TileInformation[ChunkSize - 1, ChunkSize - 1];
         foreach (char c in stringPattern)
         {
             switch (c)
@@ -108,16 +114,40 @@ public class RoomDataExtractor : XmlExtractor
                     continue;
             }
 
-            TileTypeData data = roomTerrain is not null && roomTerrain.ContainsKey(c)
-                ? _tileTypes[roomTerrain[c]]
-                : _tileTypes.Values.First(tileType => tileType.Symbol == c);
-            terrainObjects[i, 23 - j] = data;
+            TileTypeData data;
+            string lootTableId = null;
+            int lootTableChance = 0;
+            if (terrainInfo is not null && terrainInfo.ContainsKey(c))
+            {
+                data = _tileTypes[terrainInfo[c].tileId];
+                lootTableId = terrainInfo[c].lootTableId;
+                lootTableChance = terrainInfo[c].lootTableChance;
+            }
+            else
+            {
+                data = _tileTypes.Values.First(tileType => tileType.Symbol == c);
+            }
+            roomInterior[i, 23 - j] = new TileInformation(data, lootTableId, lootTableChance);
             i++;
         }
 
-        return terrainObjects;
+        return roomInterior;
     }
 }
 
-public readonly record struct Room(TileTypeData[,] Pattern, int Type, int Chance, bool RotationalSymmetry,
+public readonly record struct Room(TileInformation[,] RoomInterior, int Type, int Chance, bool RotationalSymmetry,
     bool CentralSymmetry);
+
+public struct TileInformation
+{
+    public TileTypeData TileTypeData;
+    public readonly string LootTableId;
+    public readonly int LootTableChance;
+
+    public TileInformation(TileTypeData tileTypeData, string lootTableId, int lootTableChance)
+    {
+        TileTypeData = tileTypeData;
+        LootTableId = lootTableId;
+        LootTableChance = lootTableChance;
+    }
+}

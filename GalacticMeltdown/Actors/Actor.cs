@@ -20,7 +20,7 @@ public abstract class Actor : IObjectOnMap
         set
         {
             _hpLim.Value = value;
-            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
+            if (value == 0) Died?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -54,7 +54,7 @@ public abstract class Actor : IObjectOnMap
     protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
     {
         Level = level;
-        _hpLim = new LimitedNumber(maxHp, maxHp);
+        _hpLim = new LimitedNumber(maxHp, maxHp, 0);
         _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dex = dex;
         Def = def;
@@ -72,9 +72,9 @@ public abstract class Actor : IObjectOnMap
 
     public virtual void FinishTurn()
     {
-        if (Hp <= 0) return;
+        if (Hp == 0) return;
         _turnStopped = false;
-        Energy += _energyLim.MaxValue;
+        Energy += _energyLim.MaxValue.Value;
     }
     
     public void StopTurn() => _turnStopped = true;

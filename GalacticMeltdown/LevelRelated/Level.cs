@@ -232,8 +232,11 @@ public partial class Level
             {
                 if (ActiveChunks.Contains(chunk)) continue;
                 ActiveChunks.Add(chunk);
-                chunk._wasActiveBefore = true;
-                _enemySpawner.SpawnEnemiesInChunk(chunk);
+                if (!chunk.WasActiveBefore)
+                {
+                    chunk.WasActiveBefore = true;
+                    _enemySpawner.SpawnEnemiesInChunk(chunk);
+                }
             }
         }
     }
