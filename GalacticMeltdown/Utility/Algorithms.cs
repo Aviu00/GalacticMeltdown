@@ -155,10 +155,10 @@ public static class Algorithms
     {
         return (int)(Math.Pow(x1 - x0, 2) + Math.Pow(y1 - y0, 2));
     }
-    public  static List<(int, int)> AStar(int x0, int y0, int x1, int y1,
+    public  static LinkedList<(int, int)> AStar(int x0, int y0, int x1, int y1,
         Func<int, int, List<((int, int), int)>> getNeighbors)
     {
-        List<(int, int)> path = new List<(int, int)>();
+        LinkedList<(int, int)> path = new LinkedList<(int, int)>();
         PriorityQueue<(int, int), int> pendingPoints = new PriorityQueue<(int, int), int>();
         Dictionary<(int, int), (int, int)?> previousNodes = new Dictionary<(int, int), (int, int)?>();
         Dictionary<(int, int), int> minCosts = new Dictionary<(int, int), int>();
@@ -167,23 +167,29 @@ public static class Algorithms
         minCosts[(x0, y0)] = 0;
         while (pendingPoints.Count > 0)
         {
-            (int, int) currenPoint = pendingPoints.Dequeue();
+            (int x, int y) currenPoint = pendingPoints.Dequeue();
             if (currenPoint == (x1, y1))
             {
                 (int, int) goal = (x1, y1);
-                path.Add(goal);
+                path.AddFirst(goal);
                 while (goal != (x0, y0))
                 {
                     goal = (previousNodes[goal].Value.Item1, previousNodes[goal].Value.Item2);
-                    if (goal != (x0, y0) && goal != (x1, y1))
-                    {
-                        path.Add(goal);
-                    }
+                    path.AddBefore(path.First, goal);
                 }
-                path.Reverse();
-                return path;
+
+                if (path.Count > 2)
+                {
+                    path.Remove(path.First);
+                    path.Remove(path.Last);
+                    return path;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            foreach (((int x, int y), int moveCost) in getNeighbors.Invoke(currenPoint.Item1, currenPoint.Item2))
+            foreach (((int x, int y), int moveCost) in getNeighbors.Invoke(currenPoint.x, currenPoint.y))
             {
                 (int, int) nextPoint = (x, y);
                 int newCost = moveCost + minCosts[currenPoint];
