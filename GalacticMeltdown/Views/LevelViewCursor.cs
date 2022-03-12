@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+
 namespace GalacticMeltdown.Views;
 
 public partial class LevelView
 {
+    private HashSet<(int, int)> _cursorLinePoints = new();
     private Cursor _cursor;
 
     public Cursor Cursor
@@ -15,10 +18,23 @@ public partial class LevelView
         }
         private set => _cursor = value;
     }
+    
+    private bool _drawCursorLine;
+
+    public bool DrawCursorLine
+    {
+        get => _drawCursorLine;
+        set
+        {
+            _drawCursorLine = value;
+            _cursorLinePoints.Clear();
+        }
+    }
 
     public void RemoveCursor()
     {
         if (_cursor.InFocus) return;
+        DrawCursorLine = false;
         Cursor = null;
     }
     
