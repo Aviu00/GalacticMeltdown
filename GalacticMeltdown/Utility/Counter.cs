@@ -8,6 +8,7 @@ public class Counter
     protected readonly LimitedNumber Timer;
     protected readonly Level Level;
     protected Action<Counter> Action;
+    public bool FinishedCounting => Timer.Value == 0;
 
     public Counter(Level level, int timer, Action<Counter> action)
     {
@@ -17,14 +18,15 @@ public class Counter
         Action = action;
     }
 
-    protected Counter(Level level, int timer) : this(level, timer, counter => counter.StopTimer())
+    public Counter(Level level, int timer) : this(level, timer, _ => { })
     {
     }
 
-    private void NextTurn(object sender, EventArgs _)
+    private void NextTurn(object _, EventArgs __)
     {
+        if (FinishedCounting) return;
         Timer.Value--;
-        if(Timer.Value != 0) return;
+        if (!FinishedCounting) return;
         Action(this);
     }
 
@@ -36,5 +38,6 @@ public class Counter
     public void StopTimer()
     {
         Level.TurnFinished -= NextTurn;
+        ResetTimer();
     }
 }
