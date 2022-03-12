@@ -95,15 +95,11 @@ public partial class LevelView : View
     public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject)) return;
-        if (_focusObject is not null)
-        {
-            _focusObject.InFocus = false;
-            if (ReferenceEquals(_focusObject, _cursor)) SetCursorBounds();
-        }
+        if (_focusObject is not null) _focusObject.InFocus = false;
 
         _focusObject = focusObj;
         _focusObject.InFocus = true;
-        if (ReferenceEquals(_focusObject, _cursor)) SetCursorBounds();
+        SetCursorBounds();
         _focusObject.Moved += FocusObjectMoved;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }

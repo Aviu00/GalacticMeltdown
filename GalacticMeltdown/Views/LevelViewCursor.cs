@@ -13,11 +13,13 @@ public partial class LevelView
             SetCursorBounds();
             return _cursor;
         }
-        set
-        {
-            _cursor = value;
-            SetCursorBounds();
-        }
+        private set => _cursor = value;
+    }
+
+    public void RemoveCursor()
+    {
+        if (_cursor.InFocus) return;
+        Cursor = null;
     }
     
     private void SetCursorBounds()
