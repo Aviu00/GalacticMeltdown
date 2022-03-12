@@ -150,4 +150,54 @@ public static class Algorithms
             coords.Add((x, y));
         }
     }
+    
+    private static int GetDistance(int x0, int y0, int x1, int y1)
+    {
+        return (int)(Math.Pow(x1 - x0, 2) + Math.Pow(y1 - y0, 2));
+    }
+    public  static IEnumerable<(int, int)> AStar(int x0, int y0, int x1, int y1,
+        Func<int, int, List<((int, int), int)>> getNeighbors)
+    {
+        List<(int, int)> path = new List<(int, int)>();
+        PriorityQueue<(int, int), int> pendingPoints = new PriorityQueue<(int, int), int>();
+        Dictionary<(int, int), (int, int)?> previousNodes = new Dictionary<(int, int), (int, int)?>();
+        Dictionary<(int, int), int> minCosts = new Dictionary<(int, int), int>();
+        pendingPoints.Enqueue((x0, y0), 0);
+        previousNodes[(x0, y0)] = null;
+        minCosts[(x0, y0)] = 0;
+        while (pendingPoints.Count > 0)
+        {
+            (int, int) currenPoint = pendingPoints.Dequeue();
+            if (currenPoint == (x1, y1))
+            {
+                (int, int) goal = (x1, y1);
+                path.Add(goal);
+                while (goal != (x0, y0))
+                {
+                    goal = (previousNodes[goal].Value.Item1, previousNodes[goal].Value.Item2);
+                    path.Add(goal);
+                }
+                path.Reverse();
+                foreach (var node in path)
+                {
+                    if (node != (x0, y0) && node != (x1, y1))
+                    {
+                        yield return node;
+                    }
+                }
+            }
+            foreach (((int x, int y), int moveCost) in getNeighbors.Invoke(currenPoint.Item1, currenPoint.Item2))
+            {
+                (int, int) nextPoint = (x, y);
+                int newCost = moveCost + minCosts[currenPoint];
+                if (!minCosts.TryGetValue(nextPoint, out int oldCost) || newCost < oldCost)
+                {
+                    minCosts[nextPoint] = newCost;
+                    int priority = newCost + GetDistance(nextPoint.Item1, nextPoint.Item2, x1, y1);
+                    pendingPoints.Enqueue(nextPoint, priority);
+                    previousNodes[nextPoint] = currenPoint;
+                }
+            }
+        }
+    }
 }
