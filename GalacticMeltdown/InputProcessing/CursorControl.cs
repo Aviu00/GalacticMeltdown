@@ -2,10 +2,14 @@ namespace GalacticMeltdown.InputProcessing;
 
 public enum CursorControl
 {
-    Up,
-    Down,
-    Left,
-    Right,
+    MoveUp,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+    MoveNe,
+    MoveSe,
+    MoveSw,
+    MoveNw,
     Interact,
     Back,
     ToggleLine,
