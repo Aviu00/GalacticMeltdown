@@ -155,7 +155,7 @@ public static class Algorithms
     {
         return (int)(Math.Pow(x1 - x0, 2) + Math.Pow(y1 - y0, 2));
     }
-    public  static IEnumerable<(int, int)> AStar(int x0, int y0, int x1, int y1,
+    public  static List<(int, int)> AStar(int x0, int y0, int x1, int y1,
         Func<int, int, List<((int, int), int)>> getNeighbors)
     {
         List<(int, int)> path = new List<(int, int)>();
@@ -175,16 +175,13 @@ public static class Algorithms
                 while (goal != (x0, y0))
                 {
                     goal = (previousNodes[goal].Value.Item1, previousNodes[goal].Value.Item2);
-                    path.Add(goal);
-                }
-                path.Reverse();
-                foreach (var node in path)
-                {
-                    if (node != (x0, y0) && node != (x1, y1))
+                    if (goal != (x0, y0) && goal != (x1, y1))
                     {
-                        yield return node;
+                        path.Add(goal);
                     }
                 }
+                path.Reverse();
+                return path;
             }
             foreach (((int x, int y), int moveCost) in getNeighbors.Invoke(currenPoint.Item1, currenPoint.Item2))
             {
@@ -199,5 +196,6 @@ public static class Algorithms
                 }
             }
         }
+        return null;
     }
 }
