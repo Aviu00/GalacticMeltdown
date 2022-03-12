@@ -19,8 +19,8 @@ public partial class PlaySession
         {PlayerControl.MoveNw, () => MoveControlled(-1, 1)},
         {PlayerControl.IncreaseViewRange, () => _player.ViewRange++},
         {PlayerControl.ReduceViewRange, () => _player.ViewRange--},
-        {PlayerControl.ActivateNoClip, () => _player.NoClip = !_player.NoClip},
-        {PlayerControl.ActivateXRay, () => _player.Xray = !_player.Xray},
+        {PlayerControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
+        {PlayerControl.ToggleXRay, () => _player.Xray = !_player.Xray},
         {PlayerControl.Quit, StopSession},
         //{PlayerAction.OpenCloseInventory, () => ChangeBindings()}
     };

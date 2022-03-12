@@ -67,8 +67,8 @@ public static class DataHolder
             {ConsoleKey.D7, PlayerControl.MoveNw},
             {ConsoleKey.Multiply, PlayerControl.IncreaseViewRange},
             {ConsoleKey.Subtract, PlayerControl.ReduceViewRange},
-            {ConsoleKey.Z, PlayerControl.ActivateNoClip},
-            {ConsoleKey.X, PlayerControl.ActivateXRay},
+            {ConsoleKey.Z, PlayerControl.ToggleNoClip},
+            {ConsoleKey.X, PlayerControl.ToggleXRay},
             {ConsoleKey.Q, PlayerControl.Quit}
         };
 

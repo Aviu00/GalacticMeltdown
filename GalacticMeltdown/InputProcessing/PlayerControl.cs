@@ -13,7 +13,7 @@ public enum PlayerControl
     StopTurn,
     IncreaseViewRange, //for fov testing
     ReduceViewRange, //for fov testing
-    ActivateNoClip, //temporary cheat codes
-    ActivateXRay, //temporary cheat codes
+    ToggleNoClip, //temporary cheat codes
+    ToggleXRay, //temporary cheat codes
     Quit
 }
