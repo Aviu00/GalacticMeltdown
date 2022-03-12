@@ -19,7 +19,7 @@ public class Tile : IDrawable
 
     public string Id => _typeData.Id;
     
-    public int TileMoveCost => _typeData.TileMoveCost;
+    public int MoveCost => _typeData.MoveCost;
 
     public Tile(TileTypeData typeData)
     {

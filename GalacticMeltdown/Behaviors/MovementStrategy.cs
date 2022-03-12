@@ -24,7 +24,7 @@ public class MovementStrategy : Behavior
             if (_level.GetTile(xi, yi).IsWalkable)
                 /*(_level.GetNonTileObject(nextDot.Item1, nextDot.Item2) is not null &&*/
             {
-                neighboursWithMoveCosts.Add(((xi, yi), _level.GetTile(xi,yi).TileMoveCost));
+                neighboursWithMoveCosts.Add(((xi, yi), _level.GetTile(xi,yi).MoveCost));
             }
         }
         return neighboursWithMoveCosts;
@@ -55,7 +55,7 @@ public class MovementStrategy : Behavior
             if (Target.Energy > 0 && coords != _wantsToGoTo)
             {
                 Target.MoveNpcTo(coords.x, coords.y);
-                Target.Energy -= _level.GetTile(coords.x, coords.y).TileMoveCost;
+                Target.Energy -= _level.GetTile(coords.x, coords.y).MoveCost;
             }
             else
             {
