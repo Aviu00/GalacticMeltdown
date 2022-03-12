@@ -81,8 +81,7 @@ public class MovementStrategy : Behavior
     public override bool TryAct()
     {
         // setting wantsToGoTo point
-        if(Target.CurrentTarget is not null) /*&&
-           _level.GetTile(Target.CurrentTarget.X, Target.CurrentTarget.Y).IsWalkable)*/ // temporary stuff for debug with cheats
+        if(Target.CurrentTarget is not null)
         {
             _wantsToGoTo = (Target.CurrentTarget.X, Target.CurrentTarget.Y);
         }
@@ -92,7 +91,6 @@ public class MovementStrategy : Behavior
             {
                 return false;
             }
-            // temporary idle movement realisation
         }
         // moving to wantsToGoTo point
         List<(int, int)> path = AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y);

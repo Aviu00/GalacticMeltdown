@@ -5,7 +5,7 @@
         <Name>melee attacker</Name>
         <Symbol>W</Symbol>
         <Color>red</Color>
-        <BgColor>black</BgColor>>
+        <BgColor>black</BgColor>
         <MaxHp>100</MaxHp>
         <MaxEnergy>100</MaxEnergy>
         <Dex>10</Dex>
@@ -17,7 +17,7 @@
         <Name>folower</Name>
         <Symbol>P</Symbol>
         <Color>purple</Color>
-        <BgColor>black</BgColor>>
+        <BgColor>black</BgColor>
         <MaxHp>100</MaxHp>
         <MaxEnergy>100</MaxEnergy>
         <Dex>10</Dex>
