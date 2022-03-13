@@ -32,7 +32,7 @@ public class Enemy : Npc
         int minDistanceToEnemy = Int32.MaxValue;
         foreach (var target in Targets)
         {
-            if (SeePoint(target.X, target.Y) && 
+            if (IsPointVisible(target.X, target.Y) && 
                 Algorithms.GetDistance(target.X, target.Y, X, Y) < minDistanceToEnemy)
             {
                 CurrentTarget = target;

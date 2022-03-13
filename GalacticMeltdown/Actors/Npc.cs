@@ -25,7 +25,7 @@ public abstract class Npc : Actor
         }
         Behaviors = behaviors;
     }
-    protected bool SeePoint(int x, int y)
+    protected bool IsPointVisible(int x, int y)
     {
         if ((int)Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2)) > _viewRange)
         {
