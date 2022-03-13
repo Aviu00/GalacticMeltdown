@@ -1,6 +1,7 @@
 using GalacticMeltdown.LevelRelated;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Behaviors;
@@ -44,11 +45,16 @@ public class MovementStrategy : Behavior
             }
         }
 
-        IEnumerable<(int, int)> path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, 
+        LinkedList<(int, int)> path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, 
             _wantsToGoTo.Value.y, GetNeighbors);
-        if (path is null)
+        if (path is null || path.Count() < 2)
         {
             return false;
+        }
+        else
+        {
+            path.RemoveFirst();
+            path.RemoveLast();
         }
         foreach ((int x, int y) coords in path)
         {

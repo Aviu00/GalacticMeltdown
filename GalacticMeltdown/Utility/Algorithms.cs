@@ -177,17 +177,6 @@ public static class Algorithms
                     goal = (previousNodes[goal].Value.Item1, previousNodes[goal].Value.Item2);
                     path.AddFirst(goal);
                 }
-
-                if (path.Count > 2)
-                {
-                    path.RemoveFirst();
-                    path.RemoveLast();
-                    return path;
-                }
-                else
-                {
-                    return null;
-                }
             }
             foreach (((int x, int y), int moveCost) in getNeighbors.Invoke(currenPoint.x, currenPoint.y))
             {
