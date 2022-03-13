@@ -40,6 +40,7 @@ public class Enemy : Npc
                 break;
             }
         }
+        if(!this.IsActive) return;
         base.TakeAction();
     }
 }
