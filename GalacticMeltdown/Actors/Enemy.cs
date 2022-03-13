@@ -3,6 +3,7 @@ using GalacticMeltdown.LevelRelated;
 using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Actors;
 
@@ -28,11 +29,14 @@ public class Enemy : Npc
     public override void TakeAction()
     {
         CurrentTarget = null;
+        int minDistanceToEnemy = Int32.MaxValue;
         foreach (var target in Targets)
         {
-            if (SeePoint(target.X, target.Y))
+            if (SeePoint(target.X, target.Y) && 
+                Algorithms.GetDistance(target.X, target.Y, X, Y) < minDistanceToEnemy)
             {
                 CurrentTarget = target;
+                minDistanceToEnemy = Algorithms.GetDistance(target.X, target.Y, X, Y);
                 break;
             }
         }

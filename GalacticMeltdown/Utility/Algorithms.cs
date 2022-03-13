@@ -151,7 +151,7 @@ public static class Algorithms
         }
     }
     
-    private static int GetDistance(int x0, int y0, int x1, int y1)
+    public static int GetDistance(int x0, int y0, int x1, int y1)
     {
         return (int)(Math.Pow(x1 - x0, 2) + Math.Pow(y1 - y0, 2));
     }

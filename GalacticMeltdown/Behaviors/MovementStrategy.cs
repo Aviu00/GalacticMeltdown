@@ -58,7 +58,7 @@ public class MovementStrategy : Behavior
         }
         foreach ((int x, int y) coords in path)
         {
-            if (Target.Energy > 0 && coords != _wantsToGoTo)
+            if (Target.IsActive && coords != _wantsToGoTo)
             {
                 Target.MoveNpcTo(coords.x, coords.y);
                 Target.Energy -= _level.GetTile(coords.x, coords.y).MoveCost;
