@@ -2,6 +2,7 @@ using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
 
@@ -26,20 +27,9 @@ public class Enemy : Npc
 
     public override void TakeAction()
     {
-        CurrentTarget = null;
-        int minDistanceToEnemy = Int32.MaxValue;
-        foreach (var target in Targets)
-        {
-            if (IsPointVisible(target.X, target.Y) &&
-                Algorithms.GetDistance(target.X, target.Y, X, Y) < minDistanceToEnemy)
-            {
-                CurrentTarget = target;
-                minDistanceToEnemy = Algorithms.GetDistance(target.X, target.Y, X, Y);
-                break;
-            }
-        }
-
         if (!IsActive) return;
+        CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
+            .MinBy(target => Algorithms.GetDistance(target.X, target.Y, X, Y));
         base.TakeAction();
     }
 }
