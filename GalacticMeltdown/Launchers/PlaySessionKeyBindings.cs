@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using GalacticMeltdown.Actors;
 using GalacticMeltdown.InputProcessing;
 
 namespace GalacticMeltdown.Launchers;
 
 public partial class PlaySession
 {
-    // Inventory bindings supposed to be updated in the future
     private static readonly Dictionary<MainControl, Action> MainActions = new()
     {
         {MainControl.MoveUp, () => MoveControlled(0, 1)},
@@ -25,6 +23,5 @@ public partial class PlaySession
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
         {MainControl.ToggleXRay, () => _player.Xray = !_player.Xray},
         {MainControl.Quit, StopSession},
-        //{PlayerAction.OpenCloseInventory, () => ChangeBindings()}
     };
 }
