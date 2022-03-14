@@ -37,21 +37,19 @@ public class MovementStrategy : Behavior
     {
         // setting wantsToGoTo point
         // second condition for no clip use
-        if (ControlledNpc.CurrentTarget is not null && _wantsToGoTo != (ControlledNpc.X, ControlledNpc.Y) &&
-            !_level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
+        if (ControlledNpc.CurrentTarget is not null && _wantsToGoTo != (ControlledNpc.X, ControlledNpc.Y)
+            && !_level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
         {
             _wantsToGoTo = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
-            _path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y, GetNeighbors);
-            if (_path is null || _path.Count < 2)
-            {
-                return false;
-            }
-            else
-            {
-                _path.RemoveFirst();
-                _path.RemoveLast();
-            }
-
+            _path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y,
+                GetNeighbors);
+            
+            if (_path is null || _path.Count < 2) return false;
+            
+            // remove start and finish points to simplify implementation
+            _path.RemoveFirst();
+            _path.RemoveLast();
+            
             _currentPathNode = _path.First;
         }
         else
