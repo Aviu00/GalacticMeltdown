@@ -97,7 +97,7 @@ public partial class LevelView : View
         {
             IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
             return drawableObj is null
-                ? new ViewCellData(null, null)
+                ? new ViewCellData(null, backgroundColor)
                 : new ViewCellData(drawableObj.SymbolData, backgroundColor ?? drawableObj.BgColor);
         }
 
