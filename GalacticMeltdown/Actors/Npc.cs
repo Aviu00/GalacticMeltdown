@@ -4,7 +4,6 @@ using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace GalacticMeltdown.Actors;
 
