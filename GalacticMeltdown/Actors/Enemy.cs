@@ -14,9 +14,8 @@ public class Enemy : Npc
 
     private readonly EnemyTypeData _typeData;
 
-    public Enemy(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level,
-        SortedSet<Behavior> behaviors, EnemyTypeData typeData) : base(typeData.MaxHp, typeData.MaxEnergy, typeData.Dex,
-        typeData.Def, typeData.ViewRange, x, y, level, behaviors)
+    public Enemy(EnemyTypeData typeData, int x, int y, Level level, SortedSet<Behavior> behaviors) : base(
+        typeData.MaxHp, typeData.MaxEnergy, typeData.Dex, typeData.Def, typeData.ViewRange, x, y, level, behaviors)
     {
         _typeData = typeData;
     }
