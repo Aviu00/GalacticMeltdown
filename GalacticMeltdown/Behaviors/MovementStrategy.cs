@@ -1,6 +1,5 @@
 using GalacticMeltdown.LevelRelated;
 using System.Collections.Generic;
-using System.Linq;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Behaviors;
@@ -13,9 +12,9 @@ public class MovementStrategy : Behavior
     private LinkedListNode<(int x, int y)> _currentPathNode;
     private LinkedList<(int x, int y)> _path;
 
-    public MovementStrategy(Level level, int? priority = null)
+    public MovementStrategy(Level level, int priority = DefaultPriority)
     {
-        _priority = priority ?? DefaultPriority;
+        _priority = priority;
         _level = level;
     }
 
@@ -43,7 +42,7 @@ public class MovementStrategy : Behavior
         {
             _wantsToGoTo = (Target.CurrentTarget.X, Target.CurrentTarget.Y);
             _path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y, GetNeighbors);
-            if (_path is null || _path.Count() < 2)
+            if (_path is null || _path.Count < 2)
             {
                 return false;
             }
