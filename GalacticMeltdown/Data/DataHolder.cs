@@ -50,25 +50,25 @@ public static class DataHolder
 
     public struct CurrentBindings
     {
-        public static Dictionary<ConsoleKey, PlayerControl> Player = new()
+        public static Dictionary<ConsoleKey, MainControl> Main = new()
         {
-            {ConsoleKey.UpArrow, PlayerControl.MoveUp},
-            {ConsoleKey.DownArrow, PlayerControl.MoveDown},
-            {ConsoleKey.LeftArrow, PlayerControl.MoveLeft},
-            {ConsoleKey.RightArrow, PlayerControl.MoveRight},
-            {ConsoleKey.D8, PlayerControl.MoveUp},
-            {ConsoleKey.D9, PlayerControl.MoveNe},
-            {ConsoleKey.D6, PlayerControl.MoveRight},
-            {ConsoleKey.D3, PlayerControl.MoveSe},
-            {ConsoleKey.D2, PlayerControl.MoveDown},
-            {ConsoleKey.D1, PlayerControl.MoveSw},
-            {ConsoleKey.D4, PlayerControl.MoveLeft},
-            {ConsoleKey.D7, PlayerControl.MoveNw},
-            {ConsoleKey.Multiply, PlayerControl.IncreaseViewRange},
-            {ConsoleKey.Subtract, PlayerControl.ReduceViewRange},
-            {ConsoleKey.Z, PlayerControl.ToggleNoClip},
-            {ConsoleKey.X, PlayerControl.ToggleXRay},
-            {ConsoleKey.Q, PlayerControl.Quit}
+            {ConsoleKey.UpArrow, MainControl.MoveUp},
+            {ConsoleKey.DownArrow, MainControl.MoveDown},
+            {ConsoleKey.LeftArrow, MainControl.MoveLeft},
+            {ConsoleKey.RightArrow, MainControl.MoveRight},
+            {ConsoleKey.D8, MainControl.MoveUp},
+            {ConsoleKey.D9, MainControl.MoveNe},
+            {ConsoleKey.D6, MainControl.MoveRight},
+            {ConsoleKey.D3, MainControl.MoveSe},
+            {ConsoleKey.D2, MainControl.MoveDown},
+            {ConsoleKey.D1, MainControl.MoveSw},
+            {ConsoleKey.D4, MainControl.MoveLeft},
+            {ConsoleKey.D7, MainControl.MoveNw},
+            {ConsoleKey.Multiply, MainControl.IncreaseViewRange},
+            {ConsoleKey.Subtract, MainControl.ReduceViewRange},
+            {ConsoleKey.Z, MainControl.ToggleNoClip},
+            {ConsoleKey.X, MainControl.ToggleXRay},
+            {ConsoleKey.Q, MainControl.Quit}
         };
 
         public static Dictionary<ConsoleKey, SelectionControl> Selection = new()

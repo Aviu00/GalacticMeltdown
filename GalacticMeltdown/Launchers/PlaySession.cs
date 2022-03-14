@@ -25,7 +25,7 @@ public partial class PlaySession
         _player.SetControlFunc(() =>
         {
             Renderer.PlayAnimations();
-            InputProcessor.AddBinding(DataHolder.CurrentBindings.Player, PlayerActions);
+            InputProcessor.AddBinding(DataHolder.CurrentBindings.Main, PlayerActions);
             InputProcessor.StartProcessLoop();
         });
         _controlledObject = _player;

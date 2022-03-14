@@ -1,6 +1,6 @@
 namespace GalacticMeltdown.InputProcessing;
 
-public enum PlayerControl
+public enum MainControl
 {
     MoveUp,
     MoveDown,
