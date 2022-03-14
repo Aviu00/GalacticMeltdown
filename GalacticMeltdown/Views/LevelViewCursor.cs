@@ -59,7 +59,7 @@ public partial class LevelView
     private void CursorMoveHandler(object sender, MoveEventArgs _)
     {
         if (_drawCursorLine) CalculateCursorLinePoints();
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        if (!ReferenceEquals(_focusObject, _cursor)) NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
