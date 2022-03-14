@@ -14,12 +14,14 @@ public partial class LevelView
     private HashSet<(int, int)> _cursorLinePoints = new();
     private Cursor _cursor;
 
+    private (int, int)? _cursorStartCoords;
+
     public Cursor Cursor
     {
         get
         {
             if (_cursor is not null) return _cursor;
-            _cursor = new Cursor(_focusObject.X, _focusObject.Y, () => (_focusObject.X, _focusObject.Y));
+            _cursor = new Cursor(_focusObject.X, _focusObject.Y, GetCursorStartCoords);
             SetCursorBounds();
             _cursor.Moved += CursorMoveHandler;
             NeedRedraw?.Invoke(this, EventArgs.Empty);
@@ -51,7 +53,8 @@ public partial class LevelView
 
     private void CalculateCursorLinePoints()
     {
-        _cursorLinePoints = Algorithms.BresenhamGetPointsOnLine(_focusObject.X, _focusObject.Y, Cursor.X, Cursor.Y)
+        var (x0, y0) = GetCursorStartCoords();
+        _cursorLinePoints = Algorithms.BresenhamGetPointsOnLine(x0, y0, Cursor.X, Cursor.Y)
             .TakeWhile(point => _level.GetTile(point.x, point.y) is null or {IsWalkable: true})
             .ToHashSet();
     }
@@ -89,5 +92,10 @@ public partial class LevelView
         if (_level.Player.X == x && _level.Player.Y == y) return DataHolder.Colors.HighlightedFriendColor;
         
         return DataHolder.Colors.HighlightedNothingColor;
+    }
+
+    private (int, int) GetCursorStartCoords()
+    {
+        return _cursorStartCoords ?? (_focusObject.X, _focusObject.Y);
     }
 }
