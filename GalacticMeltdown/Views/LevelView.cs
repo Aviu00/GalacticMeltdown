@@ -51,11 +51,12 @@ public partial class LevelView : View
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
-    public LevelView(Level level)
+    public LevelView(Level level, IFocusable initialFocusObj)
     {
         _level = level;
         _level.SomethingMoved += MoveHandler;
         _level.NpcDied += DeathHandler;
+        
         _sightedObjects = _level.SightedObjects;
         _sightedObjects.CollectionChanged += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
@@ -65,6 +66,10 @@ public partial class LevelView : View
 
         var (width, height) = _level.Size;
         _seenCells = new SeenTilesArray(width, height);
+
+        _focusObject = initialFocusObj;
+        _focusObject.InFocus = true;
+        
         UpdateVisiblePoints();
     }
 
@@ -104,12 +109,18 @@ public partial class LevelView : View
 
     public void SetFocus(IFocusable focusObj)
     {
-        if (ReferenceEquals(focusObj, _focusObject)) return;
-        if (_focusObject is not null) _focusObject.InFocus = false;
+        if (ReferenceEquals(focusObj, _focusObject) || focusObj is null) return;
+        _focusObject.InFocus = false;
+
+        /* Remember starting cursor line coordinates when bringing cursor
+           into focus and forget when it is no longer in focus */
+        if (ReferenceEquals(focusObj, _cursor)) _cursorStartCoords = (_focusObject.X, _focusObject.Y);
+        else if (ReferenceEquals(_focusObject, _cursor)) _cursorStartCoords = null;
 
         _focusObject = focusObj;
         _focusObject.InFocus = true;
         SetCursorBounds();
+        
         _focusObject.Moved += FocusObjectMoved;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }

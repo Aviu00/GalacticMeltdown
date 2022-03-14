@@ -84,7 +84,7 @@ public partial class Level
         ControllableObjects = new ObservableCollection<IControllable> {Player};
         ControllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
-        LevelView = new LevelView(this);
+        LevelView = new LevelView(this, Player);
         OverlayView = new OverlayView(this);
         IsActive = true;
         PlayerWon = false;
