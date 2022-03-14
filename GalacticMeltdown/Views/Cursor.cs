@@ -48,16 +48,6 @@ public class Cursor : IControllable
         Action?.Invoke(x0, y0, X, Y);
     }
 
-    public void SetBounds(int minX, int minY, int maxX, int maxY)
-    {
-        _minX = minX;
-        _minY = minY;
-        _maxX = maxX;
-        _maxY = maxY;
-        if (!IsPositionInbounds(X, Y))
-            MoveTo(Math.Min(Math.Max(X, _minX), _maxX), Math.Min(Math.Max(Y, _minY), _maxY));
-    }
-
     private void MoveTo(int x, int y)
     {
         int oldX = X, oldY = Y;
