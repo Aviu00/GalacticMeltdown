@@ -13,7 +13,7 @@ public partial class LevelView
     private HashSet<(int, int)> _cursorLinePoints = new();
     private Cursor _cursor;
 
-    private (int, int)? _cursorStartCoords;
+    private (int, int)? _cursorLineStartCoords;
 
     public Cursor Cursor
     {
@@ -75,6 +75,6 @@ public partial class LevelView
 
     private (int, int) GetCursorStartCoords()
     {
-        return _cursorStartCoords ?? (_focusObject.X, _focusObject.Y);
+        return _cursorLineStartCoords ?? (_focusObject.X, _focusObject.Y);
     }
 }
