@@ -13,7 +13,7 @@ public class Cursor : IControllable
     private int _maxY;
 
     private Func<(int, int)> _getStartCoords;
-    private Func<int, int, bool> _isPositionInbounds;
+    private Func<(int, int, int, int)> _getBounds;
 
     public ConsoleColor Color => DataHolder.Colors.CursorColor;
     
@@ -26,18 +26,18 @@ public class Cursor : IControllable
     
     public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<int, int, bool> isPositionInbounds)
+    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getBounds)
     {
         X = x;
         Y = y;
         _getStartCoords = getStartCoords;
-        _isPositionInbounds = isPositionInbounds;
+        _getBounds = getBounds;
     }
     
     public bool TryMove(int deltaX, int deltaY)
     {
         int newX = X + deltaX, newY = Y + deltaY;
-        if (!_isPositionInbounds(newX, newY)) return false;
+        if (!IsPositionInbounds(newX, newY)) return false;
         MoveTo(newX, newY);
         return true;
     }
@@ -54,7 +54,7 @@ public class Cursor : IControllable
         _minY = minY;
         _maxX = maxX;
         _maxY = maxY;
-        if (!_isPositionInbounds(X, Y))
+        if (!IsPositionInbounds(X, Y))
             MoveTo(Math.Min(Math.Max(X, _minX), _maxX), Math.Min(Math.Max(Y, _minY), _maxY));
     }
 
@@ -64,5 +64,11 @@ public class Cursor : IControllable
         X = x;
         Y = y;
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
+    }
+
+    private bool IsPositionInbounds(int x, int y)
+    {
+        var (minX, minY, maxX, maxY) = _getBounds();
+        return x >= minX && x <= maxX && y >= minY && y <= maxY;
     }
 }
