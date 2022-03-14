@@ -18,7 +18,7 @@ internal class SeenTilesArray
 
     public SeenTilesArray(int mapWidth, int mapHeight)
     {
-        _array = new char?[mapWidth + Offset, mapHeight + Offset];
+        _array = new char?[mapWidth, mapHeight];
     }
 
     public char? this[int x, int y]
