@@ -123,6 +123,8 @@ public partial class LevelView : View
         _focusObject.InFocus = true;
         _focusObject.Moved += FocusObjectMoved;
         
+        _cursor?.MoveInbounds();
+        
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

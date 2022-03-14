@@ -7,11 +7,6 @@ namespace GalacticMeltdown.Views;
 
 public class Cursor : IControllable
 {
-    private int _minX;
-    private int _minY;
-    private int _maxX;
-    private int _maxY;
-
     private Func<(int, int)> _getStartCoords;
     private Func<(int, int, int, int)> _getBounds;
 
@@ -46,6 +41,13 @@ public class Cursor : IControllable
     {
         var (x0, y0) = _getStartCoords();
         Action?.Invoke(x0, y0, X, Y);
+    }
+    
+    public void MoveInbounds()
+    {
+        var (minX, minY, maxX, maxY) = _getBounds();
+        if (!IsPositionInbounds(X, Y)) 
+            MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY));
     }
 
     private void MoveTo(int x, int y)
