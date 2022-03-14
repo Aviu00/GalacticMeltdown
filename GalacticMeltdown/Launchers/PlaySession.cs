@@ -64,18 +64,19 @@ public partial class PlaySession
     private static void MoveControlled(int deltaX, int deltaY)
     {
         if (!_controlledObject.TryMove(deltaX, deltaY)) return;
-        if (_controlledObject is Actor)
-        {
-            InputProcessor.ClearBindings();
-            InputProcessor.StopProcessLoop();
+        if (_controlledObject is Actor) GiveBackControl();
         }
-    }
 
     private static void StopSession()
     {
         _sessionActive = false;
         _player.StopTurn();
         Renderer.ClearViews();
+        GiveBackControl();
+    }
+
+    private static void GiveBackControl()
+    {
         InputProcessor.ClearBindings();
         InputProcessor.StopProcessLoop();
     }
