@@ -6,11 +6,11 @@ namespace GalacticMeltdown.Behaviors;
 public abstract class Behavior
 {
     protected int _priority;
-    protected Npc Target { get; private set; }
+    protected Npc ControlledNpc { get; private set; }
 
     public void SetTarget(Npc target)
     {
-        Target ??= target;
+        ControlledNpc ??= target;
     }
 
     public abstract bool TryAct();

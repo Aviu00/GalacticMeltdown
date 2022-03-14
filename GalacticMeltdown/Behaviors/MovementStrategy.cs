@@ -37,11 +37,11 @@ public class MovementStrategy : Behavior
     {
         // setting wantsToGoTo point
         // second condition for no clip use
-        if (Target.CurrentTarget is not null && _wantsToGoTo != (Target.X, Target.Y) &&
-            !_level.GetTile(Target.CurrentTarget.X, Target.CurrentTarget.Y).IsWalkable)
+        if (ControlledNpc.CurrentTarget is not null && _wantsToGoTo != (ControlledNpc.X, ControlledNpc.Y) &&
+            !_level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
         {
-            _wantsToGoTo = (Target.CurrentTarget.X, Target.CurrentTarget.Y);
-            _path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y, GetNeighbors);
+            _wantsToGoTo = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
+            _path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y, GetNeighbors);
             if (_path is null || _path.Count < 2)
             {
                 return false;
@@ -56,18 +56,18 @@ public class MovementStrategy : Behavior
         }
         else
         {
-            if (Target.CurrentTarget is null)
+            if (ControlledNpc.CurrentTarget is null)
             {
                 // there is place for idle movement logic
                 return false;
             }
 
-            if (_level.GetTile(Target.CurrentTarget.X, Target.CurrentTarget.Y).IsWalkable)
+            if (_level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
             {
                 return false;
             }
 
-            if (_wantsToGoTo == (Target.X, Target.Y))
+            if (_wantsToGoTo == (ControlledNpc.X, ControlledNpc.Y))
             {
                 _currentPathNode = _currentPathNode.Next;
             }
@@ -75,21 +75,21 @@ public class MovementStrategy : Behavior
 
         if (_currentPathNode is not null)
         {
-            Target.MoveNpcTo(_currentPathNode.Value.x, _currentPathNode.Value.y);
+            ControlledNpc.MoveNpcTo(_currentPathNode.Value.x, _currentPathNode.Value.y);
         }
         else
         {
             return false;
         }
-        //LinkedList<(int, int)> path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, 
+        //LinkedList<(int, int)> path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, _wantsToGoTo.Value.x, 
         //    _wantsToGoTo.Value.y, GetNeighbors);
 
         /*foreach ((int x, int y) coords in _path)
         {
             if (coords != _wantsToGoTo)
             {
-                Target.MoveNpcTo(coords.x, coords.y);
-                Target.Energy -= _level.GetTile(coords.x, coords.y).MoveCost;
+                ControlledNpc.MoveNpcTo(coords.x, coords.y);
+                ControlledNpc.Energy -= _level.GetTile(coords.x, coords.y).MoveCost;
             }
         }*/
         return true;
