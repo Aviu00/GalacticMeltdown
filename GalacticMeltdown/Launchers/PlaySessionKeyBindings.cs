@@ -53,6 +53,10 @@ public partial class PlaySession
                 _levelView.RemoveCursor();
             }
         },
-        {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}}
+        {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}},
+        {
+            CursorControl.ToggleFocus,
+            () => _levelView.SetFocus(((Cursor) _controlledObject).InFocus ? _player : _levelView.Cursor)
+        }
     };
 }

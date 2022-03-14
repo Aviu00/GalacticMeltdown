@@ -35,7 +35,7 @@ public class Cursor : IControllable
     public bool TryMove(int deltaX, int deltaY)
     {
         int newX = X + deltaX, newY = Y + deltaY;
-        if (!(newX >= _minX && newX <= _maxX && newY >= _minY && newY <= _maxY)) return false;
+        if (!IsInbounds(newX, newY)) return false;
         MoveTo(newX, newY);
         return true;
     }
@@ -52,7 +52,7 @@ public class Cursor : IControllable
         _minY = minY;
         _maxX = maxX;
         _maxY = maxY;
-        MoveTo(Math.Min(Math.Max(X, _minX), _maxX), Math.Min(Math.Max(Y, _minY), _maxY));
+        if (!IsInbounds(X, Y)) MoveTo(Math.Min(Math.Max(X, _minX), _maxX), Math.Min(Math.Max(Y, _minY), _maxY));
     }
 
     private void MoveTo(int x, int y)
@@ -61,5 +61,10 @@ public class Cursor : IControllable
         X = x;
         Y = y;
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
+    }
+
+    private bool IsInbounds(int x, int y)
+    {
+        return x >= _minX && x <= _maxX && y >= _minY && y <= _maxY;
     }
 }

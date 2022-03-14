@@ -102,6 +102,7 @@ public static class DataHolder
             {ConsoleKey.Enter, CursorControl.Interact},
             {ConsoleKey.Escape, CursorControl.Back},
             {ConsoleKey.L, CursorControl.ToggleLine},
+            {ConsoleKey.F, CursorControl.ToggleFocus},
         };
     }
     
