@@ -4,6 +4,8 @@ using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 using System;
+using System.Runtime.CompilerServices;
+
 namespace GalacticMeltdown.Actors;
 
 public abstract class Npc : Actor
@@ -40,9 +42,12 @@ public abstract class Npc : Actor
         }
         return true;
     }
-    
-    public void MoveNpcTo(int x, int y) => MoveTo(x, y);
-    
+
+    public void MoveNpcTo(int x, int y)
+    {
+        MoveTo(x, y);
+        Energy -= Level.GetTile(x, y).MoveCost;
+    }
     public override void TakeAction()
     {
         Behaviors.Any(behavior => behavior.TryAct());
