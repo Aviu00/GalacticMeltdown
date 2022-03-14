@@ -11,6 +11,8 @@ public enum MainControl
     MoveSw,
     MoveNw,
     StopTurn,
+    DoNothing,
+    UseCursor,
     IncreaseViewRange, //for fov testing
     ReduceViewRange, //for fov testing
     ToggleNoClip, //temporary cheat codes
