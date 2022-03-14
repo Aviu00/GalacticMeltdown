@@ -16,7 +16,7 @@ public abstract class Npc : Actor
 
     private SortedSet<Behavior> Behaviors { get; init; }
 
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level, 
+    protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level,
         SortedSet<Behavior> behaviors) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
@@ -24,14 +24,17 @@ public abstract class Npc : Actor
         {
             behavior.SetTarget(this);
         }
+
         Behaviors = behaviors;
     }
+
     protected bool IsPointVisible(int x, int y)
     {
-        if ((int)Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2)) > _viewRange)
+        if ((int) Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2)) > _viewRange)
         {
             return false;
         }
+
         foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, x, y))
         {
             if (!Level.GetTile(coords.x, coords.y).IsTransparent)
@@ -39,6 +42,7 @@ public abstract class Npc : Actor
                 return false;
             }
         }
+
         return true;
     }
 
@@ -47,6 +51,7 @@ public abstract class Npc : Actor
         MoveTo(x, y);
         Energy -= Level.GetTile(x, y).MoveCost;
     }
+
     public override void TakeAction()
     {
         Behaviors.Any(behavior => behavior.TryAct());

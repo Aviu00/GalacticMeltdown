@@ -18,6 +18,7 @@ public class MovementStrategy : Behavior
         _priority = priority ?? DefaultPriority;
         _level = level;
     }
+
     private List<((int, int), int)> GetNeighbors(int x, int y)
     {
         List<((int, int), int)> neighboursWithMoveCosts = new List<((int, int), int)>();
@@ -26,21 +27,22 @@ public class MovementStrategy : Behavior
             if (_level.GetTile(xi, yi).IsWalkable)
                 /*(_level.GetNonTileObject(nextDot.Item1, nextDot.Item2) is not null &&*/
             {
-                neighboursWithMoveCosts.Add(((xi, yi), _level.GetTile(xi,yi).MoveCost));
+                neighboursWithMoveCosts.Add(((xi, yi), _level.GetTile(xi, yi).MoveCost));
             }
         }
+
         return neighboursWithMoveCosts;
     }
+
     public override bool TryAct()
     {
         // setting wantsToGoTo point
         // second condition for no clip use
-        if(Target.CurrentTarget is not null && _wantsToGoTo != (Target.X, Target.Y)
-           && !_level.GetTile(Target.CurrentTarget.X, Target.CurrentTarget.Y).IsWalkable)
+        if (Target.CurrentTarget is not null && _wantsToGoTo != (Target.X, Target.Y) &&
+            !_level.GetTile(Target.CurrentTarget.X, Target.CurrentTarget.Y).IsWalkable)
         {
             _wantsToGoTo = (Target.CurrentTarget.X, Target.CurrentTarget.Y);
-            _path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, 
-                _wantsToGoTo.Value.y, GetNeighbors);
+            _path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y, GetNeighbors);
             if (_path is null || _path.Count() < 2)
             {
                 return false;
@@ -50,6 +52,7 @@ public class MovementStrategy : Behavior
                 _path.RemoveFirst();
                 _path.RemoveLast();
             }
+
             _currentPathNode = _path.First;
         }
         else
@@ -81,7 +84,7 @@ public class MovementStrategy : Behavior
         }
         //LinkedList<(int, int)> path = Algorithms.AStar(Target.X, Target.Y, _wantsToGoTo.Value.x, 
         //    _wantsToGoTo.Value.y, GetNeighbors);
-        
+
         /*foreach ((int x, int y) coords in _path)
         {
             if (coords != _wantsToGoTo)
