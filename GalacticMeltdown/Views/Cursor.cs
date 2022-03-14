@@ -11,20 +11,25 @@ public class Cursor : IControllable
     private int _minY;
     private int _maxX;
     private int _maxY;
-    
+
+    private Func<(int, int)> _getStartCoords;
+
     public ConsoleColor Color => DataHolder.Colors.CursorColor;
     
     public int X { get; private set; }
     public int Y { get; private set; }
     
-    public event EventHandler<MoveEventArgs> Moved;
-    
     public bool InFocus { get; set; }
+    
+    public Action<int, int, int, int> Action { private get; set; }
+    
+    public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int x, int y)
+    public Cursor(int x, int y, Func<(int, int)> getStartCoords)
     {
         X = x;
         Y = y;
+        _getStartCoords = getStartCoords;
     }
     
     public bool TryMove(int deltaX, int deltaY)
@@ -33,6 +38,12 @@ public class Cursor : IControllable
         if (!(newX >= _minX && newX <= _maxX && newY >= _minY && newY <= _maxY)) return false;
         MoveTo(newX, newY);
         return true;
+    }
+
+    public void Interact()
+    {
+        var (x0, y0) = _getStartCoords();
+        Action?.Invoke(x0, y0, X, Y);
     }
 
     public void SetBounds(int minX, int minY, int maxX, int maxY)

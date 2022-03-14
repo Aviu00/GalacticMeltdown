@@ -19,7 +19,7 @@ public partial class LevelView
         get
         {
             if (_cursor is not null) return _cursor;
-            _cursor = new Cursor(_focusObject.X, _focusObject.Y);
+            _cursor = new Cursor(_focusObject.X, _focusObject.Y, () => (_focusObject.X, _focusObject.Y));
             SetCursorBounds();
             _cursor.Moved += CursorMoveHandler;
             NeedRedraw?.Invoke(this, EventArgs.Empty);
