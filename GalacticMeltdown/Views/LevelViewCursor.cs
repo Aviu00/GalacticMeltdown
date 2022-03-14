@@ -52,11 +52,7 @@ public partial class LevelView
     private void CalculateCursorLinePoints()
     {
         _cursorLinePoints = Algorithms.BresenhamGetPointsOnLine(_focusObject.X, _focusObject.Y, Cursor.X, Cursor.Y)
-            .TakeWhile(point =>
-            {
-                Tile tile = _level.GetTile(point.x, point.y);
-                return tile is null || tile.IsWalkable;
-            })
+            .TakeWhile(point => _level.GetTile(point.x, point.y) is null or {IsWalkable: true})
             .ToHashSet();
     }
 
