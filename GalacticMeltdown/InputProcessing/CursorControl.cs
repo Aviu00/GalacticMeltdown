@@ -13,4 +13,5 @@ public enum CursorControl
     Interact,
     Back,
     ToggleLine,
+    ToggleFocus,
 }
