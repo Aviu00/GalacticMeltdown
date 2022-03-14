@@ -13,14 +13,10 @@ public class Enemy : Npc
     
     private readonly EnemyTypeData _typeData;
     public Enemy(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level, 
-        SortedSet<Behavior> behaviors, EnemyTypeData typeData) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level, behaviors)
+        SortedSet<Behavior> behaviors, EnemyTypeData typeData) 
+        : base(typeData.MaxHp, typeData.MaxEnergy, typeData.Dex, typeData.Def, typeData.ViewRange, x, y, level, behaviors)
     {
          _typeData = typeData;
-         maxHp = _typeData.MaxHp;
-         maxEnergy = _typeData.MaxEnergy;
-         def = _typeData.Def;
-         dex = _typeData.Dex;
-         viewRange = _typeData.ViewRange;
     }
     public (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     public string Name => _typeData.Name;
