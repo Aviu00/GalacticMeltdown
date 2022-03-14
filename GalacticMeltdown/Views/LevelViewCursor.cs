@@ -27,7 +27,6 @@ public partial class LevelView
             NeedRedraw?.Invoke(this, EventArgs.Empty);
             return _cursor;
         }
-        private set => _cursor = value;
     }
 
     private bool _drawCursorLine;
