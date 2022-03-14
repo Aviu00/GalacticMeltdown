@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.InputProcessing;
 
 namespace GalacticMeltdown.Launchers;
@@ -17,6 +18,8 @@ public partial class PlaySession
         {MainControl.MoveSe, () => MoveControlled(1, -1)},
         {MainControl.MoveSw, () => MoveControlled(-1, -1)},
         {MainControl.MoveNw, () => MoveControlled(-1, 1)},
+        {MainControl.StopTurn, () => {_player.StopTurn(); GiveBackControl();}},
+        {MainControl.DoNothing, GiveBackControl},
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},
         {MainControl.ReduceViewRange, () => _player.ViewRange--},
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
