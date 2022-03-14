@@ -48,6 +48,7 @@ public partial class PlaySession
         {CursorControl.Back, () =>
             {
                 InputProcessor.RemoveLastBinding();
+                _controlledObject = _player;
                 _levelView.SetFocus(_player);
                 _levelView.RemoveCursor();
             }
