@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using GalacticMeltdown.InputProcessing;
-using GalacticMeltdown.Launchers;
 
 namespace GalacticMeltdown.Data;
 
@@ -81,6 +80,25 @@ public static class DataHolder
             {ConsoleKey.Enter, SelectionControl.Select},
             {ConsoleKey.Escape, SelectionControl.Back},
             {ConsoleKey.Tab, SelectionControl.SwitchButtonGroup},
+        };
+
+        public static Dictionary<ConsoleKey, CursorControl> Cursor = new()
+        {
+            {ConsoleKey.UpArrow, CursorControl.MoveUp},
+            {ConsoleKey.DownArrow, CursorControl.MoveDown},
+            {ConsoleKey.LeftArrow, CursorControl.MoveLeft},
+            {ConsoleKey.RightArrow, CursorControl.MoveRight},
+            {ConsoleKey.D8, CursorControl.MoveUp},
+            {ConsoleKey.D9, CursorControl.MoveNe},
+            {ConsoleKey.D6, CursorControl.MoveRight},
+            {ConsoleKey.D3, CursorControl.MoveSe},
+            {ConsoleKey.D2, CursorControl.MoveDown},
+            {ConsoleKey.D1, CursorControl.MoveSw},
+            {ConsoleKey.D4, CursorControl.MoveLeft},
+            {ConsoleKey.D7, CursorControl.MoveNw},
+            {ConsoleKey.Enter, CursorControl.Interact},
+            {ConsoleKey.Escape, CursorControl.Back},
+            {ConsoleKey.L, CursorControl.ToggleLine},
         };
     }
     
