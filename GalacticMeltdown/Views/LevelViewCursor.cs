@@ -40,6 +40,7 @@ public partial class LevelView
             _drawCursorLine = value;
             _cursorLinePoints.Clear();
             if (_drawCursorLine) CalculateCursorLinePoints();
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -49,6 +50,7 @@ public partial class LevelView
         DrawCursorLine = false;
         _cursor.Moved -= CursorMoveHandler;
         _cursor = null;
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private void CalculateCursorLinePoints()

@@ -84,9 +84,10 @@ public partial class LevelView : View
         if (DrawCursorLine && _cursorLinePoints.Contains(coords)) 
             backgroundColor = GetCursorLineColor(levelX, levelY);
         
+        if (_cursor is not null && _cursor.X == levelX && _cursor.Y == levelY) backgroundColor = _cursor.Color;
+        
         if (x == centerScreenX && y == centerScreenY)
         {
-            if (_cursor is not null && _cursor.X == levelX && _cursor.Y == levelY) backgroundColor = _cursor.Color;
             // Draw object in focus on top of everything else
             if (_focusObject is IDrawable drawable)
                 return new ViewCellData(drawable.SymbolData, backgroundColor ?? drawable.BgColor);
@@ -111,6 +112,7 @@ public partial class LevelView : View
     {
         if (ReferenceEquals(focusObj, _focusObject) || focusObj is null) return;
         _focusObject.InFocus = false;
+        _focusObject.Moved -= FocusObjectMoved;
 
         /* Remember starting cursor line coordinates when bringing cursor
            into focus and forget when it is no longer in focus */
@@ -120,8 +122,8 @@ public partial class LevelView : View
         _focusObject = focusObj;
         _focusObject.InFocus = true;
         SetCursorBounds();
-        
         _focusObject.Moved += FocusObjectMoved;
+        
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

@@ -45,7 +45,13 @@ public partial class PlaySession
         {CursorControl.MoveSw, () => MoveControlled(-1, -1)},
         {CursorControl.MoveNw, () => MoveControlled(-1, 1)},
         {CursorControl.Interact, () => ((Cursor) _controlledObject).Interact()},
-        {CursorControl.Back, () => {InputProcessor.RemoveLastBinding(); _levelView.RemoveCursor();}},
+        {CursorControl.Back, () =>
+            {
+                InputProcessor.RemoveLastBinding();
+                _levelView.SetFocus(_player);
+                _levelView.RemoveCursor();
+            }
+        },
         {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}}
     };
 }
