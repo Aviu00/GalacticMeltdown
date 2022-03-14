@@ -8,7 +8,7 @@ namespace GalacticMeltdown.Launchers;
 public partial class PlaySession
 {
     // Inventory bindings supposed to be updated in the future
-    private static readonly Dictionary<MainControl, Action> PlayerActions = new()
+    private static readonly Dictionary<MainControl, Action> MainActions = new()
     {
         {MainControl.MoveUp, () => MoveControlled(0, 1)},
         {MainControl.MoveDown, () => MoveControlled(0, -1)},
