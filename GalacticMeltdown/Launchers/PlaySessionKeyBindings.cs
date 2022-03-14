@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.InputProcessing;
 using GalacticMeltdown.Views;
 
@@ -19,6 +20,13 @@ public partial class PlaySession
         {MainControl.MoveNw, () => MoveControlled(-1, 1)},
         {MainControl.StopTurn, () => {_player.StopTurn(); GiveBackControl();}},
         {MainControl.DoNothing, GiveBackControl},
+        {
+            MainControl.UseCursor, () =>
+            {
+                _controlledObject = _levelView.Cursor;
+                InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
+            }
+        },
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},
         {MainControl.ReduceViewRange, () => _player.ViewRange--},
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
