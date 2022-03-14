@@ -4,7 +4,6 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
-using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Views;
@@ -21,8 +20,7 @@ public partial class LevelView
         get
         {
             if (_cursor is not null) return _cursor;
-            _cursor = new Cursor(_focusObject.X, _focusObject.Y, GetCursorStartCoords);
-            SetCursorBounds();
+            _cursor = new Cursor(_focusObject.X, _focusObject.Y, GetCursorStartCoords, IsPointInsideView);
             _cursor.Moved += CursorMoveHandler;
             NeedRedraw?.Invoke(this, EventArgs.Empty);
             return _cursor;
@@ -56,24 +54,6 @@ public partial class LevelView
     {
         var (x0, y0) = GetCursorStartCoords();
         _cursorLinePoints = Algorithms.BresenhamGetPointsOnLine(x0, y0, Cursor.X, Cursor.Y).ToHashSet();
-    }
-
-    private void SetCursorBounds()
-    {
-        if (_cursor is null) return;
-        int minX, minY, maxX, maxY;
-        if (_cursor.InFocus)
-        {
-            minX = -1;
-            minY = -1;
-            (maxX, maxY) = _level.Size;
-        }
-        else
-        {
-            (minX, minY, maxX, maxY) = ViewBounds;
-        }
-
-        _cursor.SetBounds(minX, minY, maxX, maxY);
     }
 
     private void CursorMoveHandler(object sender, MoveEventArgs _)

@@ -121,7 +121,6 @@ public partial class LevelView : View
 
         _focusObject = focusObj;
         _focusObject.InFocus = true;
-        SetCursorBounds();
         _focusObject.Moved += FocusObjectMoved;
         
         NeedRedraw?.Invoke(this, EventArgs.Empty);
@@ -198,8 +197,6 @@ public partial class LevelView : View
 
     private void FocusObjectMoved(object sender, MoveEventArgs _)
     {
-        // If the cursor is in focus, then it is only limited by the map borders
-        if (_cursor is not null && !_cursor.InFocus) SetCursorBounds();
         // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
