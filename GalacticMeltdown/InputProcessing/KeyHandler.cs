@@ -6,7 +6,7 @@ public abstract class KeyHandler
 {
     private bool _flushBuffer;
     
-    protected KeyHandler(bool flushBuffer = false)
+    protected KeyHandler(bool flushBuffer)
     {
         _flushBuffer = flushBuffer;
     }
