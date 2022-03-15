@@ -36,8 +36,9 @@ public class MovementStrategy : Behavior
     public override bool TryAct()
     {
         // setting wantsToGoTo point
-        // second condition for no clip use
-        if (ControlledNpc.CurrentTarget is not null && _wantsToGoTo != (ControlledNpc.X, ControlledNpc.Y)
+        // third condition for no clip use
+        if (ControlledNpc.CurrentTarget is not null 
+            && _wantsToGoTo != (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)
             && !_level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
         {
             _wantsToGoTo = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
@@ -65,7 +66,7 @@ public class MovementStrategy : Behavior
                 return false;
             }
 
-            if (_wantsToGoTo == (ControlledNpc.X, ControlledNpc.Y))
+            if (_wantsToGoTo == (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
             {
                 _currentPathNode = _currentPathNode.Next;
             }
