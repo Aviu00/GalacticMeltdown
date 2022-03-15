@@ -151,10 +151,6 @@ public static class Algorithms
         }
     }
     
-    public static int GetDistance(int x0, int y0, int x1, int y1)
-    {
-        return (int)(Math.Pow(x1 - x0, 2) + Math.Pow(y1 - y0, 2));
-    }
     public  static LinkedList<(int, int)> AStar(int x0, int y0, int x1, int y1,
         Func<int, int, List<((int, int), int)>> getNeighbors)
     {
@@ -184,7 +180,7 @@ public static class Algorithms
                 if (!minCosts.TryGetValue((x, y), out int oldCost) || newCost < oldCost)
                 {
                     minCosts[(x, y)] = newCost;
-                    int priority = newCost + GetDistance(x, y, x1, y1);
+                    int priority = newCost + (int)UtilityFunctions.GetDistance(x, y, x1, y1);
                     pendingPoints.Enqueue((x, y), priority);
                     previousNodes[(x, y)] = currenPoint;
                 }

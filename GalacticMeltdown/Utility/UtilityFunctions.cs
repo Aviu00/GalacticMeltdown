@@ -60,4 +60,10 @@ public static class UtilityFunctions
 
         return builder.ToString();
     }
+    public static double GetDistance(int x0, int y0, int x1, int y1)
+    {
+        int xDist = x1 - x0;
+        int yDist = y1 - y0;
+        return Math.Sqrt(xDist*xDist + yDist*yDist);
+    }
 }

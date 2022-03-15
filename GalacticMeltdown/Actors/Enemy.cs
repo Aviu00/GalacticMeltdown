@@ -28,7 +28,7 @@ public class Enemy : Npc
     {
         if (!IsActive) return;
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
-            .MinBy(target => Algorithms.GetDistance(target.X, target.Y, X, Y));
+            .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
         base.TakeAction();
     }
 }

@@ -30,7 +30,7 @@ public abstract class Npc : Actor
 
     protected bool IsPointVisible(int x, int y)
     {
-        if ((int) Math.Sqrt(Math.Pow(X - x, 2) + Math.Pow(Y - y, 2)) > _viewRange)
+        if (UtilityFunctions.GetDistance(x, y, X, Y) > _viewRange)
         {
             return false;
         }
