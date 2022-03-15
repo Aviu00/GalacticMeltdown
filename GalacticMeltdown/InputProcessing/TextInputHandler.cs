@@ -9,8 +9,9 @@ public class TextInputHandler : KeyHandler
     private readonly Dictionary<ConsoleKey, Action> _reservedKeyActions;
     private readonly HashSet<char> _allowedCharacters;
 
-    public TextInputHandler(Action<char> inputAction, Dictionary<ConsoleKey, Action> reservedKeyActions,
-        HashSet<char> allowedCharacters) : base(false)
+    public TextInputHandler(Action<char> inputAction,
+        Dictionary<ConsoleKey, Action> reservedKeyActions,
+        HashSet<char> allowedCharacters = null) : base(false)
     {
         _inputAction = inputAction;
         _reservedKeyActions = reservedKeyActions;
