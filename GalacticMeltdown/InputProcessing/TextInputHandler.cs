@@ -5,9 +5,9 @@ namespace GalacticMeltdown.InputProcessing;
 
 public class TextInputHandler : KeyHandler
 {
-    private Action<char> _inputAction;
-    private Dictionary<ConsoleKey, Action> _reservedKeyActions;
-    private HashSet<char> _allowedCharacters;
+    private readonly Action<char> _inputAction;
+    private readonly Dictionary<ConsoleKey, Action> _reservedKeyActions;
+    private readonly HashSet<char> _allowedCharacters;
 
     public TextInputHandler(Action<char> inputAction, Dictionary<ConsoleKey, Action> reservedKeyActions,
         HashSet<char> allowedCharacters) : base(false)
@@ -19,7 +19,9 @@ public class TextInputHandler : KeyHandler
     
     public override void HandleKey(ConsoleKeyInfo keyInfo)
     {
+        char character = keyInfo.KeyChar;
         if (_reservedKeyActions.ContainsKey(keyInfo.Key)) _reservedKeyActions[keyInfo.Key]();
+        else if (_allowedCharacters is null || _allowedCharacters.Contains(character)) _inputAction(character);
         base.HandleKey(keyInfo);
     }
 }
