@@ -6,7 +6,7 @@ namespace GalacticMeltdown.InputProcessing;
 
 public static class InputProcessor
 {
-    private static Stack<Dictionary<ConsoleKey, Action>> Bindings { get; } = new();
+    private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
 
     public static void StartProcessLoop()
@@ -14,10 +14,7 @@ public static class InputProcessor
         _isActive = true;
         while (_isActive)
         {
-            // Ignore the keypresses that happened before
-            while (Console.KeyAvailable) Console.ReadKey(true);
-            ConsoleKey key = Console.ReadKey(true).Key;
-            if (Bindings.Peek().ContainsKey(key)) Bindings.Peek()[key]();
+            Handlers.Peek().HandleKey(Console.ReadKey(true));
         }
     }
 
@@ -25,9 +22,9 @@ public static class InputProcessor
 
     public static void
         AddBinding<TEnum>(Dictionary<ConsoleKey, TEnum> controlMode, Dictionary<TEnum, Action> actions) =>
-        Bindings.Push(UtilityFunctions.JoinDictionaries(controlMode, actions));
+        Handlers.Push(new ActionHandler(UtilityFunctions.JoinDictionaries(controlMode, actions)));
 
-    public static void RemoveLastBinding() => Bindings.Pop();
+    public static void RemoveLastBinding() => Handlers.Pop();
 
-    public static void ClearBindings() => Bindings.Clear();
+    public static void ClearBindings() => Handlers.Clear();
 }
