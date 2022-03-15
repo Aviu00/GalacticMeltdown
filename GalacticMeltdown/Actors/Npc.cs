@@ -43,8 +43,8 @@ public abstract class Npc : Actor
                 return false;
             }
         }*/
-        return !Algorithms.BresenhamGetPointsOnLine(X, Y, x, y)
-            .Any(coord => Level.GetTile(coord.x, coord.y).IsTransparent is false);
+        return Algorithms.BresenhamGetPointsOnLine(X, Y, x, y)
+            .All(coord => Level.GetTile(coord.x, coord.y).IsTransparent is false);
 
         //return true;
     }
