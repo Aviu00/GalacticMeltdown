@@ -17,9 +17,9 @@ public class TextInputHandler : KeyHandler
         _allowedCharacters = allowedCharacters;
     }
     
-    public override void HandleKey(ConsoleKey key)
+    public override void HandleKey(ConsoleKeyInfo keyInfo)
     {
-        if (_reservedKeyActions.ContainsKey(key)) _reservedKeyActions[key]();
-        base.HandleKey(key);
+        if (_reservedKeyActions.ContainsKey(keyInfo.Key)) _reservedKeyActions[keyInfo.Key]();
+        base.HandleKey(keyInfo);
     }
 }

@@ -12,9 +12,9 @@ public class ActionHandler : KeyHandler
         _actionMapping = actionMapping;
     }
 
-    public override void HandleKey(ConsoleKey key)
+    public override void HandleKey(ConsoleKeyInfo keyInfo)
     {
-        if (_actionMapping.ContainsKey(key)) _actionMapping[key]();
-        base.HandleKey(key);
+        if (_actionMapping.ContainsKey(keyInfo.Key)) _actionMapping[keyInfo.Key]();
+        base.HandleKey(keyInfo);
     }
 }

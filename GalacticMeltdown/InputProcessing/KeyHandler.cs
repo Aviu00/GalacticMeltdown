@@ -11,7 +11,7 @@ public abstract class KeyHandler
         _flushBuffer = flushBuffer;
     }
 
-    public virtual void HandleKey(ConsoleKey key)
+    public virtual void HandleKey(ConsoleKeyInfo keyInfo)
     {
         if (_flushBuffer) FlushBuffer();
     }
