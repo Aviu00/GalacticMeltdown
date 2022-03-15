@@ -7,22 +7,22 @@ public class TextInputHandler : KeyHandler
 {
     private readonly Action<char> _inputAction;
     private readonly Dictionary<ConsoleKey, Action> _reservedKeyActions;
-    private readonly HashSet<char> _allowedCharacters;
+    private readonly Func<char, bool> _isCharacterAllowed;
 
     public TextInputHandler(Action<char> inputAction,
         Dictionary<ConsoleKey, Action> reservedKeyActions,
-        HashSet<char> allowedCharacters = null) : base(false)
+        Func<char, bool> isCharacterAllowed = null) : base(false)
     {
         _inputAction = inputAction;
         _reservedKeyActions = reservedKeyActions;
-        _allowedCharacters = allowedCharacters;
+        _isCharacterAllowed = isCharacterAllowed;
     }
     
     public override void HandleKey(ConsoleKeyInfo keyInfo)
     {
         char character = keyInfo.KeyChar;
         if (_reservedKeyActions.ContainsKey(keyInfo.Key)) _reservedKeyActions[keyInfo.Key]();
-        else if (_allowedCharacters is null || _allowedCharacters.Contains(character)) _inputAction(character);
+        else if (_isCharacterAllowed is null || _isCharacterAllowed(character)) _inputAction(character);
         base.HandleKey(keyInfo);
     }
 }
