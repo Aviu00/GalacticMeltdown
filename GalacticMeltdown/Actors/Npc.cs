@@ -34,6 +34,7 @@ public abstract class Npc : Actor
         {
             return false;
         }
+
         /*
         foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, x, y))
         {
@@ -42,8 +43,7 @@ public abstract class Npc : Actor
                 return false;
             }
         }*/
-        return !Algorithms
-            .BresenhamGetPointsOnLine(X, Y, x, y)
+        return !Algorithms.BresenhamGetPointsOnLine(X, Y, x, y)
             .Any(coord => Level.GetTile(coord.x, coord.y).IsTransparent is false);
 
         //return true;
