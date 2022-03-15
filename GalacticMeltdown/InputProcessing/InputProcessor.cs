@@ -24,6 +24,12 @@ public static class InputProcessor
         AddBinding<TEnum>(Dictionary<ConsoleKey, TEnum> controlMode, Dictionary<TEnum, Action> actions) =>
         Handlers.Push(new ActionHandler(UtilityFunctions.JoinDictionaries(controlMode, actions)));
 
+    public static void AddTextInputHandler(Action<char> inputAction, Dictionary<ConsoleKey, Action> reservedKeyActions,
+        Func<char, bool> isCharacterAllowed = null)
+    {
+        Handlers.Push(new TextInputHandler(inputAction, reservedKeyActions, isCharacterAllowed));
+    }
+
     public static void RemoveLastBinding() => Handlers.Pop();
 
     public static void ClearBindings() => Handlers.Clear();
