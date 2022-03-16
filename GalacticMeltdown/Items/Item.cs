@@ -1,25 +1,19 @@
+using System;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.Utility;
+using GalacticMeltdown.LevelRelated;
 
 namespace GalacticMeltdown.Items;
 
-public class Item //Item is an object inside the inventory; ItemObject is an object on map
+public class Item : IDrawable
 {
     private readonly ItemData _itemData;
-
+    public string Id => _itemData.Id;
     public string Name => _itemData.Name;
+    public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
+    public ConsoleColor? BgColor => ConsoleColor.Cyan;
 
-    public char Symbol => _itemData.Symbol;
-
-    public LimitedNumber Amount;
-
-    public Item(ItemData data, LimitedNumber amount)
+    public Item(ItemData data)
     {
-        Amount = amount;
         _itemData = data;
-    }
-
-    public Item(ItemData data, int amount) : this(data, new LimitedNumber(amount, 999, 0))
-    {
     }
 }

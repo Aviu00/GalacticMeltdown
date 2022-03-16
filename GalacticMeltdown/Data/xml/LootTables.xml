@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LootTables>
-    <LootTable>
+    <CollectionTable>
         <Id>storage_1</Id>
         <Items>
             <Item id="metal_bar" chance="50" min="1" max="10"/>
             <Item id="wood_plank" chance="50" min="1" max="10"/>
         </Items>
-    </LootTable>
+    </CollectionTable>
+    <CollectionTable>
+        <Id>assault_rifle_table</Id>
+        <Items>
+            <Item id="assault_rifle"/>
+            <Item id="assault_rifle_ammo" min="10" max="50"/>
+        </Items>
+    </CollectionTable>
+    <CollectionTable>
+        <Id>pistol_table</Id>
+        <Items>
+            <Item id="pistol"/>
+            <Item id="pistol_ammo" min="5" max="25"/>
+        </Items>
+    </CollectionTable>
+    <DistributionTable>
+        <Id>weapon_distr_1</Id>
+        <Items>
+            <Item id="pistol" chance="70"/>
+            <Item id="assault_rifle" chance="30"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
+        <Id>weapon_distr_2</Id>
+        <Items>
+            <Item id="pistol_table" chance="70"/>
+            <Item id="assault_rifle_table" chance="30"/>
+        </Items>
+    </DistributionTable>
 </LootTables>

@@ -8,6 +8,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.MapGeneration;
+using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>;
 
 public class ChunkGenerator
 {
@@ -43,18 +44,18 @@ public class ChunkGenerator
         MapY = y;
     }
 
-    public Chunk GenerateChunk(TileInformation[,] roomData, int seed, 
+    public Chunk GenerateChunk(TileInformation[,] roomData, int seed,
         Tile[,] northernTileMap = null, Tile[,] easternTileMap = null)
     {
         _rng = new Random(seed);
-        List<ItemObject> items = new();
+        ItemDictionary items = new();
         CalculateSymbol();
         Tiles = new Tile[ChunkSize, ChunkSize];
         for (int y = 0; y < ChunkSize - 1; y++)
         {
             for (int x = 0; x < ChunkSize - 1; x++)
             {
-                if (roomData[x, y].TileTypeData.IsDependingOnRoomConnection) 
+                if (roomData[x, y].TileTypeData.IsDependingOnRoomConnection)
                     ResolveRoomConnectionDependency(roomData, x, y);
             }
         }
@@ -74,14 +75,14 @@ public class ChunkGenerator
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
         return new Chunk(Tiles, items, GetNeighborCoords(), Difficulty, _rng, MapX, MapY);
     }
-    
+
     private List<(int x, int y)> GetNeighborCoords()
     {
         var neighborCoords = new List<(int x, int y)>();
-        if(NorthConnection != null) neighborCoords.Add((NorthConnection.MapX, NorthConnection.MapY));
-        if(EastConnection != null) neighborCoords.Add((EastConnection.MapX, EastConnection.MapY));
-        if(SouthConnection != null) neighborCoords.Add((SouthConnection.MapX, SouthConnection.MapY));
-        if(WestConnection != null) neighborCoords.Add((WestConnection.MapX, WestConnection.MapY));
+        if (NorthConnection != null) neighborCoords.Add((NorthConnection.MapX, NorthConnection.MapY));
+        if (EastConnection != null) neighborCoords.Add((EastConnection.MapX, EastConnection.MapY));
+        if (SouthConnection != null) neighborCoords.Add((SouthConnection.MapX, SouthConnection.MapY));
+        if (WestConnection != null) neighborCoords.Add((WestConnection.MapX, WestConnection.MapY));
         return neighborCoords;
     }
 
@@ -105,7 +106,7 @@ public class ChunkGenerator
         return WestConnection!;
     }
 
-    public char CalculateSymbol()//will be used for minimap
+    public char CalculateSymbol() //will be used for minimap
     {
         return (NorthConnection, EastConnection, SouthConnection, WestConnection) switch
         {
@@ -128,29 +129,42 @@ public class ChunkGenerator
         };
     }
 
-    private void CalculateLoot(List<ItemObject> items, TileInformation[,] roomData, int x, int y)
+    private void CalculateLoot(ItemDictionary items, TileInformation[,] roomData, int localX, int localY)
     {
-        string id = roomData[x, y].LootTableId;
-        if(id == null || !UtilityFunctions.Chance(roomData[x, y].LootTableChance, _rng)) return;
-        foreach (var itemObj in DataHolder.LootTables[id].Items)
+        string id = roomData[localX, localY].LootId;
+        if (id == null || !UtilityFunctions.Chance(roomData[localX, localY].LootChance, _rng)) return;
+        int newX = localX + MapX * DataHolder.ChunkSize;
+        int newY = localY + MapY * DataHolder.ChunkSize;
+        SpawnItems(items, id, newX, newY);
+    }
+
+    private void SpawnItems(ItemDictionary items, string id, int x, int y)
+    {
+        if (DataHolder.ItemDatas.ContainsKey(id))
+        {
+            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemDatas[id], 1, x, y);
+            return;
+        }
+
+        if (DataHolder.LootTables[id] is DistributionTable)
+        {
+            DistributionTable table = (DistributionTable) DataHolder.LootTables[id];
+            int[] chances = table.Items.Select(item => item.chance).ToArray();
+            int index = UtilityFunctions.MultiChance(chances, _rng);
+            if(index == chances.Length) return;
+            SpawnItems(items, table.Items[index].lootId, x, y);
+            return;
+        }
+
+        foreach (var itemObj in ((CollectionTable) DataHolder.LootTables[id]).Items)
         {
             int amount = _rng.Next(itemObj.min, itemObj.max + 1);
-            if(amount <= 0) continue;
             ItemData data = DataHolder.ItemDatas[itemObj.id];
-            int newX = x + MapX * DataHolder.ChunkSize;
-            int newY = y + MapY * DataHolder.ChunkSize;
-            ItemObject itemObject = 
-                items.FirstOrDefault(item => item.X == newX && item.Y == newY && item.ItemData.Id == data.Id);
-            if (itemObject != null)
-            {
-                itemObject.Amount.Value += amount;
-                continue;
-            }
-            items.Add(new ItemObject(data, amount, newX, newY));
+            UtilityFunctions.AddItemOnMap(items, data, amount, x, y);
         }
     }
-    
-    private void FillBorderWalls(TileInformation[,] roomData, Tile[,] northernTileMap, 
+
+    private void FillBorderWalls(TileInformation[,] roomData, Tile[,] northernTileMap,
         Tile[,] easternTileMap)
     {
         for (int x = 0; x < ChunkSize; x++)

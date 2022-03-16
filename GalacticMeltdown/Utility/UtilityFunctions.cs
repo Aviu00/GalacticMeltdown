@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GalacticMeltdown.Data;
+using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Utility;
+using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>;
 
 public static class UtilityFunctions
 {
@@ -22,10 +25,10 @@ public static class UtilityFunctions
         return rng.Next(1, 101) <= chance;
     }
 
-    public static int MultiChance(Random rng = null, params int[] chances)
+    public static int MultiChance(int[] chances, Random rng = null)
     {
         rng ??= Random.Shared;
-        if (chances.Length == 0) throw new ArgumentException();
+        if (chances.Length == 0) throw new ArgumentException("chances array must have non zero length");
         int val = rng.Next(1, 101);
         int curChance = chances[0];
         for (int i = 0; i < chances.Length; i++)
@@ -35,7 +38,7 @@ public static class UtilityFunctions
             curChance += chances[i + 1];
         }
 
-        throw new ArgumentException();
+        return chances.Length;
     }
 
     public static Dictionary<TKey, TVal> JoinDictionaries<TKey, TJoin, TVal>(Dictionary<TKey, TJoin> dict1,
@@ -59,5 +62,38 @@ public static class UtilityFunctions
         }
 
         return builder.ToString();
+    }
+    
+    public static void AddItemOnMap(ItemDictionary items, Item item, int amount, int x, int y)
+    {
+        AddItemOnMap(items, () => item, amount, x, y, item.Id);
+    }
+    public static void AddItemOnMap(ItemDictionary items, ItemData data, int amount, int x, int y)
+    {
+        AddItemOnMap(items, () => new Item(data), amount, x, y, data.Id);
+    }
+    private static void AddItemOnMap(ItemDictionary items, Func<Item> getItem, int amount, int x, int y, string id)
+    {
+        if(amount <= 0) return;
+        List<(Item item, int amount)> itemsList;
+        if (items.ContainsKey((x, y)))
+        {
+            itemsList = items[(x, y)];
+            int index = itemsList.FindIndex(itemTuple => itemTuple.item.Id == id);
+            if (index != -1)
+            {
+                var valueTuple = itemsList[index];
+                valueTuple.amount += amount;
+                itemsList[index] = valueTuple;
+                return;
+            }
+        }
+        else
+        {
+            itemsList = new();
+            items[(x, y)] = itemsList;
+        }
+
+        itemsList.Add((getItem(), amount));
     }
 }

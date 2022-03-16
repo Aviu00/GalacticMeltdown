@@ -4,7 +4,7 @@ using System.Linq;
 using System.Xml;
 
 namespace GalacticMeltdown.Data;
-using TerrainInformation = Dictionary<char, (string tileId, string lootTableId, int lootTableChance)>;
+using TerrainInformation = Dictionary<char, (string tileId, string lootId, int lootChance)>;
 
 public class RoomDataExtractor : XmlExtractor
 {
@@ -70,8 +70,8 @@ public class RoomDataExtractor : XmlExtractor
             if (node.Attributes is null) continue;
             char symbol = ' ';
             string tileId = "";
-            string lootTableId = null;
-            int lootTableChance = 0;
+            string lootId = null;
+            int lootChance = 100;
             foreach (XmlAttribute attribute in node.Attributes)
             {
                 switch (attribute.Name)
@@ -82,16 +82,16 @@ public class RoomDataExtractor : XmlExtractor
                     case "tile_id":
                         tileId = attribute.InnerText;
                         break;
-                    case "loot_table_id":
-                        lootTableId = attribute.InnerText;
+                    case "loot_id":
+                        lootId = attribute.InnerText;
                         break;
-                    case "loot_table_chance":
-                        lootTableChance = Convert.ToInt32(attribute.InnerText);
+                    case "loot_chance":
+                        lootChance = Convert.ToInt32(attribute.InnerText);
                         break;
                 }
             }
 
-            terrainInfo.Add(symbol, (tileId, lootTableId, lootTableChance));
+            terrainInfo.Add(symbol, (tileId, lootId, lootChance));
         }
 
         return terrainInfo;
@@ -120,8 +120,8 @@ public class RoomDataExtractor : XmlExtractor
             if (terrainInfo is not null && terrainInfo.ContainsKey(c))
             {
                 data = _tileTypes[terrainInfo[c].tileId];
-                lootTableId = terrainInfo[c].lootTableId;
-                lootTableChance = terrainInfo[c].lootTableChance;
+                lootTableId = terrainInfo[c].lootId;
+                lootTableChance = terrainInfo[c].lootChance;
             }
             else
             {
@@ -141,13 +141,13 @@ public readonly record struct Room(TileInformation[,] RoomInterior, int Type, in
 public struct TileInformation
 {
     public TileTypeData TileTypeData;
-    public readonly string LootTableId;
-    public readonly int LootTableChance;
+    public readonly string LootId;
+    public readonly int LootChance;
 
-    public TileInformation(TileTypeData tileTypeData, string lootTableId, int lootTableChance)
+    public TileInformation(TileTypeData tileTypeData, string lootId, int lootChance)
     {
         TileTypeData = tileTypeData;
-        LootTableId = lootTableId;
-        LootTableChance = lootTableChance;
+        LootId = lootId;
+        LootChance = lootChance;
     }
 }

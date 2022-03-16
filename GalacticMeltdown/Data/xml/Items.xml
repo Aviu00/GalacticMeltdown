@@ -10,4 +10,24 @@
         <Name>woold plank</Name>
         <Symbol>/</Symbol>
     </Item>
+    <Item>
+        <Id>pistol</Id>
+        <Name>pistol</Name>
+        <Symbol>г</Symbol>
+    </Item>
+    <Item>
+        <Id>assault_rifle</Id>
+        <Name>assault rifle</Name>
+        <Symbol>f</Symbol>
+    </Item>
+    <Item>
+        <Id>pistol_ammo</Id>
+        <Name>pistol ammo</Name>
+        <Symbol>∷</Symbol>
+    </Item>
+    <Item>
+        <Id>assault_rifle_ammo</Id>
+        <Name>assault rifle ammo</Name>
+        <Symbol>∷</Symbol>
+    </Item>
 </ItemDatas>

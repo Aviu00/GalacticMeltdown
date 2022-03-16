@@ -5,8 +5,11 @@ using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
+using GalacticMeltdown.MapGeneration;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.LevelRelated;
+using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>;
 
 public class Chunk
 {
@@ -23,13 +26,15 @@ public class Chunk
 
     private List<Enemy> Enemies { get; }
 
-    private List<ItemObject> _items;
+    private ItemDictionary _items;
 
     public bool WasActiveBefore;
 
     public readonly List<(int x, int y)> NeighborCoords;
 
-    public Chunk(Tile[,] tiles, List<ItemObject> items, List<(int x, int y)> neighborCoords, int difficulty, Random rng,
+    public bool isActive;
+
+    public Chunk(Tile[,] tiles, ItemDictionary items, List<(int x, int y)> neighborCoords, int difficulty, Random rng,
         int x, int y)
     {
         Tiles = tiles;
@@ -57,52 +62,53 @@ public class Chunk
         return coords;
     }
 
+    public IDrawable GetDrawable(int x, int y)
+    {
+        IDrawable drawable = GetMapObject(x, y);
+        if (drawable is not null) return drawable;
+        drawable = FindItem(x, y);
+        return drawable;
+    }
+
     public IObjectOnMap GetMapObject(int x, int y)
     {
         IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
-        if (objectOnMap is not null) return objectOnMap;
-        objectOnMap = _items.FirstOrDefault(item => item.X == x && item.Y == y);
-        //Check other IObjectOnMap list here
         return objectOnMap;
     }
 
     public void AddItem(ItemData data, int amount, int x, int y)
     {
-        ItemObject itemObject =
-            _items.FirstOrDefault(item => item.X == x && item.Y == y && item.ItemData.Id == data.Id);
-        if (itemObject != null)
-        {
-            itemObject.Amount.Value += amount;
-            return;
-        }
-
-        _items.Add(new ItemObject(data, amount, x, y));
+        UtilityFunctions.AddItemOnMap(_items, data, amount, x, y);
     }
-
+    public void AddItem(Item item, int amount, int x, int y)
+    {
+        UtilityFunctions.AddItemOnMap(_items, item, amount, x, y);
+    }
+    public Item FindItem(int x, int y)
+    {
+        if (!_items.ContainsKey((x, y))) return null;
+        List<(Item item, int amount)> itemList = _items[(x, y)];
+        if (itemList == null || itemList.Count == 0) return null;
+        return itemList[0].item;
+    }
     /// <summary>
     /// This method is not final!!!
     /// </summary>
     public Item GetItem(ItemData data, int amount, int x, int y)
     {
-        ItemObject itemObject = _items.FirstOrDefault(item => item.X == x && item.Y == y && item.ItemData == data);
-        if (itemObject == null) return null;
-        int newAmount = itemObject.Amount.Value - amount;
-        int returnAmount;
+        if (!_items.ContainsKey((x, y))) throw new ArgumentException($"no item with data ${data.Id} in x: {x} y: {y}");
+        List<(Item item, int amount)> itemList = _items[(x, y)];
+        int index = itemList.FindIndex(itemTuple => itemTuple.item.Id == data.Id);
+        if (index == -1) throw new ArgumentException($"no item with data ${data.Id} in x: {x} y: {y}");
+        var (item, itemAmount) = itemList[index];
+        int newAmount = itemAmount - amount;
         if (newAmount < 0)
-        {
-            returnAmount = itemObject.Amount.Value;
-            _items = _items.Where(item => item.ItemData != data || item.X != x && item.Y != y).ToList(); //remove item
-        }
-        else
-        {
-            returnAmount = amount;
-            if (newAmount == 0) //remove item
-                _items = _items.Where(item => item.ItemData != data || item.X != x && item.Y != y).ToList();
-            else
-                itemObject.Amount.Value = newAmount;
-        }
+            throw new ArgumentException("amount must be not less than amount of item on the ground");
 
-        return new Item(data, returnAmount);
+        if (newAmount != 0) return new Item(data);
+
+        itemList.RemoveAt(index);
+        return item;
     }
 
     public List<Npc> GetNpcs()
