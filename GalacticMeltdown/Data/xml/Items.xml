@@ -1,25 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ItemDatas>
-    <Item>
+    <WeaponItem>
         <Id>metal_bar</Id>
         <Name>metal bar</Name>
         <Symbol>/</Symbol>
-    </Item>
-    <Item>
+        <MinHitDamage>20</MinHitDamage>
+        <MaxHitDamage>50</MaxHitDamage>
+        <HitEnergy>50</HitEnergy>
+    </WeaponItem>
+    <WeaponItem>
         <Id>wood_plank</Id>
-        <Name>woold plank</Name>
+        <Name>wood plank</Name>
         <Symbol>/</Symbol>
-    </Item>
-    <Item>
+        <MinHitDamage>8</MinHitDamage>
+        <MaxHitDamage>30</MaxHitDamage>
+        <HitEnergy>40</HitEnergy>
+    </WeaponItem>
+    <RangedWeaponItem>
         <Id>pistol</Id>
         <Name>pistol</Name>
         <Symbol>г</Symbol>
-    </Item>
-    <Item>
+        <MinHitDamage>5</MinHitDamage>
+        <MaxHitDamage>25</MaxHitDamage>
+        <HitEnergy>15</HitEnergy>
+        <MinShootDamage>30</MinShootDamage>
+        <MaxShootDamage>80</MaxShootDamage>
+        <AmmoId>pistol_ammo</AmmoId>
+        <AmmoCapacity>10</AmmoCapacity>
+        <ReloadEnergy>50</ReloadEnergy>
+    </RangedWeaponItem>
+    <RangedWeaponItem>
         <Id>assault_rifle</Id>
         <Name>assault rifle</Name>
         <Symbol>f</Symbol>
-    </Item>
+        <MinHitDamage>20</MinHitDamage>
+        <MaxHitDamage>50</MaxHitDamage>
+        <HitEnergy>50</HitEnergy>
+        <MinShootDamage>40</MinShootDamage>
+        <MaxShootDamage>100</MaxShootDamage>
+        <AmmoId>assault_rifle_ammo</AmmoId>
+        <AmmoCapacity>30</AmmoCapacity>
+        <ReloadEnergy>70</ReloadEnergy>
+    </RangedWeaponItem>
     <Item>
         <Id>pistol_ammo</Id>
         <Name>pistol ammo</Name>

@@ -163,6 +163,7 @@ public partial class Level
     public IDrawable GetDrawable(int x, int y)
     {
         if (x == Player.X && y == Player.Y) return Player;
+        if (x == -1 || y == -1) return GetTile(x, y);
         var (chunkX, chunkY) = GetChunkCoords(x, y);
         return !CoordsInRangeOfChunkArray(x, y, chunkX, chunkY)
             ? null

@@ -80,9 +80,9 @@ public class Chunk
     {
         UtilityFunctions.AddItemOnMap(_items, data, amount, x, y);
     }
-    public void AddItem(Item item, int amount, int x, int y)
+    public void AddItem(Item item, int amount, int x, int y, bool copy)
     {
-        UtilityFunctions.AddItemOnMap(_items, item, amount, x, y);
+        UtilityFunctions.AddItemOnMap(_items, item, amount, x, y, copy);
     }
     public Item FindItem(int x, int y)
     {
@@ -105,7 +105,7 @@ public class Chunk
         if (newAmount < 0)
             throw new ArgumentException("amount must be not less than amount of item on the ground");
 
-        if (newAmount != 0) return new Item(data);
+        if (newAmount != 0) return Item.CreateItem(data);
 
         itemList.RemoveAt(index);
         return item;
