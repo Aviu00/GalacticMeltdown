@@ -81,7 +81,7 @@ public class MovementStrategy : Behavior
             SetPathTo(_wantsToGoTo!.Value.x, _wantsToGoTo!.Value.y);
         }
 
-        if (_nextPathCellNode is null ||
+        if (_nextPathCellNode is null || 
             !Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable) return false;
         ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         _nextPathCellNode = _nextPathCellNode.Next;
