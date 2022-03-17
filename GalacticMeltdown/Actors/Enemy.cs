@@ -19,10 +19,20 @@ public class Enemy : Npc
     {
         _typeData = typeData;
     }
+    /*public Enemy(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level, 
+        SortedSet<Behavior> behaviors) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level, behaviors)
+    {
+        //temporary stuff
+        SymbolData = ('W', ConsoleColor.Red);
+        BgColor = ConsoleColor.Blue;
+    }*/
+    
 
     public (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
+    //public (char symbol, ConsoleColor color) SymbolData { get; set; }
     public string Name => _typeData.Name;
     public ConsoleColor BgColor => _typeData.BgColor;
+    //public ConsoleColor BgColor { get; set; }
 
     public override void TakeAction()
     {

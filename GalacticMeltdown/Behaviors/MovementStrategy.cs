@@ -9,8 +9,7 @@ public class MovementStrategy : Behavior
     private const int DefaultPriority = 10;
     private readonly Level _level;
     private (int x, int y)? _wantsToGoTo;
-    private LinkedListNode<(int x, int y)> _currentPathNode;
-    private LinkedList<(int x, int y)> _path;
+    private LinkedListNode<(int x, int y)> _nextPathCellNode;
 
     public MovementStrategy(Level level, int priority = DefaultPriority)
     {
@@ -33,66 +32,47 @@ public class MovementStrategy : Behavior
         return neighboursWithMoveCosts;
     }
 
+    private void SetPathTo(int x, int y)
+    {
+        _wantsToGoTo = (x, y);
+        var path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, x, y, GetNeighbors);
+        if (path is null || path.Count < 3)
+        {
+            _nextPathCellNode = null;
+            return;
+            // remove start and finish points to simplify implementation
+        }
+
+        path.RemoveFirst();
+        path.RemoveLast();
+
+        _nextPathCellNode = path.First;
+    }
+
     public override bool TryAct()
     {
         // setting wantsToGoTo point
-        // third condition for no clip use
-        if (ControlledNpc.CurrentTarget is not null 
-            && _wantsToGoTo != (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)
-            && !_level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
+        if (ControlledNpc.CurrentTarget is not null &&
+            _level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
         {
-            _wantsToGoTo = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
-            _path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, _wantsToGoTo.Value.x, _wantsToGoTo.Value.y,
-                GetNeighbors);
-            
-            if (_path is null || _path.Count < 2) return false;
-            
-            // remove start and finish points to simplify implementation
-            _path.RemoveFirst();
-            _path.RemoveLast();
-            
-            _currentPathNode = _path.First;
+            if (_wantsToGoTo != (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
+                SetPathTo(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
         }
-        else
+        else if (_nextPathCellNode is null)
         {
-            if (ControlledNpc.CurrentTarget is null)
-            {
-                // there is place for idle movement logic
-                return false;
-            }
-
-            if (_level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
-            {
-                return false;
-            }
-
-            if (_wantsToGoTo == (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
-            {
-                _currentPathNode = _currentPathNode.Next;
-            }
-        }
-
-        if (_currentPathNode is not null)
-        {
-            ControlledNpc.MoveNpcTo(_currentPathNode.Value.x, _currentPathNode.Value.y);
-        }
-        else
-        {
+            // there is place for idle movement
             return false;
         }
-        //LinkedList<(int, int)> path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, _wantsToGoTo.Value.x, 
-        //    _wantsToGoTo.Value.y, GetNeighbors);
-
-        /*foreach ((int x, int y) coords in _path)
+        else if (!(_level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
+                   _level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable))
         {
-            if (coords != _wantsToGoTo)
-            {
-                ControlledNpc.MoveNpcTo(coords.x, coords.y);
-                ControlledNpc.Energy -= _level.GetTile(coords.x, coords.y).MoveCost;
-            }
-        }*/
+            SetPathTo(_wantsToGoTo!.Value.x, _wantsToGoTo!.Value.y);
+        }
+
+        if (_nextPathCellNode is null) return false;
+        ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
+        _nextPathCellNode = _nextPathCellNode.Next;
+        if (_nextPathCellNode is null) _wantsToGoTo = null;
         return true;
-        //if CurrentTarget is not null, then move towards CurrentTarget;
-        //else if _wantsToGoTo is not null, then move there; else Idle movement
     }
 }
