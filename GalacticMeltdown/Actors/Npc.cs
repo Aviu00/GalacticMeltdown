@@ -13,18 +13,12 @@ public abstract class Npc : Actor
 
     private readonly string _id;
 
-    private SortedSet<Behavior> Behaviors { get; init; }
+    protected SortedSet<Behavior> Behaviors { get; init; }
 
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level,
-        SortedSet<Behavior> behaviors) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
+    protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
+        : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
-        foreach (Behavior behavior in behaviors)
-        {
-            behavior.SetTarget(this);
-        }
-
-        Behaviors = behaviors;
     }
 
     protected bool IsPointVisible(int x, int y)

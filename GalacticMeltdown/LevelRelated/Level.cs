@@ -65,12 +65,6 @@ public partial class Level
     public ObservableCollection<ISightedObject> SightedObjects { get; }
 
     private readonly ChunkEventListener _listener;
-    // test functions
-    private void TestAddEnemy(int x, int y, Enemy enemy)
-    {
-        var (chunkX, chunkY) = GetChunkCoords(x, y);
-        _chunks[chunkX, chunkY].AddNpc(enemy);
-    }
 
     public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall,
         (int x, int y) finishPos)
@@ -85,12 +79,6 @@ public partial class Level
         _westernWall = westernWall;
         (_finishX, _finishY) = finishPos;
         Player = new Player(startPos.x, startPos.y, this);
-        // test enemy
-        /*Enemy enemy1 = 
-            new Enemy(100, 100, 100, 100, 10, startPos.x + 10, startPos.y + 10, this,
-                new(new Behavior.BehaviorComparer()){new MovementStrategy(this)});
-        enemy1.Targets = new HashSet<Actor>(){Player};
-        TestAddEnemy(startPos.x + 10, startPos.y + 10, enemy1);*/
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
         ControllableObjects = new ObservableCollection<IControllable> {Player};
@@ -371,5 +359,11 @@ public partial class Level
         return x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && chunkY < _chunks.GetLength(1);
     }
 
+    public void AddNpc(Npc npc)
+    {
+        (int x, int y) = GetChunkCoords(npc.X, npc.Y);
+        _chunks[x, y].AddNpc(npc);
+    }
+    
     private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
 }

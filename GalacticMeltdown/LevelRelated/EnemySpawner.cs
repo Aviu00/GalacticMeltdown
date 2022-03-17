@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
@@ -29,16 +30,16 @@ public class EnemySpawner
     {
         _currency += _currencyGain;
         _currencyGain += 1;
-        if (_currency > _nextCurrencyAmount) SpawnRandomEnemies();
+        //if (_currency > _nextCurrencyAmount) SpawnRandomEnemies();
     }
 
     public void SpawnEnemiesInChunk(Chunk chunk)
     {
         Random rng = chunk.Rng;
-        double currency = chunk.Difficulty * 10;
-        currency *= (rng.NextDouble() + 1);
+        double currency = chunk.Difficulty * 20;
+        currency *= (rng.NextDouble() + 0.5);
         var points = chunk.GetFloorTileCoords();
-        foreach (var enemy in CalculateEnemies(currency))
+        foreach (var enemy in CalculateEnemies(currency, chunk.Rng).enemies)
         {
             var (x, y) = points[rng.Next(0, points.Count)];
             SpawnEnemy(enemy, x, y);
@@ -60,7 +61,9 @@ public class EnemySpawner
     private void SpawnRandomEnemies()
     {
         TargetChunks ??= GetTargetChunks().ToList();
-        List<Enemy> enemies = CalculateEnemies(_currency);
+        var data = CalculateEnemies(_currency);
+        _currency = data.currency;
+        List<EnemyTypeData> enemies = data.enemies;
         List<int> prevChunkIndices = new();
         List<(int, int)> points = new();
         for (int i = 0; i < enemies.Count; i++)
@@ -81,17 +84,27 @@ public class EnemySpawner
 
     private void CalculateNextCurrencyAmount()
     {
-        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(2, 6);
+        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(5, 11);
     }
 
-    private List<Enemy> CalculateEnemies(double currency)
+    private (List<EnemyTypeData> enemies, double currency) CalculateEnemies(double currency, Random rng = null)
     {
-        //calculate
-        return new List<Enemy>();
+        rng ??= Random.Shared;
+        List<EnemyTypeData> list = new();
+        List<EnemyTypeData> enemies = DataHolder.EnemyTypes.Values.ToList();
+        enemies = enemies.Where(enemy => enemy.Cost <= currency).ToList();
+        while (enemies.Count > 0)
+        {
+            list.Add(enemies[rng.Next(0, enemies.Count)]);
+            currency -= list[^1].Cost;
+            enemies = enemies.Where(enemy => enemy.Cost <= currency).ToList();
+        }
+        return (list, currency);
     }
 
-    private void SpawnEnemy(Enemy enemy, int x, int y)
+    private void SpawnEnemy(EnemyTypeData enemyData, int x, int y)
     {
-        
+        Enemy enemy = new Enemy(enemyData, x, y, _level);
+        _level.AddNpc(enemy);
     }
 }

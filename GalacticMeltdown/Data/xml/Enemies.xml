@@ -1,27 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EnemiesTypes>
     <EnemyType>
-        <Id>melee</Id>
-        <Name>guard</Name>
+        <Id>rotten</Id>
+        <Name>rotten</Name>
         <Symbol>W</Symbol>
         <Color>red</Color>
         <BgColor>black</BgColor>
         <MaxHp>100</MaxHp>
-        <MaxEnergy>100</MaxEnergy>
-        <Dexterity >10</Dexterity >
+        <MaxEnergy>70</MaxEnergy>
+        <Dexterity>10</Dexterity>
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
+        <Cost>20</Cost>
     </EnemyType>
     <EnemyType>
-        <Id>range</Id>
-        <Name>gunner</Name>
+        <Id>claw</Id>
+        <Name>claw</Name>
         <Symbol>R</Symbol>
         <Color>magenta</Color>
         <BgColor>black</BgColor>
         <MaxHp>100</MaxHp>
         <MaxEnergy>100</MaxEnergy>
-        <Dexterity >10</Dexterity >
+        <Dexterity>10</Dexterity>
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
+        <Cost>30</Cost>
+    </EnemyType>
+    <EnemyType>
+        <Id>elite</Id>
+        <Name>elite</Name>
+        <Symbol>E</Symbol>
+        <Color>yellow</Color>
+        <BgColor>red</BgColor>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>70</MaxEnergy>
+        <Dexterity>10</Dexterity>
+        <Defence>10</Defence>
+        <ViewRange>15</ViewRange>
+        <Cost>100</Cost>
+    </EnemyType>
+    <EnemyType>
+        <Id>ripper</Id>
+        <Name>ripper</Name>
+        <Symbol>R</Symbol>
+        <Color>white</Color>
+        <BgColor>red</BgColor>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>70</MaxEnergy>
+        <Dexterity>10</Dexterity>
+        <Defence>10</Defence>
+        <ViewRange>15</ViewRange>
+        <Cost>500</Cost>
     </EnemyType>
 </EnemiesTypes>

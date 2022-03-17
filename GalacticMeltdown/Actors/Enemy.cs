@@ -14,10 +14,18 @@ public class Enemy : Npc
 
     private readonly EnemyTypeData _typeData;
 
-    public Enemy(EnemyTypeData typeData, int x, int y, Level level, SortedSet<Behavior> behaviors) : base(
-        typeData.MaxHp, typeData.MaxEnergy, typeData.Dex, typeData.Def, typeData.ViewRange, x, y, level, behaviors)
+    public Enemy(EnemyTypeData typeData, int x, int y, Level level) : base(
+        typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
         _typeData = typeData;
+        
+        //temp
+        Targets = new() {level.Player};
+        Behaviors = new SortedSet<Behavior>(new Behavior.BehaviorComparer()) {new MovementStrategy(level)};
+        foreach (Behavior behavior in Behaviors)
+        {
+            behavior.SetTarget(this);
+        }
     }
     // for debugging 
     /*public Enemy(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level, 

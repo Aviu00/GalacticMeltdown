@@ -28,6 +28,7 @@ public class EnemyTypesExtractor : XmlExtractor
             int defence = 0;
             int dexterity  = 0;
             int viewRange = 1;
+            int cost = 10;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -62,17 +63,19 @@ public class EnemyTypesExtractor : XmlExtractor
                     case "ViewRange":
                         viewRange = Convert.ToInt32(locNode.InnerText);
                         break;
-
+                    case "Cost":
+                        cost = Convert.ToInt32(locNode.InnerText);
+                        break;
                 }
             }
 
             //log an error if id is null or TileTypes contains id
             EnemyTypeData enemiesTypeData = new EnemyTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy, 
-                defence, dexterity ,  viewRange);
+                defence, dexterity , viewRange, cost);
             EnemiesTypes.Add(enemiesTypeData.Id, enemiesTypeData);
         }
 
     }
 }
-public readonly record struct EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color, ConsoleColor BgColor,  
-    int MaxHp, int MaxEnergy,  int Def, int Dex, int ViewRange);
+public readonly record struct EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
+    ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost);

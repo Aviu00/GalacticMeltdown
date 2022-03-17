@@ -48,11 +48,11 @@ public class Player : Actor, ISightedObject, IControllable
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;
     }
-    
+
     public bool TryMove(int deltaX, int deltaY)
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
-        if (!(NoClip || (tile is null || tile.IsWalkable) && Level.GetNonTileObject(X + deltaX, Y + deltaY) is null))
+        if (!NoClip && (tile is null || !tile.IsWalkable) || Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
             return false;
 
         MoveTo(X + deltaX, Y + deltaY);
