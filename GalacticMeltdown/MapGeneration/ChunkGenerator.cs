@@ -12,6 +12,8 @@ using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>
 
 public class ChunkGenerator
 {
+    private const double RandomFuncNorm = 500;
+        
     private Random _rng;
     private const int ChunkSize = DataHolder.ChunkSize;
 
@@ -132,7 +134,10 @@ public class ChunkGenerator
     private void CalculateLoot(ItemDictionary items, TileInformation[,] roomData, int localX, int localY)
     {
         string id = roomData[localX, localY].LootId;
-        if (id == null || !UtilityFunctions.Chance(roomData[localX, localY].LootChance, _rng)) return;
+        if (id == null ||
+            !UtilityFunctions.Chance(ChanceFunction(roomData[localX, localY].LootChance, roomData[localX, localY].Gain,
+                roomData[localX, localY].Limit), _rng))
+            return;
         int newX = localX + MapX * DataHolder.ChunkSize;
         int newY = localY + MapY * DataHolder.ChunkSize;
         SpawnItems(items, id, newX, newY);
@@ -146,22 +151,42 @@ public class ChunkGenerator
             return;
         }
 
-        if (DataHolder.LootTables[id] is DistributionTable)
+        if (DataHolder.LootTables[id] is ItemLoot)
         {
-            DistributionTable table = (DistributionTable) DataHolder.LootTables[id];
-            int[] chances = table.Items.Select(item => item.chance).ToArray();
+            ItemLoot itemLoot = (ItemLoot) DataHolder.LootTables[id];
+            int amount = GetLimitedValue(itemLoot.Limit, 
+                _rng.Next(itemLoot.Min, itemLoot.Max + (int) (Difficulty * itemLoot.Gain) + 1));
+            if (amount <= 0) return;
+            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemDatas[itemLoot.ItemId], amount, x, y);
+            return;
+        }
+
+        LootTable table = (LootTable) DataHolder.LootTables[id];
+        if (!table.IsCollection)
+        {
+            int[] chances =
+                table.Items.Select(item => ChanceFunction(item.chance, item.gain, item.limit)).ToArray();
             int index = UtilityFunctions.MultiChance(chances, _rng);
-            if(index == chances.Length) return;
+            if (index == chances.Length) return;
             SpawnItems(items, table.Items[index].lootId, x, y);
             return;
         }
 
-        foreach (var itemObj in ((CollectionTable) DataHolder.LootTables[id]).Items)
+        foreach (var itemObj in table.Items)
         {
-            int amount = _rng.Next(itemObj.min, itemObj.max + 1);
-            ItemData data = DataHolder.ItemDatas[itemObj.id];
-            UtilityFunctions.AddItemOnMap(items, data, amount, x, y);
+            if (!UtilityFunctions.Chance(ChanceFunction(itemObj.chance, itemObj.gain, itemObj.limit), _rng)) continue;
+            SpawnItems(items, itemObj.lootId, x, y);
         }
+    }
+
+    private int GetLimitedValue(int value, int limit)
+    {
+        return limit == -1 ? value : Math.Min(limit, value);
+    }
+    private int ChanceFunction(int chance, double gain, int limit)
+    {
+        if (chance == limit || gain == 0) return chance;
+        return (int) (limit - 1 / (gain * Difficulty / RandomFuncNorm + 1 / (double)(limit - chance)));
     }
 
     private void FillBorderWalls(TileInformation[,] roomData, Tile[,] northernTileMap,

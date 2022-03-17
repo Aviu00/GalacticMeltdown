@@ -1,20 +1,18 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 
 namespace GalacticMeltdown.Data;
-using CollectionItems = List<(string id, int chance, int min, int max)>;
-using DistributionItems = List<(string lootId , int chance)>;
+using TableItems = List<(string lootId, int chance, double gain, int limit)>;
 
 public class LootTableDataExtractor : XmlExtractor
 {
-    public readonly Dictionary<string, ITable> LootTables;
-    
-    
+    public readonly Dictionary<string, ILoot> LootTables;
+
+
     public LootTableDataExtractor()
     {
-        LootTables = new Dictionary<string, ITable>();
+        LootTables = new Dictionary<string, ILoot>();
         ParseDocument("LootTables.xml");
     }
 
@@ -23,77 +21,88 @@ public class LootTableDataExtractor : XmlExtractor
         XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
-            string id = "";
-            ICollection items = null;
-            bool collection = true;
-            foreach (XmlNode locNode in node)
+            switch (node.Name)
             {
-                switch (node.Name)
-                {
-                    case "CollectionTable":
-                        collection = true;
-                        break;
-                    case "DistributionTable":
-                        collection = false;
-                        break;
-                    default:
-                        continue;
-                }
-
-                switch (locNode.Name)
-                {
-                    case "Id":
-                        id = locNode.InnerText;
-                        break;
-                    case "Items":
-                        items = collection ? ParseCollectionItems(locNode) : ParseDistributionItems(locNode);
-                        break;
-                }
+                case "ItemLoot":
+                    ParseItemLoot(node);
+                    break;
+                case "CollectionTable":
+                    ParseLootTable(node, true);
+                    break;
+                case "DistributionTable":
+                    ParseLootTable(node, false);
+                    break;
             }
-
-            ITable table = collection
-                ? new CollectionTable(id, (CollectionItems) items)
-                : new DistributionTable(id, (DistributionItems) items);
-            LootTables.Add(id, table);
         }
     }
 
-    private DistributionItems ParseDistributionItems(XmlNode itemsNode)
+    private void ParseItemLoot(XmlNode itemLootNode)
     {
-        DistributionItems items = new();
-        foreach (XmlElement node in itemsNode)
+        string id = "";
+        string itemId = "";
+        int min = 1;
+        int max = 1;
+        double gain = 0;
+        int limit = -1;
+        if (itemLootNode.Attributes == null) return;
+        foreach (XmlNode node in itemLootNode)
         {
-            string id = "";
-            int chance = 0;
-            foreach (XmlAttribute attribute in node.Attributes)
+            switch (node.Name)
             {
-                switch (attribute.Name)
-                {
-                    case "id":
-                        id = attribute.InnerText;
-                        break;
-                    case "chance":
-                        chance = Convert.ToInt32(attribute.InnerText);
-                        break;
-                }
+                case "Id":
+                    id = node.InnerText;
+                    break;
+                case "ItemId":
+                    itemId = node.InnerText;
+                    break;
+                case "Min":
+                    min = Convert.ToInt32(node.InnerText);
+                    break;
+                case "Max":
+                    max = Convert.ToInt32(node.InnerText);
+                    break;
+                case "Gain":
+                    gain = Convert.ToDouble(node.InnerText);
+                    break;
+                case "Limit":
+                    limit = Convert.ToInt32(node.InnerText);
+                    break;
             }
-
-            items.Add((id, chance));
         }
-
-        return items;
+        LootTables.Add(id, new ItemLoot(id, itemId, min, max, gain, limit));
     }
 
-    private CollectionItems ParseCollectionItems(XmlNode itemsNode)
+    private void ParseLootTable(XmlNode tableNode, bool collection)
     {
-        CollectionItems items = new();
+        string id = "";
+        TableItems items = null;
+        foreach (XmlNode locNode in tableNode)
+        {
+            switch (locNode.Name)
+            {
+                case "Id":
+                    id = locNode.InnerText;
+                    break;
+                case "Items":
+                    items = ParseTableItems(locNode);
+                    break;
+            }
+        }
+
+        ILoot table = new LootTable(id, collection, items);
+        LootTables.Add(id, table);
+    }
+
+    private TableItems ParseTableItems(XmlNode itemsNode)
+    {
+        TableItems items = new();
         foreach (XmlNode node in itemsNode)
         {
             if (node.Attributes is null) continue;
             string id = "";
             int chance = 100;
-            int min = 1;
-            int max = 1;
+            double gain = 0;
+            int limit = 100;
             foreach (XmlAttribute attribute in node.Attributes)
             {
                 switch (attribute.Name)
@@ -104,23 +113,24 @@ public class LootTableDataExtractor : XmlExtractor
                     case "chance":
                         chance = Convert.ToInt32(attribute.InnerText);
                         break;
-                    case "min":
-                        min = Convert.ToInt32(attribute.InnerText);
+                    case "limit":
+                        limit = Convert.ToInt32(attribute.InnerText);
                         break;
-                    case "max":
-                        max = Convert.ToInt32(attribute.InnerText);
+                    case "gain":
+                        gain = Convert.ToDouble(attribute.InnerText);
                         break;
                 }
             }
-            items.Add((id, chance, min, max));
+            items.Add((id, chance, gain, limit));
         }
 
         return items;
     }
     
 }
-public readonly record struct CollectionTable(string Id, CollectionItems Items) : ITable;
+public readonly record struct LootTable(string Id, bool IsCollection, TableItems Items) : ILoot;
 
-public readonly record struct DistributionTable(string Id, DistributionItems Items) : ITable;
+public readonly record struct ItemLoot(string Id, string ItemId, int Min, int Max, double Gain, int Limit)
+    : ILoot;
 
-public interface ITable { }
+public interface ILoot { }

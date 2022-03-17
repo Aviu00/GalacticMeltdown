@@ -14,7 +14,7 @@ public static class DataHolder
     public static readonly List<Room> Rooms;
     public static readonly Dictionary<string, TileTypeData> TileTypes;
     public static readonly Dictionary<string, ItemData> ItemDatas;
-    public static readonly Dictionary<string, ITable> LootTables;
+    public static readonly Dictionary<string, ILoot> LootTables;
 
     public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {

@@ -1,38 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LootTables>
+    <ItemLoot>
+        <Id>metal_bar_1</Id>
+        <ItemId>metal_bar</ItemId>
+        <Min>1</Min>
+        <Max>3</Max>
+    </ItemLoot>
+    <ItemLoot>
+        <Id>wood_plank_1</Id>
+        <ItemId>wood_plank</ItemId>
+        <Min>1</Min>
+        <Max>3</Max>
+    </ItemLoot>
+    <ItemLoot>
+        <Id>assault_rifle_ammo_1</Id>
+        <ItemId>assault_rifle_ammo</ItemId>
+        <Min>5</Min>
+        <Max>30</Max>
+        <Gain>2.5</Gain>
+        <Limit>1000</Limit>
+    </ItemLoot>
+    <ItemLoot>
+        <Id>pistol_ammo_1</Id>
+        <ItemId>pistol_ammo</ItemId>
+        <Min>2</Min>
+        <Max>10</Max>
+        <Gain>2.5</Gain>
+        <Limit>1000</Limit>
+    </ItemLoot>
     <CollectionTable>
         <Id>storage_1</Id>
         <Items>
-            <Item id="metal_bar" chance="50" min="1" max="10"/>
-            <Item id="wood_plank" chance="50" min="1" max="10"/>
+            <Item id="metal_bar_1" chance="20" limit="50" gain="3"/>
+            <Item id="wood_plank_1" chance="20" limit="50" gain="3"/>
         </Items>
     </CollectionTable>
     <CollectionTable>
         <Id>assault_rifle_table</Id>
         <Items>
             <Item id="assault_rifle"/>
-            <Item id="assault_rifle_ammo" min="10" max="50"/>
+            <Item id="assault_rifle_ammo_1"/>
         </Items>
     </CollectionTable>
     <CollectionTable>
         <Id>pistol_table</Id>
         <Items>
             <Item id="pistol"/>
-            <Item id="pistol_ammo" min="5" max="25"/>
+            <Item id="pistol_ammo_1"/>
         </Items>
     </CollectionTable>
     <DistributionTable>
         <Id>weapon_distr_1</Id>
         <Items>
-            <Item id="pistol" chance="70"/>
-            <Item id="assault_rifle" chance="30"/>
-        </Items>
-    </DistributionTable>
-    <DistributionTable>
-        <Id>weapon_distr_2</Id>
-        <Items>
-            <Item id="pistol_table" chance="70"/>
-            <Item id="assault_rifle_table" chance="30"/>
+            <Item id="pistol_table" chance="10" gain="1.5" limit="50"/>
+            <Item id="assault_rifle_table" chance="0" gain="1.5" limit="30"/>
         </Items>
     </DistributionTable>
 </LootTables>

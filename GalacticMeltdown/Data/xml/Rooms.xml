@@ -403,7 +403,7 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="1" tile_id="floor" loot_id="weapon_distr_2"/>
+            <Tile char="1" tile_id="floor" loot_id="weapon_distr_1"/>
         </Terrain>
     </Room>
     <Room>

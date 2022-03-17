@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Xml;
 
 namespace GalacticMeltdown.Data;
-using TerrainInformation = Dictionary<char, (string tileId, string lootId, int lootChance)>;
+using TerrainInformation = Dictionary<char, (string tileId, string lootId, int lootChance, double gain, int limit)>;
 
 public class RoomDataExtractor : XmlExtractor
 {
@@ -72,6 +73,8 @@ public class RoomDataExtractor : XmlExtractor
             string tileId = "";
             string lootId = null;
             int lootChance = 100;
+            double gain = 0;
+            int limit = 100;
             foreach (XmlAttribute attribute in node.Attributes)
             {
                 switch (attribute.Name)
@@ -88,10 +91,16 @@ public class RoomDataExtractor : XmlExtractor
                     case "loot_chance":
                         lootChance = Convert.ToInt32(attribute.InnerText);
                         break;
+                    case "gain":
+                        gain = Convert.ToDouble(attribute.InnerText);
+                        break;
+                    case "limit":
+                        limit = Convert.ToInt32(attribute.InnerText);
+                        break;
                 }
             }
 
-            terrainInfo.Add(symbol, (tileId, lootId, lootChance));
+            terrainInfo.Add(symbol, (tileId, lootId, lootChance, gain, limit));
         }
 
         return terrainInfo;
@@ -117,17 +126,21 @@ public class RoomDataExtractor : XmlExtractor
             TileTypeData data;
             string lootTableId = null;
             int lootTableChance = 0;
+            int limit = 100;
+            double gain = 0;
             if (terrainInfo is not null && terrainInfo.ContainsKey(c))
             {
                 data = _tileTypes[terrainInfo[c].tileId];
                 lootTableId = terrainInfo[c].lootId;
                 lootTableChance = terrainInfo[c].lootChance;
+                gain = terrainInfo[c].gain;
+                limit = terrainInfo[c].limit;
             }
             else
             {
                 data = _tileTypes.Values.First(tileType => tileType.Symbol == c);
             }
-            roomInterior[i, 23 - j] = new TileInformation(data, lootTableId, lootTableChance);
+            roomInterior[i, 23 - j] = new TileInformation(data, lootTableId, lootTableChance, gain, limit);
             i++;
         }
 
@@ -143,11 +156,15 @@ public struct TileInformation
     public TileTypeData TileTypeData;
     public readonly string LootId;
     public readonly int LootChance;
+    public readonly double Gain;
+    public readonly int Limit;
 
-    public TileInformation(TileTypeData tileTypeData, string lootId, int lootChance)
+    public TileInformation(TileTypeData tileTypeData, string lootId, int lootChance, double gain, int limit)
     {
         TileTypeData = tileTypeData;
         LootId = lootId;
         LootChance = lootChance;
+        Gain = gain;
+        Limit = limit;
     }
 }
