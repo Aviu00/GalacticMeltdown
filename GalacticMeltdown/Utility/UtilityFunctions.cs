@@ -63,19 +63,21 @@ public static class UtilityFunctions
 
         return builder.ToString();
     }
-    
+
     public static void AddItemOnMap(ItemDictionary items, Item item, int amount, int x, int y, bool copy)
     {
         Func<Item> func = copy ? () => Item.CreateItem(item) : () => item;
         AddItemOnMap(items, func, amount, x, y, item.Id);
     }
+
     public static void AddItemOnMap(ItemDictionary items, ItemData data, int amount, int x, int y)
     {
         AddItemOnMap(items, () => Item.CreateItem(data), amount, x, y, data.Id);
     }
+
     private static void AddItemOnMap(ItemDictionary items, Func<Item> getItem, int amount, int x, int y, string id)
     {
-        if(amount <= 0) return;
+        if (amount <= 0) return;
         List<(Item item, int amount)> itemsList;
         if (items.ContainsKey((x, y)))
         {
@@ -96,5 +98,12 @@ public static class UtilityFunctions
         }
 
         itemsList.Add((getItem(), amount));
+    }
+
+    public static double GetDistance(int x0, int y0, int x1, int y1)
+    {
+        int xDist = x1 - x0;
+        int yDist = y1 - y0;
+        return Math.Sqrt(xDist * xDist + yDist * yDist);
     }
 }

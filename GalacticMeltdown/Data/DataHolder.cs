@@ -15,7 +15,8 @@ public static class DataHolder
     public static readonly Dictionary<string, TileTypeData> TileTypes;
     public static readonly Dictionary<string, ItemData> ItemDatas;
     public static readonly Dictionary<string, ILoot> LootTables;
-
+    public static readonly Dictionary<string, EnemyTypeData> EnemyTypes;
+    
     public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {
         {"white", ConsoleColor.White},
@@ -112,6 +113,7 @@ public static class DataHolder
     static DataHolder()
     {
         TileTypes = new TileTypesExtractor().TileTypes;
+        EnemyTypes = new EnemyTypesExtractor().EnemiesTypes;
         Rooms = new RoomDataExtractor(TileTypes).Rooms;
         ItemDatas = new ItemDataExtractor().ItemData;
         LootTables = new LootTableDataExtractor().LootTables;

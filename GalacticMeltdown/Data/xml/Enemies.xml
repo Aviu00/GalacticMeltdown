@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EnemiesTypes>
+    <EnemyType>
+        <Id>melee</Id>
+        <Name>guard</Name>
+        <Symbol>W</Symbol>
+        <Color>red</Color>
+        <BgColor>black</BgColor>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>100</MaxEnergy>
+        <Dexterity >10</Dexterity >
+        <Defence>10</Defence>
+        <ViewRange>15</ViewRange>
+    </EnemyType>
+    <EnemyType>
+        <Id>range</Id>
+        <Name>gunner</Name>
+        <Symbol>R</Symbol>
+        <Color>magenta</Color>
+        <BgColor>black</BgColor>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>100</MaxEnergy>
+        <Dexterity >10</Dexterity >
+        <Defence>10</Defence>
+        <ViewRange>15</ViewRange>
+    </EnemyType>
+</EnemiesTypes>
