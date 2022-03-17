@@ -95,7 +95,6 @@ public class MovementStrategy : Behavior
             else
                 SetPathTo(_wantsToGoTo.Value.x, _wantsToGoTo.Value.y);
         }
-        
         if (_wantsToGoTo is null && UtilityFunctions.Chance(60)) //for idle movement
         {
             ControlledNpc.StopTurn();
