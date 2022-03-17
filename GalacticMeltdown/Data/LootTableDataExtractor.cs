@@ -128,9 +128,9 @@ public class LootTableDataExtractor : XmlExtractor
     }
     
 }
-public readonly record struct LootTable(string Id, bool IsCollection, TableItems Items) : ILoot;
+public record LootTable(string Id, bool IsCollection, TableItems Items) : ILoot;
 
-public readonly record struct ItemLoot(string Id, string ItemId, int Min, int Max, double Gain, int Limit)
+public record ItemLoot(string Id, string ItemId, int Min, int Max, double Gain, int Limit)
     : ILoot;
 
 public interface ILoot { }

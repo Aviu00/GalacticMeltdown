@@ -148,7 +148,7 @@ public class RoomDataExtractor : XmlExtractor
     }
 }
 
-public readonly record struct Room(TileInformation[,] RoomInterior, int Type, int Chance, bool RotationalSymmetry,
+public record Room(TileInformation[,] RoomInterior, int Type, int Chance, bool RotationalSymmetry,
     bool CentralSymmetry);
 
 public struct TileInformation

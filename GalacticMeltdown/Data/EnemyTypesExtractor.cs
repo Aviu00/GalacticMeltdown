@@ -77,5 +77,5 @@ public class EnemyTypesExtractor : XmlExtractor
 
     }
 }
-public readonly record struct EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
+public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
     ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost);
