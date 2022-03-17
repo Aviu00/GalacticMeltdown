@@ -3,7 +3,6 @@ using System.Linq;
 using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
-using System;
 
 namespace GalacticMeltdown.Actors;
 
@@ -44,7 +43,7 @@ public abstract class Npc : Actor
             }
         }*/
         return Algorithms.BresenhamGetPointsOnLine(X, Y, x, y)
-            .All(coord => Level.GetTile(coord.x, coord.y).IsTransparent is true);
+            .All(coord => Level.GetTile(coord.x, coord.y).IsTransparent);
 
         //return true;
     }
