@@ -19,6 +19,7 @@ public class Enemy : Npc
     {
         _typeData = typeData;
     }
+    // for debugging 
     /*public Enemy(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level, 
         SortedSet<Behavior> behaviors) : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level, behaviors)
     {
@@ -29,9 +30,11 @@ public class Enemy : Npc
     
 
     public (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
+    // for debugging 
     //public (char symbol, ConsoleColor color) SymbolData { get; set; }
     public string Name => _typeData.Name;
     public ConsoleColor BgColor => _typeData.BgColor;
+    // for debugging 
     //public ConsoleColor BgColor { get; set; }
 
     public override void TakeAction()

@@ -23,7 +23,6 @@ public class MovementStrategy : Behavior
         foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
         {
             if (_level.GetTile(xi, yi).IsWalkable)
-                /*(_level.GetNonTileObject(nextDot.Item1, nextDot.Item2) is not null &&*/
             {
                 neighboursWithMoveCosts.Add(((xi, yi), _level.GetTile(xi, yi).MoveCost));
             }
@@ -40,7 +39,6 @@ public class MovementStrategy : Behavior
         {
             _nextPathCellNode = null;
             return;
-            // remove start and finish points to simplify implementation
         }
 
         path.RemoveFirst();
@@ -60,7 +58,7 @@ public class MovementStrategy : Behavior
         }
         else if (_nextPathCellNode is null)
         {
-            // there is place for idle movement
+            // TODO: idle movement
             return false;
         }
         else if (!(_level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
