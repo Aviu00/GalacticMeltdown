@@ -5,7 +5,6 @@ using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
-using GalacticMeltdown.MapGeneration;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.LevelRelated;
