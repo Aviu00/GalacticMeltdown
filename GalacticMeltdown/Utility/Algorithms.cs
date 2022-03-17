@@ -150,4 +150,43 @@ public static class Algorithms
             coords.Add((x, y));
         }
     }
+    
+    public  static LinkedList<(int, int)> AStar(int x0, int y0, int x1, int y1,
+        Func<int, int, List<((int, int), int)>> getNeighbors)
+    {
+        LinkedList<(int, int)> path = new LinkedList<(int, int)>();
+        PriorityQueue<(int, int), int> pendingPoints = new PriorityQueue<(int, int), int>();
+        Dictionary<(int, int), (int, int)?> previousNodes = new Dictionary<(int, int), (int, int)?>();
+        Dictionary<(int, int), int> minCosts = new Dictionary<(int, int), int>();
+        pendingPoints.Enqueue((x0, y0), 0);
+        previousNodes[(x0, y0)] = null;
+        minCosts[(x0, y0)] = 0;
+        while (pendingPoints.Count > 0)
+        {
+            (int x, int y) currenPoint = pendingPoints.Dequeue();
+            if (currenPoint == (x1, y1))
+            {
+                (int, int) goal = (x1, y1);
+                path.AddFirst(goal);
+                while (goal != (x0, y0))
+                {
+                    goal = (previousNodes[goal].Value.Item1, previousNodes[goal].Value.Item2);
+                    path.AddFirst(goal);
+                }
+                return path;
+            }
+            foreach (((int x, int y), int moveCost) in getNeighbors.Invoke(currenPoint.x, currenPoint.y))
+            {
+                int newCost = moveCost + minCosts[currenPoint];
+                if (!minCosts.TryGetValue((x, y), out int oldCost) || newCost < oldCost)
+                {
+                    minCosts[(x, y)] = newCost;
+                    int priority = newCost + (int)UtilityFunctions.GetDistance(x, y, x1, y1);
+                    pendingPoints.Enqueue((x, y), priority);
+                    previousNodes[(x, y)] = currenPoint;
+                }
+            }
+        }
+        return null;
+    }
 }

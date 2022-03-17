@@ -7,6 +7,7 @@
         <Color>white</Color>
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
+        <MoveCost>10</MoveCost>
     </TileType>
     <TileType>
         <Id>nospawnfloor</Id>
@@ -15,6 +16,7 @@
         <Color>white</Color>
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
+        <MoveCost>10</MoveCost>
     </TileType>
     <TileType>
         <Id>void</Id>
@@ -58,5 +60,6 @@
         <Color>blue</Color>
         <IsTransparent>True</IsTransparent>
         <IsWalkable>True</IsWalkable>
+        <TileMovecost>20</TileMovecost>
     </TileType>
 </TileTypes>

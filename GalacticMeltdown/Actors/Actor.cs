@@ -8,12 +8,13 @@ namespace GalacticMeltdown.Actors;
 public abstract class Actor : IObjectOnMap
 {
     private bool _turnStopped;
-    
+
     protected int _viewRange;
 
     public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
     private readonly LimitedNumber _hpLim;
+
     protected int Hp
     {
         get => _hpLim.Value;
@@ -25,7 +26,8 @@ public abstract class Actor : IObjectOnMap
     }
 
     private readonly LimitedNumber _energyLim;
-    private int Energy
+
+    public int Energy
     {
         get => _energyLim.Value;
         set
@@ -41,8 +43,8 @@ public abstract class Actor : IObjectOnMap
     public int X { get; private set; }
     public int Y { get; private set; }
 
-    public (char symbol, ConsoleColor color) SymbolData { get; protected init; }
-    public ConsoleColor? BgColor { get; protected init; }
+    public virtual (char symbol, ConsoleColor color) SymbolData { get; protected init; }
+    public virtual ConsoleColor? BgColor { get; protected init; }
 
     protected Level Level { get; }
 
@@ -50,7 +52,7 @@ public abstract class Actor : IObjectOnMap
     public event EventHandler SpentEnergy;
     public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
-    
+
     protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
     {
         Level = level;
@@ -63,7 +65,7 @@ public abstract class Actor : IObjectOnMap
         Y = y;
         _turnStopped = false;
     }
-    
+
     public virtual void Hit(Actor hitter, int damage)
     {
         Hp -= damage;
@@ -76,7 +78,7 @@ public abstract class Actor : IObjectOnMap
         _turnStopped = false;
         Energy += _energyLim.MaxValue;
     }
-    
+
     public void StopTurn() => _turnStopped = true;
 
     protected void MoveTo(int x, int y)
@@ -86,7 +88,7 @@ public abstract class Actor : IObjectOnMap
         Y = y;
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
-    
+
     protected void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
 
     public abstract void TakeAction();

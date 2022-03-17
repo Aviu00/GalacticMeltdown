@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Actors;
 
@@ -7,15 +6,15 @@ namespace GalacticMeltdown.Behaviors;
 public abstract class Behavior
 {
     protected int _priority;
-    protected Npc Target { get; private set;  }
+    protected Npc ControlledNpc { get; private set; }
 
     public void SetTarget(Npc target)
     {
-        Target ??= target;
+        ControlledNpc ??= target;
     }
 
     public abstract bool TryAct();
-    
+
     public class BehaviorComparer : IComparer<Behavior>
     {
         public int Compare(Behavior x, Behavior y)
