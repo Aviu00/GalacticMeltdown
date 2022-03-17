@@ -43,8 +43,8 @@ public abstract class Actor : IObjectOnMap
     public int X { get; private set; }
     public int Y { get; private set; }
 
-    public (char symbol, ConsoleColor color) SymbolData { get; protected init; }
-    public ConsoleColor? BgColor { get; protected init; }
+    public virtual (char symbol, ConsoleColor color) SymbolData { get; protected init; }
+    public virtual ConsoleColor? BgColor { get; protected init; }
 
     protected Level Level { get; }
 

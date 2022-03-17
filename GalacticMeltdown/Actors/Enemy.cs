@@ -29,11 +29,11 @@ public class Enemy : Npc
     }*/
     
 
-    public (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
+    public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     // for debugging 
     //public (char symbol, ConsoleColor color) SymbolData { get; set; }
     public string Name => _typeData.Name;
-    public ConsoleColor BgColor => _typeData.BgColor;
+    public override ConsoleColor? BgColor => _typeData.BgColor;
     // for debugging 
     //public ConsoleColor BgColor { get; set; }
 
