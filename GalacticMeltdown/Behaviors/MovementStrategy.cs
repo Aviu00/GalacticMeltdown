@@ -22,7 +22,8 @@ public class MovementStrategy : Behavior
         List<((int, int), int)> neighboursWithMoveCosts = new List<((int, int), int)>();
         foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
         {
-            if (_level.GetTile(xi, yi).IsWalkable)
+            if (_level.GetTile(xi, yi).IsWalkable &&
+                (!(x == ControlledNpc.X && y == ControlledNpc.Y)) || _level.GetNonTileObject(xi, yi) is null)
             {
                 neighboursWithMoveCosts.Add(((xi, yi), _level.GetTile(xi, yi).MoveCost));
             }
