@@ -28,18 +28,12 @@ public abstract class Npc : Actor
             return false;
         }
 
-        /*
-        foreach (var coords in Algorithms.BresenhamGetPointsOnLine(this.X, this.Y, x, y))
-        {
-            if (!Level.GetTile(coords.x, coords.y).IsTransparent)
-            {
-                return false;
-            }
-        }*/
         return Algorithms.BresenhamGetPointsOnLine(X, Y, x, y)
-            .All(coord => Level.GetTile(coord.x, coord.y).IsTransparent);
-
-        //return true;
+            .All(coord =>
+            {
+                Tile tile = Level.GetTile(coord.x, coord.y);
+                return tile is not null && Level.GetTile(coord.x, coord.y).IsTransparent;
+            });
     }
 
     public void MoveNpcTo(int x, int y)

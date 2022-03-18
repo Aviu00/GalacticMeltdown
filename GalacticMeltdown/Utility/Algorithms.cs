@@ -163,8 +163,8 @@ public static class Algorithms
         minCosts[(x0, y0)] = 0;
         while (pendingPoints.Count > 0)
         {
-            (int x, int y) currenPoint = pendingPoints.Dequeue();
-            if (currenPoint == (x1, y1))
+            (int x, int y) currentPoint = pendingPoints.Dequeue();
+            if (currentPoint == (x1, y1))
             {
                 (int, int) goal = (x1, y1);
                 path.AddFirst(goal);
@@ -175,14 +175,14 @@ public static class Algorithms
                 }
                 return path;
             }
-            foreach ((int x, int y, int moveCost) in getNeighbors.Invoke(currenPoint.x, currenPoint.y))
+            foreach ((int x, int y, int moveCost) in getNeighbors(currentPoint.x, currentPoint.y))
             {
-                int newCost = moveCost + minCosts[currenPoint];
+                int newCost = moveCost + minCosts[currentPoint];
                 if (minCosts.TryGetValue((x, y), out int oldCost) && newCost >= oldCost) continue;
                 minCosts[(x, y)] = newCost;
                 int priority = newCost + (int)UtilityFunctions.GetDistance(x, y, x1, y1);
                 pendingPoints.Enqueue((x, y), priority);
-                previousNodes[(x, y)] = currenPoint;
+                previousNodes[(x, y)] = currentPoint;
             }
         }
         return null;

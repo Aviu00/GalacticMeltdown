@@ -15,19 +15,35 @@ public class MovementStrategy : Behavior
     private (int x, int y)? _wantsToGoTo;
     private LinkedListNode<(int x, int y)> _nextPathCellNode;
     private LinkedList<(int x, int y)> _chunkPath;
+    private readonly Counter _previousTargetCounter;
+    private Actor _previousTarget;
+    
+    public Actor PreviousTarget
+    {
+        get => _previousTarget;
+        set
+        {
+            if(value is not null)
+                _previousTargetCounter.ResetTimer();
+            _previousTarget = value;
+        }
+    }
 
     public MovementStrategy(MovementStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         ControlledNpc = controlledNpc;
+        _previousTargetCounter = new Counter(Level, 5, _ => _nextPathCellNode = null);
+        _previousTargetCounter.StopTimer();
     }
 
     private IEnumerable<(int, int, int)> GetNeighbors(int x, int y)
     {
         foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
         {
-            Tile tile = Level.GetTile(xi, yi);
-            if (tile is null || !tile.IsWalkable || !_chunkPath.Contains(Level.GetChunkCoords(xi, yi)) ||
-                !(!(x == ControlledNpc.X && y == ControlledNpc.Y) || Level.GetNonTileObject(xi, yi) is null))
+            (int, int) chunkCoords = Level.GetChunkCoords(xi, yi);
+            Tile tile = Level.GetTile(xi, yi, chunkCoords);
+            if (tile is null || !tile.IsWalkable || !_chunkPath.Contains(chunkCoords) ||
+                x == ControlledNpc.X && y == ControlledNpc.Y && Level.GetNonTileObject(xi, yi) is not null)
                 continue;
             yield return (xi, yi, tile.MoveCost);
         }
@@ -42,7 +58,6 @@ public class MovementStrategy : Behavior
             _nextPathCellNode = null;
             return;
         }
-        _wantsToGoTo = (x, y);
         var path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, x, y, GetNeighbors);
         if (path is null || path.Count < 3)
         {
@@ -63,29 +78,45 @@ public class MovementStrategy : Behavior
             Level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
         {
             if (_wantsToGoTo != (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
+            {
                 SetPathTo(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
+                _wantsToGoTo = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
+            }
+            PreviousTarget = ControlledNpc.CurrentTarget;
         }
         else if (_nextPathCellNode is null)
         {
-            // idle movement
-            var neighboringChunks = Level.GetChunkNeighbors(Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkX, 
-                Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkY, returnNotActiveChunks: false).ToList();
-            var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
-            var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
-            (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
-            SetPathTo(randomPoint.x, randomPoint.y);
+            CalculateIdleMovementPath();
         }
-        else if (!(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
-                   Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable))
+        else if (Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null)
         {
-            SetPathTo(_wantsToGoTo!.Value.x, _wantsToGoTo!.Value.y);
+            if(_wantsToGoTo is null)
+                CalculateIdleMovementPath();
+            else
+                SetPathTo(_wantsToGoTo.Value.x, _wantsToGoTo.Value.y);
         }
 
+        if (_wantsToGoTo is null && UtilityFunctions.Chance(60)) //for idle movement
+        {
+            ControlledNpc.StopTurn();
+            return true;
+        }
         if (_nextPathCellNode is null ||
             !Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable) return false;
         ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         _nextPathCellNode = _nextPathCellNode.Next;
         if (_nextPathCellNode is null) _wantsToGoTo = null;
         return true;
+    }
+
+    private void CalculateIdleMovementPath()
+    {
+        _wantsToGoTo = null;
+        (int x, int y) = Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y);
+        var neighboringChunks = Level.GetChunkNeighbors(x, y, returnNotActiveChunks: false).ToList();
+        var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
+        var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
+        (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
+        SetPathTo(randomPoint.x, randomPoint.y);
     }
 }
