@@ -18,6 +18,23 @@ public static class InputProcessor
     private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
 
+    public static void TakeControl(object sender)
+    {
+        if (!_objectHandlers.ContainsKey(sender)) return;
+        
+        KeyHandler controller = _objectHandlers[sender];
+        if (_dormantHandlers.Contains(controller))
+        {
+            _dormantHandlers.Remove(controller);
+            _controllingHandler = controller;
+        }
+        else if (_activeHandlers.Contains(controller))
+        {
+            _activeHandlers.Remove(controller);
+            _controllingHandler = controller;
+        }
+    }
+
     public static void SetController(object sender, KeyHandler controller)
     {
         if (_objectHandlers.ContainsKey(sender))
