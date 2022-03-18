@@ -46,7 +46,7 @@ public abstract class Actor : IObjectOnMap
     public virtual (char symbol, ConsoleColor color) SymbolData { get; protected init; }
     public virtual ConsoleColor? BgColor { get; protected init; }
 
-    protected Level Level { get; }
+    public Level Level { get; }
 
     public event EventHandler Died;
     public event EventHandler SpentEnergy;

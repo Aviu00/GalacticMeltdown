@@ -12,6 +12,13 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>20</Cost>
+        <Behaviors>
+            <Movement/>
+            <MeleeAttack>
+                <MinDamage>5</MinDamage>
+                <MaxDamage>20</MaxDamage>
+            </MeleeAttack>
+        </Behaviors>
     </EnemyType>
     <EnemyType>
         <Id>claw</Id>
@@ -25,6 +32,13 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>30</Cost>
+        <Behaviors>
+            <Movement/>
+            <MeleeAttack>
+                <MinDamage>5</MinDamage>
+                <MaxDamage>20</MaxDamage>
+            </MeleeAttack>
+        </Behaviors>
     </EnemyType>
     <EnemyType>
         <Id>elite</Id>
@@ -38,6 +52,13 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>100</Cost>
+        <Behaviors>
+            <Movement/>
+            <MeleeAttack>
+                <MinDamage>5</MinDamage>
+                <MaxDamage>20</MaxDamage>
+            </MeleeAttack>
+        </Behaviors>
     </EnemyType>
     <EnemyType>
         <Id>ripper</Id>
@@ -51,5 +72,12 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>500</Cost>
+        <Behaviors>
+            <Movement/>
+            <MeleeAttack>
+                <MinDamage>5</MinDamage>
+                <MaxDamage>20</MaxDamage>
+            </MeleeAttack>
+        </Behaviors>
     </EnemyType>
 </EnemiesTypes>

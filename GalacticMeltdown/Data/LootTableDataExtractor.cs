@@ -9,7 +9,6 @@ public class LootTableDataExtractor : XmlExtractor
 {
     public readonly Dictionary<string, ILoot> LootTables;
 
-
     public LootTableDataExtractor()
     {
         LootTables = new Dictionary<string, ILoot>();
@@ -69,6 +68,7 @@ public class LootTableDataExtractor : XmlExtractor
                     break;
             }
         }
+
         LootTables.Add(id, new ItemLoot(id, itemId, min, max, gain, limit));
     }
 
@@ -121,13 +121,14 @@ public class LootTableDataExtractor : XmlExtractor
                         break;
                 }
             }
+
             items.Add((id, chance, gain, limit));
         }
 
         return items;
     }
-    
 }
+
 public record LootTable(string Id, bool IsCollection, TableItems Items) : ILoot;
 
 public record ItemLoot(string Id, string ItemId, int Min, int Max, double Gain, int Limit)

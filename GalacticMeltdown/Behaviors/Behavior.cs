@@ -5,13 +5,15 @@ namespace GalacticMeltdown.Behaviors;
 
 public abstract class Behavior
 {
-    protected int _priority;
-    protected Npc ControlledNpc { get; private set; }
+    private readonly int _priority;
 
-    public void SetTarget(Npc target)
+    protected Behavior(int priority)
     {
-        ControlledNpc ??= target;
+        _priority = priority;
     }
+
+    protected Npc ControlledNpc { get; init; }
+
 
     public abstract bool TryAct();
 

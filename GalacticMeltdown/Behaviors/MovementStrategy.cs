@@ -1,5 +1,7 @@
 using GalacticMeltdown.LevelRelated;
 using System.Collections.Generic;
+using GalacticMeltdown.Actors;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Behaviors;
@@ -7,22 +9,21 @@ namespace GalacticMeltdown.Behaviors;
 public class MovementStrategy : Behavior
 {
     private const int DefaultPriority = 10;
-    private readonly Level _level;
+    private Level Level => ControlledNpc.Level;
     private (int x, int y)? _wantsToGoTo;
     private LinkedListNode<(int x, int y)> _nextPathCellNode;
     private LinkedList<(int x, int y)> _chunkPath;
 
-    public MovementStrategy(Level level, int priority = DefaultPriority)
+    public MovementStrategy(MovementStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
-        _priority = priority;
-        _level = level;
+        ControlledNpc = controlledNpc;
     }
 
     private IEnumerable<(int, int, int)> GetNeighbors(int x, int y)
     {
         foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
         {
-            Tile tile = _level.GetTile(xi, yi);
+            Tile tile = Level.GetTile(xi, yi);
             if (tile is null || !tile.IsWalkable || !_chunkPath.Contains(Level.GetChunkCoords(xi, yi))) continue;
             yield return (xi, yi, tile.MoveCost);
         }
@@ -30,7 +31,7 @@ public class MovementStrategy : Behavior
 
     private void SetPathTo(int x, int y)
     {
-        _chunkPath = _level.GetPathBetweenChunks(ControlledNpc.X, ControlledNpc.Y, x, y);
+        _chunkPath = Level.GetPathBetweenChunks(ControlledNpc.X, ControlledNpc.Y, x, y);
         if (_chunkPath is null)
         {
             _wantsToGoTo = null;
@@ -55,7 +56,7 @@ public class MovementStrategy : Behavior
     {
         // setting wantsToGoTo point
         if (ControlledNpc.CurrentTarget is not null &&
-            _level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
+            Level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
         {
             if (_wantsToGoTo != (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
                 SetPathTo(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
@@ -65,8 +66,8 @@ public class MovementStrategy : Behavior
             // TODO: idle movement
             return false;
         }
-        else if (!(_level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
-                   _level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable))
+        else if (!(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
+                   Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable))
         {
             SetPathTo(_wantsToGoTo!.Value.x, _wantsToGoTo!.Value.y);
         }

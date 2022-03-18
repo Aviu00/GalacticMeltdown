@@ -50,7 +50,7 @@ public abstract class Npc : Actor
 
     public override void TakeAction()
     {
-        Behaviors.Any(behavior => behavior.TryAct());
+        Behaviors?.Any(behavior => behavior.TryAct());
     }
 
     public override int GetHashCode()

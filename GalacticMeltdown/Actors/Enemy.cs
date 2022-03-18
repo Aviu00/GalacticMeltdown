@@ -22,12 +22,21 @@ public class Enemy : Npc
     {
         _typeData = typeData;
 
-        //temp
-        Targets = new() {level.Player};
-        Behaviors = new SortedSet<Behavior>(new Behavior.BehaviorComparer()) {new MovementStrategy(level)};
-        foreach (Behavior behavior in Behaviors)
+        Targets = new() {level.Player};//temp
+        
+        if(typeData.Behaviors == null) return;
+        Behaviors = new SortedSet<Behavior>(new Behavior.BehaviorComparer());
+        foreach (BehaviorData behaviorData in _typeData.Behaviors)
         {
-            behavior.SetTarget(this);
+            Behavior behavior = behaviorData switch
+            {
+                MovementStrategyData movementStrategyData => new MovementStrategy(movementStrategyData, this),
+                MeleeAttackStrategyData meleeAttackStrategyData => null, //not yet implemented
+                _ => null
+            };
+            
+            if(behavior is null) continue;
+            Behaviors.Add(behavior);
         }
     }
 

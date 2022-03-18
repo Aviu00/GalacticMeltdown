@@ -29,6 +29,7 @@ public class EnemyTypesExtractor : XmlExtractor
             int dexterity  = 0;
             int viewRange = 1;
             int cost = 10;
+            LinkedList<BehaviorData> behaviors = null;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -66,16 +67,80 @@ public class EnemyTypesExtractor : XmlExtractor
                     case "Cost":
                         cost = Convert.ToInt32(locNode.InnerText);
                         break;
+                    case "Behaviors":
+                        behaviors = ParseBehaviors(locNode);
+                        break;
                 }
             }
 
-            //log an error if id is null or TileTypes contains id
             EnemyTypeData enemiesTypeData = new EnemyTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy, 
-                defence, dexterity , viewRange, cost);
+                defence, dexterity , viewRange, cost, behaviors);
             EnemiesTypes.Add(enemiesTypeData.Id, enemiesTypeData);
         }
+    }
 
+    private LinkedList<BehaviorData> ParseBehaviors(XmlNode node)
+    {
+        LinkedList<BehaviorData> behaviors = new();
+        foreach (XmlNode locNode in node)
+        {
+            switch (locNode.Name)
+            {
+                case "Movement":
+                    behaviors.AddLast(ParseMovementStrategyData(locNode));
+                    break;
+                case "MeleeAttack":
+                    behaviors.AddLast(ParseMeleeAttackStrategyData(locNode));
+                    break;
+            }
+        }
+
+        return behaviors;
+    }
+
+    private BehaviorData ParseMovementStrategyData(XmlNode node)
+    {
+        int? priority = null;
+        if (node.ChildNodes.Count > 0 && node.ChildNodes[0]?.Name == "Priority")
+            priority = Convert.ToInt32(node.ChildNodes[0].InnerText);
+        return new MovementStrategyData(priority);
+    }
+
+    private BehaviorData ParseMeleeAttackStrategyData(XmlNode node)
+    {
+        int? priority = null;
+        int minDamage = 0;
+        int maxDamage = 0;
+        int cooldown = 0;
+        foreach (XmlNode locNode in node)
+        {
+            switch (node.Name)
+            {
+                case "Priority":
+                    priority = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "MinDamage":
+                    minDamage = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "MaxDamage":
+                    maxDamage = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "Cooldown":
+                    cooldown = Convert.ToInt32(locNode.InnerText);
+                    break;
+            }
+        }
+
+        return new MeleeAttackStrategyData(priority, minDamage, maxDamage, cooldown);
     }
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
-    ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost);
+    ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost,
+    LinkedList<BehaviorData> Behaviors);
+
+public record BehaviorData(int? Priority);
+
+public record MovementStrategyData(int? Priority) : BehaviorData(Priority);
+
+public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown)
+    : BehaviorData(Priority);
