@@ -35,9 +35,7 @@ public partial class PlaySession
 
     public void Start()
     {
-        Renderer.AddViewTemp(_levelView, (0, 0, 0.8, 1));
-        Renderer.AddViewTemp(_level.OverlayView, (0.8, 0, 1, 1));
-        Renderer.Redraw();
+        Renderer.AddViewTemp(new MainScreenView(_levelView, _level.OverlayView));
         _sessionActive = true;
         while (_sessionActive)
         {
