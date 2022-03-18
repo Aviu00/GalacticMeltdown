@@ -105,9 +105,11 @@ public class InputProcessor
             Forget(child);
         }
 
-        _children[_children[sender].parent].children.Remove(sender);
         _children.Remove(sender);
         _objectHandlers.Remove(sender);
+        object parent = _children[sender].parent;
+        if (parent is null) return;
+        _children[parent].children.Remove(sender);
     }
 
     private void RemoveCurrentController()
