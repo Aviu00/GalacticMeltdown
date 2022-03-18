@@ -69,7 +69,7 @@ public class MovementStrategy : Behavior
         {
             // idle movement
             var neighboringChunks = Level.GetChunkNeighbors(Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkX, 
-                Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkY).ToList();
+                Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkY, returnNotActiveChunks: false).ToList();
             var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
             var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
             (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
