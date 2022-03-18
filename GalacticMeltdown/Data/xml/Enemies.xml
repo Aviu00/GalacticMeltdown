@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<EnemiesTypes>
-    <EnemyType>
+<Enemies>
+    <Enemy>
         <Id>rotten</Id>
         <Name>rotten</Name>
         <Symbol>W</Symbol>
@@ -19,8 +19,8 @@
                 <MaxDamage>20</MaxDamage>
             </MeleeAttack>
         </Behaviors>
-    </EnemyType>
-    <EnemyType>
+    </Enemy>
+    <Enemy>
         <Id>claw</Id>
         <Name>claw</Name>
         <Symbol>R</Symbol>
@@ -39,8 +39,8 @@
                 <MaxDamage>20</MaxDamage>
             </MeleeAttack>
         </Behaviors>
-    </EnemyType>
-    <EnemyType>
+    </Enemy>
+    <Enemy>
         <Id>elite</Id>
         <Name>elite</Name>
         <Symbol>E</Symbol>
@@ -59,8 +59,8 @@
                 <MaxDamage>20</MaxDamage>
             </MeleeAttack>
         </Behaviors>
-    </EnemyType>
-    <EnemyType>
+    </Enemy>
+    <Enemy>
         <Id>ripper</Id>
         <Name>ripper</Name>
         <Symbol>R</Symbol>
@@ -79,5 +79,5 @@
                 <MaxDamage>20</MaxDamage>
             </MeleeAttack>
         </Behaviors>
-    </EnemyType>
-</EnemiesTypes>
+    </Enemy>
+</Enemies>

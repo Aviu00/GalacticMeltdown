@@ -392,5 +392,14 @@ public partial class Level
         }
     }
 
+    public bool InteractWithDoor(int x, int y, Actor actor = null)
+    {
+        Tile tile = GetTile(x, y);
+        if (tile is null || !tile.IsDoor || GetNonTileObject(x, y) is not null) return false;
+        tile.InteractWithDoor();
+        if(actor is not null) actor.Energy -= 100;
+        return true;
+    }
+    
     private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
 }

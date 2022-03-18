@@ -1,91 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TileTypes>
-    <TileType>
+<Tiles>
+    <Tile>
         <Id>wall_floor_north</Id>
         <Symbol>N</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_wall_north</Id>
         <Symbol>n</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall_floor_east</Id>
         <Symbol>E</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_wall_east</Id>
         <Symbol>e</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall_floor_south</Id>
         <Symbol>S</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_wall_south</Id>
         <Symbol>s</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall_floor_west</Id>
         <Symbol>W</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_wall_west</Id>
         <Symbol>w</Symbol>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_void_north</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall_void_north</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_void_east</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall_void_east</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_void_south</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall_void_south</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_void_west</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall_void_west</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_water_north</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_water_east</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_water_south</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>floor_water_west</Id>
         <IsDependingOnRoomConnection>True</IsDependingOnRoomConnection>
-    </TileType>
-</TileTypes>
+    </Tile>
+</Tiles>
