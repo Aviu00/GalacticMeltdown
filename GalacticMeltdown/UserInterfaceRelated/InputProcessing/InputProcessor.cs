@@ -18,14 +18,14 @@ public class InputProcessor
     private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
 
-    public static void AddChild(object parent, object child)
+    public void AddChild(object parent, object child)
     {
         if (!_children.ContainsKey(parent)) return;
         _children[parent].children.Add(child);
         _children.Add(child, (parent, new HashSet<object>()));
     }
 
-    public static void SetRoot(object root)
+    public void SetRoot(object root)
     {
         _children = new Dictionary<object, (object parent, HashSet<object> children)>
         {
@@ -33,7 +33,7 @@ public class InputProcessor
         };
     }
 
-    public static void YieldControl(object sender)
+    public void YieldControl(object sender)
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
         
@@ -43,7 +43,7 @@ public class InputProcessor
         _controllingHandler = controller;
     }
 
-    public static void TakeControl(object sender)
+    public void TakeControl(object sender)
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
         
@@ -60,7 +60,7 @@ public class InputProcessor
         }
     }
 
-    public static void SetController(object sender, KeyHandler controller)
+    public void SetController(object sender, KeyHandler controller)
     {
         if (_objectHandlers.ContainsKey(sender))
         {
@@ -77,7 +77,7 @@ public class InputProcessor
         _dormantHandlers.Add(controller);
     }
 
-    public static void Forget(object sender)
+    public void Forget(object sender)
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
         KeyHandler controller = _objectHandlers[sender];

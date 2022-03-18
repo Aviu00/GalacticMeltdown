@@ -27,7 +27,7 @@ public class Renderer
 
     private static Dictionary<object, (object parent, HashSet<object> children)> _children;
 
-    public static void SetView(object sender, View view)
+    public void SetView(object sender, View view)
     {
         if (_objectViews.ContainsKey(sender))
         {
@@ -39,7 +39,7 @@ public class Renderer
         AddView(view);
     }
 
-    private static void AddView(View view)
+    private void AddView(View view)
     {
         view.NeedRedraw += NeedRedrawHandler;
         view.CellsChanged += AddAnimation;
@@ -47,14 +47,14 @@ public class Renderer
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
     
-    public static void AddChild(object parent, object child)
+    public void AddChild(object parent, object child)
     {
         if (!_children.ContainsKey(parent)) return;
         _children[parent].children.Add(child);
         _children.Add(child, (parent, new HashSet<object>()));
     }
     
-    public static void SetRoot(object root)
+    public void SetRoot(object root)
     {
         _children = new Dictionary<object, (object parent, HashSet<object> children)>
         {
@@ -62,14 +62,14 @@ public class Renderer
         };
     }
     
-    public static void Forget(object sender)
+    public void Forget(object sender)
     {
         if (!_children.ContainsKey(sender)) return;
         ForgetInternal(sender);
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
-    private static void ForgetInternal(object sender)
+    private void ForgetInternal(object sender)
     {
         foreach (var child in _children[sender].children)
         {
