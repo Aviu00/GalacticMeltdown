@@ -24,7 +24,9 @@ public class MovementStrategy : Behavior
         foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
         {
             Tile tile = Level.GetTile(xi, yi);
-            if (tile is null || !tile.IsWalkable || !_chunkPath.Contains(Level.GetChunkCoords(xi, yi))) continue;
+            if (tile is null || !tile.IsWalkable || !_chunkPath.Contains(Level.GetChunkCoords(xi, yi)) ||
+                !(!(x == ControlledNpc.X && y == ControlledNpc.Y) || Level.GetNonTileObject(xi, yi) is null))
+                continue;
             yield return (xi, yi, tile.MoveCost);
         }
     }
