@@ -97,17 +97,18 @@ public partial class Level
     public bool DoTurn()
     {
         if (!IsActive) return false;
-
+        
+        List<Actor> inActiveChunks = GetActorsInActiveChunks();
         HashSet<Actor> involved = new();
+        foreach (Actor actor in inActiveChunks) WatchActor(actor);
+        
         _listener.NpcInvolvedInTurn += NpcInvolvedInTurnHandler;
 
         List<Actor> currentlyActive;
-        bool energySpent = false;
-        while ((currentlyActive = GetActive()).Any())
+        var energySpent = false;
+        while ((currentlyActive = GetActive(inActiveChunks)).Any())
         {
-            foreach (var actor in currentlyActive.Where(actor => !involved.Contains(actor))) WatchActor(actor);
-
-            foreach (var actor in currentlyActive)
+            foreach (Actor actor in currentlyActive)
             {
                 // A player may have reached the finish or died
                 if (!IsActive) return FinishMapTurn();
@@ -118,6 +119,9 @@ public partial class Level
             if (!energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
 
             energySpent = false;
+
+            inActiveChunks = GetActorsInActiveChunks();
+            foreach (Actor actor in inActiveChunks.Where(actor => !involved.Contains(actor))) WatchActor(actor);
         }
 
         return FinishMapTurn();
@@ -130,12 +134,17 @@ public partial class Level
             return IsActive;
         }
 
-        List<Actor> GetActive()
+        List<Actor> GetActive(IEnumerable<Actor> possiblyActive)
         {
-            return ControllableObjects.OfType<Actor>().Concat(GetNearbyNpcs()).Where(actor => actor.IsActive).ToList();
+            return possiblyActive.Where(actor => actor.IsActive).ToList();
         }
 
-        IEnumerable<Npc> GetNearbyNpcs()
+        List<Actor> GetActorsInActiveChunks()
+        {
+            return ControllableObjects.OfType<Actor>().Concat(GetActiveChunkNpcs()).ToList();
+        }
+
+        IEnumerable<Npc> GetActiveChunkNpcs()
         {
             return ActiveChunks.SelectMany(chunk => chunk.GetNpcs());
         }
