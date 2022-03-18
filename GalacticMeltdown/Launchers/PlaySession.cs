@@ -65,7 +65,7 @@ public partial class PlaySession
     {
         if (!_controlledObject.TryMove(deltaX, deltaY)) return;
         if (_controlledObject is Actor) GiveBackControl();
-        }
+    }
 
     private static void StopSession()
     {
