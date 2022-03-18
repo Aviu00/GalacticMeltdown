@@ -392,10 +392,11 @@ public partial class Level
         }
     }
 
-    public bool InteractWithDoor(int x, int y, Actor actor = null)
+    public bool InteractWithDoor(int x, int y, Actor actor = null, bool checkWalkable = false)
     {
         Tile tile = GetTile(x, y);
-        if (tile is null || !tile.IsDoor || GetNonTileObject(x, y) is not null) return false;
+        if (tile is null || !tile.IsDoor || GetNonTileObject(x, y) is not null || checkWalkable && !tile.IsWalkable) 
+            return false;
         tile.InteractWithDoor();
         if(actor is not null) actor.Energy -= 100;
         return true;

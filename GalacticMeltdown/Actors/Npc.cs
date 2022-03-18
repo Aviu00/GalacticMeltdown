@@ -44,7 +44,8 @@ public abstract class Npc : Actor
 
     public void MoveNpcTo(int x, int y)
     {
-        MoveTo(x, y);
+        if (!Level.InteractWithDoor(x, y, this, true))
+            MoveTo(x, y);
     }
 
     public override void TakeAction()
