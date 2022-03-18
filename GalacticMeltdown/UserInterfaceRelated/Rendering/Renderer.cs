@@ -123,12 +123,13 @@ public class Renderer
 
         _animations.Clear();
     }
-    
-    public static void AddView(View view, (double minXPos, double minYPos, double maxXPos, double maxYPos) position)
+
+    public static void AddViewTemp(View view,
+        (double minXPos, double minYPos, double maxXPos, double maxYPos)? position = null)
     {
         view.NeedRedraw += NeedRedrawHandler;
         view.CellsChanged += AddAnimation;
-        _viewsTemp.AddFirst(new ViewInfo(view, position));
+        _viewsTemp.AddFirst(new ViewInfo(view, position ?? view.WantedPosition ?? (0, 0, 1, 1)));
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
     

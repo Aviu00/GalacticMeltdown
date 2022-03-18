@@ -33,7 +33,7 @@ public static class Game
     private static void OpenMainMenu()
     {
         _menu = new MenuView();
-        Renderer.AddView(_menu, (0, 0, 1, 1));
+        Renderer.AddViewTemp(_menu, (0, 0, 1, 1));
         _menu.OpenBasicMenu(new Button("Select level", "", _menu.OpenLevelMenu), new Button("Quit", "", Quit));
     }
 
