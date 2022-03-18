@@ -32,6 +32,7 @@ public static class InputProcessor
         }
 
         _objectHandlers[sender] = controller;
+        _dormantHandlers.Add(controller);
     }
 
     public static void Forget(object sender)
@@ -44,6 +45,15 @@ public static class InputProcessor
         {
             RemoveCurrentController();
         }
+
+        foreach (var child in _children[sender].children)
+        {
+            Forget(child);
+        }
+
+        _children[_children[sender].parent].children.Remove(sender);
+        _children.Remove(sender);
+        _objectHandlers.Remove(sender);
     }
 
     private static void RemoveCurrentController()
