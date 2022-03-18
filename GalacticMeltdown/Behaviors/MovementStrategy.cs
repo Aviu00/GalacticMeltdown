@@ -70,11 +70,9 @@ public class MovementStrategy : Behavior
             // idle movement
             var neighboringChunks = Level.GetChunkNeighbors(Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkX, 
                 Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkY).ToList();
-            Random randomChunkIndex = new Random();
-            var randomChunk = neighboringChunks[randomChunkIndex.Next(neighboringChunks.Count)];
-            Random randomPointIndex = new Random();
+            var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
             var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
-            (int x, int y) randomPoint = randomChunkPoints[randomPointIndex.Next(randomChunkPoints.Count)];
+            (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
             SetPathTo(randomPoint.x, randomPoint.y);
         }
         else if (!(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
