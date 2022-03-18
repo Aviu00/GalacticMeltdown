@@ -224,7 +224,7 @@ public partial class Level
         {
             var (x, y) = GetChunkCoords(controllable.X, controllable.Y);
             bool active = 
-                Math.Abs(x - chunk.MapX) <= ActiveChunkRadius && Math.Abs(y - chunk.MapY) <= ActiveChunkRadius;
+                Math.Abs(x - chunk.MapX) <= ActiveChunkRadius + 1 && Math.Abs(y - chunk.MapY) <= ActiveChunkRadius + 1;
             if (!active)
                 chunk.isActive = false;
             return active;
@@ -325,11 +325,11 @@ public partial class Level
     private IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
     {
         for (int chunkX = Math.Max(chunkXCenter - radius, 0);
-             chunkX < Math.Min(chunkXCenter + radius, _chunks.GetLength(0));
+             chunkX < Math.Min(chunkXCenter + radius + 1, _chunks.GetLength(0));
              chunkX++)
         {
             for (int chunkY = Math.Max(chunkYCenter - radius, 0);
-                 chunkY < Math.Min(chunkYCenter + radius, _chunks.GetLength(1));
+                 chunkY < Math.Min(chunkYCenter + radius + 1, _chunks.GetLength(1));
                  chunkY++)
             {
                 yield return _chunks[chunkX, chunkY];
