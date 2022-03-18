@@ -6,7 +6,7 @@ using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.Rendering;
+namespace GalacticMeltdown.UserInterface.Rendering;
 
 internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, ConsoleColor BgColor);
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.InputProcessing;
+using GalacticMeltdown.UserInterface.InputProcessing;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Launchers;

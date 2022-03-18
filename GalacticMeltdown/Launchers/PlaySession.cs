@@ -1,8 +1,8 @@
 ﻿using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.InputProcessing;
 using GalacticMeltdown.LevelRelated;
-using GalacticMeltdown.Rendering;
+using GalacticMeltdown.UserInterface.InputProcessing;
+using GalacticMeltdown.UserInterface.Rendering;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Launchers;

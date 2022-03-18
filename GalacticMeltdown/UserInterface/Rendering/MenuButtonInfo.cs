@@ -1,4 +1,4 @@
-namespace GalacticMeltdown.Rendering;
+namespace GalacticMeltdown.UserInterface.Rendering;
 
 public class MenuButtonInfo
 {

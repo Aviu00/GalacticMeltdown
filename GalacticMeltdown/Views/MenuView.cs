@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
-using GalacticMeltdown.InputProcessing;
-using GalacticMeltdown.Rendering;
+using GalacticMeltdown.UserInterface.InputProcessing;
+using GalacticMeltdown.UserInterface.Rendering;
 
 namespace GalacticMeltdown.Views;
 
