@@ -27,7 +27,10 @@ public static class InputProcessor
 
     public static void SetRoot(object root)
     {
-        _children.Add(root, (null, new HashSet<object>()));
+        _children = new Dictionary<object, (object parent, HashSet<object> children)>
+        {
+            {root, (null, new HashSet<object>())}
+        };
     }
 
     public static void YieldControl(object sender)
