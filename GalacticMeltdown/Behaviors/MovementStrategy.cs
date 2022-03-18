@@ -67,7 +67,6 @@ public class MovementStrategy : Behavior
         }
         else if (_nextPathCellNode is null)
         {
-            
             CalculateIdleMovementPath();
         }
         else if (!(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
