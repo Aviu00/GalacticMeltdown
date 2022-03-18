@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GalacticMeltdown.UserInterface.InputProcessing;
+namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 public class TextInputHandler : KeyHandler
 {

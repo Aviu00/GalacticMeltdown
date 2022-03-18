@@ -1,4 +1,4 @@
-namespace GalacticMeltdown.UserInterface.InputProcessing;
+namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 public enum SelectionControl
 {

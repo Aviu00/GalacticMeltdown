@@ -5,7 +5,7 @@ using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Launchers;
 using GalacticMeltdown.LevelRelated;
-using GalacticMeltdown.UserInterface.Rendering;
+using GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 namespace GalacticMeltdown.Views;
 

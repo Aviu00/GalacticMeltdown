@@ -1,6 +1,6 @@
 using System;
 
-namespace GalacticMeltdown.UserInterface.InputProcessing;
+namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 public abstract class KeyHandler
 {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using GalacticMeltdown.UserInterface.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 namespace GalacticMeltdown.Data;
 
