@@ -86,6 +86,7 @@ public abstract class Actor : IObjectOnMap
         int oldX = X, oldY = Y;
         X = x;
         Y = y;
+        Energy -= Level.GetTile(x, y).MoveCost;
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
 
