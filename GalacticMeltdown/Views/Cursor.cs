@@ -12,6 +12,16 @@ public class Cursor : IControllable
     private Func<(int, int, int, int)> _getViewBounds;
     private (int minX, int minY, int maxX, int maxY)? _levelBounds;
 
+    public (int minX, int minY, int maxX, int maxY)? LevelBounds
+    {
+        get => _levelBounds;
+        set
+        {
+            _levelBounds = value;
+            MoveInbounds();
+        }
+    }
+
     public ConsoleColor Color => DataHolder.Colors.CursorColor;
     
     public int X { get; private set; }
@@ -23,14 +33,12 @@ public class Cursor : IControllable
     
     public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getViewBounds,
-        (int minX, int minY, int maxX, int maxY)? levelBounds = null)
+    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getViewBounds)
     {
         X = x;
         Y = y;
         _getStartCoords = getStartCoords;
         _getViewBounds = getViewBounds;
-        _levelBounds = levelBounds;
     }
     
     public bool TryMove(int deltaX, int deltaY)
@@ -49,9 +57,9 @@ public class Cursor : IControllable
     
     public void MoveInbounds()
     {
+        if (IsPositionInbounds(X, Y)) return;
         var (minX, minY, maxX, maxY) = GetBounds();
-        if (!IsPositionInbounds(X, Y)) 
-            MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY));
+        MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY));
     }
 
     private void MoveTo(int x, int y)
@@ -70,10 +78,10 @@ public class Cursor : IControllable
 
     private (int minX, int minY, int maxX, int maxY) GetBounds()
     {
-        if (_levelBounds is null) return _getViewBounds();
+        if (LevelBounds is null) return _getViewBounds();
 
         var (minXView, minYView, maxXView, maxYView) = _getViewBounds();
-        var (minXWorld, minYWorld, maxXWorld, maxYWorld) = _levelBounds.Value;
+        var (minXWorld, minYWorld, maxXWorld, maxYWorld) = LevelBounds.Value;
         return (Math.Max(minXView, minXWorld), Math.Max(minYView, minYWorld), Math.Min(maxXView, maxXWorld),
             Math.Min(maxYView, maxYWorld));
     }
