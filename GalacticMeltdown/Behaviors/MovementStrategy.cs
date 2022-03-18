@@ -1,5 +1,7 @@
+using System;
 using GalacticMeltdown.LevelRelated;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -65,8 +67,15 @@ public class MovementStrategy : Behavior
         }
         else if (_nextPathCellNode is null)
         {
-            // TODO: idle movement
-            return false;
+            // idle movement
+            var neighboringChunks = Level.GetChunkNeighbors(Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkX, 
+                Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkY).ToList();
+            Random randomChunkIndex = new Random();
+            var randomChunk = neighboringChunks[randomChunkIndex.Next(neighboringChunks.Count)];
+            Random randomPointIndex = new Random();
+            var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
+            (int x, int y) randomPoint = randomChunkPoints[randomPointIndex.Next(randomChunkPoints.Count)];
+            SetPathTo(randomPoint.x, randomPoint.y);
         }
         else if (!(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
                    Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable))
