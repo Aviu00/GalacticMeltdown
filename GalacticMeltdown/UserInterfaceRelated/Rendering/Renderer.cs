@@ -12,7 +12,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, ConsoleColor BgColor);
 
-public static class Renderer
+public class Renderer
 {
     private static LinkedList<(View, double, double, double, double)> _viewsTemp;
     private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;

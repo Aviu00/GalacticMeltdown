@@ -6,7 +6,7 @@ using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
-public static class InputProcessor
+public class InputProcessor
 {
     private static Dictionary<object, KeyHandler> _objectHandlers;
     private static HashSet<KeyHandler> _dormantHandlers;
