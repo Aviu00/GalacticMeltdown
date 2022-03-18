@@ -48,9 +48,8 @@ public static class InputProcessor
 
     private static void RemoveCurrentController()
     {
-        _controllingHandler = null;
         if (!_activeHandlers.Any()) return;
-        _controllingHandler = _activeHandlers.Last;
+        _controllingHandler = _activeHandlers.Pop();
     }
 
     public static void StartProcessLoop()
