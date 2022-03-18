@@ -62,11 +62,18 @@ public static class Renderer
     
     public static void Forget(object sender)
     {
+        if (!_children.ContainsKey(sender)) return;
+        ForgetInternal(sender);
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
+    }
+
+    private static void ForgetInternal(object sender)
+    {
         foreach (var child in _children[sender].children)
         {
-            Forget(child);
+            ForgetInternal(child);
         }
-
+        
         _children[_children[sender].parent].children.Remove(sender);
         _children.Remove(sender);
         _objectViews.Remove(sender);
