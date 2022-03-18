@@ -17,6 +17,22 @@ public static class InputProcessor
     private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
 
+    public static void SetController(object sender, KeyHandler controller)
+    {
+        if (_objectHandlers.ContainsKey(sender))
+        {
+            KeyHandler oldHandler = _objectHandlers[sender];
+            _dormantHandlers.Remove(oldHandler);
+            _activeHandlers.Remove(oldHandler);
+            if (_controllingHandler == oldHandler)
+            {
+                RemoveCurrentController();
+            }
+        }
+
+        _objectHandlers[sender] = controller;
+    }
+
     public static void Forget(object sender)
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
@@ -25,16 +41,15 @@ public static class InputProcessor
         _activeHandlers.Remove(controller);
         if (_controllingHandler == controller)
         {
-            _controllingHandler = null;
-            UpdateCurrentController();
+            RemoveCurrentController();
         }
     }
 
-    private static void UpdateCurrentController()
+    private static void RemoveCurrentController()
     {
-        if (_controllingHandler is not null) return;
+        _controllingHandler = null;
         if (!_activeHandlers.Any()) return;
-        _controllingHandler = _activeHandlers.Last();
+        _controllingHandler = _activeHandlers[^1];
     }
 
     public static void StartProcessLoop()
