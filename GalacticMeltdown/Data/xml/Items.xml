@@ -23,11 +23,15 @@
         <MinHitDamage>5</MinHitDamage>
         <MaxHitDamage>25</MaxHitDamage>
         <HitEnergy>15</HitEnergy>
-        <MinShootDamage>30</MinShootDamage>
-        <MaxShootDamage>80</MaxShootDamage>
-        <AmmoId>pistol_ammo</AmmoId>
         <AmmoCapacity>10</AmmoCapacity>
-        <ReloadEnergy>50</ReloadEnergy>
+        <AmmoTypes>
+            <Ammo>
+                <Id>pistol_ammo</Id>
+                <MinDamage>30</MinDamage>
+                <MaxDamage>80</MaxDamage>
+                <ReloadEnergy>5</ReloadEnergy>
+            </Ammo>
+        </AmmoTypes>
     </RangedWeaponItem>
     <RangedWeaponItem>
         <Id>assault_rifle</Id>
@@ -36,11 +40,16 @@
         <MinHitDamage>20</MinHitDamage>
         <MaxHitDamage>50</MaxHitDamage>
         <HitEnergy>50</HitEnergy>
-        <MinShootDamage>40</MinShootDamage>
-        <MaxShootDamage>100</MaxShootDamage>
         <AmmoId>assault_rifle_ammo</AmmoId>
         <AmmoCapacity>30</AmmoCapacity>
-        <ReloadEnergy>70</ReloadEnergy>
+        <AmmoTypes>
+            <Ammo>
+                <Id>assault_rifle_ammo</Id>
+                <MinDamage>40</MinDamage>
+                <MaxDamage>100</MaxDamage>
+                <ReloadEnergy>7</ReloadEnergy>
+            </Ammo>
+        </AmmoTypes>
     </RangedWeaponItem>
     <Item>
         <Id>pistol_ammo</Id>

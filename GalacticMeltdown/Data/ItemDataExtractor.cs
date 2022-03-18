@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 
 namespace GalacticMeltdown.Data;
+using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage)>;
 
 public class ItemDataExtractor : XmlExtractor
 {
@@ -35,11 +36,8 @@ public class ItemDataExtractor : XmlExtractor
             int minHitDamage = 0;
             int maxHitDamage = 0;
             int hitEnergy = 0;
-            int minShootDamage = 0;
-            int maxShootDamage = 0;
-            string ammoId = "";
             int ammoCapacity = 0;
-            int reloadEnergy = 0;
+            AmmoDictionary ammoList = null;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -62,20 +60,11 @@ public class ItemDataExtractor : XmlExtractor
                     case "HitEnergy":
                         hitEnergy = Convert.ToInt32(locNode.InnerText);
                         break;
-                    case "MinShootDamage":
-                        minShootDamage = Convert.ToInt32(locNode.InnerText);
-                        break;
-                    case "MaxShootDamage":
-                        maxShootDamage = Convert.ToInt32(locNode.InnerText);
-                        break;
-                    case "AmmoId":
-                        ammoId = locNode.InnerText;
-                        break;
                     case "AmmoCapacity":
                         ammoCapacity = Convert.ToInt32(locNode.InnerText);
                         break;
-                    case "ReloadEnergy":
-                        reloadEnergy = Convert.ToInt32(locNode.InnerText);
+                    case "AmmoTypes":
+                        ammoList = ParseAmmoDictionary(locNode);
                         break;
                 }
             }
@@ -84,25 +73,64 @@ public class ItemDataExtractor : XmlExtractor
             {
                 ItemType.UsableItem => new UsableItemData(symbol, name, id),
                 ItemType.WearableItem => new WearableItemData(symbol, name, id),
-                ItemType.WeaponItem => new WeaponItemData(symbol, name, id, minHitDamage, maxHitDamage, hitEnergy),
+                ItemType.WeaponItem => new WeaponItemData(symbol, name, id, minHitDamage, maxHitDamage, hitEnergy,
+                    ammoCapacity, ammoList),
                 ItemType.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, minHitDamage, maxHitDamage,
-                    hitEnergy, minShootDamage, maxShootDamage, ammoId, ammoCapacity, reloadEnergy),
+                    hitEnergy, ammoCapacity, ammoList),
                 _ => new ItemData(symbol, name, id)
             };
             ItemData.Add(itemData.Id, itemData);
         }
     }
+
+    private AmmoDictionary ParseAmmoDictionary(XmlNode node)
+    {
+        AmmoDictionary dictionary = new();
+        foreach (XmlNode locNode in node)
+        {
+            string ammoId = "";
+            int reloadAmount = 1;
+            int reloadEnergy = 0;
+            int minDamage = 0;
+            int maxDamage = 0;
+            foreach (XmlNode ammoNode in locNode)
+            {
+                switch (locNode.Name)
+                {
+                    case "Id":
+                        ammoId = locNode.InnerText;
+                        break;
+                    case "ReloadAmount":
+                        reloadAmount = Convert.ToInt32(locNode.InnerText);
+                        break;
+                    case "ReloadEnergy":
+                        reloadAmount = Convert.ToInt32(locNode.InnerText);
+                        break;
+                    case "MinDamage":
+                        minDamage = Convert.ToInt32(locNode.InnerText);
+                        break;
+                    case "MaxDamage":
+                        maxDamage = Convert.ToInt32(locNode.InnerText);
+                        break;
+                }
+            }
+
+            dictionary.Add(ammoId, (reloadAmount, reloadEnergy, minDamage, maxDamage));
+        }
+        return dictionary;
+    }
 }
 
 public record ItemData(char Symbol, string Name, string Id);
 
-public record WeaponItemData(char Symbol, string Name, string Id, int MinHitDamage, int MaxHitDamage, int HitEnergy)
+public record WeaponItemData(char Symbol, string Name, string Id, int MinHitDamage, int MaxHitDamage, int HitEnergy,
+        int AmmoCapacity, AmmoDictionary AmmoTypes)
     : ItemData(Symbol, Name, Id);
 
 public record RangedWeaponItemData(char Symbol, string Name, string Id, int MinHitDamage, int MaxHitDamage,
-        int HitEnergy, int MinShootDamage, int MaxShootDamage, string AmmoId, int AmmoCapacity, 
-        int ReloadEnergy) //Hit chance not yet included
-    : WeaponItemData(Symbol, Name, Id, MinHitDamage, MaxHitDamage, HitEnergy);
+        int HitEnergy, int AmmoCapacity, 
+        AmmoDictionary AmmoTypes) //Hit chance not yet included
+    : WeaponItemData(Symbol, Name, Id, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
 
 public record WearableItemData(char Symbol, string Name, string Id) : ItemData(Symbol, Name, Id); //WIP
 
