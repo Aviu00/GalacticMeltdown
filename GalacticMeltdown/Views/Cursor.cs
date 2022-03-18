@@ -8,7 +8,9 @@ namespace GalacticMeltdown.Views;
 public class Cursor : IControllable
 {
     private Func<(int, int)> _getStartCoords;
+    
     private Func<(int, int, int, int)> _getViewBounds;
+    private (int minX, int minY, int maxX, int maxY)? _levelBounds;
 
     public ConsoleColor Color => DataHolder.Colors.CursorColor;
     
@@ -21,12 +23,14 @@ public class Cursor : IControllable
     
     public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getViewBounds)
+    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getViewBounds,
+        (int minX, int minY, int maxX, int maxY)? levelBounds = null)
     {
         X = x;
         Y = y;
         _getStartCoords = getStartCoords;
         _getViewBounds = getViewBounds;
+        _levelBounds = levelBounds;
     }
     
     public bool TryMove(int deltaX, int deltaY)
@@ -45,7 +49,7 @@ public class Cursor : IControllable
     
     public void MoveInbounds()
     {
-        var (minX, minY, maxX, maxY) = _getViewBounds();
+        var (minX, minY, maxX, maxY) = GetBounds();
         if (!IsPositionInbounds(X, Y)) 
             MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY));
     }
@@ -60,7 +64,17 @@ public class Cursor : IControllable
 
     private bool IsPositionInbounds(int x, int y)
     {
-        var (minX, minY, maxX, maxY) = _getViewBounds();
+        var (minX, minY, maxX, maxY) = GetBounds();
         return x >= minX && x <= maxX && y >= minY && y <= maxY;
+    }
+
+    private (int minX, int minY, int maxX, int maxY) GetBounds()
+    {
+        if (_levelBounds is null) return _getViewBounds();
+
+        var (minXView, minYView, maxXView, maxYView) = _getViewBounds();
+        var (minXWorld, minYWorld, maxXWorld, maxYWorld) = _levelBounds.Value;
+        return (Math.Max(minXView, minXWorld), Math.Max(minYView, minYWorld), Math.Min(maxXView, maxXWorld),
+            Math.Min(maxYView, maxYWorld));
     }
 }
