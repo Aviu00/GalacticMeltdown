@@ -10,6 +10,7 @@ public class MovementStrategy : Behavior
     private readonly Level _level;
     private (int x, int y)? _wantsToGoTo;
     private LinkedListNode<(int x, int y)> _nextPathCellNode;
+    private LinkedList<(int x, int y)> _chunkPath;
 
     public MovementStrategy(Level level, int priority = DefaultPriority)
     {
@@ -17,22 +18,25 @@ public class MovementStrategy : Behavior
         _level = level;
     }
 
-    private List<((int, int), int)> GetNeighbors(int x, int y)
+    private IEnumerable<(int, int, int)> GetNeighbors(int x, int y)
     {
-        List<((int, int), int)> neighboursWithMoveCosts = new List<((int, int), int)>();
         foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
         {
-            if (_level.GetTile(xi, yi).IsWalkable)
-            {
-                neighboursWithMoveCosts.Add(((xi, yi), _level.GetTile(xi, yi).MoveCost));
-            }
+            Tile tile = _level.GetTile(xi, yi);
+            if (tile is null || !tile.IsWalkable || !_chunkPath.Contains(Level.GetChunkCoords(xi, yi))) continue;
+            yield return (xi, yi, tile.MoveCost);
         }
-
-        return neighboursWithMoveCosts;
     }
 
     private void SetPathTo(int x, int y)
     {
+        _chunkPath = _level.GetPathBetweenChunks(ControlledNpc.X, ControlledNpc.Y, x, y);
+        if (_chunkPath is null)
+        {
+            _wantsToGoTo = null;
+            _nextPathCellNode = null;
+            return;
+        }
         _wantsToGoTo = (x, y);
         var path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, x, y, GetNeighbors);
         if (path is null || path.Count < 3)

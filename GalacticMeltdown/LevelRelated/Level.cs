@@ -6,6 +6,7 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.LevelRelated;
@@ -349,7 +350,7 @@ public partial class Level
         SomethingMoved?.Invoke(sender, e);
     }
     
-    private static (int chunkX, int chunkY) GetChunkCoords(int x, int y)
+    public static (int chunkX, int chunkY) GetChunkCoords(int x, int y)
     {
         return (x / ChunkSize, y / ChunkSize);
     }
@@ -364,6 +365,23 @@ public partial class Level
         (int x, int y) = GetChunkCoords(npc.X, npc.Y);
         _chunks[x, y].AddNpc(npc);
     }
-    
+
+    public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1, bool onlyActiveChunks = true)
+    {
+        (int chunkX0, int chunkY0) = GetChunkCoords(x0, y0);
+        (int chunkX1, int chunkY1) = GetChunkCoords(x1, y1);
+        return Algorithms.AStar(chunkX0, chunkY0, chunkX1, chunkY1,
+            (x, y) => MapRouteGetNeighbors(x, y, onlyActiveChunks));
+    }
+
+    private IEnumerable<(int x, int y, int cost)> MapRouteGetNeighbors(int x, int y, bool onlyActiveChunks)
+    {
+        foreach ((int neighborX, int neighborY) in _chunks[x, y].NeighborCoords)
+        {
+            if(onlyActiveChunks && !_chunks[neighborX, neighborY].isActive) continue;
+            yield return (neighborX, neighborY, 1);
+        }
+    }
+
     private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
 }

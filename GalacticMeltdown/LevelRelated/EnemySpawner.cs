@@ -60,6 +60,7 @@ public class EnemySpawner
     private void SpawnRandomEnemies()
     {
         TargetChunks ??= GetTargetChunks().ToList();
+        if(TargetChunks.Count == 0) return;
         var enemies= CalculateEnemies(ref _currency);
         List<int> prevChunkIndices = new();
         List<(int, int)> points = new();
