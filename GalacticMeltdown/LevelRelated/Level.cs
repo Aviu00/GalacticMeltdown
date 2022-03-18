@@ -179,7 +179,7 @@ public partial class Level
             : _chunks[chunkX, chunkY].GetDrawable(x, y) ?? GetTile(x, y);
     }
     
-    public Tile GetTile(int x, int y)
+    public Tile GetTile(int x, int y, (int chunkX, int chunkY)? chunkCoords = null)
     {
         switch (x, y)
         {
@@ -189,12 +189,15 @@ public partial class Level
                 return y >= _westernWall.Length ? null : _westernWall[y];
             case (>= 0, -1):
                 return x >= _southernWall.Length ? null : _southernWall[x];
+            case not (>= 0, >= 0):
+                return null;
         }
 
-        var (chunkX, chunkY) = GetChunkCoords(x, y);
+        var (chunkX, chunkY) = chunkCoords ?? GetChunkCoords(x, y);
+        if (chunkX >= _chunks.GetLength(0) || chunkY >= _chunks.GetLength(1)) return null;
         int localX = x % ChunkSize;
         int localY = y % ChunkSize;
-        return !CoordsInRangeOfChunkArray(x, y, chunkX, chunkY) ? null : _chunks[chunkX, chunkY].Tiles[localX, localY];
+        return _chunks[chunkX, chunkY].Tiles[localX, localY];
     }
 
     public IObjectOnMap GetNonTileObject(int x, int y)
@@ -245,7 +248,6 @@ public partial class Level
             }
         }
     }
-
 
     /// <summary>
     /// Get the neighboring chunks of a chunk
@@ -322,7 +324,7 @@ public partial class Level
         }
     }
 
-    private IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
+    public IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
     {
         for (int chunkX = Math.Max(chunkXCenter - radius, 0);
              chunkX < Math.Min(chunkXCenter + radius + 1, _chunks.GetLength(0));
@@ -379,6 +381,12 @@ public partial class Level
     {
         (int chunkX0, int chunkY0) = GetChunkCoords(x0, y0);
         (int chunkX1, int chunkY1) = GetChunkCoords(x1, y1);
+        if (chunkX0 == chunkX1 && chunkY0 == chunkY1)
+        {
+            LinkedList<(int, int)> list = new();
+            list.AddLast((chunkX0, chunkY0));
+            return list;
+        }
         return Algorithms.AStar(chunkX0, chunkY0, chunkX1, chunkY1,
             (x, y) => MapRouteGetNeighbors(x, y, onlyActiveChunks));
     }
