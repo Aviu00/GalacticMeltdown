@@ -6,6 +6,13 @@ namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 public static class InputProcessor
 {
+    private static Dictionary<object, KeyHandler> _objectHandlers;
+    private static List<KeyHandler> _dormantHandlers;
+    private static List<KeyHandler> _activeHandlers;
+    private static KeyHandler _controllingHandler;
+
+    private static Dictionary<object, (object parent, HashSet<object> children)> _children;
+
     private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
 
