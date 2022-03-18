@@ -16,7 +16,7 @@ internal record struct ViewInfo(View View, (double, double, double, double) Scre
 
 public class Renderer
 {
-    private static LinkedList<(View, double, double, double, double)> _viewsTemp;
+    private static LinkedList<ViewInfo> _viewsTemp;
     private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private static Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private static LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
@@ -87,7 +87,7 @@ public class Renderer
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
-        _viewsTemp = new LinkedList<(View, double, double, double, double)>();
+        _viewsTemp = new LinkedList<ViewInfo>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
         _animations = new LinkedList<(View, HashSet<(int, int, ViewCellData)>)>();
     }
@@ -124,11 +124,11 @@ public class Renderer
         _animations.Clear();
     }
     
-    public static void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
+    public static void AddView(View view, (double minXPos, double minYPos, double maxXPos, double maxYPos) position)
     {
         view.NeedRedraw += NeedRedrawHandler;
         view.CellsChanged += AddAnimation;
-        _viewsTemp.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
+        _viewsTemp.AddFirst(new ViewInfo(view, position));
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
     
@@ -136,7 +136,7 @@ public class Renderer
     {
         if (_viewsTemp.Any())
         {
-            var (view, _, _, _, _) = _viewsTemp.First();
+            var (view, _) = _viewsTemp.First();
             view.NeedRedraw -= NeedRedrawHandler;
             view.CellsChanged -= AddAnimation;
             _viewsTemp.RemoveFirst();
@@ -147,7 +147,7 @@ public class Renderer
     
     public static void ClearViews()
     {
-        foreach (var (view, _, _, _, _) in _viewsTemp)
+        foreach (var (view, _) in _viewsTemp)
         {
             view.NeedRedraw -= NeedRedrawHandler;
             view.CellsChanged -= AddAnimation;
@@ -184,7 +184,7 @@ public class Renderer
     {
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
-        foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _viewsTemp)
+        foreach (var (view, (x0Portion, y0Portion, x1Portion, y1Portion)) in _viewsTemp)
         {
             int x0Screen = (int) Math.Round(windowWidth * x0Portion);
             int y0Screen = (int) Math.Round(windowHeight * y0Portion);
