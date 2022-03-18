@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TileTypes>
-    <TileType>
+<Tiles>
+    <Tile>
         <Id>floor</Id>
         <Name>metal floor</Name>
         <Symbol>.</Symbol>
@@ -8,8 +8,8 @@
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
         <MoveCost>100</MoveCost>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>nospawnfloor</Id>
         <Name>metal floor</Name>
         <Symbol>.</Symbol>
@@ -17,15 +17,15 @@
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
         <MoveCost>100</MoveCost>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>void</Id>
         <Name>void</Name>
         <Color>black</Color>
         <IsWalkable>False</IsWalkable>
         <IsTransparent>True</IsTransparent>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>window</Id>
         <Name>window</Name>
         <Symbol>O</Symbol>
@@ -33,8 +33,8 @@
         <IsWalkable>False</IsWalkable>
         <IsTransparent>True</IsTransparent>
         <IsConnection>True</IsConnection>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>wall</Id>
         <Name>metal wall</Name>
         <Symbol>#</Symbol>
@@ -42,8 +42,8 @@
         <IsConnection>True</IsConnection>
         <IsConnectable>True</IsConnectable>
         <ConnectionSymbols>┼ ├ ┴ ┤ ┬ │ ─ └ ┌ ┐ ┘ ╵ ╶ ╷ ╴</ConnectionSymbols>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>fence</Id>
         <Name>metal fence</Name>
         <Symbol>H</Symbol>
@@ -52,14 +52,29 @@
         <IsConnection>True</IsConnection>
         <IsConnectable>True</IsConnectable>
         <ConnectionSymbols>┼ ├ ┴ ┤ ┬ │ ─ └ ┌ ┐ ┘ ╵ ╶ ╷ ╴</ConnectionSymbols>
-    </TileType>
-    <TileType>
+    </Tile>
+    <Tile>
         <Id>water</Id>
         <Name>water</Name>
         <Symbol>~</Symbol>
         <Color>blue</Color>
         <IsTransparent>True</IsTransparent>
         <IsWalkable>True</IsWalkable>
-        <TileMovecost>300</TileMovecost>
-    </TileType>
-</TileTypes>
+        <MoveCost>300</MoveCost>
+    </Tile>
+    <Tile>
+        <Id>door_closed</Id>
+        <Name>closed metal door</Name>
+        <Symbol>+</Symbol>
+        <IsWalkable>False</IsWalkable>
+        <IsTransparent>False</IsTransparent>
+    </Tile>
+    <Tile>
+        <Id>door_open</Id>
+        <Name>open metal door</Name>
+        <Symbol>'</Symbol>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+        <MoveCost>100</MoveCost>
+    </Tile>
+</Tiles>

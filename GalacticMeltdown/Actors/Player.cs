@@ -52,9 +52,10 @@ public class Player : Actor, ISightedObject, IControllable
     public bool TryMove(int deltaX, int deltaY)
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
-        if (!NoClip && (tile is null || !tile.IsWalkable) || Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
+        if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
             return false;
-
+        if (!NoClip && (tile is null || !tile.IsWalkable))
+            return Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
         MoveTo(X + deltaX, Y + deltaY);
         VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         return true;

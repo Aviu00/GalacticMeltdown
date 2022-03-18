@@ -5,7 +5,7 @@ namespace GalacticMeltdown.Utility;
 
 public class Counter
 {
-    protected readonly LimitedNumber Timer;
+    public readonly LimitedNumber Timer;
     protected readonly Level Level;
     protected Action<Counter> Action;
     public bool FinishedCounting => Timer.Value == 0;
@@ -36,6 +36,11 @@ public class Counter
     }
 
     public void StopTimer()
+    {
+        Timer.Value = 0;
+    }
+
+    public void RemoveCounter()
     {
         Level.TurnFinished -= NextTurn;
         ResetTimer();

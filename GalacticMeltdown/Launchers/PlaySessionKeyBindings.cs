@@ -27,6 +27,24 @@ public partial class PlaySession
                 InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
             }
         },
+        {
+            MainControl.InteractWithDoors, () =>
+            {
+                _controlledObject = _levelView.Cursor;
+                _levelView.Cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
+                _levelView.Cursor.Action = (_, _, x, y) =>
+                {
+                    _controlledObject = _player;
+                    _levelView.SetFocus(_player);
+                    _levelView.RemoveCursor();
+                    if (_level.InteractWithDoor(x, y, _player))
+                        GiveBackControl();
+                    else
+                        InputProcessor.RemoveLastBinding();
+                };  
+                InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
+            }
+        },
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},
         {MainControl.ReduceViewRange, () => _player.ViewRange--},
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},

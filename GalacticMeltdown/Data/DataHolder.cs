@@ -68,6 +68,8 @@ public static class DataHolder
             {ConsoleKey.D4, MainControl.MoveLeft},
             {ConsoleKey.D7, MainControl.MoveNw},
             {ConsoleKey.S, MainControl.StopTurn},
+            {ConsoleKey.D5, MainControl.StopTurn},
+            {ConsoleKey.O, MainControl.InteractWithDoors},
             {ConsoleKey.D, MainControl.DoNothing},
             {ConsoleKey.C, MainControl.UseCursor},
             {ConsoleKey.Multiply, MainControl.IncreaseViewRange},
