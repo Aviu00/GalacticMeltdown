@@ -23,6 +23,8 @@ public class OrderedSet<T> : ICollection<T>
 
     public virtual bool IsReadOnly => _dictionary.IsReadOnly;
 
+    public T Last => _linkedList.Last is null ? default : _linkedList.Last.Value;
+
     void ICollection<T>.Add(T item)
     {
         Add(item);

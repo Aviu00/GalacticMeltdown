@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Collections;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
@@ -9,7 +10,7 @@ public static class InputProcessor
 {
     private static Dictionary<object, KeyHandler> _objectHandlers;
     private static HashSet<KeyHandler> _dormantHandlers;
-    private static List<KeyHandler> _activeHandlers;
+    private static OrderedSet<KeyHandler> _activeHandlers;
     private static KeyHandler _controllingHandler;
 
     private static Dictionary<object, (object parent, HashSet<object> children)> _children;
@@ -49,7 +50,7 @@ public static class InputProcessor
     {
         _controllingHandler = null;
         if (!_activeHandlers.Any()) return;
-        _controllingHandler = _activeHandlers[^1];
+        _controllingHandler = _activeHandlers.Last;
     }
 
     public static void StartProcessLoop()
