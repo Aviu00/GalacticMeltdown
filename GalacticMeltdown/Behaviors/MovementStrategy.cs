@@ -67,13 +67,8 @@ public class MovementStrategy : Behavior
         }
         else if (_nextPathCellNode is null)
         {
-            // idle movement
-            var neighboringChunks = Level.GetChunkNeighbors(Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkX, 
-                Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y).chunkY, returnNotActiveChunks: false).ToList();
-            var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
-            var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
-            (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
-            SetPathTo(randomPoint.x, randomPoint.y);
+            
+            CalculateIdleMovementPath();
         }
         else if (!(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is null &&
                    Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable))
@@ -87,5 +82,15 @@ public class MovementStrategy : Behavior
         _nextPathCellNode = _nextPathCellNode.Next;
         if (_nextPathCellNode is null) _wantsToGoTo = null;
         return true;
+    }
+    private void CalculateIdleMovementPath()
+    {
+        _wantsToGoTo = null;
+        (int x, int y) = Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y);
+        var neighboringChunks = Level.GetChunkNeighbors(x, y, returnNotActiveChunks: false).ToList();
+        var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
+        var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
+        (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
+        SetPathTo(randomPoint.x, randomPoint.y);
     }
 }
