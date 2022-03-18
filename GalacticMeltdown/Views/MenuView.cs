@@ -10,6 +10,8 @@ namespace GalacticMeltdown.Views;
 
 public class MenuView : View
 {
+    public override (double, double, double, double)? WantedPosition => null;
+    
     private Stack<View> _menus = new();
 
     public override event EventHandler NeedRedraw;

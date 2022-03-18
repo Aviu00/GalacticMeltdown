@@ -12,6 +12,8 @@ public class ButtonListView : View
 {
     private readonly ImmutableList<MenuButtonInfo> _buttons;
 
+    public override (double, double, double, double)? WantedPosition => null;
+
     private int _currentButtonIndex;
     private int _topVisibleButtonIndex;
     private int _selectedButtonY;

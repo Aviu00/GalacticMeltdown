@@ -21,6 +21,8 @@ internal class LevelButtonInfo : MenuButtonInfo
 
 public class LevelManagementView : View
 {
+    public override (double, double, double, double)? WantedPosition => null;
+    
     private int _levelIndex;
     private int _managementIndex;
     private bool _isManagementSelected;
