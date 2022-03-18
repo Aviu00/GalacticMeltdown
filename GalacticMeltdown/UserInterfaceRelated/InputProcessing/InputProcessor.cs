@@ -18,6 +18,16 @@ public static class InputProcessor
     private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
 
+    public static void YieldControl(object sender)
+    {
+        if (!_objectHandlers.ContainsKey(sender)) return;
+        
+        KeyHandler controller = _objectHandlers[sender];
+        if (controller != _controllingHandler) return;
+        _activeHandlers.Add(_controllingHandler);
+        _controllingHandler = controller;
+    }
+
     public static void TakeControl(object sender)
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
