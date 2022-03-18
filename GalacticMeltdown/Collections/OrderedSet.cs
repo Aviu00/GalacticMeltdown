@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -42,6 +43,14 @@ public class OrderedSet<T> : ICollection<T>
         _dictionary.Remove(item);
         _linkedList.Remove(node);
         return true;
+    }
+
+    public T Pop()
+    {
+        if (_linkedList.Last is null) throw new Exception();
+        T item = _linkedList.Last.Value;
+        Remove(item);
+        return item;
     }
 
     public IEnumerator<T> GetEnumerator()
