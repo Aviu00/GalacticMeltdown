@@ -25,10 +25,10 @@ public static class UserInterface
         _inputProcessor.SetController(sender, controller);
     }
 
-    public static void SetRoot(object game)
+    public static void SetRoot(object root)
     {
-        _renderer.SetRoot(game);
-        _inputProcessor.SetRoot(game);
+        _renderer.SetRoot(root);
+        _inputProcessor.SetRoot(root);
     }
 
     public static void TakeControl(object sender)
