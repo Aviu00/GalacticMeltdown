@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
@@ -15,6 +16,26 @@ public static class InputProcessor
 
     private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
+
+    public static void Forget(object sender)
+    {
+        if (!_objectHandlers.ContainsKey(sender)) return;
+        KeyHandler controller = _objectHandlers[sender];
+        _dormantHandlers.Remove(controller);
+        _activeHandlers.Remove(controller);
+        if (_controllingHandler == controller)
+        {
+            _controllingHandler = null;
+            UpdateCurrentController();
+        }
+    }
+
+    private static void UpdateCurrentController()
+    {
+        if (_controllingHandler is not null) return;
+        if (!_activeHandlers.Any()) return;
+        _controllingHandler = _activeHandlers.Last();
+    }
 
     public static void StartProcessLoop()
     {
