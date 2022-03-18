@@ -86,6 +86,8 @@ public abstract class Actor : IObjectOnMap
         int oldX = X, oldY = Y;
         X = x;
         Y = y;
+        Tile tile = Level.GetTile(x, y);
+        if (tile is not null) Energy -= tile.MoveCost;
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
 

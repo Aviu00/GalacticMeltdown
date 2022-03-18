@@ -45,7 +45,6 @@ public abstract class Npc : Actor
     public void MoveNpcTo(int x, int y)
     {
         MoveTo(x, y);
-        Energy -= Level.GetTile(x, y).MoveCost;
     }
 
     public override void TakeAction()
