@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using GalacticMeltdown.Collections;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
@@ -12,17 +14,71 @@ internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, Console
 
 public static class Renderer
 {
-    private static LinkedList<(View, double, double, double, double)> _views;
+    private static LinkedList<(View, double, double, double, double)> _viewsTemp;
     private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private static Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private static LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
+
+    private static Dictionary<object, View> _objectViews;
+
+    private static OrderedSet<View> _views;
+
+    private static Dictionary<object, (object parent, HashSet<object> children)> _children;
+
+    public static void SetView(object sender, View view)
+    {
+        if (_objectViews.ContainsKey(sender))
+        {
+            View oldView = _objectViews[sender];
+            _views.Remove(oldView);
+        }
+        
+        _objectViews[sender] = view;
+        AddView(view);
+    }
+
+    private static void AddView(View view)
+    {
+        view.NeedRedraw += NeedRedrawHandler;
+        view.CellsChanged += AddAnimation;
+        _views.Add(view);
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
+    }
+    
+    public static void AddChild(object parent, object child)
+    {
+        if (!_children.ContainsKey(parent)) return;
+        _children[parent].children.Add(child);
+        _children.Add(child, (parent, new HashSet<object>()));
+    }
+    
+    public static void SetRoot(object root)
+    {
+        _children = new Dictionary<object, (object parent, HashSet<object> children)>
+        {
+            {root, (null, new HashSet<object>())}
+        };
+    }
+    
+    public static void Forget(object sender)
+    {
+        foreach (var child in _children[sender].children)
+        {
+            Forget(child);
+        }
+
+        _children[_children[sender].parent].children.Remove(sender);
+        _children.Remove(sender);
+        _objectViews.Remove(sender);
+    }
+    
 
     static Renderer()
     {
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
-        _views = new LinkedList<(View, double, double, double, double)>();
+        _viewsTemp = new LinkedList<(View, double, double, double, double)>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
         _animations = new LinkedList<(View, HashSet<(int, int, ViewCellData)>)>();
     }
@@ -63,18 +119,18 @@ public static class Renderer
     {
         view.NeedRedraw += NeedRedrawHandler;
         view.CellsChanged += AddAnimation;
-        _views.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
+        _viewsTemp.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
     
     public static void RemoveLastView()
     {
-        if (_views.Any())
+        if (_viewsTemp.Any())
         {
-            var (view, _, _, _, _) = _views.First();
+            var (view, _, _, _, _) = _viewsTemp.First();
             view.NeedRedraw -= NeedRedrawHandler;
             view.CellsChanged -= AddAnimation;
-            _views.RemoveFirst();
+            _viewsTemp.RemoveFirst();
         }
 
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -82,13 +138,13 @@ public static class Renderer
     
     public static void ClearViews()
     {
-        foreach (var (view, _, _, _, _) in _views)
+        foreach (var (view, _, _, _, _) in _viewsTemp)
         {
             view.NeedRedraw -= NeedRedrawHandler;
             view.CellsChanged -= AddAnimation;
         }
 
-        _views.Clear();
+        _viewsTemp.Clear();
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
@@ -119,7 +175,7 @@ public static class Renderer
     {
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
-        foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _views)
+        foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _viewsTemp)
         {
             int x0Screen = (int) Math.Round(windowWidth * x0Portion);
             int y0Screen = (int) Math.Round(windowHeight * y0Portion);
