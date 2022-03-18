@@ -20,7 +20,7 @@ public static class UserInterface
         _renderer.SetView(sender, view);
     }
 
-    public static void SetController(object sender, KeyHandler controller)
+    public static void SetController(object sender, Controller controller)
     {
         _inputProcessor.SetController(sender, controller);
     }

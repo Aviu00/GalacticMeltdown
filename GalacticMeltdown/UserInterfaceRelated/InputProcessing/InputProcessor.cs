@@ -8,14 +8,14 @@ namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 public class InputProcessor
 {
-    private static Dictionary<object, KeyHandler> _objectHandlers;
-    private static HashSet<KeyHandler> _dormantHandlers;
-    private static OrderedSet<KeyHandler> _activeHandlers;
+    private static Dictionary<object, Controller> _objectHandlers;
+    private static HashSet<Controller> _dormantHandlers;
+    private static OrderedSet<Controller> _activeHandlers;
     
     private bool _inLoop;
-    private KeyHandler _controllingHandler;
+    private Controller _controllingHandler;
 
-    private KeyHandler ControllingHandler
+    private Controller ControllingHandler
     {
         get => _controllingHandler;
         set
@@ -27,7 +27,7 @@ public class InputProcessor
 
     private static Dictionary<object, (object parent, HashSet<object> children)> _children;
 
-    private static Stack<KeyHandler> Handlers { get; } = new();
+    private static Stack<Controller> Handlers { get; } = new();
     private static bool _isActive;
 
     public void AddChild(object parent, object child)
@@ -49,7 +49,7 @@ public class InputProcessor
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
         
-        KeyHandler controller = _objectHandlers[sender];
+        Controller controller = _objectHandlers[sender];
         if (controller != ControllingHandler) return;
         _activeHandlers.Add(ControllingHandler);
         ControllingHandler = controller;
@@ -59,7 +59,7 @@ public class InputProcessor
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
         
-        KeyHandler controller = _objectHandlers[sender];
+        Controller controller = _objectHandlers[sender];
         if (_dormantHandlers.Contains(controller))
         {
             _dormantHandlers.Remove(controller);
@@ -72,11 +72,11 @@ public class InputProcessor
         }
     }
 
-    public void SetController(object sender, KeyHandler controller)
+    public void SetController(object sender, Controller controller)
     {
         if (_objectHandlers.ContainsKey(sender))
         {
-            KeyHandler oldHandler = _objectHandlers[sender];
+            Controller oldHandler = _objectHandlers[sender];
             _dormantHandlers.Remove(oldHandler);
             _activeHandlers.Remove(oldHandler);
             if (ControllingHandler == oldHandler)
@@ -92,7 +92,7 @@ public class InputProcessor
     public void Forget(object sender)
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
-        KeyHandler controller = _objectHandlers[sender];
+        Controller controller = _objectHandlers[sender];
         _dormantHandlers.Remove(controller);
         _activeHandlers.Remove(controller);
         if (ControllingHandler == controller)

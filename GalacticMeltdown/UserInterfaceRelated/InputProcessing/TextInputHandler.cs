@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
-public class TextInputHandler : KeyHandler
+public class TextInputHandler : Controller
 {
     private readonly Action<char> _inputAction;
     private readonly Dictionary<ConsoleKey, Action> _reservedKeyActions;
