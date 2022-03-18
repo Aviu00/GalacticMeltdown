@@ -12,6 +12,8 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, ConsoleColor BgColor);
 
+internal record struct ViewInfo(View View, (double, double, double, double) ScreenPart);
+
 public class Renderer
 {
     private static LinkedList<(View, double, double, double, double)> _viewsTemp;
