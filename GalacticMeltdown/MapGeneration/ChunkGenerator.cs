@@ -145,9 +145,9 @@ public class ChunkGenerator
 
     private void SpawnItems(ItemDictionary items, string id, int x, int y)
     {
-        if (DataHolder.ItemDatas.ContainsKey(id))
+        if (DataHolder.ItemTypes.ContainsKey(id))
         {
-            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemDatas[id], 1, x, y);
+            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemTypes[id], 1, x, y);
             return;
         }
 
@@ -157,7 +157,7 @@ public class ChunkGenerator
             int amount = GetLimitedValue(itemLoot.Limit, 
                 _rng.Next(itemLoot.Min, itemLoot.Max + (int) (Difficulty * itemLoot.Gain) + 1));
             if (amount <= 0) return;
-            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemDatas[itemLoot.ItemId], amount, x, y);
+            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemTypes[itemLoot.ItemId], amount, x, y);
             return;
         }
 

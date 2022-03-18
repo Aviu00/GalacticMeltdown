@@ -6,18 +6,18 @@ using System.Xml;
 namespace GalacticMeltdown.Data;
 using TerrainInformation = Dictionary<char, (string tileId, string lootId, int lootChance, double gain, int limit)>;
 
-public class RoomDataExtractor : XmlExtractor
+public class RoomTypesExtractor : XmlExtractor
 {
     private const int ChunkSize = DataHolder.ChunkSize;
 
-    public readonly List<Room> Rooms;
+    public readonly List<RoomTypes> Rooms;
 
     private readonly Dictionary<string, TileTypeData> _tileTypes;
 
-    public RoomDataExtractor(Dictionary<string, TileTypeData> tileTypes)
+    public RoomTypesExtractor(Dictionary<string, TileTypeData> tileTypes)
     {
         _tileTypes = tileTypes;
-        Rooms = new List<Room>();
+        Rooms = new List<RoomTypes>();
         ParseDocument("Rooms.xml");
     }
 
@@ -58,7 +58,7 @@ public class RoomDataExtractor : XmlExtractor
             }
 
             TileInformation[,] interior = ConvertPattern(stringPattern, terrainInfo);
-            Rooms.Add(new Room(interior, type, chance, rotationalSymmetry, centralSymmetry));
+            Rooms.Add(new RoomTypes(interior, type, chance, rotationalSymmetry, centralSymmetry));
         }
     }
     
@@ -147,7 +147,7 @@ public class RoomDataExtractor : XmlExtractor
     }
 }
 
-public record Room(TileInformation[,] RoomInterior, int Type, int Chance, bool RotationalSymmetry,
+public record RoomTypes(TileInformation[,] RoomInterior, int Type, int Chance, bool RotationalSymmetry,
     bool CentralSymmetry);
 
 public struct TileInformation

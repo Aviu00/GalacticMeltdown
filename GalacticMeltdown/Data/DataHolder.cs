@@ -11,9 +11,8 @@ public static class DataHolder
 
     public static int CurrentSeed { get; set; }
 
-    public static readonly List<Room> Rooms;
     public static readonly Dictionary<string, TileTypeData> TileTypes;
-    public static readonly Dictionary<string, ItemData> ItemDatas;
+    public static readonly Dictionary<string, ItemData> ItemTypes;
     public static readonly Dictionary<string, ILoot> LootTables;
     public static readonly Dictionary<string, EnemyTypeData> EnemyTypes;
     
@@ -114,8 +113,12 @@ public static class DataHolder
     {
         TileTypes = new TileTypesExtractor().TileTypes;
         EnemyTypes = new EnemyTypesExtractor().EnemiesTypes;
-        Rooms = new RoomDataExtractor(TileTypes).Rooms;
-        ItemDatas = new ItemDataExtractor().ItemData;
+        ItemTypes = new ItemTypesExtractor().ItemTypes;
         LootTables = new LootTableDataExtractor().LootTables;
+    }
+
+    public static List<RoomTypes> GetRooms()
+    {
+        return new RoomTypesExtractor(TileTypes).Rooms;
     }
 }

@@ -5,13 +5,13 @@ using System.Xml;
 namespace GalacticMeltdown.Data;
 using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage)>;
 
-public class ItemDataExtractor : XmlExtractor
+public class ItemTypesExtractor : XmlExtractor
 {
-    public Dictionary<string, ItemData> ItemData { get; }
+    public Dictionary<string, ItemData> ItemTypes { get; }
 
-    public ItemDataExtractor()
+    public ItemTypesExtractor()
     {
-        ItemData = new Dictionary<string, ItemData>();
+        ItemTypes = new Dictionary<string, ItemData>();
         ParseDocument("Items.xml");
     }
 
@@ -79,7 +79,7 @@ public class ItemDataExtractor : XmlExtractor
                     hitEnergy, ammoCapacity, ammoList),
                 _ => new ItemData(symbol, name, id)
             };
-            ItemData.Add(itemData.Id, itemData);
+            ItemTypes.Add(itemData.Id, itemData);
         }
     }
 

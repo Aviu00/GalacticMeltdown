@@ -15,7 +15,8 @@ public class MapGenerator
     private const int MapWidth = 20; //width is specified; height is random
     private const int ConnectionChance = 60; //room connection chance(this probably shouldn't be touched)
     private const int ChunkSize = DataHolder.ChunkSize;
-    
+    private List<RoomTypes> _roomTypes;
+
     private readonly Random _rng;
     
     private ChunkGenerator[,] _tempMap;
@@ -35,6 +36,7 @@ public class MapGenerator
     public MapGenerator(int seed)
     {
         _rng = new Random(seed);
+        _roomTypes = DataHolder.GetRooms();
     }
 
     public Level Generate()
@@ -252,10 +254,9 @@ public class MapGenerator
     private void FinalizeRoom(int x, int y)
     {
         int roomType = CalculateRoomType(x, y);
-        var matchingRooms = DataHolder.Rooms.Where(
-                room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng))
-            .ToArray();
-        Room room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
+        var matchingRooms =
+            _roomTypes.Where(room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng)).ToArray();
+        RoomTypes room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
         var roomData = (TileInformation[,]) room.RoomInterior.Clone();
         RotateRoomPattern(x, y, roomData, room);
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
@@ -290,7 +291,7 @@ public class MapGenerator
         return roomType >= validator && (roomType, validator) is not (1, 2) and not (2, 1);
     }
 
-    private void RotateRoomPattern(int x, int y, TileInformation[,] roomData, Room room)
+    private void RotateRoomPattern(int x, int y, TileInformation[,] roomData, RoomTypes room)
     {
         if (room.RotationalSymmetry) return;
         List<int> possibleRotations = new() {0, 90, 180, 270};
