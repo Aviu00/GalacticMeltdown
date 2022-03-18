@@ -59,7 +59,7 @@ public static class Algorithms
 
     public static IEnumerable<(int x, int y)> GetPointsOnSquareBorder(int x0, int y0, int radius)
     {
-        for (int i = 0; i < radius * 2; i++)
+        for (int i = radius * 2 -1; i >= 0; i--)
         {
             yield return (x0 - radius + i, y0 + radius);
             yield return (x0 + radius - i, y0 - radius);
