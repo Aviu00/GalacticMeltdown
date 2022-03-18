@@ -23,7 +23,7 @@ public class Chunk
     public readonly Tile[,] Tiles;
     public readonly Random Rng;
 
-    private List<Enemy> Enemies { get; }
+    public List<Enemy> Enemies { get; }
 
     private ItemDictionary _items;
 
