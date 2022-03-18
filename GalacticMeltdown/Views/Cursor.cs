@@ -8,7 +8,7 @@ namespace GalacticMeltdown.Views;
 public class Cursor : IControllable
 {
     private Func<(int, int)> _getStartCoords;
-    private Func<(int, int, int, int)> _getBounds;
+    private Func<(int, int, int, int)> _getViewBounds;
 
     public ConsoleColor Color => DataHolder.Colors.CursorColor;
     
@@ -21,12 +21,12 @@ public class Cursor : IControllable
     
     public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getBounds)
+    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getViewBounds)
     {
         X = x;
         Y = y;
         _getStartCoords = getStartCoords;
-        _getBounds = getBounds;
+        _getViewBounds = getViewBounds;
     }
     
     public bool TryMove(int deltaX, int deltaY)
@@ -45,7 +45,7 @@ public class Cursor : IControllable
     
     public void MoveInbounds()
     {
-        var (minX, minY, maxX, maxY) = _getBounds();
+        var (minX, minY, maxX, maxY) = _getViewBounds();
         if (!IsPositionInbounds(X, Y)) 
             MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY));
     }
@@ -60,7 +60,7 @@ public class Cursor : IControllable
 
     private bool IsPositionInbounds(int x, int y)
     {
-        var (minX, minY, maxX, maxY) = _getBounds();
+        var (minX, minY, maxX, maxY) = _getViewBounds();
         return x >= minX && x <= maxX && y >= minY && y <= maxY;
     }
 }
