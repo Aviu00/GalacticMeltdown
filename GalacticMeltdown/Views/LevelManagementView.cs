@@ -13,7 +13,7 @@ internal class LevelButtonInfo : MenuButtonInfo
 {
     public LevelInfo LevelInfo { get; }
 
-    public LevelButtonInfo(Button button, LevelInfo levelInfo) : base(button)
+    public LevelButtonInfo(ButtonTemp buttonTemp, LevelInfo levelInfo) : base(buttonTemp)
     {
         LevelInfo = levelInfo;
     }
@@ -41,7 +41,7 @@ public class LevelManagementView : View
         RefreshLevelList();
         _managementButtonInfos = new List<MenuButtonInfo>
         {
-            new(new Button("Create", "", CreateLevel)), new(new Button("Delete", "", DeleteLevel)),
+            new(new ButtonTemp("Create", "", CreateLevel)), new(new ButtonTemp("Delete", "", DeleteLevel)),
         };
         _managementIndex = 0;
     }
@@ -80,8 +80,8 @@ public class LevelManagementView : View
 
     public void PressCurrent()
     {
-        if (_isManagementSelected) _managementButtonInfos[_managementIndex].Button.Press();
-        else _menuLevels[_levelIndex].Button.Press();
+        if (_isManagementSelected) _managementButtonInfos[_managementIndex].ButtonTemp.Press();
+        else _menuLevels[_levelIndex].ButtonTemp.Press();
     }
 
     public void SelectNext()
@@ -181,7 +181,7 @@ public class LevelManagementView : View
         _menuLevels = new List<LevelButtonInfo>(levelInfos.Count);
         foreach (var levelInfo in levelInfos)
         {
-            _menuLevels.Add(new(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
+            _menuLevels.Add(new(new ButtonTemp(levelInfo.Name, $"seed: {levelInfo.Seed}",
                 () => TryStartLevel(levelInfo.Path)), levelInfo));
         }
 
@@ -200,12 +200,12 @@ public class LevelManagementView : View
     {
         foreach (LevelButtonInfo buttonInfo in _menuLevels)
         {
-            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
+            buttonInfo.RenderedText = buttonInfo.ButtonTemp.MakeText(Width);
         }
 
         foreach (MenuButtonInfo buttonInfo in _managementButtonInfos)
         {
-            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
+            buttonInfo.RenderedText = buttonInfo.ButtonTemp.MakeText(Width);
         }
     }
 

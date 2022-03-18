@@ -45,7 +45,7 @@ public class MenuView : View
             });
     }
 
-    public void OpenBasicMenu(params Button[] buttons)
+    public void OpenBasicMenu(params ButtonTemp[] buttons)
     {
         var buttonListView = new ButtonListView(buttons);
         OpenMenu(buttonListView,

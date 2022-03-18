@@ -34,7 +34,7 @@ public static class Game
     {
         _menu = new MenuView();
         Renderer.AddViewTemp(_menu, (0, 0, 1, 1));
-        _menu.OpenBasicMenu(new Button("Select level", "", _menu.OpenLevelMenu), new Button("Quit", "", Quit));
+        _menu.OpenBasicMenu(new ButtonTemp("Select level", "", _menu.OpenLevelMenu), new ButtonTemp("Quit", "", Quit));
     }
 
     private static void Quit()

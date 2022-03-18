@@ -21,7 +21,7 @@ public class ButtonListView : View
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
-    public ButtonListView(ICollection<Button> buttons)
+    public ButtonListView(ICollection<ButtonTemp> buttons)
     {
         // TODO: this should have at least one button, check that
         _buttons = ImmutableList<MenuButtonInfo>.Empty.AddRange(buttons.Select(button => new MenuButtonInfo(button)));
@@ -40,7 +40,7 @@ public class ButtonListView : View
         return new ViewCellData(symbol == ' ' ? null : (symbol, fgColor), bgColor);
     }
 
-    public void PressCurrent() => _buttons[_currentButtonIndex].Button.Press();
+    public void PressCurrent() => _buttons[_currentButtonIndex].ButtonTemp.Press();
 
     public void SelectNext()
     {
@@ -68,7 +68,7 @@ public class ButtonListView : View
     {
         foreach (MenuButtonInfo buttonInfo in _buttons)
         {
-            buttonInfo.RenderedText = buttonInfo.Button.MakeText(Width);
+            buttonInfo.RenderedText = buttonInfo.ButtonTemp.MakeText(Width);
         }
     }
 

@@ -2,12 +2,12 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 public class MenuButtonInfo
 {
-    public Button Button { get; }
+    public ButtonTemp ButtonTemp { get; }
     public string RenderedText { get; set; }
 
-    public MenuButtonInfo(Button button)
+    public MenuButtonInfo(ButtonTemp buttonTemp)
     {
-        Button = button;
+        ButtonTemp = buttonTemp;
         RenderedText = "";
     }
 }
