@@ -32,8 +32,8 @@ public abstract class Actor : IObjectOnMap
         get => _energyLim.Value;
         set
         {
-            _energyLim.Value = value;
             if (value < _energyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
+            _energyLim.Value = value;
         }
     }
 
