@@ -18,6 +18,18 @@ public static class InputProcessor
     private static Stack<KeyHandler> Handlers { get; } = new();
     private static bool _isActive;
 
+    public static void AddChild(object parent, object child)
+    {
+        if (!_children.ContainsKey(parent)) return;
+        _children[parent].children.Add(child);
+        _children.Add(child, (parent, new HashSet<object>()));
+    }
+
+    public static void SetRoot(object root)
+    {
+        _children.Add(root, (null, new HashSet<object>()));
+    }
+
     public static void YieldControl(object sender)
     {
         if (!_objectHandlers.ContainsKey(sender)) return;
