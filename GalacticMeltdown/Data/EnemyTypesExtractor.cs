@@ -29,7 +29,7 @@ public class EnemyTypesExtractor : XmlExtractor
             int dexterity  = 0;
             int viewRange = 1;
             int cost = 10;
-            int alertRadius = 10;
+            int alertRadius = 1;
             LinkedList<BehaviorData> behaviors = null;
             foreach (XmlNode locNode in node)
             {
