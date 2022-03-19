@@ -55,11 +55,11 @@ public class InputProcessor
     public void YieldControl(object sender)
     {
         if (!_objectControllers.ContainsKey(sender)) return;
-        
+
         Controller controller = _objectControllers[sender];
         if (controller != CurrentController) return;
-        _activeHandlers.Add(CurrentController);
-        CurrentController = controller;
+        _dormantHandlers.Add(controller);
+        RemoveCurrentController();
     }
 
     public void TakeControl(object sender)
@@ -67,6 +67,8 @@ public class InputProcessor
         if (!_objectControllers.ContainsKey(sender)) return;
         
         Controller controller = _objectControllers[sender];
+        if (controller == CurrentController) return;
+        
         if (_dormantHandlers.Contains(controller))
         {
             _dormantHandlers.Remove(controller);
