@@ -19,11 +19,12 @@ public class Enemy : Npc
     private int AlertRadius => _typeData.AlertRadius;
     public override ConsoleColor? BgColor => _typeData.BgColor;
 
+    private Counter alertCounter;
     public Enemy(EnemyTypeData typeData, int x, int y, Level level) : base(
         typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
         _typeData = typeData;
-
+         alertCounter = new Counter(Level, 20);
         Targets = new() {level.Player};//temp
         
         if(typeData.Behaviors == null) return;
@@ -47,7 +48,6 @@ public class Enemy : Npc
         if (!IsActive) return;
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
             .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
-        Counter alertCounter = new Counter(Level, 20);
         if (CurrentTarget is not null && alertCounter.FinishedCounting)
         {
             AlertEnemiesAboutTarget(X, Y);
@@ -63,17 +63,12 @@ public class Enemy : Npc
         foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY, AlertRadius / DataHolder.ChunkSize + 1))
         {
             foreach (var enemy in chunk.Enemies.
-                         Where(enemy => UtilityFunctions.GetDistance(enemy.X, enemy.Y, X, Y) <= AlertRadius))
+                         Where(enemy => UtilityFunctions.GetDistance(enemy.X, enemy.Y, X, Y) <= AlertRadius &&
+                                        enemy.Behaviors is not null))
             {
-                if (enemy.Behaviors is not null)
+                foreach (var behavior in enemy.Behaviors.OfType<MovementStrategy>())
                 {
-                    foreach (var behavior in enemy.Behaviors)
-                    {
-                        if (behavior is MovementStrategy)
-                        {
-                            (behavior as MovementStrategy).PreviousTarget = CurrentTarget;
-                        }
-                    }
+                    ((MovementStrategy) behavior).PreviousTarget = CurrentTarget;
                 }
             }
         }
