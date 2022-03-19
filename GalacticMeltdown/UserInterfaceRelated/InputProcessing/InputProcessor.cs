@@ -9,32 +9,19 @@ namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 public class InputProcessor
 {
     private Dictionary<object, Controller> _objectControllers;
-    private HashSet<Controller> _dormantHandlers;
-    private OrderedSet<Controller> _activeHandlers;
+    private HashSet<Controller> _dormantControllers;
+    private OrderedSet<Controller> _activeControllers;
     
     private bool _inLoop;
     private Controller _currentController;
 
-    private Controller CurrentController
-    {
-        get => _currentController;
-        set
-        {
-            _currentController = value;
-            if (!_inLoop) Loop();
-        }
-    }
-
     private Dictionary<object, (object parent, HashSet<object> children)> _children;
-
-    private static Stack<Controller> Handlers { get; } = new();
-    private static bool _isActive;
 
     public InputProcessor()
     {
         _objectControllers = new Dictionary<object, Controller>();
-        _dormantHandlers = new HashSet<Controller>();
-        _activeHandlers = new OrderedSet<Controller>();
+        _dormantControllers = new HashSet<Controller>();
+        _activeControllers = new OrderedSet<Controller>();
     }
 
     public void AddChild(object parent, object child)
@@ -57,8 +44,8 @@ public class InputProcessor
         if (!_objectControllers.ContainsKey(sender)) return;
 
         Controller controller = _objectControllers[sender];
-        if (controller != CurrentController) return;
-        _dormantHandlers.Add(controller);
+        if (controller != _currentController) return;
+        _dormantControllers.Add(controller);
         RemoveCurrentController();
     }
 
@@ -67,28 +54,30 @@ public class InputProcessor
         if (!_objectControllers.ContainsKey(sender)) return;
         
         Controller controller = _objectControllers[sender];
-        if (controller == CurrentController) return;
+        if (controller == _currentController) return;
         
-        if (_dormantHandlers.Contains(controller))
+        if (_dormantControllers.Contains(controller))
         {
-            _dormantHandlers.Remove(controller);
+            _dormantControllers.Remove(controller);
             SetControllingHandler(controller);
         }
-        else if (_activeHandlers.Contains(controller))
+        else if (_activeControllers.Contains(controller))
         {
-            _activeHandlers.Remove(controller);
+            _activeControllers.Remove(controller);
             SetControllingHandler(controller);
         }
+        
+        if (!_inLoop) Loop();
     }
 
     private void SetControllingHandler(Controller controller)
     {
-        if (CurrentController is not null)
+        if (_currentController is not null)
         {
-            _activeHandlers.Add(CurrentController);
+            _activeControllers.Add(_currentController);
         }
 
-        CurrentController = controller;
+        _currentController = controller;
     }
 
     public void SetController(object sender, Controller controller)
@@ -96,16 +85,16 @@ public class InputProcessor
         if (_objectControllers.ContainsKey(sender))
         {
             Controller oldHandler = _objectControllers[sender];
-            _dormantHandlers.Remove(oldHandler);
-            _activeHandlers.Remove(oldHandler);
-            if (CurrentController == oldHandler)
+            _dormantControllers.Remove(oldHandler);
+            _activeControllers.Remove(oldHandler);
+            if (_currentController == oldHandler)
             {
                 RemoveCurrentController();
             }
         }
 
         _objectControllers[sender] = controller;
-        _dormantHandlers.Add(controller);
+        _dormantControllers.Add(controller);
     }
 
     public void Forget(object obj)
@@ -127,9 +116,9 @@ public class InputProcessor
         
         if (!_objectControllers.ContainsKey(obj)) return;
         Controller controller = _objectControllers[obj];
-        _dormantHandlers.Remove(controller);
-        _activeHandlers.Remove(controller);
-        if (CurrentController == controller)
+        _dormantControllers.Remove(controller);
+        _activeControllers.Remove(controller);
+        if (_currentController == controller)
         {
             RemoveCurrentController();
         }
@@ -138,17 +127,17 @@ public class InputProcessor
 
     private void RemoveCurrentController()
     {
-        CurrentController = null;
-        if (!_activeHandlers.Any()) return;
-        CurrentController = _activeHandlers.Pop();
+        _currentController = null;
+        if (!_activeControllers.Any()) return;
+        _currentController = _activeControllers.Pop();
     }
 
     private void Loop()
     {
         _inLoop = true;
-        while (CurrentController is not null)
+        while (_currentController is not null)
         {
-            CurrentController.HandleKey(Console.ReadKey(true));
+            _currentController.HandleKey(Console.ReadKey(true));
         }
 
         _inLoop = false;

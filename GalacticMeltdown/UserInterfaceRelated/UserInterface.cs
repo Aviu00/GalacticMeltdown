@@ -44,13 +44,13 @@ public static class UserInterface
     public static void Forget(object obj)
     {
         if (obj is null) return;
-        _inputProcessor.Forget(obj);
         _renderer.Forget(obj);
+        _inputProcessor.Forget(obj);
     }
 
     public static void AddChild(object parent, object child)
     {
-        _inputProcessor.AddChild(parent, child);
         _renderer.AddChild(parent, child);
+        _inputProcessor.AddChild(parent, child);
     }
 }
