@@ -1,6 +1,5 @@
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
-using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.Menus;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 
@@ -9,8 +8,8 @@ namespace GalacticMeltdown.Launchers;
 public static class Game
 {
     private const int Root = 20220319;
-    private static bool _playing;
     private static MainMenu _menu;
+    private static PlaySession _session;
 
     public static void Main()
     {
@@ -20,14 +19,15 @@ public static class Game
 
     public static void StartLevel(Level level, string savePath)
     {
-        Renderer.ClearViews();
-        InputProcessor.ClearBindings();
-        var session = new PlaySession(level, savePath);
+        UserInterface.Forget(_menu);
+        PlaySession session = new(level, savePath);
+        UserInterface.AddChild(Root, session);
         session.Start();
     }
 
     private static void OpenMainMenu()
     {
+        UserInterface.Forget(_session);
         _menu = new MainMenu();
         UserInterface.AddChild(Root, _menu);
         _menu.Open();

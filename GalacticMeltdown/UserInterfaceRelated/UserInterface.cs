@@ -31,20 +31,21 @@ public static class UserInterface
         _inputProcessor.SetRoot(root);
     }
 
-    public static void TakeControl(object sender)
+    public static void TakeControl(object obj)
     {
-        _inputProcessor.TakeControl(sender);
+        _inputProcessor.TakeControl(obj);
     }
 
-    public static void YieldControl(object sender)
+    public static void YieldControl(object obj)
     {
-        _inputProcessor.YieldControl(sender);
+        _inputProcessor.YieldControl(obj);
     }
 
-    public static void Forget(object sender)
+    public static void Forget(object obj)
     {
-        _inputProcessor.Forget(sender);
-        _renderer.Forget(sender);
+        if (obj is null) return;
+        _inputProcessor.Forget(obj);
+        _renderer.Forget(obj);
     }
 
     public static void AddChild(object parent, object child)

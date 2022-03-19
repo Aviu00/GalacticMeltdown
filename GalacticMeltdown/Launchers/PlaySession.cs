@@ -1,6 +1,9 @@
-﻿using GalacticMeltdown.Actors;
+﻿using System;
+using System.Collections.Generic;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Views;
@@ -15,7 +18,10 @@ public partial class PlaySession
     private static Level _level;
     private static LevelView _levelView;
 
-    private static bool _sessionActive;
+    private bool _sessionActive;
+
+    private Dictionary<MainControl, Action> MainActions;
+    private Dictionary<CursorControl, Action> CursorActions;
 
     public PlaySession(Level level, string savePath)
     {
@@ -24,9 +30,7 @@ public partial class PlaySession
         _player = _level.Player;
         _player.SetControlFunc(() =>
         {
-            Renderer.PlayAnimations();
-            InputProcessor.AddBinding(DataHolder.CurrentBindings.Main, MainActions);
-            InputProcessor.StartProcessLoop();
+            UserInterface.TakeControl(this);
         });
         _controlledObject = _player;
         _levelView = _level.LevelView;
@@ -35,7 +39,7 @@ public partial class PlaySession
 
     public void Start()
     {
-        Renderer.AddViewTemp(new MainScreenView(_levelView, _level.OverlayView));
+        UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView));
         _sessionActive = true;
         while (_sessionActive)
         {
@@ -59,18 +63,17 @@ public partial class PlaySession
         FilesystemLevelManager.SaveLevel(_level, _savePath);
     }
 
-    private static void MoveControlled(int deltaX, int deltaY)
+    private void MoveControlled(int deltaX, int deltaY)
     {
         if (!_controlledObject.TryMove(deltaX, deltaY)) return;
-        if (_controlledObject is Actor) GiveBackControl();
+        if (_controlledObject is Actor) UserInterface.YieldControl(this);
     }
 
-    private static void StopSession()
+    private void StopSession()
     {
         _sessionActive = false;
         _player.StopTurn();
-        Renderer.ClearViews();
-        GiveBackControl();
+        UserInterface.Forget(this);
     }
 
     private static void GiveBackControl()

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.Views;
@@ -8,7 +6,9 @@ namespace GalacticMeltdown.Launchers;
 
 public partial class PlaySession
 {
-    private static readonly Dictionary<MainControl, Action> MainActions = new()
+    private void SetControlDicts()
+    {
+        MainActions = new()
     {
         {MainControl.MoveUp, () => MoveControlled(0, 1)},
         {MainControl.MoveDown, () => MoveControlled(0, -1)},
@@ -52,7 +52,7 @@ public partial class PlaySession
         {MainControl.Quit, StopSession},
     };
 
-    private static readonly Dictionary<CursorControl, Action> CursorActions = new()
+    CursorActions = new()
     {
         {CursorControl.MoveUp, () => MoveControlled(0, 1)},
         {CursorControl.MoveDown, () => MoveControlled(0, -1)},
@@ -77,4 +77,5 @@ public partial class PlaySession
             () => _levelView.SetFocus(((Cursor) _controlledObject).InFocus ? _player : _levelView.Cursor)
         }
     };
+    }
 }
