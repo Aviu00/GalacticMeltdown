@@ -37,7 +37,7 @@ public static class Game
         _menu.OpenBasicMenu(new ButtonTemp("Select level", "", _menu.OpenLevelMenu), new ButtonTemp("Quit", "", Quit));
     }
 
-    private static void Quit()
+    public static void Quit()
     {
         _playing = false;
         InputProcessor.StopProcessLoop();
