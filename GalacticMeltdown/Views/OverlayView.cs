@@ -45,12 +45,41 @@ public class OverlayView : View
     {
         _level = level;
         _player = level.Player;
-        Width = 0;
-        Height = 0;
+        _player.StatChanged += OnStatChange;
         RenderStats();
         // TODO: subscribe to events
     }
 
+    public override ViewCellData GetSymbol(int x, int y)
+    {
+        if (y == Height - 1)
+        {
+            if (!(_hpInfo.Val == _player.Hp && _hpInfo.MaxVal == _player.MaxHp)) RenderStats();
+            if (x < _hpInfo.Text.Length) return new ViewCellData((_hpInfo.Text[x], HpColor), null);
+        }
+        else if (y == Height - 2)
+        {
+            if (!(_energyInfo.Val == _player.Energy && _energyInfo.MaxVal == _player.MaxEnergy)) RenderStats();
+            if (x < _energyInfo.Text.Length) return new ViewCellData((_energyInfo.Text[x], EnergyColor), null);
+        }
+        else if (y == Height - 3)
+        {
+            if (_strInfo.Val != _player.Str) RenderStats();
+            if (x < _strInfo.Text.Length) return new ViewCellData((_strInfo.Text[x], StrColor), null);
+        }
+        else if (y == Height - 4)
+        {
+            if (_defInfo.Val != _player.Def) RenderStats();
+            if (x < _defInfo.Text.Length) return new ViewCellData((_defInfo.Text[x], DefColor), null);
+        }
+        else if (y == Height - 5)
+        {
+            if (_dexInfo.Val != _player.Dex) RenderStats();
+            if (x < _dexInfo.Text.Length) return new ViewCellData((_dexInfo.Text[x], DexColor), null);
+        }
+        return new ViewCellData(null, null);
+    }
+    
     private void RenderStats()
     {
         _hpInfo = new StatInfo($"HP: {_player.Hp}/{_player.MaxHp}", _player.Hp, _player.MaxHp);
@@ -60,33 +89,9 @@ public class OverlayView : View
         _dexInfo = new StatInfo($"DEX: {_player.Dex}", _player.Dex);
     }
 
-    public override ViewCellData GetSymbol(int x, int y)
+    private void OnStatChange(object sender, StatChangeEventArgs e)
     {
-        if (y == Width - 1)
-        {
-            if (!(_hpInfo.Val == _player.Hp && _hpInfo.MaxVal == _player.MaxHp)) RenderStats();
-            if (x < _hpInfo.Text.Length) return new ViewCellData((_hpInfo.Text[x], HpColor), null);
-        }
-        else if (y == Width - 2)
-        {
-            if (!(_energyInfo.Val == _player.Energy && _energyInfo.MaxVal == _player.MaxEnergy)) RenderStats();
-            if (x < _energyInfo.Text.Length) return new ViewCellData((_energyInfo.Text[x], EnergyColor), null);
-        }
-        else if (y == Width - 3)
-        {
-            if (_strInfo.Val != _player.Str) RenderStats();
-            if (x < _strInfo.Text.Length) return new ViewCellData((_strInfo.Text[x], StrColor), null);
-        }
-        else if (y == Width - 4)
-        {
-            if (_defInfo.Val != _player.Def) RenderStats();
-            if (x < _defInfo.Text.Length) return new ViewCellData((_defInfo.Text[x], DefColor), null);
-        }
-        else if (y == Width - 5)
-        {
-            if (_dexInfo.Val != _player.Dex) RenderStats();
-            if (x < _dexInfo.Text.Length) return new ViewCellData((_dexInfo.Text[x], DexColor), null);
-        }
-        return new ViewCellData(null, null);
+        RenderStats();
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 }
