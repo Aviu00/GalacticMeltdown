@@ -68,7 +68,7 @@ public class Enemy : Npc
             {
                 foreach (var behavior in enemy.Behaviors.OfType<MovementStrategy>())
                 {
-                    ((MovementStrategy) behavior).PreviousTarget = CurrentTarget;
+                    behavior.PreviousTarget = CurrentTarget;
                 }
             }
         }
