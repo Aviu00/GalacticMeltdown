@@ -1,4 +1,5 @@
 using GalacticMeltdown.Data;
+using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.Views;
 
@@ -18,8 +19,8 @@ public partial class PlaySession
         {MainControl.MoveSe, () => MoveControlled(1, -1)},
         {MainControl.MoveSw, () => MoveControlled(-1, -1)},
         {MainControl.MoveNw, () => MoveControlled(-1, 1)},
-        {MainControl.StopTurn, () => {_player.StopTurn(); GiveBackControl();}},
-        {MainControl.DoNothing, GiveBackControl},
+        {MainControl.StopTurn, () => {_player.StopTurn(); UserInterface.YieldControl(this);}},
+        {MainControl.DoNothing, () => UserInterface.YieldControl(this)},
         {
             MainControl.UseCursor, () =>
             {
@@ -37,10 +38,8 @@ public partial class PlaySession
                     _controlledObject = _player;
                     _levelView.SetFocus(_player);
                     _levelView.RemoveCursor();
-                    if (_level.InteractWithDoor(x, y, _player))
-                        GiveBackControl();
-                    else
-                        InputProcessor.RemoveLastBinding();
+                    _level.InteractWithDoor(x, y, _player);
+                    UserInterface.YieldControl(this);
                 };  
                 InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
             }

@@ -5,7 +5,7 @@ using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
-using GalacticMeltdown.UserInterfaceRelated.Rendering;
+using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Launchers;
@@ -35,11 +35,14 @@ public partial class PlaySession
         _controlledObject = _player;
         _levelView = _level.LevelView;
         _levelView.SetFocus(_player);
+        SetControlDicts();
     }
 
     public void Start()
     {
         UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView));
+        UserInterface.SetController(this,
+            new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
         _sessionActive = true;
         while (_sessionActive)
         {
@@ -74,11 +77,5 @@ public partial class PlaySession
         _sessionActive = false;
         _player.StopTurn();
         UserInterface.Forget(this);
-    }
-
-    private static void GiveBackControl()
-    {
-        InputProcessor.ClearBindings();
-        InputProcessor.StopProcessLoop();
     }
 }
