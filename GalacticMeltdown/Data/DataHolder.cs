@@ -36,7 +36,7 @@ public static class DataHolder
         {"dark_yellow", ConsoleColor.DarkYellow},
     };
 
-    public struct Colors
+    public readonly struct Colors
     {
         public const ConsoleColor OutOfVisionTileColor = ConsoleColor.DarkGray;
         public const ConsoleColor TextColor = ConsoleColor.Magenta;
@@ -49,6 +49,11 @@ public static class DataHolder
         public const ConsoleColor HighlightedItemColor = ConsoleColor.DarkCyan;
         public const ConsoleColor HighlightedEnemyColor = ConsoleColor.DarkMagenta;
         public const ConsoleColor HighlightedFriendColor = ConsoleColor.DarkGreen;
+        public const ConsoleColor HpColor = ConsoleColor.Red;
+        public const ConsoleColor EnergyColor = ConsoleColor.Yellow;
+        public const ConsoleColor StrColor = ConsoleColor.DarkRed;
+        public const ConsoleColor DexColor = ConsoleColor.Cyan;
+        public const ConsoleColor DefColor = ConsoleColor.Gray;
     }
 
     public struct CurrentBindings

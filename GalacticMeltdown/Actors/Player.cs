@@ -1,7 +1,6 @@
 using System;
 using GalacticMeltdown.LevelRelated;
 using Newtonsoft.Json;
-
 namespace GalacticMeltdown.Actors;
 
 public class Player : Actor, ISightedObject, IControllable
@@ -11,10 +10,24 @@ public class Player : Actor, ISightedObject, IControllable
     private const int PlayerDexterity = 16;
     private const int PlayerDefence = 4;
     private const int PlayerViewRange = 20;
+    private const int PlayerStr = 10;
 
     private Action _giveControlToUser;
     
     private bool _xray;
+
+    private int _str;
+
+    public int Str
+    {
+        get => _str;
+        set
+        {
+            if (value == _str) return;
+            _str = value;
+            FireStatAffected(Stat.Str);
+        }
+    }
     
     [JsonIgnore] public bool NoClip;
 
@@ -54,6 +67,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;
+        _str = PlayerStr;
     }
 
     public bool TryMove(int deltaX, int deltaY)

@@ -14,32 +14,63 @@ public abstract class Actor : IObjectOnMap
 
     [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
-    [JsonProperty] private readonly LimitedNumber _hpLim;
+    [JsonProperty] protected readonly LimitedNumber HpLim;
+    [JsonProperty] protected readonly LimitedNumber EnergyLim;
+    [JsonProperty] private int _dex;
+    [JsonProperty] private int _def;
 
-    protected int Hp
+    [JsonIgnore]
+    public int Hp
     {
-        get => _hpLim.Value;
-        set
+        get => HpLim.Value;
+        protected set
         {
-            _hpLim.Value = value;
+            if (value == HpLim.Value) return;
+            HpLim.Value = value;
             if (value == 0) Died?.Invoke(this, EventArgs.Empty);
+            FireStatAffected(Stat.Hp);
         }
     }
 
-    [JsonProperty] private readonly LimitedNumber _energyLim;
-
+    [JsonIgnore]
     public int Energy
     {
-        get => _energyLim.Value;
+        get => EnergyLim.Value;
         set
         {
-            if (value < _energyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
-            _energyLim.Value = value;
+            if (value == EnergyLim.Value) return;
+            if (value < EnergyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
+            EnergyLim.Value = value;
+            FireStatAffected(Stat.Energy);
         }
     }
 
-    public int Dexterity { get; protected set; }
-    public int Defence { get; protected set; }
+    [JsonIgnore]
+    public int Dex
+    {
+        get => _dex;
+        protected set
+        {
+            if (value == _dex) return;
+            _dex = value;
+            FireStatAffected(Stat.Dex);
+        } 
+    }
+
+    [JsonIgnore]
+    public int Def
+    {
+        get => _def;
+        protected set
+        {
+            if (value == _def) return;
+            _def = value;
+            FireStatAffected(Stat.Def);
+        }
+    }
+
+    [JsonIgnore] public int MaxHp => (int) HpLim.MaxValue!;
+    [JsonIgnore] public int MaxEnergy => (int) EnergyLim.MaxValue!;
 
     public int X { get; private set; }
     public int Y { get; private set; }
@@ -51,19 +82,20 @@ public abstract class Actor : IObjectOnMap
 
     public event EventHandler Died;
     public event EventHandler SpentEnergy;
+    public event EventHandler<StatChangeEventArgs> StatChanged; 
     public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
 
     protected Actor()
     {
     }
-    protected Actor(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
+    protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
     {
         Level = level;
-        _hpLim = new LimitedNumber(maxHp, maxHp, 0);
-        _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
-        Dexterity = dexterity;
-        Defence = defence;
+        HpLim = new LimitedNumber(maxHp, maxHp, 0);
+        EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
+        Dex = dex;
+        Def = def;
         this.viewRange = viewRange;
         X = x;
         Y = y;
@@ -80,7 +112,7 @@ public abstract class Actor : IObjectOnMap
     {
         if (Hp == 0) return;
         _turnStopped = false;
-        Energy += _energyLim.MaxValue.Value;
+        Energy += EnergyLim.MaxValue.Value;
     }
 
     public void StopTurn() => _turnStopped = true;
@@ -96,6 +128,11 @@ public abstract class Actor : IObjectOnMap
     }
 
     protected void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
+
+    protected void FireStatAffected(Stat stat)
+    {
+        StatChanged?.Invoke(this, new StatChangeEventArgs(stat));
+    }
 
     public abstract void TakeAction();
 }
