@@ -20,6 +20,7 @@ public abstract class Actor : IObjectOnMap
         get => _hpLim.Value;
         set
         {
+            if (value == _hpLim.Value) return;
             _hpLim.Value = value;
             if (value == 0) Died?.Invoke(this, EventArgs.Empty);
         }
