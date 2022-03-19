@@ -14,7 +14,7 @@ public class MainMenu : Menu
     public MainMenu()
     {
         LineView = new LineView();
-        LineView.SetLines(new List<ListLine>()
+        LineView.SetLines(new List<ListLine>
         {
             new Button("Select level", "", OpenLevelMenu),
             new Button("Quit", "", Game.Quit)
@@ -30,6 +30,8 @@ public class MainMenu : Menu
 
     private void OpenLevelMenu()
     {
-        
+        LevelMenu levelMenu = new();
+        UserInterface.AddChild(this, levelMenu);
+        levelMenu.Open();
     }
 }
