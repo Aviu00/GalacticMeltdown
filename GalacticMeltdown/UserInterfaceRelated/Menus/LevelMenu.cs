@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Launchers;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
@@ -8,17 +10,6 @@ using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Menus;
-
-internal class WorldButton : Button
-{
-    public string Path;
-
-    public WorldButton(LevelInfo info, Action<string> levelStarter)
-        : base($"{info.Name}", $"seed: {info.Seed}", () => levelStarter(info.Path))
-    {
-        Path = info.Path;
-    }
-}
 
 public class LevelMenu : Menu
 {
@@ -31,7 +22,7 @@ public class LevelMenu : Menu
             {
                 {LevelMenuControl.SelectNext, LineView.SelectNext},
                 {LevelMenuControl.SelectPrev, LineView.SelectPrev},
-                {LevelMenuControl.Start, StartCurrentLevel},
+                {LevelMenuControl.Start, LineView.PressCurrent},
                 {LevelMenuControl.GoBack, Close},
                 {LevelMenuControl.Create, OpenLevelCreationMenu},
                 {LevelMenuControl.Delete, OpenLevelRemovalDialog}
@@ -40,7 +31,10 @@ public class LevelMenu : Menu
 
     private void SetLevelButtons()
     {
-        
+        List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelInfo();
+        List<Button> buttons = new(levelInfos.Select(levelInfo =>
+            new Button($"{levelInfo.Name}", $"seed: {levelInfo.Seed}", () => TryStartLevel(levelInfo.Path))));
+        LineView.SetLines(buttons.Cast<ListLine>().ToList());
     }
 
     private void OpenLevelCreationMenu()
@@ -53,13 +47,17 @@ public class LevelMenu : Menu
         
     }
 
-    private void StartCurrentLevel()
-    {
-        
-    }
-
     private void TryStartLevel(string path)
     {
-        
+        var (level, seed) = FilesystemLevelManager.GetLevel(path);
+        if (level is null)
+        {
+            SetLevelButtons();
+            // TODO: failure animation
+            return;
+        }
+
+        DataHolder.CurrentSeed = seed;
+        Game.StartLevel(level, path);
     }
 }
