@@ -96,10 +96,10 @@ public class InputProcessor
         _dormantHandlers.Add(controller);
     }
 
-    public void Forget(object sender)
+    public void Forget(object obj)
     {
-        if (!_objectHandlers.ContainsKey(sender)) return;
-        Controller controller = _objectHandlers[sender];
+        if (!_objectHandlers.ContainsKey(obj)) return;
+        Controller controller = _objectHandlers[obj];
         _dormantHandlers.Remove(controller);
         _activeHandlers.Remove(controller);
         if (ControllingHandler == controller)
@@ -107,16 +107,16 @@ public class InputProcessor
             RemoveCurrentController();
         }
 
-        foreach (var child in _children[sender].children)
+        foreach (var child in _children[obj].children)
         {
             Forget(child);
         }
 
-        _children.Remove(sender);
-        _objectHandlers.Remove(sender);
-        object parent = _children[sender].parent;
-        if (parent is null) return;
-        _children[parent].children.Remove(sender);
+        object parent = _children[obj].parent;
+        if (parent is not null) _children[parent].children.Remove(obj);
+        _children.Remove(obj);
+        if (!_objectHandlers.ContainsKey(obj)) return;
+        _objectHandlers.Remove(obj);
     }
 
     private void RemoveCurrentController()

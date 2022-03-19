@@ -67,17 +67,19 @@ public class Renderer
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
-    private void ForgetInternal(object sender)
+    private void ForgetInternal(object obj)
     {
-        foreach (var child in _children[sender].children)
+        foreach (var child in _children[obj].children)
         {
             ForgetInternal(child);
         }
-        
-        _children[_children[sender].parent].children.Remove(sender);
-        _children.Remove(sender);
-        _objectViews.Remove(sender);
-        _views.Remove(_objectViews[sender]);
+
+        object parent = _children[obj].parent;
+        if (parent is not null) _children[parent].children.Remove(obj);
+        _children.Remove(obj);
+        if (!_objectViews.ContainsKey(obj)) return;
+        _views.Remove(_objectViews[obj]);
+        _objectViews.Remove(obj);
     }
 
     public Renderer()
