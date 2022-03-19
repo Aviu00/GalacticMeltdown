@@ -47,22 +47,34 @@ public class Enemy : Npc
         if (!IsActive) return;
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
             .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
-        if (CurrentTarget is not null)
+        Counter alertCounter = new Counter(Level, 20);
+        if (CurrentTarget is not null && alertCounter.FinishedCounting)
         {
-            AlertEnemiesAboutPlayerPosition(X, Y);
+            AlertEnemiesAboutTarget(X, Y);
+            alertCounter.ResetTimer();
         }
 
         base.TakeAction();
     }
 
-    private void AlertEnemiesAboutPlayerPosition(int x, int y)
+    private void AlertEnemiesAboutTarget(int x, int y)
     {
         (int chunkCoordX, int chunkCoordY) = Level.GetChunkCoords(x,y);
-        foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY, AlertRadius))
+        foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY, AlertRadius / DataHolder.ChunkSize + 1))
         {
-            foreach (var enemy in chunk.GetNpcs().Where(npc => npc is Enemy && npc.CurrentTarget is null).ToList())
+            foreach (var enemy in chunk.Enemies.
+                         Where(enemy => UtilityFunctions.GetDistance(enemy.X, enemy.Y, X, Y) <= AlertRadius))
             {
-                enemy.CurrentTarget = CurrentTarget;
+                if (enemy.Behaviors is not null)
+                {
+                    foreach (var behavior in enemy.Behaviors)
+                    {
+                        if (behavior is MovementStrategy)
+                        {
+                            (behavior as MovementStrategy).PreviousTarget = CurrentTarget;
+                        }
+                    }
+                }
             }
         }
     }
