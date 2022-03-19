@@ -15,7 +15,6 @@ public class Enemy : Npc
     private readonly EnemyTypeData _typeData;
     public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     public string Name => _typeData.Name;
-    // TODO: AlertRadius to XML
     private int AlertRadius => _typeData.AlertRadius;
     public override ConsoleColor? BgColor => _typeData.BgColor;
 
