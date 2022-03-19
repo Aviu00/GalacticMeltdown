@@ -20,6 +20,7 @@ public class LineView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
+        if (y < Height - _lines.Count) return new ViewCellData(null, null);
         return new ViewCellData(null, null);
     }
 
@@ -28,7 +29,6 @@ public class LineView : View
         _lines = lines;
         
         _pressableLineIndexes = new List<int>(_lines.Count);
-        _pressableIndex = 0;
         for (var i = 0; i < _lines.Count; i++)
         {
             if (_lines[i] is PressableListLine)
@@ -37,6 +37,13 @@ public class LineView : View
                 UserInterface.AddChild(this, _lines[i]);
             }
         }
+
+        if (_pressableLineIndexes.Any())
+        {
+            _pressableIndex = 0;
+            ((PressableListLine) _lines[_pressableIndex]).Select();
+        }
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public override void Resize(int width, int height)
@@ -48,15 +55,25 @@ public class LineView : View
     public void SelectNext()
     {
         if (!_pressableLineIndexes.Any()) return;
+        int prevIndex = _pressableIndex;
         _pressableIndex += 1;
         if (_pressableIndex == _pressableLineIndexes.Count) _pressableIndex = 0;
+        if (prevIndex == _pressableIndex) return;
+        ((PressableListLine) _lines[prevIndex]).Deselect();
+        ((PressableListLine) _lines[_pressableIndex]).Select();
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void SelectPrev()
     {
         if (!_pressableLineIndexes.Any()) return;
+        int prevIndex = _pressableIndex;
         _pressableIndex -= 1;
         if (_pressableIndex == -1) _pressableIndex = _pressableLineIndexes.Count - 1;
+        if (prevIndex == _pressableIndex) return;
+        ((PressableListLine) _lines[prevIndex]).Deselect();
+        ((PressableListLine) _lines[_pressableIndex]).Select();
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void PressCurrent()
