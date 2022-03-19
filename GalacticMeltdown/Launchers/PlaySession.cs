@@ -74,5 +74,6 @@ public partial class PlaySession
         _sessionActive = false;
         _player.StopTurn();
         UserInterface.Forget(this);
+        Game.OpenMainMenu();
     }
 }

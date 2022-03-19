@@ -25,7 +25,7 @@ public static class Game
         _session.Start();
     }
 
-    private static void OpenMainMenu()
+    public static void OpenMainMenu()
     {
         UserInterface.Forget(_session);
         _menu = new MainMenu();
