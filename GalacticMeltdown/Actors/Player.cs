@@ -17,7 +17,18 @@ public class Player : Actor, ISightedObject, IControllable
     
     private bool _xray;
 
-    public int Str { get; set; }
+    private int _str;
+
+    public int Str
+    {
+        get => _str;
+        set
+        {
+            if (value == _str) return;
+            _str = value;
+            FireStatAffected(Stat.Str);
+        }
+    }
     
     public bool NoClip;
 
@@ -51,7 +62,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;
-        Str = PlayerStr;
+        _str = PlayerStr;
     }
 
     public bool TryMove(int deltaX, int deltaY)

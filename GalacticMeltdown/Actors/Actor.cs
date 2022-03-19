@@ -14,6 +14,9 @@ public abstract class Actor : IObjectOnMap
     public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
     private readonly LimitedNumber _hpLim;
+    private readonly LimitedNumber _energyLim;
+    private int _dex;
+    private int _def;
 
     protected int Hp
     {
@@ -23,23 +26,43 @@ public abstract class Actor : IObjectOnMap
             if (value == _hpLim.Value) return;
             _hpLim.Value = value;
             if (value == 0) Died?.Invoke(this, EventArgs.Empty);
+            FireStatAffected(Stat.Hp);
         }
     }
-
-    private readonly LimitedNumber _energyLim;
 
     public int Energy
     {
         get => _energyLim.Value;
         set
         {
+            if (value == _energyLim.Value) return;
             if (value < _energyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
             _energyLim.Value = value;
+            FireStatAffected(Stat.Energy);
         }
     }
 
-    public int Dex { get; protected set; }
-    public int Def { get; protected set; }
+    public int Dex
+    {
+        get => _dex;
+        protected set
+        {
+            if (value == _dex) return;
+            _dex = value;
+            FireStatAffected(Stat.Dex);
+        } 
+    }
+
+    public int Def
+    {
+        get => _def;
+        protected set
+        {
+            if (value == _def) return;
+            _def = value;
+            FireStatAffected(Stat.Def);
+        }
+    }
 
     public int X { get; private set; }
     public int Y { get; private set; }
@@ -51,6 +74,7 @@ public abstract class Actor : IObjectOnMap
 
     public event EventHandler Died;
     public event EventHandler SpentEnergy;
+    public event EventHandler<StatChangeEventArgs> StatChanged; 
     public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
 
@@ -93,6 +117,11 @@ public abstract class Actor : IObjectOnMap
     }
 
     protected void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
+
+    protected void FireStatAffected(Stat stat)
+    {
+        StatChanged?.Invoke(this, new StatChangeEventArgs(stat));
+    }
 
     public abstract void TakeAction();
 }
