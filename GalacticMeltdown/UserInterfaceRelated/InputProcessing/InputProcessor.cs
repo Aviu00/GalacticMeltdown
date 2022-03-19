@@ -13,14 +13,14 @@ public class InputProcessor
     private OrderedSet<Controller> _activeHandlers;
     
     private bool _inLoop;
-    private Controller _controllingHandler;
+    private Controller _currentController;
 
-    private Controller ControllingHandler
+    private Controller CurrentController
     {
-        get => _controllingHandler;
+        get => _currentController;
         set
         {
-            _controllingHandler = value;
+            _currentController = value;
             if (!_inLoop) Loop();
         }
     }
@@ -57,9 +57,9 @@ public class InputProcessor
         if (!_objectControllers.ContainsKey(sender)) return;
         
         Controller controller = _objectControllers[sender];
-        if (controller != ControllingHandler) return;
-        _activeHandlers.Add(ControllingHandler);
-        ControllingHandler = controller;
+        if (controller != CurrentController) return;
+        _activeHandlers.Add(CurrentController);
+        CurrentController = controller;
     }
 
     public void TakeControl(object sender)
@@ -70,13 +70,23 @@ public class InputProcessor
         if (_dormantHandlers.Contains(controller))
         {
             _dormantHandlers.Remove(controller);
-            ControllingHandler = controller;
+            SetControllingHandler(controller);
         }
         else if (_activeHandlers.Contains(controller))
         {
             _activeHandlers.Remove(controller);
-            ControllingHandler = controller;
+            SetControllingHandler(controller);
         }
+    }
+
+    private void SetControllingHandler(Controller controller)
+    {
+        if (CurrentController is not null)
+        {
+            _activeHandlers.Add(CurrentController);
+        }
+
+        CurrentController = controller;
     }
 
     public void SetController(object sender, Controller controller)
@@ -86,7 +96,7 @@ public class InputProcessor
             Controller oldHandler = _objectControllers[sender];
             _dormantHandlers.Remove(oldHandler);
             _activeHandlers.Remove(oldHandler);
-            if (ControllingHandler == oldHandler)
+            if (CurrentController == oldHandler)
             {
                 RemoveCurrentController();
             }
@@ -117,7 +127,7 @@ public class InputProcessor
         Controller controller = _objectControllers[obj];
         _dormantHandlers.Remove(controller);
         _activeHandlers.Remove(controller);
-        if (ControllingHandler == controller)
+        if (CurrentController == controller)
         {
             RemoveCurrentController();
         }
@@ -126,9 +136,9 @@ public class InputProcessor
 
     private void RemoveCurrentController()
     {
-        ControllingHandler = null;
+        CurrentController = null;
         if (!_activeHandlers.Any()) return;
-        ControllingHandler = _activeHandlers.Pop();
+        CurrentController = _activeHandlers.Pop();
     }
 
     public static void StartProcessLoop()
@@ -159,9 +169,9 @@ public class InputProcessor
     private void Loop()
     {
         _inLoop = true;
-        while (ControllingHandler is not null)
+        while (CurrentController is not null)
         {
-            ControllingHandler.HandleKey(Console.ReadKey(true));
+            CurrentController.HandleKey(Console.ReadKey(true));
         }
 
         _inLoop = false;
