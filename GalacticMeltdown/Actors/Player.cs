@@ -1,5 +1,6 @@
 using System;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Actors;
 
@@ -10,10 +11,13 @@ public class Player : Actor, ISightedObject, IControllable
     private const int PlayerDex = 16;
     private const int PlayerDef = 4;
     private const int PlayerViewRange = 20;
+    private const int PlayerStr = 10;
 
     private Action _giveControlToUser;
     
     private bool _xray;
+
+    public int Str { get; set; }
     
     public bool NoClip;
 
@@ -47,6 +51,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;
+        Str = PlayerStr;
     }
 
     public bool TryMove(int deltaX, int deltaY)
