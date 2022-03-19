@@ -6,11 +6,12 @@ namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
 internal class WorldButton : Button
 {
-    private LevelInfo _levelInfo;
+    public string Path;
 
     public WorldButton(LevelInfo info, Action<string> levelStarter)
         : base($"{info.Name}", $"seed: {info.Seed}", () => levelStarter(info.Path))
     {
+        Path = info.Path;
     }
 }
 
