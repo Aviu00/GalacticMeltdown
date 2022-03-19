@@ -85,6 +85,12 @@ public class LineView : View
         ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Press();
     }
 
+    public ListLine GetCurrent()
+    {
+        if (!_pressableLineIndexes.Any()) return null;
+        return _lines[_pressableLineIndexes[_selectedIndex]];
+    }
+
     private void OnInputLineUpdate(object sender, EventArgs e)
     {
         NeedRedraw?.Invoke(this, EventArgs.Empty);
