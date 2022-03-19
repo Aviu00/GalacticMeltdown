@@ -18,10 +18,10 @@ public abstract class Actor : IObjectOnMap
     private int _dex;
     private int _def;
 
-    protected int Hp
+    public int Hp
     {
         get => HpLim.Value;
-        set
+        protected set
         {
             if (value == HpLim.Value) return;
             HpLim.Value = value;
