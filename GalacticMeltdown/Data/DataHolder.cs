@@ -123,6 +123,16 @@ public static class DataHolder
             {ConsoleKey.Backspace, TextInputControl.DeleteCharacter},
             {ConsoleKey.Escape, TextInputControl.Back},
         };
+
+        public static Dictionary<ConsoleKey, LevelMenuControl> LevelMenu = new()
+        {
+            {ConsoleKey.UpArrow, LevelMenuControl.SelectPrev},
+            {ConsoleKey.DownArrow, LevelMenuControl.SelectNext},
+            {ConsoleKey.Enter, LevelMenuControl.Start},
+            {ConsoleKey.Escape, LevelMenuControl.GoBack},
+            {ConsoleKey.C, LevelMenuControl.Create},
+            {ConsoleKey.D, LevelMenuControl.Delete},
+        };
     }
     
     static DataHolder()
