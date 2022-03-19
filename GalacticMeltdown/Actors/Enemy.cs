@@ -16,7 +16,7 @@ public class Enemy : Npc
     public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     public string Name => _typeData.Name;
     // TODO: AlertRadius to XML
-    private int AlertRadius = 40;
+    private int AlertRadius => _typeData.AlertRadius;
     public override ConsoleColor? BgColor => _typeData.BgColor;
 
     public Enemy(EnemyTypeData typeData, int x, int y, Level level) : base(

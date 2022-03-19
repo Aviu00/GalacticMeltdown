@@ -29,6 +29,7 @@ public class EnemyTypesExtractor : XmlExtractor
             int dexterity  = 0;
             int viewRange = 1;
             int cost = 10;
+            int alertRadius = 10;
             LinkedList<BehaviorData> behaviors = null;
             foreach (XmlNode locNode in node)
             {
@@ -70,11 +71,14 @@ public class EnemyTypesExtractor : XmlExtractor
                     case "Behaviors":
                         behaviors = ParseBehaviors(locNode);
                         break;
+                    case "AlertRadius":
+                        alertRadius = Convert.ToInt32(locNode.InnerText);
+                        break;
                 }
             }
 
             EnemyTypeData enemiesTypeData = new EnemyTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy, 
-                defence, dexterity , viewRange, cost, behaviors);
+                defence, dexterity , viewRange, cost, alertRadius, behaviors);
             EnemiesTypes.Add(enemiesTypeData.Id, enemiesTypeData);
         }
     }
@@ -135,8 +139,8 @@ public class EnemyTypesExtractor : XmlExtractor
     }
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
-    ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost,
-    LinkedList<BehaviorData> Behaviors);
+    ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost, 
+    int AlertRadius, LinkedList<BehaviorData> Behaviors);
 
 public record BehaviorData(int? Priority);
 
