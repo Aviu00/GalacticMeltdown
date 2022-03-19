@@ -32,7 +32,7 @@ public class MovementStrategy : Behavior
     public MovementStrategy(MovementStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         ControlledNpc = controlledNpc;
-        _previousTargetCounter = new Counter(Level, 5, _ => _nextPathCellNode = null);
+        _previousTargetCounter = new Counter(Level, 5, _ => PreviousTarget = null);
         _previousTargetCounter.StopTimer();
     }
 
@@ -83,6 +83,11 @@ public class MovementStrategy : Behavior
                 _wantsToGoTo = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
             }
             PreviousTarget = ControlledNpc.CurrentTarget;
+        }
+        else if (ControlledNpc.CurrentTarget is null && PreviousTarget is not null)
+        {
+            _wantsToGoTo = (PreviousTarget.X, _previousTarget.Y);
+            SetPathTo(PreviousTarget.X, PreviousTarget.Y);
         }
         else if (_nextPathCellNode is null)
         {
