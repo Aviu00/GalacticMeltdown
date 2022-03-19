@@ -74,7 +74,6 @@ public class TileTypesExtractor : XmlExtractor
                     case "MoveCost":
                         moveCost = Convert.ToInt32(locNode.InnerText);
                         break;
-
                 }
             }
 

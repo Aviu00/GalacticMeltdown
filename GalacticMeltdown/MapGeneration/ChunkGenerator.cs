@@ -197,7 +197,7 @@ public class ChunkGenerator
             TileTypeData terrainObject = NorthConnection is null || x is not (ChunkSize / 2 - 1 or ChunkSize / 2)
                 ? GetConnectableData(roomData, x, ChunkSize - 1, northernTileMap?[x, 0].ConnectToWalls,
                     overrideId: "wall")
-                : DataHolder.TileTypes["door_closed"];
+                : DataHolder.TileTypes["door-closed"];
             Tiles[x, ChunkSize - 1] = new Tile(terrainObject);
         }
 
@@ -206,7 +206,7 @@ public class ChunkGenerator
             TileTypeData terrainObject = EastConnection is null || y is not (ChunkSize / 2 - 1 or ChunkSize / 2)
                 ? GetConnectableData(roomData, ChunkSize - 1, y,
                     easternTileConnectable: easternTileMap?[0, y].ConnectToWalls, overrideId: "wall")
-                : DataHolder.TileTypes["door_closed"];
+                : DataHolder.TileTypes["door-closed"];
             Tiles[ChunkSize - 1, y] = new Tile(terrainObject);
         }
     }

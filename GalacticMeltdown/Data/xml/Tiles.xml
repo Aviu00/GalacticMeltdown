@@ -63,18 +63,20 @@
         <MoveCost>300</MoveCost>
     </Tile>
     <Tile>
-        <Id>door_closed</Id>
+        <Id>door-closed</Id>
         <Name>closed metal door</Name>
         <Symbol>+</Symbol>
         <IsWalkable>False</IsWalkable>
         <IsTransparent>False</IsTransparent>
+        <IsConnection>True</IsConnection>
     </Tile>
     <Tile>
-        <Id>door_open</Id>
+        <Id>door-open</Id>
         <Name>open metal door</Name>
         <Symbol>'</Symbol>
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
+        <IsConnection>True</IsConnection>
         <MoveCost>100</MoveCost>
     </Tile>
 </Tiles>

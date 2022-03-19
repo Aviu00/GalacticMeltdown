@@ -31,7 +31,7 @@ public class Tile : IDrawable
     public Tile(TileTypeData typeData)
     {
         _typeData = typeData;
-        var splitId = Id.Split('_');
+        var splitId = Id.Split('-');
         if (splitId[^1] is not ("open" or "closed")) return;
         
         IsDoor = true;
@@ -39,7 +39,7 @@ public class Tile : IDrawable
         string baseId = splitId.Aggregate("", (current, s) =>
         {
             if (s is "open" or "closed") return current;
-            return current + s + "_";
+            return current + s + "-";
         });
         TileTypeData closedData = isClosed ? typeData : DataHolder.TileTypes[baseId + "closed"];
         TileTypeData openData = !isClosed ? typeData : DataHolder.TileTypes[baseId + "open"];
