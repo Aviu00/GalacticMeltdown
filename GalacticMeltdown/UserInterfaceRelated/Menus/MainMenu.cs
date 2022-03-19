@@ -9,38 +9,23 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
-public class MainMenu
+public class MainMenu : Menu
 {
-    private LineView _lineView;
-    private Controller _controller;
-    
     public MainMenu()
     {
-        _lineView = new LineView();
-        _lineView.SetLines(new List<ListLine>()
+        LineView = new LineView();
+        LineView.SetLines(new List<ListLine>()
         {
             new Button("Select level", "", OpenLevelMenu),
             new Button("Quit", "", Game.Quit)
         });
-        _controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
-                {SelectionControl.Down, _lineView.SelectNext},
-                {SelectionControl.Up, _lineView.SelectPrev},
-                {SelectionControl.Select, _lineView.PressCurrent}
+                {SelectionControl.Down, LineView.SelectNext},
+                {SelectionControl.Up, LineView.SelectPrev},
+                {SelectionControl.Select, LineView.PressCurrent}
             }));
-    }
-
-    public void Open()
-    {
-        UserInterface.SetView(this, _lineView);
-        UserInterface.SetController(this, _controller);
-        UserInterface.TakeControl(this);
-    }
-
-    public void Close()
-    {
-        UserInterface.Forget(this);
     }
 
     private void OpenLevelMenu()
