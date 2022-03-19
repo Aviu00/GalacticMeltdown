@@ -9,7 +9,7 @@ namespace GalacticMeltdown.Launchers;
 
 public partial class PlaySession
 {
-    private readonly string _savePath;
+    private readonly string _levelName;
     private static Player _player;
     private static IControllable _controlledObject;
     private static Level _level;
@@ -17,9 +17,9 @@ public partial class PlaySession
 
     private static bool _sessionActive;
 
-    public PlaySession(Level level, string savePath)
+    public PlaySession(Level level, string levelName)
     {
-        _savePath = savePath;
+        _levelName = levelName;
         _level = level;
         _player = _level.Player;
         _player.SetControlFunc(() =>
@@ -41,7 +41,7 @@ public partial class PlaySession
         _sessionActive = true;
         while (_sessionActive)
         {
-            SaveLevel();
+            //SaveLevel();
             if (!_level.DoTurn())
             {
                 if (_level.PlayerWon)
@@ -58,7 +58,7 @@ public partial class PlaySession
 
     private void SaveLevel()
     {
-        FilesystemLevelManager.SaveLevel(_level, _savePath);
+        FilesystemLevelManager.SaveLevel(_level, _levelName);
     }
 
     private static void MoveControlled(int deltaX, int deltaY)

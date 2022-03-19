@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
@@ -36,60 +38,75 @@ public partial class Level
 {
     private const int ActiveChunkRadius = DataHolder.ActiveChunkRadius;
     private const int ChunkSize = DataHolder.ChunkSize;
+    
+    [JsonProperty] public readonly Player Player;
 
-    private readonly Tile[] _southernWall;
-    private readonly Tile[] _westernWall;
-    private readonly Tile _cornerTile;
+    [JsonProperty] private readonly Tile[] _southernWall;
+    [JsonProperty] private readonly Tile[] _westernWall;
+    [JsonProperty] private readonly Chunk[,] _chunks;
+    private Tile _cornerTile;
 
-    private readonly Chunk[,] _chunks;
-
-    private readonly int _finishX;
-    private readonly int _finishY;
+    [JsonProperty] private (int x, int y) _finishPos;
 
     public event EventHandler TurnFinished;
     public event EventHandler NpcDied;
     public event EventHandler<MoveEventArgs> SomethingMoved;
 
+    [JsonIgnore]
     public (int x, int y) Size => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
 
     public bool IsActive { get; private set; }
     public bool PlayerWon { get; private set; }
 
-    private readonly EnemySpawner _enemySpawner;
-    public Player Player { get; }
-    public LevelView LevelView { get; }
-    public OverlayView OverlayView { get; }
+    [JsonProperty] private readonly EnemySpawner _enemySpawner;
+    [JsonIgnore] public LevelView LevelView;
+    [JsonIgnore] public OverlayView OverlayView;
 
-    public List<Chunk> ActiveChunks { get; private set; }
+    [JsonIgnore] public List<Chunk> ActiveChunks { get; private set; }
 
-    public ObservableCollection<IControllable> ControllableObjects { get; }
-    public ObservableCollection<ISightedObject> SightedObjects { get; }
+    [JsonIgnore] public ObservableCollection<IControllable> ControllableObjects;
+    [JsonIgnore] public ObservableCollection<ISightedObject> SightedObjects;
 
-    private readonly ChunkEventListener _listener;
+    private ChunkEventListener _listener;
 
+    [JsonConstructor]
+    private Level()
+    {
+    }
+    
     public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall,
         (int x, int y) finishPos)
     {
-        _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
         _chunks = chunks;
-        _listener = new ChunkEventListener(_chunks);
-        _listener.NpcDied += NpcDeathHandler;
-        _listener.SomethingMoved += SomethingMovedHandler;
-
         _southernWall = southernWall;
         _westernWall = westernWall;
-        (_finishX, _finishY) = finishPos;
+        _finishPos = finishPos;
+        IsActive = true;
+        PlayerWon = false;
         Player = new Player(startPos.x, startPos.y, this);
+        _enemySpawner = new EnemySpawner(this);
+        Init();
+    }
+
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        Init();
+    }
+    
+    private void Init()
+    {
+        _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
+        _listener = new ChunkEventListener(_chunks);
+        OverlayView = new OverlayView(this);
+        _listener.NpcDied += NpcDeathHandler;
+        _listener.SomethingMoved += SomethingMovedHandler;
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
         ControllableObjects = new ObservableCollection<IControllable> {Player};
         ControllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
         LevelView = new LevelView(this, Player);
-        OverlayView = new OverlayView(this);
-        IsActive = true;
-        PlayerWon = false;
-        _enemySpawner = new EnemySpawner(this);
         ActiveChunks = new();
         UpdateActiveChunks();
     }
@@ -211,7 +228,7 @@ public partial class Level
             UpdateActiveChunks();
         }
 
-        if (!ReferenceEquals(sender, Player) || Player.X != _finishX || Player.Y != _finishY) return;
+        if (!ReferenceEquals(sender, Player) || Player.X != _finishPos.x || Player.Y != _finishPos.y) return;
         IsActive = false;
         PlayerWon = true;
     }
@@ -226,7 +243,7 @@ public partial class Level
             bool active = 
                 Math.Abs(x - chunk.MapX) <= ActiveChunkRadius + 1 && Math.Abs(y - chunk.MapY) <= ActiveChunkRadius + 1;
             if (!active)
-                chunk.isActive = false;
+                chunk.IsActive = false;
             return active;
         })).ToList();
         
@@ -236,9 +253,9 @@ public partial class Level
             var (x, y) = GetChunkCoords(obj.X, obj.Y);
             foreach (var chunk in GetChunksAround(x, y, ActiveChunkRadius))
             {
-                if (chunk.isActive) continue;
+                if (chunk.IsActive) continue;
                 ActiveChunks.Add(chunk);
-                chunk.isActive = true;
+                chunk.IsActive = true;
                 if (chunk.WasActiveBefore) continue;
                 chunk.WasActiveBefore = true;
                 _enemySpawner.SpawnEnemiesInChunk(chunk);
@@ -262,7 +279,7 @@ public partial class Level
     {
         Chunk chunk = _chunks[chunkX, chunkY];
         HashSet<Chunk> chunks = GetChunkNeighbors(chunk, amount, includeBaseChunk);
-        if (includeBaseChunk && (returnNotActiveChunks || chunk.isActive)) chunks.Add(chunk);
+        if (includeBaseChunk && (returnNotActiveChunks || chunk.IsActive)) chunks.Add(chunk);
         else chunks.Remove(chunk);
         return chunks;
     }
@@ -275,7 +292,7 @@ public partial class Level
         {
             if(prevChunk != null && (x, y) == (prevChunk.MapX, prevChunk.MapY)) continue; 
             Chunk newChunk = _chunks[x, y];
-            if(!returnNotActiveChunks && !chunk.isActive) continue;
+            if(!returnNotActiveChunks && !chunk.IsActive) continue;
             hashSet.Add(newChunk);
             HashSet<Chunk> newSet = GetChunkNeighbors(newChunk, amount - 1, returnNotActiveChunks, chunk);
             if(newSet != null) hashSet.UnionWith(newSet);
@@ -387,7 +404,7 @@ public partial class Level
     {
         foreach ((int neighborX, int neighborY) in _chunks[x, y].NeighborCoords)
         {
-            if(onlyActiveChunks && !_chunks[neighborX, neighborY].isActive) continue;
+            if(onlyActiveChunks && !_chunks[neighborX, neighborY].IsActive) continue;
             yield return (neighborX, neighborY, 1);
         }
     }

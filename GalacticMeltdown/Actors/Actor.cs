@@ -2,18 +2,19 @@ using System;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
 public abstract class Actor : IObjectOnMap
 {
-    private bool _turnStopped;
+    [JsonProperty] private bool _turnStopped;
 
-    protected int _viewRange;
+    [JsonProperty] protected int viewRange;
 
-    public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
+    [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
-    private readonly LimitedNumber _hpLim;
+    [JsonProperty] private readonly LimitedNumber _hpLim;
 
     protected int Hp
     {
@@ -25,7 +26,7 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
-    private readonly LimitedNumber _energyLim;
+    [JsonProperty] private readonly LimitedNumber _energyLim;
 
     public int Energy
     {
@@ -37,8 +38,8 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
-    public int Dex { get; protected set; }
-    public int Def { get; protected set; }
+    public int Dexterity { get; protected set; }
+    public int Defence { get; protected set; }
 
     public int X { get; private set; }
     public int Y { get; private set; }
@@ -53,14 +54,17 @@ public abstract class Actor : IObjectOnMap
     public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
 
-    protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
+    protected Actor()
+    {
+    }
+    protected Actor(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
     {
         Level = level;
         _hpLim = new LimitedNumber(maxHp, maxHp, 0);
         _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
-        Dex = dex;
-        Def = def;
-        _viewRange = viewRange;
+        Dexterity = dexterity;
+        Defence = defence;
+        this.viewRange = viewRange;
         X = x;
         Y = y;
         _turnStopped = false;

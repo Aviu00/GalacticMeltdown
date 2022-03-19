@@ -3,6 +3,7 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
@@ -10,23 +11,23 @@ public class Tile : IDrawable
 {
     private TileTypeData _typeData;
 
-    public string Name => _typeData.Name;
+    [JsonIgnore] public string Name => _typeData.Name;
 
-    public (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
-    public ConsoleColor? BgColor => null;
+    [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
+    [JsonIgnore] public ConsoleColor? BgColor => null;
 
-    public bool IsTransparent => _typeData.IsTransparent;
-    public bool IsWalkable => _typeData.IsWalkable;
+    [JsonIgnore] public bool IsTransparent => _typeData.IsTransparent;
+    [JsonIgnore] public bool IsWalkable => _typeData.IsWalkable;
 
-    public bool ConnectToWalls => _typeData.IsConnection;
+    [JsonIgnore] public bool ConnectToWalls => _typeData.IsConnection;
 
     public string Id => _typeData.Id;
 
-    public int MoveCost => _typeData.MoveCost;
+    [JsonIgnore] public int MoveCost => _typeData.MoveCost;
 
-    public readonly bool IsDoor;
+    [JsonIgnore] public readonly bool IsDoor;
 
-    public readonly Action InteractWithDoor;
+    [JsonIgnore] public readonly Action InteractWithDoor;
 
     public Tile(TileTypeData typeData)
     {
@@ -44,5 +45,10 @@ public class Tile : IDrawable
         TileTypeData closedData = isClosed ? typeData : DataHolder.TileTypes[baseId + "closed"];
         TileTypeData openData = !isClosed ? typeData : DataHolder.TileTypes[baseId + "open"];
         InteractWithDoor = () => _typeData = _typeData == closedData ? openData : closedData;
+    }
+
+    [JsonConstructor]
+    private Tile(string id) : this(DataHolder.TileTypes[id])
+    {
     }
 }

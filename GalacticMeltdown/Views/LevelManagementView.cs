@@ -124,14 +124,20 @@ public class LevelManagementView : View
     private void CreateLevel()
     {
         // TODO: open dialog asking for name and seed (optional)
+        string name = "Test";
         int seed = Random.Shared.Next(0, 1000000000);
-        string savePath = FilesystemLevelManager.CreateLevel(seed, "test");
-        TryStartLevel(savePath);
+        Level level = FilesystemLevelManager.CreateLevel(seed, name);
+        if (level is null)
+        {
+            return;
+        }
+        DataHolder.CurrentSeed = seed;
+        Game.StartLevel(level, name);
     }
     
-    private void TryStartLevel(string path)
+    private void TryStartLevel(LevelInfo levelInfo)
     {
-        var (level, seed) = FilesystemLevelManager.GetLevel(path);
+        Level level = FilesystemLevelManager.GetLevel(levelInfo.Name);
         if (level is null)
         {
             RefreshLevelList();
@@ -139,8 +145,8 @@ public class LevelManagementView : View
             return;
         }
 
-        DataHolder.CurrentSeed = seed;
-        Game.StartLevel(level, path);
+        DataHolder.CurrentSeed = levelInfo.Seed;
+        Game.StartLevel(level, levelInfo.Name);
     }
 
     private void DeleteLevel()
@@ -152,7 +158,7 @@ public class LevelManagementView : View
         }
 
         // TODO: confirmation dialog
-        if (!FilesystemLevelManager.RemoveLevel(_menuLevels[_levelIndex].LevelInfo.Path))
+        if (!FilesystemLevelManager.RemoveLevel(_menuLevels[_levelIndex].LevelInfo.Name))
         {
             RefreshLevelList();
             return;
@@ -180,7 +186,7 @@ public class LevelManagementView : View
         foreach (var levelInfo in levelInfos)
         {
             _menuLevels.Add(new(new Button(levelInfo.Name, $"seed: {levelInfo.Seed}",
-                () => TryStartLevel(levelInfo.Path)), levelInfo));
+                () => TryStartLevel(levelInfo)), levelInfo));
         }
 
         _levelIndex = 0;

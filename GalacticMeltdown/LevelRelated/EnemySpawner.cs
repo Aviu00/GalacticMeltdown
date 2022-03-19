@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
@@ -10,22 +12,31 @@ public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
 
-    private readonly Level _level;
-    
-    private double _currency;
-    private double _currencyGain = 1;
-    private double _nextCurrencyAmount;
+    [JsonProperty] private readonly Level _level;
+    [JsonProperty] private double _currency;
+    [JsonProperty] private double _currencyGain = 1;
+    [JsonProperty] private double _nextCurrencyAmount;
 
-    public List<Chunk> TargetChunks;
+    [JsonIgnore] public List<Chunk> TargetChunks;
 
+    [JsonConstructor]
+    private EnemySpawner()
+    {
+    }
     public EnemySpawner(Level level)
     {
-        _level = level;
         CalculateNextCurrencyAmount();
+        _level = level;
         level.TurnFinished += NextTurn;
     }
 
-    void NextTurn(object sender, EventArgs _)
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        _level.TurnFinished += NextTurn;
+    }
+    
+    private void NextTurn(object _, EventArgs __)
     {
         _currency += _currencyGain;
         //_currencyGain += 1;
@@ -34,11 +45,11 @@ public class EnemySpawner
 
     public void SpawnEnemiesInChunk(Chunk chunk)
     {
-        Random rng = chunk.Rng;
+        Random rng = new Random(chunk.Seed);
         double currency = chunk.Difficulty * 20;
         currency *= (rng.NextDouble() + 0.5);
         var points = chunk.GetFloorTileCoords();
-        foreach (var enemy in CalculateEnemies(ref currency, chunk.Rng))
+        foreach (var enemy in CalculateEnemies(ref currency, rng))
         {
             var (x, y) = points[rng.Next(0, points.Count)];
             SpawnEnemy(enemy, x, y);

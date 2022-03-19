@@ -1,5 +1,6 @@
 using System;
 using GalacticMeltdown.LevelRelated;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
@@ -7,18 +8,19 @@ public class Player : Actor, ISightedObject, IControllable
 {
     private const int PlayerHp = 100;
     private const int PlayerEnergy = 100;
-    private const int PlayerDex = 16;
-    private const int PlayerDef = 4;
+    private const int PlayerDexterity = 16;
+    private const int PlayerDefence = 4;
     private const int PlayerViewRange = 20;
 
     private Action _giveControlToUser;
     
     private bool _xray;
     
-    public bool NoClip;
+    [JsonIgnore] public bool NoClip;
 
-    public bool InFocus { get; set; }
+    [JsonIgnore] public bool InFocus { get; set; }
 
+    [JsonIgnore]
     public bool Xray
     {
         get => _xray;
@@ -29,21 +31,26 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
 
+    [JsonIgnore]
     public int ViewRange
     {
-        get => _viewRange;
+        get => base.viewRange;
         set
         {
             if (value <= 0) return;
-            _viewRange = value;
+            base.viewRange = value;
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
     public event EventHandler VisiblePointsChanged;
-    
+
+    [JsonConstructor]
+    private Player()
+    {
+    }
     public Player(int x, int y, Level level)
-        : base(PlayerHp, PlayerEnergy, PlayerDex, PlayerDef, PlayerViewRange, x, y, level)
+        : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;

@@ -6,6 +6,7 @@ using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>;
@@ -20,20 +21,24 @@ public class Chunk
     public readonly int MapY;
 
     public readonly int Difficulty;
-    public readonly Tile[,] Tiles;
-    public readonly Random Rng;
-
-    private List<Enemy> Enemies { get; }
-
-    private ItemDictionary _items;
+    public readonly int Seed;
 
     public bool WasActiveBefore;
 
     public readonly List<(int x, int y)> NeighborCoords;
 
-    public bool isActive;
+    [JsonIgnore] public bool IsActive;
+    
+    private readonly ItemDictionary _items;
+    [JsonProperty] public readonly List<Enemy> Enemies;
+    [JsonProperty] public readonly Tile[,] Tiles;
 
-    public Chunk(Tile[,] tiles, ItemDictionary items, List<(int x, int y)> neighborCoords, int difficulty, Random rng,
+    [JsonConstructor]
+    private Chunk()
+    {
+    }
+    
+    public Chunk(Tile[,] tiles, ItemDictionary items, List<(int x, int y)> neighborCoords, int difficulty, int seed,
         int x, int y)
     {
         Tiles = tiles;
@@ -41,7 +46,7 @@ public class Chunk
         MapX = x;
         MapY = y;
         NeighborCoords = neighborCoords;
-        Rng = rng;
+        Seed = seed;
         _items = items;
         Enemies = new List<Enemy>();
     }
@@ -64,8 +69,8 @@ public class Chunk
     public IDrawable GetDrawable(int x, int y)
     {
         IDrawable drawable = GetMapObject(x, y);
-        if (drawable is not null) return drawable;
-        drawable = FindItem(x, y);
+        //if (drawable is not null) return drawable;
+        //drawable = FindItem(x, y);
         return drawable;
     }
 

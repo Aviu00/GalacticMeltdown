@@ -3,27 +3,31 @@ using System.Linq;
 using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
 public abstract class Npc : Actor
 {
-    public HashSet<Actor> Targets { get; set; }
-    public Actor CurrentTarget { get; set; }
+    [JsonProperty] protected HashSet<Actor> Targets { get; set; }
+    [JsonIgnore] public Actor CurrentTarget { get; set; }
 
-    private readonly string _id;
+    [JsonProperty] private readonly string _id;
 
-    protected SortedSet<Behavior> Behaviors { get; init; }
+    protected SortedSet<Behavior> Behaviors;
 
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
-        : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
+    protected Npc()
+    {
+    }
+    protected Npc(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
+        : base(maxHp, maxEnergy, dexterity, defence, viewRange, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
     }
 
     protected bool IsPointVisible(int x, int y)
     {
-        if (UtilityFunctions.GetDistance(x, y, X, Y) > _viewRange)
+        if (UtilityFunctions.GetDistance(x, y, X, Y) > viewRange)
         {
             return false;
         }

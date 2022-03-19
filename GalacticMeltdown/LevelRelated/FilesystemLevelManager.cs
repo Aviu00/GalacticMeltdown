@@ -1,68 +1,64 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using GalacticMeltdown.MapGeneration;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
-public readonly record struct LevelInfo(string Path, int Seed, string Name);
+public readonly record struct LevelInfo(int Seed, string Name);
 
 public static class FilesystemLevelManager
 {
     public static List<LevelInfo> GetLevelInfo()
     {
-        return new List<LevelInfo>
-        {
-            new(".", 0, "ExampleName0"),
-            new("..", 5, "ExampleName1"),
-            new("..", 5, "ExampleName2"),
-            new("..", 5, "ExampleName3"),
-            new("..", 5, "ExampleName4"),
-            new("..", 5, "ExampleName5"),
-            new("..", 5, "ExampleName6"),
-            new("..", 5, "ExampleName7"),
-            new("..", 5, "ExampleName8"),
-            new("..", 5, "ExampleName9"),
-            new("..", 5, "ExampleName10"),
-            new("..", 5, "ExampleName11"),
-            new("..", 5, "ExampleName12"),
-            new("..", 5, "ExampleName13"),
-            new("..", 5, "ExampleName14"),
-            new("..", 5, "ExampleName15"),
-            new("..", 5, "ExampleName16"),
-            new("..", 5, "ExampleName17"),
-            new("..", 5, "ExampleName18"),
-            new("..", 5, "ExampleName19"),
-            new("..", 5, "ExampleName20"),
-            new("..", 5, "ExampleName21"),
-            new("..", 5, "ExampleName22"),
-        };
-    }
-    
-    public static string CreateLevel(int seed, string name)
-    {
-        Level level = new MapGenerator(seed).Generate();
+        List<LevelInfo> levelInfos = new();
         string path = GetSaveFolder();
-        // Save seed and name
-        SaveLevel(level, path);
-        return path;
+        foreach (var dir in Directory.GetDirectories(path))
+        {
+            levelInfos.Add(new LevelInfo(0, Path.GetFileName(dir)));
+        }
+        return levelInfos;
     }
     
-    public static (Level level, int seed) GetLevel(string path)
+    public static Level CreateLevel(int seed, string name)
     {
-        // Tries to restore the level from path, returns null on failure
-        int seed = Random.Shared.Next(0, 1000000000);
         Level level = new MapGenerator(seed).Generate();
-        return (level, seed);
+        // Save seed and name
+        SaveLevel(level, name);
+        return level;
     }
     
-    public static bool SaveLevel(Level level, string path)
+    public static Level GetLevel(string name)
     {
+        string path = Path.Combine(GetSaveFolder(), name, "level.json");
+        try
+        {
+            return JsonConvert.DeserializeObject<Level>(File.ReadAllText(path));
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    public static bool SaveLevel(Level level, string name)
+    {
+        string path = Path.Combine(GetSaveFolder(), name, "level.json");
+        string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
+        {
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+        });
+
+    File.WriteAllText(path, levelStr);
         // returns false on failure
         return true;
     }
 
-    public static bool RemoveLevel(string path)
+    public static bool RemoveLevel(string name)
     {
         // returns false on failure
         return true;
@@ -70,6 +66,6 @@ public static class FilesystemLevelManager
 
     private static string GetSaveFolder()
     {
-        return $"~/.galactic-meltdown/levels/{UtilityFunctions.RandomString(16)}";
+        return Path.Combine(Environment.GetEnvironmentVariable("HOME") + "/.local/share/galactic-meltdown/levels");
     }
 }
