@@ -15,6 +15,8 @@ public class Enemy : Npc
     private readonly EnemyTypeData _typeData;
     public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     public string Name => _typeData.Name;
+    // TODO: AlertRadius to XML
+    private int AlertRadius = 40;
     public override ConsoleColor? BgColor => _typeData.BgColor;
 
     public Enemy(EnemyTypeData typeData, int x, int y, Level level) : base(
@@ -45,6 +47,23 @@ public class Enemy : Npc
         if (!IsActive) return;
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
             .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
+        if (CurrentTarget is not null)
+        {
+            AlertEnemiesAboutPlayerPosition(X, Y);
+        }
+
         base.TakeAction();
+    }
+
+    private void AlertEnemiesAboutPlayerPosition(int x, int y)
+    {
+        (int chunkCoordX, int chunkCoordY) = Level.GetChunkCoords(x,y);
+        foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY, AlertRadius))
+        {
+            foreach (var enemy in chunk.GetNpcs().Where(npc => npc is Enemy && npc.CurrentTarget is null).ToList())
+            {
+                enemy.CurrentTarget = CurrentTarget;
+            }
+        }
     }
 }
