@@ -40,12 +40,18 @@ public class MovementStrategy : Behavior
     {
         foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
         {
+            int additionalCost = 0;
             (int, int) chunkCoords = Level.GetChunkCoords(xi, yi);
             Tile tile = Level.GetTile(xi, yi, chunkCoords);
-            if (tile is null || !tile.IsWalkable || !_chunkPath.Contains(chunkCoords) ||
+            if (tile is null || !tile.IsWalkable && !tile.IsDoor || !_chunkPath.Contains(chunkCoords) ||
                 x == ControlledNpc.X && y == ControlledNpc.Y && Level.GetNonTileObject(xi, yi) is not null)
                 continue;
-            yield return (xi, yi, tile.MoveCost);
+            if (tile.IsDoor)
+            {
+                tile.InteractWithDoor.Invoke();
+                additionalCost = 200;
+            }
+            yield return (xi, yi, tile.MoveCost + additionalCost);
         }
     }
 
