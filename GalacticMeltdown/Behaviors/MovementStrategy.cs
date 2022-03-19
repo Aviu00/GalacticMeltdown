@@ -92,8 +92,8 @@ public class MovementStrategy : Behavior
         }
         else if (ControlledNpc.CurrentTarget is null && PreviousTarget is not null)
         {
-            _wantsToGoTo = (PreviousTarget.X, _previousTarget.Y);
             SetPathTo(PreviousTarget.X, PreviousTarget.Y);
+            _wantsToGoTo = (PreviousTarget.X, PreviousTarget.Y);
         }
         else if (_nextPathCellNode is null)
         {
@@ -112,12 +112,12 @@ public class MovementStrategy : Behavior
             return true;
         }
         
-        if (_nextPathCellNode is null ||
-            !Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable && 
-            !Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsDoor ||
+        if (_nextPathCellNode is null)
+            return false;
+        Tile nextPathTile =  Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
+        if (!nextPathTile.IsWalkable && !nextPathTile.IsDoor ||
             Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null) return false;
         // open door
-        Tile nextPathTile =  Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         if(nextPathTile.IsDoor && !nextPathTile.IsWalkable)
             nextPathTile.InteractWithDoor.Invoke();
         ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
