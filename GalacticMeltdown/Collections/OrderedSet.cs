@@ -39,7 +39,7 @@ public class OrderedSet<T> : ICollection<T>
 
     public bool Remove(T item)
     {
-        if (!_dictionary.TryGetValue(item, out LinkedListNode<T> node)) return false;
+        if (item is null || !_dictionary.TryGetValue(item, out LinkedListNode<T> node)) return false;
         _dictionary.Remove(item);
         _linkedList.Remove(node);
         return true;
