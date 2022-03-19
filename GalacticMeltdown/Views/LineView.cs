@@ -35,6 +35,7 @@ public class LineView : View
             {
                 _pressableLineIndexes.Add(i);
                 UserInterface.AddChild(this, _lines[i]);
+                if (lines[i] is InputLine inputLine) inputLine.Updated += OnInputLineUpdate;
             }
         }
 
@@ -80,5 +81,10 @@ public class LineView : View
     {
         if (!_pressableLineIndexes.Any()) return;
         ((PressableListLine) _lines[_pressableLineIndexes[_pressableIndex]]).Press();
+    }
+
+    private void OnInputLineUpdate(object sender, EventArgs e)
+    {
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 }
