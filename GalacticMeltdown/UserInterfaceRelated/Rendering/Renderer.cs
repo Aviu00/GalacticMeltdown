@@ -79,6 +79,7 @@ public class Renderer
         _children[_children[sender].parent].children.Remove(sender);
         _children.Remove(sender);
         _objectViews.Remove(sender);
+        _views.Remove(_objectViews[sender]);
     }
     
 
