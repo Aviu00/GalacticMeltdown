@@ -10,14 +10,14 @@ public abstract class Actor : IObjectOnMap
 {
     [JsonProperty] private bool _turnStopped;
 
-    [JsonProperty] protected int viewRange;
+    [JsonProperty] protected int _viewRange;
 
     [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
     [JsonProperty] protected readonly LimitedNumber HpLim;
     [JsonProperty] protected readonly LimitedNumber EnergyLim;
-    [JsonProperty] private int _dex;
-    [JsonProperty] private int _def;
+    [JsonProperty] private int _dexterity;
+    [JsonProperty] private int _defence;
 
     [JsonIgnore]
     public int Hp
@@ -46,26 +46,26 @@ public abstract class Actor : IObjectOnMap
     }
 
     [JsonIgnore]
-    public int Dex
+    public int Dexterity
     {
-        get => _dex;
+        get => _dexterity;
         protected set
         {
-            if (value == _dex) return;
-            _dex = value;
-            FireStatAffected(Stat.Dex);
+            if (value == _dexterity) return;
+            _dexterity = value;
+            FireStatAffected(Stat.Dexterity);
         } 
     }
 
     [JsonIgnore]
-    public int Def
+    public int Defence
     {
-        get => _def;
+        get => _defence;
         protected set
         {
-            if (value == _def) return;
-            _def = value;
-            FireStatAffected(Stat.Def);
+            if (value == _defence) return;
+            _defence = value;
+            FireStatAffected(Stat.Defence);
         }
     }
 
@@ -89,14 +89,14 @@ public abstract class Actor : IObjectOnMap
     protected Actor()
     {
     }
-    protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
+    protected Actor(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
     {
         Level = level;
         HpLim = new LimitedNumber(maxHp, maxHp, 0);
         EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
-        Dex = dex;
-        Def = def;
-        this.viewRange = viewRange;
+        Dexterity = dexterity;
+        Defence = defence;
+        _viewRange = viewRange;
         X = x;
         Y = y;
         _turnStopped = false;

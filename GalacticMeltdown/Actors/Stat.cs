@@ -4,7 +4,7 @@ public enum Stat
 {
     Hp,
     Energy,
-    Dex,
-    Def,
-    Str,
+    Dexterity,
+    Defence,
+    Strength,
 }

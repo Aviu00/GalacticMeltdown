@@ -1,5 +1,4 @@
 using GalacticMeltdown.Data;
-using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Items;
 
