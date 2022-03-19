@@ -13,18 +13,18 @@ public abstract class Actor : IObjectOnMap
 
     public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
-    private readonly LimitedNumber _hpLim;
-    private readonly LimitedNumber _energyLim;
+    protected readonly LimitedNumber HpLim;
+    protected readonly LimitedNumber EnergyLim;
     private int _dex;
     private int _def;
 
     protected int Hp
     {
-        get => _hpLim.Value;
+        get => HpLim.Value;
         set
         {
-            if (value == _hpLim.Value) return;
-            _hpLim.Value = value;
+            if (value == HpLim.Value) return;
+            HpLim.Value = value;
             if (value == 0) Died?.Invoke(this, EventArgs.Empty);
             FireStatAffected(Stat.Hp);
         }
@@ -32,12 +32,12 @@ public abstract class Actor : IObjectOnMap
 
     public int Energy
     {
-        get => _energyLim.Value;
+        get => EnergyLim.Value;
         set
         {
-            if (value == _energyLim.Value) return;
-            if (value < _energyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
-            _energyLim.Value = value;
+            if (value == EnergyLim.Value) return;
+            if (value < EnergyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
+            EnergyLim.Value = value;
             FireStatAffected(Stat.Energy);
         }
     }
@@ -64,6 +64,9 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
+    public int MaxHp => (int) HpLim.MaxValue!;
+    public int MaxEnergy => (int) EnergyLim.MaxValue!;
+
     public int X { get; private set; }
     public int Y { get; private set; }
 
@@ -81,8 +84,8 @@ public abstract class Actor : IObjectOnMap
     protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
     {
         Level = level;
-        _hpLim = new LimitedNumber(maxHp, maxHp, 0);
-        _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
+        HpLim = new LimitedNumber(maxHp, maxHp, 0);
+        EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dex = dex;
         Def = def;
         _viewRange = viewRange;
@@ -101,7 +104,7 @@ public abstract class Actor : IObjectOnMap
     {
         if (Hp == 0) return;
         _turnStopped = false;
-        Energy += _energyLim.MaxValue.Value;
+        Energy += EnergyLim.MaxValue.Value;
     }
 
     public void StopTurn() => _turnStopped = true;
