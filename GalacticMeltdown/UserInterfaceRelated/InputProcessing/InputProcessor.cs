@@ -8,9 +8,9 @@ namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 public class InputProcessor
 {
-    private Dictionary<object, Controller> _objectHandlers;
-    private HashSet<Controller> _dormantHandlers;
-    private OrderedSet<Controller> _activeHandlers;
+    private Dictionary<object, Controller> _objectHandlers = new();
+    private HashSet<Controller> _dormantHandlers = new();
+    private OrderedSet<Controller> _activeHandlers = new();
     
     private bool _inLoop;
     private Controller _controllingHandler;

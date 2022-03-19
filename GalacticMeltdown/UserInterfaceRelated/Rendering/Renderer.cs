@@ -21,11 +21,11 @@ public class Renderer
     private static Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private static LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
 
-    private static Dictionary<object, View> _objectViews;
+    private Dictionary<object, View> _objectViews = new();
 
-    private static OrderedSet<View> _views;
+    private OrderedSet<View> _views = new();
 
-    private static Dictionary<object, (object parent, HashSet<object> children)> _children;
+    private Dictionary<object, (object parent, HashSet<object> children)> _children;
 
     public void SetView(object sender, View view)
     {
@@ -81,7 +81,6 @@ public class Renderer
         _objectViews.Remove(sender);
         _views.Remove(_objectViews[sender]);
     }
-    
 
     static Renderer()
     {
