@@ -69,7 +69,7 @@ public class Renderer
 
     private void ForgetInternal(object obj)
     {
-        foreach (var child in _children[obj].children)
+        foreach (object child in _children[obj].children)
         {
             ForgetInternal(child);
         }
@@ -77,6 +77,7 @@ public class Renderer
         object parent = _children[obj].parent;
         if (parent is not null) _children[parent].children.Remove(obj);
         _children.Remove(obj);
+        
         if (!_objectViews.ContainsKey(obj)) return;
         _views.Remove(_objectViews[obj]);
         _objectViews.Remove(obj);

@@ -8,7 +8,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
 public class InputProcessor
 {
-    private Dictionary<object, Controller> _objectHandlers;
+    private Dictionary<object, Controller> _objectControllers;
     private HashSet<Controller> _dormantHandlers;
     private OrderedSet<Controller> _activeHandlers;
     
@@ -32,7 +32,7 @@ public class InputProcessor
 
     public InputProcessor()
     {
-        _objectHandlers = new Dictionary<object, Controller>();
+        _objectControllers = new Dictionary<object, Controller>();
         _dormantHandlers = new HashSet<Controller>();
         _activeHandlers = new OrderedSet<Controller>();
     }
@@ -54,9 +54,9 @@ public class InputProcessor
 
     public void YieldControl(object sender)
     {
-        if (!_objectHandlers.ContainsKey(sender)) return;
+        if (!_objectControllers.ContainsKey(sender)) return;
         
-        Controller controller = _objectHandlers[sender];
+        Controller controller = _objectControllers[sender];
         if (controller != ControllingHandler) return;
         _activeHandlers.Add(ControllingHandler);
         ControllingHandler = controller;
@@ -64,9 +64,9 @@ public class InputProcessor
 
     public void TakeControl(object sender)
     {
-        if (!_objectHandlers.ContainsKey(sender)) return;
+        if (!_objectControllers.ContainsKey(sender)) return;
         
-        Controller controller = _objectHandlers[sender];
+        Controller controller = _objectControllers[sender];
         if (_dormantHandlers.Contains(controller))
         {
             _dormantHandlers.Remove(controller);
@@ -81,9 +81,9 @@ public class InputProcessor
 
     public void SetController(object sender, Controller controller)
     {
-        if (_objectHandlers.ContainsKey(sender))
+        if (_objectControllers.ContainsKey(sender))
         {
-            Controller oldHandler = _objectHandlers[sender];
+            Controller oldHandler = _objectControllers[sender];
             _dormantHandlers.Remove(oldHandler);
             _activeHandlers.Remove(oldHandler);
             if (ControllingHandler == oldHandler)
@@ -92,35 +92,41 @@ public class InputProcessor
             }
         }
 
-        _objectHandlers[sender] = controller;
+        _objectControllers[sender] = controller;
         _dormantHandlers.Add(controller);
     }
 
     public void Forget(object obj)
     {
-        if (!_objectHandlers.ContainsKey(obj)) return;
-        Controller controller = _objectHandlers[obj];
+        if (!_children.ContainsKey(obj)) return;
+        ForgetInternal(obj);
+    }
+
+    private void ForgetInternal(object obj)
+    {
+        foreach (object child in _children[obj].children)
+        {
+            ForgetInternal(child);
+        }
+        
+        object parent = _children[obj].parent;
+        if (parent is not null) _children[parent].children.Remove(obj);
+        _children.Remove(obj);
+        
+        if (!_objectControllers.ContainsKey(obj)) return;
+        Controller controller = _objectControllers[obj];
         _dormantHandlers.Remove(controller);
         _activeHandlers.Remove(controller);
         if (ControllingHandler == controller)
         {
             RemoveCurrentController();
         }
-
-        foreach (var child in _children[obj].children)
-        {
-            Forget(child);
-        }
-
-        object parent = _children[obj].parent;
-        if (parent is not null) _children[parent].children.Remove(obj);
-        _children.Remove(obj);
-        if (!_objectHandlers.ContainsKey(obj)) return;
-        _objectHandlers.Remove(obj);
+        _objectControllers.Remove(obj);
     }
 
     private void RemoveCurrentController()
     {
+        ControllingHandler = null;
         if (!_activeHandlers.Any()) return;
         ControllingHandler = _activeHandlers.Pop();
     }
