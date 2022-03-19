@@ -46,9 +46,9 @@ public class MovementStrategy : Behavior
             if (tile is null || !tile.IsWalkable && !tile.IsDoor || !_chunkPath.Contains(chunkCoords) ||
                 x == ControlledNpc.X && y == ControlledNpc.Y && Level.GetNonTileObject(xi, yi) is not null)
                 continue;
-            if (tile.IsDoor)
+            // if door is closed
+            if (tile.IsDoor && !tile.IsWalkable)
             {
-                tile.InteractWithDoor.Invoke();
                 additionalCost = 200;
             }
             yield return (xi, yi, tile.MoveCost + additionalCost);
@@ -111,9 +111,15 @@ public class MovementStrategy : Behavior
             ControlledNpc.StopTurn();
             return true;
         }
+        
         if (_nextPathCellNode is null ||
-            !Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable ||
+            !Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsWalkable && 
+            !Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y).IsDoor ||
             Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null) return false;
+        // open door
+        Tile nextPathTile =  Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
+        if(nextPathTile.IsDoor && !nextPathTile.IsWalkable)
+            nextPathTile.InteractWithDoor.Invoke();
         ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         _nextPathCellNode = _nextPathCellNode.Next;
         if (_nextPathCellNode is null) _wantsToGoTo = null;
