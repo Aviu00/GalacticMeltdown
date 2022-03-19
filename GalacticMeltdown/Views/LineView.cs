@@ -11,7 +11,7 @@ public class LineView : View
 {
     private List<ListLine> _lines;
     private List<int> _pressableLineIndexes;
-    private int _pressableIndex;
+    private int _selectedIndex;
     
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
@@ -21,7 +21,9 @@ public class LineView : View
     public override ViewCellData GetSymbol(int x, int y)
     {
         if (y < Height - _lines.Count) return new ViewCellData(null, null);
-        return new ViewCellData(null, null);
+        return _pressableLineIndexes[_selectedIndex] < Height
+            ? _lines[Height - y - 1][x]
+            : _lines[_pressableLineIndexes[_selectedIndex] - y][x];
     }
 
     public void SetLines(List<ListLine> lines)
@@ -41,8 +43,8 @@ public class LineView : View
 
         if (_pressableLineIndexes.Any())
         {
-            _pressableIndex = 0;
-            ((PressableListLine) _lines[_pressableIndex]).Select();
+            _selectedIndex = 0;
+            ((PressableListLine) _lines[_selectedIndex]).Select();
         }
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
@@ -56,31 +58,31 @@ public class LineView : View
     public void SelectNext()
     {
         if (!_pressableLineIndexes.Any()) return;
-        int prevIndex = _pressableIndex;
-        _pressableIndex += 1;
-        if (_pressableIndex == _pressableLineIndexes.Count) _pressableIndex = 0;
-        if (prevIndex == _pressableIndex) return;
+        int prevIndex = _selectedIndex;
+        _selectedIndex += 1;
+        if (_selectedIndex == _pressableLineIndexes.Count) _selectedIndex = 0;
+        if (prevIndex == _selectedIndex) return;
         ((PressableListLine) _lines[prevIndex]).Deselect();
-        ((PressableListLine) _lines[_pressableIndex]).Select();
+        ((PressableListLine) _lines[_selectedIndex]).Select();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void SelectPrev()
     {
         if (!_pressableLineIndexes.Any()) return;
-        int prevIndex = _pressableIndex;
-        _pressableIndex -= 1;
-        if (_pressableIndex == -1) _pressableIndex = _pressableLineIndexes.Count - 1;
-        if (prevIndex == _pressableIndex) return;
+        int prevIndex = _selectedIndex;
+        _selectedIndex -= 1;
+        if (_selectedIndex == -1) _selectedIndex = _pressableLineIndexes.Count - 1;
+        if (prevIndex == _selectedIndex) return;
         ((PressableListLine) _lines[prevIndex]).Deselect();
-        ((PressableListLine) _lines[_pressableIndex]).Select();
+        ((PressableListLine) _lines[_selectedIndex]).Select();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public void PressCurrent()
     {
         if (!_pressableLineIndexes.Any()) return;
-        ((PressableListLine) _lines[_pressableLineIndexes[_pressableIndex]]).Press();
+        ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Press();
     }
 
     private void OnInputLineUpdate(object sender, EventArgs e)
