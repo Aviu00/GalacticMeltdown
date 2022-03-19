@@ -12,6 +12,7 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>20</Cost>
+        <AlertRadius>20</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
@@ -32,6 +33,7 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>30</Cost>
+        <AlertRadius>20</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
@@ -52,6 +54,7 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>100</Cost>
+        <AlertRadius>50</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
@@ -72,6 +75,7 @@
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
         <Cost>500</Cost>
+        <AlertRadius>60</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
