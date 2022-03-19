@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
@@ -42,5 +43,25 @@ public class LineView : View
     {
         foreach (ListLine line in _lines) line.SetWidth(width);
         base.Resize(width, height);
+    }
+
+    public void SelectNext()
+    {
+        if (!_pressableLineIndexes.Any()) return;
+        _pressableIndex += 1;
+        if (_pressableIndex == _pressableLineIndexes.Count) _pressableIndex = 0;
+    }
+
+    public void SelectPrev()
+    {
+        if (!_pressableLineIndexes.Any()) return;
+        _pressableIndex -= 1;
+        if (_pressableIndex == -1) _pressableIndex = _pressableLineIndexes.Count - 1;
+    }
+
+    public void PressCurrent()
+    {
+        if (!_pressableLineIndexes.Any()) return;
+        ((PressableListLine) _lines[_pressableLineIndexes[_pressableIndex]]).Press();
     }
 }
