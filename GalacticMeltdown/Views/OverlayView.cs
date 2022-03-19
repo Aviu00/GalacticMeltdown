@@ -64,17 +64,17 @@ public class OverlayView : View
         }
         else if (y == Height - 3)
         {
-            if (_strInfo.Val != _player.Str) RenderStats();
+            if (_strInfo.Val != _player.Strength) RenderStats();
             if (x < _strInfo.Text.Length) return new ViewCellData((_strInfo.Text[x], StrColor), null);
         }
         else if (y == Height - 4)
         {
-            if (_defInfo.Val != _player.Def) RenderStats();
+            if (_defInfo.Val != _player.Defence) RenderStats();
             if (x < _defInfo.Text.Length) return new ViewCellData((_defInfo.Text[x], DefColor), null);
         }
         else if (y == Height - 5)
         {
-            if (_dexInfo.Val != _player.Dex) RenderStats();
+            if (_dexInfo.Val != _player.Dexterity) RenderStats();
             if (x < _dexInfo.Text.Length) return new ViewCellData((_dexInfo.Text[x], DexColor), null);
         }
         return new ViewCellData(null, null);
@@ -84,9 +84,9 @@ public class OverlayView : View
     {
         _hpInfo = new StatInfo($"HP: {_player.Hp}/{_player.MaxHp}", _player.Hp, _player.MaxHp);
         _energyInfo = new StatInfo($"Energy: {_player.Energy}/{_player.MaxEnergy}", _player.Energy, _player.MaxEnergy);
-        _strInfo = new StatInfo($"STR: {_player.Str}", _player.Str);
-        _defInfo = new StatInfo($"DEF: {_player.Def}", _player.Def);
-        _dexInfo = new StatInfo($"DEX: {_player.Dex}", _player.Dex);
+        _strInfo = new StatInfo($"STR: {_player.Strength}", _player.Strength);
+        _defInfo = new StatInfo($"DEF: {_player.Defence}", _player.Defence);
+        _dexInfo = new StatInfo($"DEX: {_player.Dexterity}", _player.Dexterity);
     }
 
     private void OnStatChange(object sender, StatChangeEventArgs e)

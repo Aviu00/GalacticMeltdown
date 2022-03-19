@@ -15,8 +15,8 @@ public abstract class Npc : Actor
 
     protected SortedSet<Behavior> Behaviors { get; init; }
 
-    protected Npc(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
-        : base(maxHp, maxEnergy, dex, def, viewRange, x, y, level)
+    protected Npc(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
+        : base(maxHp, maxEnergy, dexterity, defence, viewRange, x, y, level)
     {
         _id = UtilityFunctions.RandomString(16);
     }

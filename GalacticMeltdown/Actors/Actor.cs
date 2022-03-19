@@ -15,8 +15,8 @@ public abstract class Actor : IObjectOnMap
 
     protected readonly LimitedNumber HpLim;
     protected readonly LimitedNumber EnergyLim;
-    private int _dex;
-    private int _def;
+    private int _dexterity;
+    private int _defence;
 
     public int Hp
     {
@@ -42,25 +42,25 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
-    public int Dex
+    public int Dexterity
     {
-        get => _dex;
+        get => _dexterity;
         protected set
         {
-            if (value == _dex) return;
-            _dex = value;
-            FireStatAffected(Stat.Dex);
+            if (value == _dexterity) return;
+            _dexterity = value;
+            FireStatAffected(Stat.Dexterity);
         } 
     }
 
-    public int Def
+    public int Defence
     {
-        get => _def;
+        get => _defence;
         protected set
         {
-            if (value == _def) return;
-            _def = value;
-            FireStatAffected(Stat.Def);
+            if (value == _defence) return;
+            _defence = value;
+            FireStatAffected(Stat.Defence);
         }
     }
 
@@ -81,13 +81,13 @@ public abstract class Actor : IObjectOnMap
     public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
 
-    protected Actor(int maxHp, int maxEnergy, int dex, int def, int viewRange, int x, int y, Level level)
+    protected Actor(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
     {
         Level = level;
         HpLim = new LimitedNumber(maxHp, maxHp, 0);
         EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
-        Dex = dex;
-        Def = def;
+        Dexterity = dexterity;
+        Defence = defence;
         _viewRange = viewRange;
         X = x;
         Y = y;

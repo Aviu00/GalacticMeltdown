@@ -1,6 +1,5 @@
 using System;
 using GalacticMeltdown.LevelRelated;
-using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Actors;
 
@@ -17,16 +16,16 @@ public class Player : Actor, ISightedObject, IControllable
     
     private bool _xray;
 
-    private int _str;
+    private int _strength;
 
-    public int Str
+    public int Strength
     {
-        get => _str;
+        get => _strength;
         set
         {
-            if (value == _str) return;
-            _str = value;
-            FireStatAffected(Stat.Str);
+            if (value == _strength) return;
+            _strength = value;
+            FireStatAffected(Stat.Strength);
         }
     }
     
@@ -62,7 +61,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         SymbolData = ('@', ConsoleColor.White);
         BgColor = null;
-        _str = PlayerStr;
+        _strength = PlayerStr;
     }
 
     public bool TryMove(int deltaX, int deltaY)
