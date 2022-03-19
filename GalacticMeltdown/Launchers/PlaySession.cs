@@ -28,10 +28,7 @@ public partial class PlaySession
         _savePath = savePath;
         _level = level;
         _player = _level.Player;
-        _player.SetControlFunc(() =>
-        {
-            UserInterface.TakeControl(this);
-        });
+        _player.SetControlFunc(() => UserInterface.TakeControl(this));
         _controlledObject = _player;
         _levelView = _level.LevelView;
         _levelView.SetFocus(_player);

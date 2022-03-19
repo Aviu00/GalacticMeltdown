@@ -1,6 +1,7 @@
 using GalacticMeltdown.Data;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Launchers;
@@ -25,7 +26,8 @@ public partial class PlaySession
             MainControl.UseCursor, () =>
             {
                 _controlledObject = _levelView.Cursor;
-                InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
+                UserInterface.SetController(this, new ActionHandler(
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, CursorActions)));
             }
         },
         {
@@ -41,7 +43,8 @@ public partial class PlaySession
                     _level.InteractWithDoor(x, y, _player);
                     UserInterface.YieldControl(this);
                 };  
-                InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
+                UserInterface.SetController(this, new ActionHandler(
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, CursorActions)));
             }
         },
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},
@@ -64,7 +67,8 @@ public partial class PlaySession
         {CursorControl.Interact, () => ((Cursor) _controlledObject).Interact()},
         {CursorControl.Back, () =>
             {
-                InputProcessor.RemoveLastBinding();
+                UserInterface.SetController(this, new ActionHandler(
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
                 _controlledObject = _player;
                 _levelView.SetFocus(_player);
                 _levelView.RemoveCursor();

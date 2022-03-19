@@ -20,9 +20,9 @@ public static class Game
     public static void StartLevel(Level level, string savePath)
     {
         UserInterface.Forget(_menu);
-        PlaySession session = new(level, savePath);
-        UserInterface.AddChild(Root, session);
-        session.Start();
+        _session = new PlaySession(level, savePath);
+        UserInterface.AddChild(Root, _session);
+        _session.Start();
     }
 
     private static void OpenMainMenu()
