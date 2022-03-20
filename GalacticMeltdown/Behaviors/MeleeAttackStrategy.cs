@@ -1,4 +1,3 @@
-using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -24,12 +23,14 @@ public class MeleeAttackStrategy : Behavior
     
     public override bool TryAct()
     {
-        if (Algorithms.GetPointsOnSquareBorder(ControlledNpc.X, ControlledNpc.Y, 1).
-            Contains((ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)))
+        if (ControlledNpc.CurrentTarget is null)
+            return false;
+        if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < 2)
         {
             // there is temporary damage value is MaxDamage
             // TODO: write function of random damage
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, _maxDamage);
+            ControlledNpc.Energy -= _meleeAttackCost;
             return true;
         }
 
