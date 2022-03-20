@@ -14,6 +14,8 @@ namespace GalacticMeltdown.Launchers;
 
 public partial class PlaySession
 {
+    private const int SaveInterval = 30;
+    
     private readonly string _levelName;
     private static Player _player;
     private static IControllable _controlledObject;
@@ -23,8 +25,15 @@ public partial class PlaySession
     private Dictionary<MainControl, Action> _mainActions;
     private Dictionary<CursorControl, Action> _cursorActions;
 
+    private Counter _saveCounter;
+
     public PlaySession(Level level, string levelName)
     {
+        _saveCounter = new Counter(level, SaveInterval, counter =>
+        {
+            SaveLevel();
+            counter.ResetTimer();
+        });
         _levelName = levelName;
         _level = level;
         _player = _level.Player;
@@ -49,7 +58,6 @@ public partial class PlaySession
 
     private void MapTurn()
     {
-        //SaveLevel();
         if (!_level.DoTurn())
         {
             if (_level.PlayerWon)
@@ -63,7 +71,7 @@ public partial class PlaySession
         UserInterface.SetTask(this, MapTurn);
     }
 
-    private void SaveLevel()
+    public void SaveLevel()
     {
         FilesystemLevelManager.SaveLevel(_level, _levelName);
     }
@@ -76,7 +84,7 @@ public partial class PlaySession
 
     private void OpenPauseMenu()
     {
-        PauseMenu pauseMenu = new PauseMenu();
+        PauseMenu pauseMenu = new PauseMenu(this);
         UserInterface.AddChild(this, pauseMenu);
         pauseMenu.Open();
     }

@@ -12,13 +12,17 @@ namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
 public class PauseMenu : Menu
 {
-    public PauseMenu()
+    public PauseMenu(PlaySession session)
     {
         LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
             new Button("Back", "", Close),
-            new Button("To main menu", "", Game.OpenMainMenu)
+            new Button("To main menu", "", () =>
+            {
+                session.SaveLevel();
+                Game.OpenMainMenu();
+            })
         });
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>()
         {

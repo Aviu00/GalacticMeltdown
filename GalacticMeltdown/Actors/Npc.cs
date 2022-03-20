@@ -16,6 +16,7 @@ public abstract class Npc : Actor
 
     protected SortedSet<Behavior> Behaviors;
 
+    [JsonConstructor]
     protected Npc()
     {
     }

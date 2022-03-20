@@ -19,7 +19,7 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] private int _dexterity;
     [JsonProperty] private int _defence;
 
-    [JsonIgnore]
+    [JsonProperty]
     public int Hp
     {
         get => HpLim.Value;
@@ -32,7 +32,6 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
-    [JsonIgnore]
     public int Energy
     {
         get => EnergyLim.Value;
@@ -78,7 +77,7 @@ public abstract class Actor : IObjectOnMap
     public virtual (char symbol, ConsoleColor color) SymbolData { get; protected init; }
     public virtual ConsoleColor? BgColor { get; protected init; }
 
-    public Level Level { get; }
+    [JsonProperty] public Level Level;
 
     public event EventHandler Died;
     public event EventHandler SpentEnergy;
@@ -86,6 +85,7 @@ public abstract class Actor : IObjectOnMap
     public event EventHandler InvolvedInTurn;
     public event EventHandler<MoveEventArgs> Moved;
 
+    [JsonConstructor]
     protected Actor()
     {
     }
