@@ -15,28 +15,11 @@ public class InputProcessor
     private bool _inLoop;
     private Controller _currentController;
 
-    private Dictionary<object, (object parent, HashSet<object> children)> _children;
-
     public InputProcessor()
     {
         _objectControllers = new Dictionary<object, Controller>();
         _dormantControllers = new HashSet<Controller>();
         _activeControllers = new OrderedSet<Controller>();
-    }
-
-    public void AddChild(object parent, object child)
-    {
-        if (!_children.ContainsKey(parent)) return;
-        _children[parent].children.Add(child);
-        _children.Add(child, (parent, new HashSet<object>()));
-    }
-
-    public void SetRoot(object root)
-    {
-        _children = new Dictionary<object, (object parent, HashSet<object> children)>
-        {
-            {root, (null, new HashSet<object>())}
-        };
     }
 
     public void YieldControl(object sender)
@@ -99,23 +82,8 @@ public class InputProcessor
         _objectControllers[sender] = controller;
     }
 
-    public void Forget(object obj)
+    public void RemoveController(object obj)
     {
-        if (!_children.ContainsKey(obj)) return;
-        ForgetInternal(obj);
-    }
-
-    private void ForgetInternal(object obj)
-    {
-        foreach (object child in _children[obj].children)
-        {
-            ForgetInternal(child);
-        }
-        
-        object parent = _children[obj].parent;
-        if (parent is not null) _children[parent].children.Remove(obj);
-        _children.Remove(obj);
-        
         if (!_objectControllers.ContainsKey(obj)) return;
         Controller controller = _objectControllers[obj];
         _dormantControllers.Remove(controller);

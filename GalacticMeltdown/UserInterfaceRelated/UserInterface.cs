@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Views;
@@ -11,6 +12,8 @@ public static class UserInterface
     private static InputProcessor _inputProcessor;
 
     private static Action _nextTask;
+    
+    private static Dictionary<object, (object parent, HashSet<object> children)> _children;
 
     static UserInterface()
     {
@@ -47,8 +50,10 @@ public static class UserInterface
 
     public static void SetRoot(object root)
     {
-        _renderer.SetRoot(root);
-        _inputProcessor.SetRoot(root);
+        _children = new Dictionary<object, (object parent, HashSet<object> children)>
+        {
+            {root, (null, new HashSet<object>())}
+        };
     }
 
     public static void TakeControl(object obj)
@@ -63,15 +68,25 @@ public static class UserInterface
 
     public static void Forget(object obj)
     {
-        if (obj is null) return;
-        _renderer.Forget(obj);
-        _inputProcessor.Forget(obj);
+        if (obj is null || !_children.ContainsKey(obj)) return;
+        foreach (object child in _children[obj].children)
+        {
+            Forget(child);
+        }
+        
+        object parent = _children[obj].parent;
+        if (parent is not null) _children[parent].children.Remove(obj);
+        _children.Remove(obj);
+        
+        _renderer.RemoveView(obj);
+        _inputProcessor.RemoveController(obj);
     }
-
+    
     public static void AddChild(object parent, object child)
     {
-        _renderer.AddChild(parent, child);
-        _inputProcessor.AddChild(parent, child);
+        if (!_children.ContainsKey(parent)) return;
+        _children[parent].children.Add(child);
+        _children.Add(child, (parent, new HashSet<object>()));
     }
 
     public static void PlayAnimations()

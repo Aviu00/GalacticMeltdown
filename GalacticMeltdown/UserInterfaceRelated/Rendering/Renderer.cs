@@ -23,8 +23,6 @@ public class Renderer
     
     private Dictionary<object, View> _objectViews = new();
 
-    private Dictionary<object, (object parent, HashSet<object> children)> _children;
-
     public void SetView(object sender, View view)
     {
         if (_objectViews.ContainsKey(sender))
@@ -45,42 +43,12 @@ public class Renderer
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
     
-    public void AddChild(object parent, object child)
+    public void RemoveView(object obj)
     {
-        if (!_children.ContainsKey(parent)) return;
-        _children[parent].children.Add(child);
-        _children.Add(child, (parent, new HashSet<object>()));
-    }
-    
-    public void SetRoot(object root)
-    {
-        _children = new Dictionary<object, (object parent, HashSet<object> children)>
-        {
-            {root, (null, new HashSet<object>())}
-        };
-    }
-    
-    public void Forget(object sender)
-    {
-        if (!_children.ContainsKey(sender)) return;
-        ForgetInternal(sender);
-        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
-    }
-
-    private void ForgetInternal(object obj)
-    {
-        foreach (object child in _children[obj].children)
-        {
-            ForgetInternal(child);
-        }
-
-        object parent = _children[obj].parent;
-        if (parent is not null) _children[parent].children.Remove(obj);
-        _children.Remove(obj);
-        
         if (!_objectViews.ContainsKey(obj)) return;
         _views.Remove(_objectViews[obj]);
         _objectViews.Remove(obj);
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
     public Renderer()
@@ -147,7 +115,7 @@ public class Renderer
 
         return false;
     }
-    
+
     private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
         InitPixelFuncArr(windowWidth, windowHeight);
@@ -173,7 +141,7 @@ public class Renderer
 
         OutputAllCells();
     }
-    
+
     private void OutputAllCells()
     {
         Console.SetCursorPosition(0, 0);
@@ -220,7 +188,7 @@ public class Renderer
             }
         }
     }
-    
+
     private ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View view)
     {
         (char symbol, ConsoleColor color)? symbolData = null;
