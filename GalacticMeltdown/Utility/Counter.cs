@@ -36,7 +36,7 @@ public class Counter
         Timer.Value = 0;
     }
 
-    public void RemoveCounter()
+    public void RemoveCounter(object _ = null, EventArgs __ = null)
     {
         Level.TurnFinished -= NextTurn;
         ResetTimer();

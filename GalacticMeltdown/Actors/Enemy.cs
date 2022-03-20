@@ -23,7 +23,8 @@ public class Enemy : Npc
         typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
         _typeData = typeData;
-         alertCounter = new Counter(Level, 20);
+         alertCounter = new Counter(Level, 1, 20);
+        Died += alertCounter.RemoveCounter;
         Targets = new() {level.Player};//temp
         
         if(typeData.Behaviors == null) return;
