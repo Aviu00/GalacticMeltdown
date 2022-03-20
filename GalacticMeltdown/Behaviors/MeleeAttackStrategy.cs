@@ -10,7 +10,7 @@ public class MeleeAttackStrategy : Behavior
     private const int DefaultPriority = 20;
     private readonly int _minDamage;
     private readonly int _maxDamage;
-    private int _cooldown;
+    private readonly int _cooldown;
     private readonly int _meleeAttackCost;
     private Counter meleeAtackCounter;
     
