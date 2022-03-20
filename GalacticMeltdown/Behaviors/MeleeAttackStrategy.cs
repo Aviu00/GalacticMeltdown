@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -31,7 +32,8 @@ public class MeleeAttackStrategy : Behavior
     {
         if (ControlledNpc.CurrentTarget is null)
             return false;
-        if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < 2 &&
+        if (Algorithms.GetPointsOnSquareBorder(ControlledNpc.X, ControlledNpc.Y, 1).
+                Contains((ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)) &&
             (meleeAtackCounter is null || meleeAtackCounter.FinishedCounting))
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
