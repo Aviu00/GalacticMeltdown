@@ -5,10 +5,9 @@ namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
 public abstract class Dialog : Menu
 {
-    protected List<ValueType> Info;
-    protected Action<List<ValueType>> Sender;
+    protected Action<List<object>> Sender;
 
-    public Dialog(Action<List<ValueType>> sender)
+    public Dialog(Action<List<object>> sender)
     {
         Sender = sender;
     }
@@ -16,6 +15,5 @@ public abstract class Dialog : Menu
     protected virtual void SendInfo()
     {
         UserInterface.Forget(this);
-        Sender(Info);
     }
 }

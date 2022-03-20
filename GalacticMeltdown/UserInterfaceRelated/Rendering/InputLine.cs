@@ -15,9 +15,11 @@ public class InputLine : PressableListLine
     private const ConsoleColor Unselected = DataHolder.Colors.InputLineBgColorUnselected;
     private const ConsoleColor TextColor = DataHolder.Colors.InputLineTextColor;
 
-    private StringBuilder _currentText;
+    private StringBuilder _currentText = new();
 
     private bool _selected;
+
+    public string Text => _currentText.ToString();
 
     public event EventHandler Updated;
 
