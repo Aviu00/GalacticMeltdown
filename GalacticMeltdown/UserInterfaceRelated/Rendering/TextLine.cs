@@ -21,6 +21,13 @@ public class TextLine : ListLine
     {
         const string ellipsis = "...";
 
+        if (width < ellipsis.Length)
+        {
+            _renderedText = new string(' ', width);
+            base.SetWidth(width);
+            return;
+        }
+
         _renderedText = _text.Length > width
             ? _text.Substring(0, width - ellipsis.Length) + ellipsis
             : _text.PadRight(width);

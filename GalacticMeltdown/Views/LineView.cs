@@ -49,6 +49,8 @@ public class LineView : View
             _selectedIndex = 0;
             ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
         }
+        
+        if (Width != 0) _lines.ForEach(line => line.SetWidth(Width));
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
