@@ -119,7 +119,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int meleeAttackCost = 10;
         foreach (XmlNode locNode in node)
         {
-            switch (node.Name)
+            switch (locNode.Name)
             {
                 case "Priority":
                     priority = Convert.ToInt32(locNode.InnerText);
