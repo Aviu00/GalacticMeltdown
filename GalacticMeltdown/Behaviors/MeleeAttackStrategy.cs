@@ -32,7 +32,7 @@ public class MeleeAttackStrategy : Behavior
         if (ControlledNpc.CurrentTarget is null)
             return false;
         if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < 2 &&
-            meleeAtackCounter is not null && meleeAtackCounter.FinishedCounting)
+            (meleeAtackCounter is null || meleeAtackCounter.FinishedCounting))
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
             ControlledNpc.Energy -= _meleeAttackCost;
