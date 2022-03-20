@@ -1,4 +1,6 @@
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
 
@@ -14,5 +16,11 @@ public class RangedWeaponItem : WeaponItem
     public RangedWeaponItem(RangedWeaponItem item) : base(item._itemData)
     {
         _itemData = item._itemData;
+    }
+    
+    [JsonConstructor]
+    private RangedWeaponItem(string id, LimitedNumber ammoAmount) : base(id, ammoAmount)
+    {
+        _itemData = (RangedWeaponItemData)DataHolder.ItemTypes[id];
     }
 }

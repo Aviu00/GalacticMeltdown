@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Views;
 
-internal class SeenTilesArray
+public class SeenTilesArray
 {
     private const int Offset = 1;
-    private char?[,] _array;
+    [JsonProperty] private char?[,] _array;
 
     public SeenTilesArray(int mapWidth, int mapHeight)
     {
@@ -36,15 +38,16 @@ internal class SeenTilesArray
 
 public partial class LevelView : View
 {
+    [JsonIgnore]
     public override (double, double, double, double)? WantedPosition => null;
     
-    private readonly Level _level;
+    [JsonProperty] private readonly Level _level;
 
     private IFocusable _focusObject;
 
     private ObservableCollection<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
-    private SeenTilesArray _seenCells;
+    [JsonProperty] private SeenTilesArray _seenCells;
 
     private (int minX, int minY, int maxX, int maxY) ViewBounds => 
         (_focusObject.X - Width / 2, _focusObject.Y - Height / 2,
@@ -53,23 +56,37 @@ public partial class LevelView : View
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
+
+    [JsonConstructor]
+    private LevelView()
+    {
+    }
     public LevelView(Level level, IFocusable initialFocusObj)
     {
         _level = level;
+        var (width, height) = _level.Size;
+        _seenCells = new SeenTilesArray(width, height);
+        _focusObject = initialFocusObj;
+        Init();
+    }
+
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        _focusObject = _level.Player;
+        Init();
+    }
+
+    private void Init()
+    {
         _level.SomethingMoved += MoveHandler;
         _level.NpcDied += DeathHandler;
-        
         _sightedObjects = _level.SightedObjects;
         _sightedObjects.CollectionChanged += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
         {
             sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
         }
-
-        var (width, height) = _level.Size;
-        _seenCells = new SeenTilesArray(width, height);
-
-        _focusObject = initialFocusObj;
         _focusObject.InFocus = true;
         
         UpdateVisiblePoints();

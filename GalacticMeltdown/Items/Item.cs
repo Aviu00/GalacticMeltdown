@@ -1,6 +1,7 @@
 using System;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
 
@@ -8,9 +9,9 @@ public class Item : IDrawable
 {
     private readonly ItemData _itemData;
     public string Id => _itemData.Id;
-    public string Name => _itemData.Name;
-    public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
-    public ConsoleColor? BgColor => ConsoleColor.Cyan;
+    [JsonIgnore] public string Name => _itemData.Name;
+    [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
+    [JsonIgnore] public ConsoleColor? BgColor => ConsoleColor.Cyan;
 
     protected Item(ItemData data)
     {
@@ -18,6 +19,11 @@ public class Item : IDrawable
     }
 
     protected Item(Item item) : this(item._itemData)
+    {
+    }
+
+    [JsonConstructor]
+    private Item(string id) : this(DataHolder.ItemTypes[id])
     {
     }
     

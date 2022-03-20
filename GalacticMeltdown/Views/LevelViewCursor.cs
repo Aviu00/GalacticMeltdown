@@ -5,6 +5,7 @@ using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Views;
 
@@ -15,6 +16,7 @@ public partial class LevelView
 
     private (int, int)? _cursorLineStartCoords;
 
+    [JsonIgnore]
     public Cursor Cursor
     {
         get
@@ -29,6 +31,7 @@ public partial class LevelView
 
     private bool _drawCursorLine;
 
+    [JsonIgnore]
     public bool DrawCursorLine
     {
         get => _drawCursorLine;

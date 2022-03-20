@@ -29,7 +29,7 @@ public class Chunk
 
     [JsonIgnore] public bool IsActive;
     
-    private readonly ItemDictionary _items;
+    [JsonProperty] private readonly ItemDictionary _items;
     [JsonProperty] public readonly List<Enemy> Enemies;
     [JsonProperty] public readonly Tile[,] Tiles;
 
@@ -69,8 +69,8 @@ public class Chunk
     public IDrawable GetDrawable(int x, int y)
     {
         IDrawable drawable = GetMapObject(x, y);
-        //if (drawable is not null) return drawable;
-        //drawable = FindItem(x, y);
+        if (drawable is not null) return drawable;
+        drawable = FindItem(x, y);
         return drawable;
     }
 

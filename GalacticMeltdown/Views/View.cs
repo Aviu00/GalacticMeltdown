@@ -1,6 +1,7 @@
 using System;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Views;
 
@@ -14,6 +15,7 @@ public abstract class View
     public abstract event EventHandler NeedRedraw;
     public abstract event EventHandler<CellChangeEventArgs> CellsChanged;
 
+    [JsonIgnore]
     public abstract (double, double, double, double)? WantedPosition { get; }
 
     protected View()

@@ -1,7 +1,9 @@
 using System;
+using System.ComponentModel;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Menus;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Launchers;
 
@@ -13,6 +15,8 @@ public static class Game
 
     public static void Main()
     {
+        TypeDescriptor.AddAttributes(typeof((int, int)),
+            new TypeConverterAttribute(typeof(TupleConverter<int, int>)));
         UserInterface.SetRoot(Root);
         UserInterface.SetTask(Root, OpenMainMenu);
         UserInterface.Start();

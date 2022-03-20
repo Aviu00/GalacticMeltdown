@@ -59,13 +59,13 @@ public partial class Level
     [JsonProperty] public bool PlayerWon { get; private set; }
 
     [JsonProperty] private readonly EnemySpawner _enemySpawner;
-    [JsonIgnore] public LevelView LevelView;
     [JsonIgnore] public OverlayView OverlayView;
 
     [JsonIgnore] public List<Chunk> ActiveChunks { get; private set; }
 
-    [JsonIgnore] public ObservableCollection<IControllable> ControllableObjects;
-    [JsonIgnore] public ObservableCollection<ISightedObject> SightedObjects;
+    public ObservableCollection<IControllable> ControllableObjects;
+    public ObservableCollection<ISightedObject> SightedObjects;
+    public LevelView LevelView;
 
     private ChunkEventListener _listener;
 
@@ -85,6 +85,9 @@ public partial class Level
         PlayerWon = false;
         Player = new Player(startPos.x, startPos.y, this);
         _enemySpawner = new EnemySpawner(this);
+        SightedObjects = new ObservableCollection<ISightedObject> {Player};
+        ControllableObjects = new ObservableCollection<IControllable> {Player};
+        LevelView = new LevelView(this, Player);
         Init();
     }
 
@@ -103,10 +106,7 @@ public partial class Level
         _listener.SomethingMoved += SomethingMovedHandler;
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
-        ControllableObjects = new ObservableCollection<IControllable> {Player};
         ControllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
-        SightedObjects = new ObservableCollection<ISightedObject> {Player};
-        LevelView = new LevelView(this, Player);
         ActiveChunks = new();
         UpdateActiveChunks();
     }

@@ -1,4 +1,5 @@
 using GalacticMeltdown.Data;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
 
@@ -13,5 +14,10 @@ public class UsableItem : Item
     public UsableItem(UsableItem item) : base(item._itemData)
     {
         _itemData = item._itemData;
+    }
+
+    [JsonConstructor]
+    private UsableItem(string id) : this((UsableItemData)DataHolder.ItemTypes[id])
+    {
     }
 }

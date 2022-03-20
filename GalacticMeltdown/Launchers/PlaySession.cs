@@ -25,11 +25,9 @@ public partial class PlaySession
     private Dictionary<MainControl, Action> _mainActions;
     private Dictionary<CursorControl, Action> _cursorActions;
 
-    private Counter _saveCounter;
-
     public PlaySession(Level level, string levelName)
     {
-        _saveCounter = new Counter(level, SaveInterval, counter =>
+        new Counter(level, SaveInterval, counter =>
         {
             SaveLevel();
             counter.ResetTimer();

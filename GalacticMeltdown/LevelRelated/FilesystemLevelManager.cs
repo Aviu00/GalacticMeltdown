@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
 using GalacticMeltdown.MapGeneration;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
@@ -45,21 +47,8 @@ public static class FilesystemLevelManager
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
         });
 
-
-        if (Directory.Exists(path)) //rewrite level
-        {
-            var directory = new DirectoryInfo(path);
-            foreach (FileInfo file in directory.GetFiles())
-            {
-                file.Delete(); 
-            }
-            foreach (DirectoryInfo dir in directory.GetDirectories())
-            {
-                dir.Delete(true); 
-            }
-        }
-        else
-            Directory.CreateDirectory(path);
+        RemoveLevel(path); //rewrite level
+        Directory.CreateDirectory(path);
         File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
         // returns false on failure
         return true;
@@ -67,12 +56,28 @@ public static class FilesystemLevelManager
 
     public static bool RemoveLevel(string name)
     {
-        // returns false on failure
+        if (!Directory.Exists(Path.Combine(GetSaveFolder(), name))) return false;
+        
+        var directory = new DirectoryInfo(name);
+        foreach (FileInfo file in directory.GetFiles())
+        {
+            file.Delete();
+        }
+
+        foreach (DirectoryInfo dir in directory.GetDirectories())
+        {
+            dir.Delete(true);
+        }
+        
         return true;
     }
 
     private static string GetSaveFolder()
     {
-        return Path.Combine(Environment.GetEnvironmentVariable("HOME") + "/.local/share/galactic-meltdown/levels");
+        bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        string home = Environment.GetEnvironmentVariable("HOME");
+        return Path.Combine(home, isWindows
+            ? @"\AppData\Roaming\galactic-meltdown\levels"
+            : ".local/share/galactic-meltdown/levels");
     }
 }

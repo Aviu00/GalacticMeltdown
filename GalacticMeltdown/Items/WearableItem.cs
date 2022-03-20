@@ -1,4 +1,5 @@
 using GalacticMeltdown.Data;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
 
@@ -13,5 +14,10 @@ public class WearableItem : Item
     public WearableItem(WearableItem item) : base(item._itemData)
     {
         _itemData = item._itemData;
+    }
+    
+    [JsonConstructor]
+    private WearableItem(string id) : this((WearableItemData)DataHolder.ItemTypes[id])
+    {
     }
 }
