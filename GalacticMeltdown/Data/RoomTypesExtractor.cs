@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Xml;
 
@@ -91,7 +92,7 @@ public class RoomTypesExtractor : XmlExtractor
                         lootChance = Convert.ToInt32(attribute.InnerText);
                         break;
                     case "gain":
-                        gain = Convert.ToDouble(attribute.InnerText);
+                        gain = Convert.ToDouble(attribute.InnerText, CultureInfo.InvariantCulture);
                         break;
                     case "limit":
                         limit = Convert.ToInt32(attribute.InnerText);
