@@ -41,7 +41,8 @@ public partial class PlaySession
                     _levelView.SetFocus(_player);
                     _levelView.RemoveCursor();
                     _level.InteractWithDoor(x, y, _player);
-                    UserInterface.YieldControl(this);
+                    UserInterface.SetController(this, new ActionHandler(
+                        UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
                 };  
                 UserInterface.SetController(this, new ActionHandler(
                     UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, CursorActions)));

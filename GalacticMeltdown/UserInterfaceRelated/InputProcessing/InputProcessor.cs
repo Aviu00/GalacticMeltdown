@@ -66,8 +66,6 @@ public class InputProcessor
             _activeControllers.Remove(controller);
             SetControllingHandler(controller);
         }
-        
-        if (!_inLoop) Loop();
     }
 
     private void SetControllingHandler(Controller controller)
@@ -78,6 +76,7 @@ public class InputProcessor
         }
 
         _currentController = controller;
+        if (!_inLoop) Loop();
     }
 
     public void SetController(object sender, Controller controller)
