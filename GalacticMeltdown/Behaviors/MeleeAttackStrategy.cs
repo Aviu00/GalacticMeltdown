@@ -8,10 +8,11 @@ namespace GalacticMeltdown.Behaviors;
 public class MeleeAttackStrategy : Behavior
 {
     private const int DefaultPriority = 20;
-    private int _minDamage;
+    private readonly int _minDamage;
     private readonly int _maxDamage;
     private int _cooldown;
-    private int _meleeAttackCost;
+    private readonly int _meleeAttackCost;
+    private Counter meleeAtackCounter;
     
     public MeleeAttackStrategy(MeleeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
@@ -20,16 +21,22 @@ public class MeleeAttackStrategy : Behavior
         _cooldown = data.Cooldown;
         _meleeAttackCost = data.MeleeAttackCost;
         ControlledNpc = controlledNpc;
+        if (_cooldown > 0)
+        {
+            meleeAtackCounter = new Counter(ControlledNpc.Level, _cooldown);   
+        }
     }
     
     public override bool TryAct()
     {
         if (ControlledNpc.CurrentTarget is null)
             return false;
-        if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < 2)
+        if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < 2 &&
+            meleeAtackCounter is not null && meleeAtackCounter.FinishedCounting)
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
             ControlledNpc.Energy -= _meleeAttackCost;
+            meleeAtackCounter.ResetTimer();
             return true;
         }
 
