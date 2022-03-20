@@ -8,7 +8,7 @@ public abstract class Menu
     protected LineView LineView;
     protected Controller Controller;
     
-    public void Open()
+    public virtual void Open()
     {
         UserInterface.SetView(this, LineView);
         UserInterface.SetController(this, Controller);
