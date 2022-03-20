@@ -97,7 +97,7 @@ public static class DataHolder
             {ConsoleKey.RightArrow, SelectionControl.Right},
             {ConsoleKey.Enter, SelectionControl.Select},
             {ConsoleKey.Escape, SelectionControl.Back},
-            {ConsoleKey.Tab, SelectionControl.SwitchButtonGroup},
+            {ConsoleKey.Tab, SelectionControl.SpecialAction},
         };
 
         public static Dictionary<ConsoleKey, CursorControl> Cursor = new()
