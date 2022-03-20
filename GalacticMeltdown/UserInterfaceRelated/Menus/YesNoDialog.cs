@@ -11,14 +11,14 @@ namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
 public class YesNoDialog : Dialog
 {
-    public YesNoDialog(Action<bool> sender, string message)
+    public YesNoDialog(Action<bool> sendInfo, string message)
     {
         LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
             new TextLine(message),
-            new Button("Yes", "", () => { sender(true); UserInterface.Forget(this); }),
-            new Button("No", "", () => { sender(false); UserInterface.Forget(this); }),
+            new Button("Yes", "", () => { sendInfo(true); UserInterface.Forget(this); }),
+            new Button("No", "", () => { sendInfo(false); UserInterface.Forget(this); }),
         });
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
         {

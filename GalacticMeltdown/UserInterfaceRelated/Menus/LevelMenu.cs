@@ -55,7 +55,14 @@ public class LevelMenu : Menu
 
     private void OpenLevelRemovalDialog()
     {
-        
+        YesNoDialog levelRemovalDialog = new(RemoveSelectedLevel, "Are you sure you want to remove this level");
+        UserInterface.AddChild(this, levelRemovalDialog);
+        levelRemovalDialog.Open();
+    }
+
+    private void RemoveSelectedLevel(bool doIt)
+    {
+        if (!doIt) return;
     }
 
     private void CreateLevel(string name, int? seed)
