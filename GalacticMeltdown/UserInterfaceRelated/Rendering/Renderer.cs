@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Text;
 using GalacticMeltdown.Collections;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
@@ -16,6 +15,8 @@ internal record struct ViewInfo(View View, (double, double, double, double) Scre
 
 public class Renderer
 {
+    private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
+    
     private OrderedSet<View> _views;
     private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
@@ -222,8 +223,8 @@ public class Renderer
             }
         }
 
-        symbolData ??= (' ', ConsoleColor.Black);
-        backgroundColor ??= ConsoleColor.Black;
+        symbolData ??= (' ', DefaultBackgroundColor);
+        backgroundColor ??= DefaultBackgroundColor;
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 

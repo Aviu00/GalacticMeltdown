@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
@@ -9,6 +10,8 @@ namespace GalacticMeltdown.Views;
 
 public class LineView : View
 {
+    private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
+    
     private List<ListLine> _lines;
     private List<int> _pressableLineIndexes;
     private int _selectedIndex;
@@ -20,7 +23,7 @@ public class LineView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y < Height - _lines.Count) return new ViewCellData(null, null);
+        if (y < Height - _lines.Count) return new ViewCellData(null, DefaultBackgroundColor);
         return _pressableLineIndexes[_selectedIndex] < Height
             ? _lines[Height - y - 1][x]
             : _lines[_pressableLineIndexes[_selectedIndex] - y][x];
