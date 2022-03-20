@@ -1,7 +1,6 @@
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Menus;
-using GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 namespace GalacticMeltdown.Launchers;
 
@@ -36,7 +35,7 @@ public static class Game
 
     public static void Quit()
     {
+        UserInterface.SetTask(null);
         UserInterface.Forget(Root);
-        Renderer.CleanUp();
     }
 }

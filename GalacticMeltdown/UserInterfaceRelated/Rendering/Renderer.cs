@@ -125,7 +125,7 @@ public class Renderer
         _animations.Clear();
     }
 
-    public static void CleanUp()
+    public void CleanUp()
     {
         Console.ResetColor();
         Console.Clear();

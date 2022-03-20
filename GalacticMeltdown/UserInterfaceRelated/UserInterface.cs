@@ -26,6 +26,8 @@ public static class UserInterface
             _nextTask = null;
             task();
         }
+
+        _renderer.CleanUp();
     }
 
     public static void SetTask(Action task)
