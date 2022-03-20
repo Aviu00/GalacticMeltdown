@@ -5,6 +5,7 @@ using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 

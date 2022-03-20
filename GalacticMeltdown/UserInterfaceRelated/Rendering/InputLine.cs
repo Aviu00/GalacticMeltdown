@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 

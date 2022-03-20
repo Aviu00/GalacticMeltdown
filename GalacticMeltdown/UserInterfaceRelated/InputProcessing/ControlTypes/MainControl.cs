@@ -1,4 +1,4 @@
-namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 
 public enum MainControl
 {
