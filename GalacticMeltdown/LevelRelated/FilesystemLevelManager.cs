@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using GalacticMeltdown.MapGeneration;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
@@ -39,14 +38,29 @@ public static class FilesystemLevelManager
 
     public static bool SaveLevel(Level level, string name)
     {
-        string path = Path.Combine(GetSaveFolder(), name, "level.json");
+        string path = Path.Combine(GetSaveFolder(), name);
         string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects,
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
         });
 
-    File.WriteAllText(path, levelStr);
+
+        if (Directory.Exists(path)) //rewrite level
+        {
+            var directory = new DirectoryInfo(path);
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                file.Delete(); 
+            }
+            foreach (DirectoryInfo dir in directory.GetDirectories())
+            {
+                dir.Delete(true); 
+            }
+        }
+        else
+            Directory.CreateDirectory(path);
+        File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
         // returns false on failure
         return true;
     }
