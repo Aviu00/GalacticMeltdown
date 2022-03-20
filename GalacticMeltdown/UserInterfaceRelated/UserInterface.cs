@@ -51,14 +51,16 @@ public static class UserInterface
         _objectTasks.Add(obj, taskTuple);
     }
 
-    public static void SetView(object sender, View view)
+    public static void SetView(object obj, View view)
     {
-        _renderer.SetView(sender, view);
+        if (!_children.ContainsKey(obj)) return;
+        _renderer.SetView(obj, view);
     }
 
-    public static void SetController(object sender, Controller controller)
+    public static void SetController(object obj, Controller controller)
     {
-        _inputProcessor.SetController(sender, controller);
+        if (!_children.ContainsKey(obj)) return;
+        _inputProcessor.SetController(obj, controller);
     }
 
     public static void SetRoot(object root)
@@ -71,11 +73,13 @@ public static class UserInterface
 
     public static void TakeControl(object obj)
     {
+        if (!_children.ContainsKey(obj)) return;
         _inputProcessor.TakeControl(obj);
     }
 
     public static void YieldControl(object obj)
     {
+        if (!_children.ContainsKey(obj)) return;
         _inputProcessor.YieldControl(obj);
     }
 
