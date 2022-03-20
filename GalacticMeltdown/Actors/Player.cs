@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
 using Newtonsoft.Json;
 
@@ -45,6 +47,8 @@ public class Player : Actor, ISightedObject, IControllable
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
+    
+    private Dictionary<Type, Dictionary<Item, int>> _inventory;
 
     public event EventHandler VisiblePointsChanged;
 
@@ -55,6 +59,14 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
+        _inventory = new Dictionary<Type, Dictionary<Item, int>>()
+        {
+            {typeof(Item), new Dictionary<Item, int>()},
+            {typeof(RangedWeaponItem), new Dictionary<Item, int>()},
+            {typeof(UsableItem), new Dictionary<Item, int>()},
+            {typeof(WeaponItem), new Dictionary<Item, int>()},
+            {typeof(WearableItem), new Dictionary<Item, int>()},
+        };
     }
 
     public bool TryMove(int deltaX, int deltaY)
