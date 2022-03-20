@@ -37,6 +37,7 @@ public class LevelCreationDialog : Dialog
                 {SelectionControl.Select, LineView.PressCurrent},
                 {SelectionControl.Down, LineView.SelectNext},
                 {SelectionControl.Up, LineView.SelectPrev},
+                {SelectionControl.SpecialAction, SendInfo}
             }));
     }
 
