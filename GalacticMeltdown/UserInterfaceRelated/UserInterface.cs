@@ -73,4 +73,9 @@ public static class UserInterface
         _renderer.AddChild(parent, child);
         _inputProcessor.AddChild(parent, child);
     }
+
+    public static void PlayAnimations()
+    {
+        _renderer.PlayAnimations();
+    }
 }
