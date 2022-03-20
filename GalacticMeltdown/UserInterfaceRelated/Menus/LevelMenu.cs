@@ -33,6 +33,14 @@ public class LevelMenu : Menu
     private void SetLevelButtons()
     {
         List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelInfo();
+        if (!levelInfos.Any())
+        {
+            LineView.SetLines(new List<ListLine>
+            {
+                new TextLine("Press C to create a level")
+            });
+            return;
+        }
         List<Button> buttons = new(levelInfos.Select(levelInfo =>
             new Button($"{levelInfo.Name}", $"seed: {levelInfo.Seed}", () => TryStartLevel(levelInfo.Path))));
         LineView.SetLines(buttons.Cast<ListLine>().ToList());

@@ -24,7 +24,7 @@ public class LineView : View
     public override ViewCellData GetSymbol(int x, int y)
     {
         if (y < Height - _lines.Count) return new ViewCellData(null, DefaultBackgroundColor);
-        return _pressableLineIndexes[_selectedIndex] < Height
+        return !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height
             ? _lines[Height - y - 1][x]
             : _lines[_pressableLineIndexes[_selectedIndex] - y][x];
     }
