@@ -29,7 +29,10 @@ public class Player : Actor, ISightedObject, IControllable
             FireStatAffected(Stat.Strength);
         }
     }
-    
+
+    public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
+    public override ConsoleColor? BgColor => null;
+
     [JsonIgnore] public bool NoClip;
 
     [JsonIgnore] public bool InFocus { get; set; }
@@ -66,8 +69,6 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        SymbolData = ('@', ConsoleColor.White);
-        BgColor = null;
         _strength = PlayerStr;
     }
 
