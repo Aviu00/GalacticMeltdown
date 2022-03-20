@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Data;
 using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage)>;
@@ -15,21 +16,12 @@ public class ItemTypesExtractor : XmlExtractor
         ParseDocument("Items.xml");
     }
 
-    private enum ItemType
-    {
-        Item,
-        WeaponItem,
-        RangedWeaponItem,
-        UsableItem,
-        WearableItem
-    }
-
     private void ParseDocument(string docName)
     {
         XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
-            if(!Enum.TryParse(node.Name, out ItemType itemType)) continue;
+            if(!Enum.TryParse(node.Name, out ItemCategory itemCategory)) continue;
             string id = "";
             string name = "";
             char symbol = ' ';
@@ -69,15 +61,15 @@ public class ItemTypesExtractor : XmlExtractor
                 }
             }
 
-            ItemData itemData = itemType switch
+            ItemData itemData = itemCategory switch
             {
-                ItemType.UsableItem => new UsableItemData(symbol, name, id),
-                ItemType.WearableItem => new WearableItemData(symbol, name, id),
-                ItemType.WeaponItem => new WeaponItemData(symbol, name, id, minHitDamage, maxHitDamage, hitEnergy,
+                ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory),
+                ItemCategory.WearableItem => new WearableItemData(symbol, name, id, itemCategory),
+                ItemCategory.WeaponItem => new WeaponItemData(symbol, name, id, itemCategory, minHitDamage, maxHitDamage, hitEnergy,
                     ammoCapacity, ammoList),
-                ItemType.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, minHitDamage, maxHitDamage,
+                ItemCategory.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, itemCategory, minHitDamage, maxHitDamage,
                     hitEnergy, ammoCapacity, ammoList),
-                _ => new ItemData(symbol, name, id)
+                _ => new ItemData(symbol, name, id, itemCategory)
             };
             ItemTypes.Add(itemData.Id, itemData);
         }
@@ -121,17 +113,17 @@ public class ItemTypesExtractor : XmlExtractor
     }
 }
 
-public record ItemData(char Symbol, string Name, string Id);
+public record ItemData(char Symbol, string Name, string Id, ItemCategory Category);
 
-public record WeaponItemData(char Symbol, string Name, string Id, int MinHitDamage, int MaxHitDamage, int HitEnergy,
-        int AmmoCapacity, AmmoDictionary AmmoTypes)
-    : ItemData(Symbol, Name, Id);
+public record WeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
+    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) : ItemData(Symbol, Name, Id, Category);
 
-public record RangedWeaponItemData(char Symbol, string Name, string Id, int MinHitDamage, int MaxHitDamage,
-        int HitEnergy, int AmmoCapacity, 
-        AmmoDictionary AmmoTypes) //Hit chance not yet included
-    : WeaponItemData(Symbol, Name, Id, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
+public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
+        int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) //Hit chance not yet included
+    : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
 
-public record WearableItemData(char Symbol, string Name, string Id) : ItemData(Symbol, Name, Id); //WIP
+public record WearableItemData(char Symbol, string Name, string Id, ItemCategory Category) : ItemData(Symbol, Name, Id,
+    Category); //WIP
 
-public record UsableItemData(char Symbol, string Name, string Id) : ItemData(Symbol, Name, Id); //WIP
+public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category) : ItemData(Symbol, Name, Id,
+    Category); //WIP

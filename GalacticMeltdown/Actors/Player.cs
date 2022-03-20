@@ -59,7 +59,7 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        _inventory = new Dictionary<Type, Dictionary<Item, int>>()
+        _inventory = new Dictionary<Type, Dictionary<Item, int>>
         {
             {typeof(Item), new Dictionary<Item, int>()},
             {typeof(RangedWeaponItem), new Dictionary<Item, int>()},
