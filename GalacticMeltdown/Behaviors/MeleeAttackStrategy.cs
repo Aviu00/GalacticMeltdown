@@ -36,7 +36,8 @@ public class MeleeAttackStrategy : Behavior
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
             ControlledNpc.Energy -= _meleeAttackCost;
-            meleeAtackCounter.ResetTimer();
+            if (meleeAtackCounter is not null)
+                meleeAtackCounter.ResetTimer();
             return true;
         }
 
