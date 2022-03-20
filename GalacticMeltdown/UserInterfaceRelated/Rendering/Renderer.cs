@@ -47,6 +47,9 @@ public class Renderer
     public void RemoveView(object obj)
     {
         if (!_objectViews.ContainsKey(obj)) return;
+        View view = _objectViews[obj];
+        view.NeedRedraw -= NeedRedrawHandler;
+        view.CellsChanged -= AddAnimation;
         _views.Remove(_objectViews[obj]);
         _objectViews.Remove(obj);
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -90,7 +93,7 @@ public class Renderer
                 Console.Write(screenCellData.Symbol);
             }
         }
-
+        
         _animations.Clear();
     }
 
@@ -101,7 +104,7 @@ public class Renderer
         Console.CursorVisible = true;
         Console.SetCursorPosition(0, 0);
     }
-    
+
     private bool RedrawOnScreenSizeChange()
     {
         int windowWidth = Console.WindowWidth;
@@ -109,7 +112,6 @@ public class Renderer
         if (_pixelFuncs is null
             || !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
         {
-            _animations.Clear();
             RecalcAndRedraw(windowWidth, windowHeight);
             return true;
         }
@@ -119,6 +121,7 @@ public class Renderer
 
     private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
+        _animations.Clear();
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
         foreach (View view in _views)
