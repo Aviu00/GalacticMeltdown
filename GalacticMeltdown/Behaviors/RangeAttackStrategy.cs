@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -29,6 +31,26 @@ public class RangeAttackStrategy : Behavior
     }
     public override bool TryAct()
     {
+        if (ControlledNpc.CurrentTarget is null)
+            return false;
+        // if there is nothing what can stop projectile
+        if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
+                ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < _attackRange &&
+            Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X,
+                ControlledNpc.CurrentTarget.Y).All(coord => ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable) &&
+            (rangeAtackCounter is null || rangeAtackCounter.FinishedCounting))
+        {
+            ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
+            ControlledNpc.Energy -= _rangeAttackCost;
+            if (rangeAtackCounter is not null)
+                rangeAtackCounter.ResetTimer();
+            return true;
+        }
         return false;
+    }
+    // TODO: make advanced random damage 
+    private int RandomDamage(int minDamage, int maxDamage)
+    {
+        return Random.Shared.Next(minDamage, maxDamage + 1);
     }
 }
