@@ -88,12 +88,15 @@ public class InputProcessor
             _activeControllers.Remove(oldHandler);
             if (_currentController == oldHandler)
             {
-                RemoveCurrentController();
+                _currentController = controller;
             }
         }
-
+        else
+        {
+            _dormantControllers.Add(controller);
+        }
+        
         _objectControllers[sender] = controller;
-        _dormantControllers.Add(controller);
     }
 
     public void Forget(object obj)

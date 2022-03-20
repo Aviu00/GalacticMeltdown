@@ -68,11 +68,11 @@ public partial class PlaySession
         {CursorControl.Interact, () => ((Cursor) _controlledObject).Interact()},
         {CursorControl.Back, () =>
             {
-                UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
                 _controlledObject = _player;
                 _levelView.SetFocus(_player);
                 _levelView.RemoveCursor();
+                UserInterface.SetController(this, new ActionHandler(
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
             }
         },
         {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}},
