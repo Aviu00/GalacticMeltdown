@@ -17,14 +17,16 @@ public class YesNoDialog : Dialog
         LineView.SetLines(new List<ListLine>
         {
             new TextLine(message),
-            new Button("Yes", "", () => { sendInfo(true); UserInterface.Forget(this); }),
-            new Button("No", "", () => { sendInfo(false); UserInterface.Forget(this); }),
+            new Button("Yes", "", () => { UserInterface.Forget(this); sendInfo(true); }),
+            new Button("No", "", () => { UserInterface.Forget(this); sendInfo(false); }),
         });
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
-        {
-            {SelectionControl.Back, Close},
-            {SelectionControl.Down, LineView.SelectNext},
-            {SelectionControl.Up, LineView.SelectPrev}
-        }));
+        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+            new Dictionary<SelectionControl, Action>
+            {
+                {SelectionControl.Back, Close},
+                {SelectionControl.Down, LineView.SelectNext},
+                {SelectionControl.Up, LineView.SelectPrev},
+                {SelectionControl.Select, LineView.PressCurrent}
+            }));
     }
 }
