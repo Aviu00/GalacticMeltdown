@@ -7,7 +7,6 @@
 
     <ItemGroup>
       <Folder Include="UserInterfaceRelated\InputProcessing\ControlTypes" />
-      <Folder Include="UserInterfaceRelated\Dialogs" />
     </ItemGroup>
 
 </Project>
