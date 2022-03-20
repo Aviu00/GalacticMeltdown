@@ -64,6 +64,12 @@
                 <MaxDamage>25</MaxDamage>
                 <MeleeAttackCost>45</MeleeAttackCost>
             </MeleeAttack>
+            <RangeAttack>
+                <MinDamage>20</MinDamage>
+                <MaxDamage>40</MaxDamage>
+                <RangeAttackCost>50</RangeAttackCost>
+                <AttackRange>10</AttackRange>
+            </RangeAttack>
         </Behaviors>
     </Enemy>
     <Enemy>
@@ -86,6 +92,12 @@
                 <MaxDamage>30</MaxDamage>
                 <MeleeAttackCost>50</MeleeAttackCost>
             </MeleeAttack>
+            <RangeAttack>
+                <MinDamage>20</MinDamage>
+                <MaxDamage>40</MaxDamage>
+                <RangeAttackCost>50</RangeAttackCost>
+                <AttackRange>10</AttackRange>
+            </RangeAttack>
         </Behaviors>
     </Enemy>
 </Enemies>
