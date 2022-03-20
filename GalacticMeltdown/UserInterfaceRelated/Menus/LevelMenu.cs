@@ -12,6 +12,17 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
+internal class LevelButton : Button
+{
+    public string Path { get; }
+
+    public LevelButton(LevelInfo levelInfo, Action<string> levelStarter) 
+        : base(levelInfo.Name, $"Seed: {levelInfo.Seed}", () => levelStarter(levelInfo.Path))
+    {
+        Path = levelInfo.Path;
+    }
+}
+
 public class LevelMenu : Menu
 {
     public LevelMenu()
@@ -41,8 +52,7 @@ public class LevelMenu : Menu
             });
             return;
         }
-        List<Button> buttons = new(levelInfos.Select(levelInfo =>
-            new Button($"{levelInfo.Name}", $"seed: {levelInfo.Seed}", () => TryStartLevel(levelInfo.Path))));
+        List<Button> buttons = new(levelInfos.Select(levelInfo => new LevelButton(levelInfo, TryStartLevel)));
         LineView.SetLines(buttons.Cast<ListLine>().ToList());
     }
 
@@ -55,7 +65,7 @@ public class LevelMenu : Menu
 
     private void OpenLevelRemovalDialog()
     {
-        YesNoDialog levelRemovalDialog = new(RemoveSelectedLevel, "Are you sure you want to remove this level");
+        YesNoDialog levelRemovalDialog = new(RemoveSelectedLevel, "Are you sure you want to remove this level?");
         UserInterface.AddChild(this, levelRemovalDialog);
         levelRemovalDialog.Open();
     }
@@ -63,6 +73,8 @@ public class LevelMenu : Menu
     private void RemoveSelectedLevel(bool doIt)
     {
         if (!doIt) return;
+        FilesystemLevelManager.RemoveLevel(((LevelButton) LineView.GetCurrent()).Path);
+        SetLevelButtons();
     }
 
     private void CreateLevel(string name, int? seed)
