@@ -47,7 +47,7 @@ public class LineView : View
         if (_pressableLineIndexes.Any())
         {
             _selectedIndex = 0;
-            ((PressableListLine) _lines[_selectedIndex]).Select();
+            ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
         }
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
