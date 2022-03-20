@@ -18,6 +18,7 @@
             <MeleeAttack>
                 <MinDamage>5</MinDamage>
                 <MaxDamage>20</MaxDamage>
+                <MeleeAttackCost>30</MeleeAttackCost>
             </MeleeAttack>
         </Behaviors>
     </Enemy>
@@ -39,6 +40,7 @@
             <MeleeAttack>
                 <MinDamage>5</MinDamage>
                 <MaxDamage>20</MaxDamage>
+                <MeleeAttackCost>30</MeleeAttackCost>
             </MeleeAttack>
         </Behaviors>
     </Enemy>
@@ -59,7 +61,8 @@
             <Movement/>
             <MeleeAttack>
                 <MinDamage>5</MinDamage>
-                <MaxDamage>20</MaxDamage>
+                <MaxDamage>25</MaxDamage>
+                <MeleeAttackCost>45</MeleeAttackCost>
             </MeleeAttack>
         </Behaviors>
     </Enemy>
@@ -80,7 +83,8 @@
             <Movement/>
             <MeleeAttack>
                 <MinDamage>5</MinDamage>
-                <MaxDamage>20</MaxDamage>
+                <MaxDamage>30</MaxDamage>
+                <MeleeAttackCost>50</MeleeAttackCost>
             </MeleeAttack>
         </Behaviors>
     </Enemy>
