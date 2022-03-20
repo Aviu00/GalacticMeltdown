@@ -46,13 +46,6 @@ public class MeleeAttackStrategy : Behavior
     // TODO: make advanced random damage 
     private int RandomDamage(int minDamage, int maxDamage)
     {
-        if (UtilityFunctions.Chance(10))
-        {
-            return 0;
-        }
-        else
-        {
-            return Random.Shared.Next(minDamage, maxDamage);
-        }
+        return Random.Shared.Next(minDamage, maxDamage + 1);
     }
 }
