@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
@@ -10,8 +12,8 @@ public partial class PlaySession
 {
     private void SetControlDicts()
     {
-        MainActions = new()
-    {
+        MainActions = new Dictionary<MainControl, Action>
+        {
         {MainControl.MoveUp, () => MoveControlled(0, 1)},
         {MainControl.MoveDown, () => MoveControlled(0, -1)},
         {MainControl.MoveRight, () => MoveControlled(1, 0)},
@@ -40,9 +42,9 @@ public partial class PlaySession
                     _controlledObject = _player;
                     _levelView.SetFocus(_player);
                     _levelView.RemoveCursor();
-                    _level.InteractWithDoor(x, y, _player);
                     UserInterface.SetController(this, new ActionHandler(
                         UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
+                    if(_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
                 };  
                 UserInterface.SetController(this, new ActionHandler(
                     UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, CursorActions)));
@@ -55,7 +57,7 @@ public partial class PlaySession
         {MainControl.Quit, StopSession},
     };
 
-    CursorActions = new()
+    CursorActions = new Dictionary<CursorControl, Action>
     {
         {CursorControl.MoveUp, () => MoveControlled(0, 1)},
         {CursorControl.MoveDown, () => MoveControlled(0, -1)},
