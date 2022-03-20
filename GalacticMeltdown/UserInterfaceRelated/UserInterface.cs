@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using GalacticMeltdown.Collections;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Views;
@@ -11,7 +13,8 @@ public static class UserInterface
     private static Renderer _renderer;
     private static InputProcessor _inputProcessor;
 
-    private static Action _nextTask;
+    private static OrderedSet<(object, Action)> _tasks;
+    private static Dictionary<object, (object, Action)> _objectTasks;
     
     private static Dictionary<object, (object parent, HashSet<object> children)> _children;
 
@@ -19,23 +22,33 @@ public static class UserInterface
     {
         _renderer = new Renderer();
         _inputProcessor = new InputProcessor();
+        _tasks = new OrderedSet<(object, Action)>();
+        _objectTasks = new Dictionary<object, (object, Action)>();
     }
 
     public static void Start()
     {
-        while (_nextTask is not null)
+        while (_tasks.Any())
         {
-            Action task = _nextTask;
-            _nextTask = null;
+            var (obj, task) = _tasks.Pop();
+            _objectTasks.Remove(obj);
             task();
         }
 
         _renderer.CleanUp();
     }
 
-    public static void SetTask(Action task)
+    public static void SetTask(object obj, Action task)
     {
-        _nextTask ??= task;
+        if (!_children.ContainsKey(obj)) return;
+        if (_objectTasks.ContainsKey(obj))
+        {
+            _tasks.Remove(_objectTasks[obj]);
+            _objectTasks.Remove(obj);
+        }
+        (object, Action) taskTuple = (obj, task);
+        _tasks.Add(taskTuple);
+        _objectTasks.Add(obj, taskTuple);
     }
 
     public static void SetView(object sender, View view)
@@ -80,6 +93,9 @@ public static class UserInterface
         
         _renderer.RemoveView(obj);
         _inputProcessor.RemoveController(obj);
+        if (!_objectTasks.ContainsKey(obj)) return;
+        _tasks.Remove(_objectTasks[obj]);
+        _objectTasks.Remove(obj);
     }
     
     public static void AddChild(object parent, object child)

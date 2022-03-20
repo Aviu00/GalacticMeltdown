@@ -44,7 +44,7 @@ public partial class PlaySession
         UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView));
         UserInterface.SetController(this,
             new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
-        UserInterface.SetTask(MapTurn);
+        UserInterface.SetTask(this, MapTurn);
     }
 
     private void MapTurn()
@@ -60,7 +60,7 @@ public partial class PlaySession
             }
             return;
         }
-        UserInterface.SetTask(MapTurn);
+        UserInterface.SetTask(this, MapTurn);
     }
 
     private void SaveLevel()
