@@ -60,7 +60,10 @@ public class LevelMenu : Menu
 
     private void CreateLevel(string name, int? seed)
     {
-        FilesystemLevelManager.CreateLevel(seed ?? Random.Shared.Next(), name);
+        string path = FilesystemLevelManager.CreateLevel(seed ?? Random.Shared.Next(), name);
+        var (level, loadedSeed) = FilesystemLevelManager.GetLevel(path);
+        DataHolder.CurrentSeed = loadedSeed;
+        Game.StartLevel(level, path);
     }
 
     private void TryStartLevel(string path)
