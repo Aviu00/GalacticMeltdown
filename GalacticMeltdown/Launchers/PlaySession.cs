@@ -20,10 +20,8 @@ public partial class PlaySession
     private static Level _level;
     private static LevelView _levelView;
 
-    private bool _sessionActive;
-
-    private Dictionary<MainControl, Action> MainActions;
-    private Dictionary<CursorControl, Action> CursorActions;
+    private Dictionary<MainControl, Action> _mainActions;
+    private Dictionary<CursorControl, Action> _cursorActions;
 
     public PlaySession(Level level, string savePath)
     {
@@ -43,10 +41,9 @@ public partial class PlaySession
 
     public void Start()
     {
-        _sessionActive = true;
         UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView));
         UserInterface.SetController(this,
-            new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
+            new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
         UserInterface.SetTask(MapTurn);
     }
 
@@ -63,7 +60,7 @@ public partial class PlaySession
             }
             return;
         }
-        if (_sessionActive) UserInterface.SetTask(MapTurn);
+        UserInterface.SetTask(MapTurn);
     }
 
     private void SaveLevel()
@@ -79,16 +76,8 @@ public partial class PlaySession
 
     private void OpenPauseMenu()
     {
-        PauseMenu pauseMenu = new PauseMenu(this);
+        PauseMenu pauseMenu = new PauseMenu();
         UserInterface.AddChild(this, pauseMenu);
         pauseMenu.Open();
-    }
-
-    public void Stop()
-    {
-        _sessionActive = false;
-        _player.StopTurn();
-        UserInterface.Forget(this);
-        Game.OpenMainMenu();
     }
 }

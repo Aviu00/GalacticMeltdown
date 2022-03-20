@@ -32,7 +32,7 @@ public static class UserInterface
 
     public static void SetTask(Action task)
     {
-        _nextTask = task;
+        _nextTask ??= task;
     }
 
     public static void SetView(object sender, View view)

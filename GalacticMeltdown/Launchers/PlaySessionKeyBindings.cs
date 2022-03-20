@@ -13,7 +13,7 @@ public partial class PlaySession
 {
     private void SetControlDicts()
     {
-        MainActions = new Dictionary<MainControl, Action>
+        _mainActions = new Dictionary<MainControl, Action>
         {
         {MainControl.MoveUp, () => MoveControlled(0, 1)},
         {MainControl.MoveDown, () => MoveControlled(0, -1)},
@@ -30,7 +30,7 @@ public partial class PlaySession
             {
                 _controlledObject = _levelView.Cursor;
                 UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, CursorActions)));
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
             }
         },
         {
@@ -44,11 +44,11 @@ public partial class PlaySession
                     _levelView.SetFocus(_player);
                     _levelView.RemoveCursor();
                     UserInterface.SetController(this, new ActionHandler(
-                        UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
+                        UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
                     if(_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
                 };  
                 UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, CursorActions)));
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
             }
         },
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},
@@ -58,7 +58,7 @@ public partial class PlaySession
         {MainControl.OpenPauseMenu, OpenPauseMenu},
     };
 
-    CursorActions = new Dictionary<CursorControl, Action>
+    _cursorActions = new Dictionary<CursorControl, Action>
     {
         {CursorControl.MoveUp, () => MoveControlled(0, 1)},
         {CursorControl.MoveDown, () => MoveControlled(0, -1)},
@@ -75,7 +75,7 @@ public partial class PlaySession
                 _levelView.SetFocus(_player);
                 _levelView.RemoveCursor();
                 UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
             }
         },
         {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}},
