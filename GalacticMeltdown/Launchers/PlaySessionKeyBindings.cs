@@ -55,7 +55,7 @@ public partial class PlaySession
         {MainControl.ReduceViewRange, () => _player.ViewRange--},
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
         {MainControl.ToggleXRay, () => _player.Xray = !_player.Xray},
-        {MainControl.Quit, StopSession},
+        {MainControl.OpenPauseMenu, OpenPauseMenu},
     };
 
     CursorActions = new Dictionary<CursorControl, Action>

@@ -18,5 +18,5 @@ public enum MainControl
     ReduceViewRange, //for fov testing
     ToggleNoClip, //temporary cheat codes
     ToggleXRay, //temporary cheat codes
-    Quit
+    OpenPauseMenu
 }

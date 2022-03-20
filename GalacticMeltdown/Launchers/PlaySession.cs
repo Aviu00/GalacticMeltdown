@@ -6,6 +6,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
+using GalacticMeltdown.UserInterfaceRelated.Menus;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
@@ -42,25 +43,27 @@ public partial class PlaySession
 
     public void Start()
     {
+        _sessionActive = true;
         UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView));
         UserInterface.SetController(this,
             new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, MainActions)));
-        _sessionActive = true;
-        while (_sessionActive)
-        {
-            SaveLevel();
-            if (!_level.DoTurn())
-            {
-                if (_level.PlayerWon)
-                {
-                }
-                else
-                {
-                }
+        UserInterface.SetTask(MapTurn);
+    }
 
-                break;
+    private void MapTurn()
+    {
+        SaveLevel();
+        if (!_level.DoTurn())
+        {
+            if (_level.PlayerWon)
+            {
             }
+            else
+            {
+            }
+            return;
         }
+        if (_sessionActive) UserInterface.SetTask(MapTurn);
     }
 
     private void SaveLevel()
@@ -74,7 +77,14 @@ public partial class PlaySession
         if (_controlledObject is Actor) UserInterface.YieldControl(this);
     }
 
-    private void StopSession()
+    private void OpenPauseMenu()
+    {
+        PauseMenu pauseMenu = new PauseMenu(this);
+        UserInterface.AddChild(this, pauseMenu);
+        pauseMenu.Open();
+    }
+
+    public void Stop()
     {
         _sessionActive = false;
         _player.StopTurn();
