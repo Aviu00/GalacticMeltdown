@@ -116,6 +116,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int minDamage = 0;
         int maxDamage = 0;
         int cooldown = 0;
+        int cost = 10;
         foreach (XmlNode locNode in node)
         {
             switch (node.Name)
@@ -135,7 +136,7 @@ public class EnemyTypesExtractor : XmlExtractor
             }
         }
 
-        return new MeleeAttackStrategyData(priority, minDamage, maxDamage, cooldown);
+        return new MeleeAttackStrategyData(priority, minDamage, maxDamage, cooldown, cost);
     }
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
@@ -146,5 +147,5 @@ public record BehaviorData(int? Priority);
 
 public record MovementStrategyData(int? Priority) : BehaviorData(Priority);
 
-public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown)
+public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int Cost)
     : BehaviorData(Priority);

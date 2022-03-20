@@ -13,13 +13,12 @@ public class MeleeAttackStrategy : Behavior
     private int _cooldown;
     private int _cost;
     
-    public MeleeAttackStrategy(MeleeAttackStrategyData data, Npc controlledNpc, int minDamage, int maxDamage, 
-        int cooldown, int cost) : base(data.Priority ?? DefaultPriority)
+    public MeleeAttackStrategy(MeleeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
-        _minDamage = minDamage;
-        _maxDamage = maxDamage;
-        _cooldown = cooldown;
-        _cost = cost;
+        _minDamage = data.MinDamage;
+        _maxDamage = data.MaxDamage;
+        _cooldown = data.Cooldown;
+        _cost = data.Cost;
         ControlledNpc = controlledNpc;
     }
     
