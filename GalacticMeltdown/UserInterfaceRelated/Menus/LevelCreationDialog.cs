@@ -11,12 +11,15 @@ namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
 public class LevelCreationDialog : Dialog
 {
+    private Action<string, int?, int?> _sender;
+
     private InputLine _nameLine;
     private InputLine _seedLine;
     private InputLine _diffMulLine;
     
-    public LevelCreationDialog(Action<List<object>> sender) : base(sender)
+    public LevelCreationDialog(Action<string, int?, int?> sender)
     {
+        _sender = sender;
         LineView = new LineView();
         _nameLine = new InputLine();
         _seedLine = new InputLine(char.IsDigit);
@@ -54,6 +57,6 @@ public class LevelCreationDialog : Dialog
         {
             multiplier = tempMul;
         }
-        Sender(new List<object> {_nameLine.Text, seed, multiplier});
+        _sender(_nameLine.Text, seed, multiplier);
     }
 }
