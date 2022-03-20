@@ -14,6 +14,8 @@ public abstract class View
     public abstract event EventHandler NeedRedraw;
     public abstract event EventHandler<CellChangeEventArgs> CellsChanged;
 
+    public abstract (double, double, double, double)? WantedPosition { get; }
+
     protected View()
     {
         _id = UtilityFunctions.RandomString(16);

@@ -36,6 +36,8 @@ internal class SeenTilesArray
 
 public partial class LevelView : View
 {
+    public override (double, double, double, double)? WantedPosition => null;
+    
     private readonly Level _level;
 
     private IFocusable _focusObject;

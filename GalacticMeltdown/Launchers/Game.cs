@@ -1,45 +1,40 @@
-using GalacticMeltdown.InputProcessing;
 using GalacticMeltdown.LevelRelated;
-using GalacticMeltdown.Rendering;
-using GalacticMeltdown.Views;
+using GalacticMeltdown.UserInterfaceRelated;
+using GalacticMeltdown.UserInterfaceRelated.Menus;
 
 namespace GalacticMeltdown.Launchers;
 
 public static class Game
 {
-    private static bool _playing;
-    private static MenuView _menu;
+    private const int Root = 20220319;
+    private static MainMenu _menu;
+    private static PlaySession _session;
 
     public static void Main()
     {
-        _playing = true;
-        while (_playing)
-        {
-            OpenMainMenu();
-            InputProcessor.StartProcessLoop();
-        }
-
-        Renderer.CleanUp();
+        UserInterface.SetRoot(Root);
+        UserInterface.SetTask(Root, OpenMainMenu);
+        UserInterface.Start();
     }
 
-    public static void StartLevel(Level level, string levelName)
+    public static void StartLevel(Level level, string name)
     {
-        Renderer.ClearViews();
-        InputProcessor.ClearBindings();
-        var session = new PlaySession(level, levelName);
-        session.Start();
+        UserInterface.Forget(_menu);
+        _session = new PlaySession(level, name);
+        UserInterface.AddChild(Root, _session);
+        UserInterface.SetTask(Root, _session.Start);
     }
 
-    private static void OpenMainMenu()
+    public static void OpenMainMenu()
     {
-        _menu = new MenuView();
-        Renderer.AddView(_menu, 0, 0, 1, 1);
-        _menu.OpenBasicMenu(new Button("Select level", "", _menu.OpenLevelMenu), new Button("Quit", "", Quit));
+        UserInterface.Forget(_session);
+        _menu = new MainMenu();
+        UserInterface.AddChild(Root, _menu);
+        UserInterface.SetTask(Root, _menu.Open);
     }
 
-    private static void Quit()
+    public static void Quit()
     {
-        _playing = false;
-        InputProcessor.StopProcessLoop();
+        UserInterface.Forget(Root);
     }
 }

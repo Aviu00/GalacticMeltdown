@@ -1,14 +1,14 @@
 using System;
 
-namespace GalacticMeltdown.Rendering;
+namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
-public readonly struct Button
+public readonly struct ButtonTemp
 {
     private readonly Action _action;
     private string TextLeft { get; }
     private string TextRight { get; }
 
-    public Button(string textLeft, string textRight, Action action)
+    public ButtonTemp(string textLeft, string textRight, Action action)
     {
         TextLeft = textLeft;
         TextRight = textRight;

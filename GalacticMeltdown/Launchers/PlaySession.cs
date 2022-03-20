@@ -1,8 +1,13 @@
-﻿using GalacticMeltdown.Actors;
+﻿using System;
+using System.Collections.Generic;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.InputProcessing;
 using GalacticMeltdown.LevelRelated;
-using GalacticMeltdown.Rendering;
+using GalacticMeltdown.UserInterfaceRelated;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
+using GalacticMeltdown.UserInterfaceRelated.Menus;
+using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Launchers;
@@ -15,7 +20,8 @@ public partial class PlaySession
     private static Level _level;
     private static LevelView _levelView;
 
-    private static bool _sessionActive;
+    private Dictionary<MainControl, Action> _mainActions;
+    private Dictionary<CursorControl, Action> _cursorActions;
 
     public PlaySession(Level level, string levelName)
     {
@@ -24,36 +30,37 @@ public partial class PlaySession
         _player = _level.Player;
         _player.SetControlFunc(() =>
         {
-            Renderer.PlayAnimations();
-            InputProcessor.AddBinding(DataHolder.CurrentBindings.Main, MainActions);
-            InputProcessor.StartProcessLoop();
+            UserInterface.PlayAnimations();
+            UserInterface.TakeControl(this);
         });
         _controlledObject = _player;
         _levelView = _level.LevelView;
         _levelView.SetFocus(_player);
+        SetControlDicts();
     }
 
     public void Start()
     {
-        Renderer.AddView(_levelView, 0, 0, 0.8, 1);
-        Renderer.AddView(_level.OverlayView, 0.8, 0, 1, 1);
-        Renderer.Redraw();
-        _sessionActive = true;
-        while (_sessionActive)
-        {
-            //SaveLevel();
-            if (!_level.DoTurn())
-            {
-                if (_level.PlayerWon)
-                {
-                }
-                else
-                {
-                }
+        UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView));
+        UserInterface.SetController(this,
+            new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
+        UserInterface.SetTask(this, MapTurn);
+    }
 
-                break;
+    private void MapTurn()
+    {
+        //SaveLevel();
+        if (!_level.DoTurn())
+        {
+            if (_level.PlayerWon)
+            {
             }
+            else
+            {
+            }
+            return;
         }
+        UserInterface.SetTask(this, MapTurn);
     }
 
     private void SaveLevel()
@@ -61,23 +68,16 @@ public partial class PlaySession
         FilesystemLevelManager.SaveLevel(_level, _levelName);
     }
 
-    private static void MoveControlled(int deltaX, int deltaY)
+    private void MoveControlled(int deltaX, int deltaY)
     {
         if (!_controlledObject.TryMove(deltaX, deltaY)) return;
-        if (_controlledObject is Actor) GiveBackControl();
+        if (_controlledObject is Actor) UserInterface.YieldControl(this);
     }
 
-    private static void StopSession()
+    private void OpenPauseMenu()
     {
-        _sessionActive = false;
-        _player.StopTurn();
-        Renderer.ClearViews();
-        GiveBackControl();
-    }
-
-    private static void GiveBackControl()
-    {
-        InputProcessor.ClearBindings();
-        InputProcessor.StopProcessLoop();
+        PauseMenu pauseMenu = new PauseMenu();
+        UserInterface.AddChild(this, pauseMenu);
+        pauseMenu.Open();
     }
 }

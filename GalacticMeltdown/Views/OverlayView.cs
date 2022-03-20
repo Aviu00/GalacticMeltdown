@@ -28,6 +28,8 @@ public class OverlayView : View
     private const ConsoleColor DexColor = DataHolder.Colors.DexColor;
     private const ConsoleColor DefColor = DataHolder.Colors.DefColor;
     
+    public override (double, double, double, double)? WantedPosition => null;
+    
     private Level _level; // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player; // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?

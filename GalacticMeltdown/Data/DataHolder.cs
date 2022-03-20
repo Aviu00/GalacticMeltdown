@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using GalacticMeltdown.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 
 namespace GalacticMeltdown.Data;
 
@@ -42,6 +43,9 @@ public static class DataHolder
         public const ConsoleColor TextColor = ConsoleColor.Magenta;
         public const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
         public const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
+        public const ConsoleColor InputLineBgColorSelected = ConsoleColor.Gray;
+        public const ConsoleColor InputLineBgColorUnselected = ConsoleColor.DarkGray;
+        public const ConsoleColor InputLineTextColor = ConsoleColor.White;
         public const ConsoleColor MenuBorderColor = ConsoleColor.Yellow;
         public const ConsoleColor CursorColor = ConsoleColor.White;
         public const ConsoleColor HighlightedNothingColor = ConsoleColor.Red;
@@ -81,7 +85,7 @@ public static class DataHolder
             {ConsoleKey.Subtract, MainControl.ReduceViewRange},
             {ConsoleKey.Z, MainControl.ToggleNoClip},
             {ConsoleKey.X, MainControl.ToggleXRay},
-            {ConsoleKey.Q, MainControl.Quit}
+            {ConsoleKey.Escape, MainControl.OpenPauseMenu}
         };
 
         public static Dictionary<ConsoleKey, SelectionControl> Selection = new()
@@ -113,6 +117,22 @@ public static class DataHolder
             {ConsoleKey.Escape, CursorControl.Back},
             {ConsoleKey.L, CursorControl.ToggleLine},
             {ConsoleKey.F, CursorControl.ToggleFocus},
+        };
+
+        public static Dictionary<ConsoleKey, TextInputControl> TextInput = new()
+        {
+            {ConsoleKey.Backspace, TextInputControl.DeleteCharacter},
+            {ConsoleKey.Escape, TextInputControl.Back},
+        };
+
+        public static Dictionary<ConsoleKey, LevelMenuControl> LevelMenu = new()
+        {
+            {ConsoleKey.UpArrow, LevelMenuControl.SelectPrev},
+            {ConsoleKey.DownArrow, LevelMenuControl.SelectNext},
+            {ConsoleKey.Enter, LevelMenuControl.Start},
+            {ConsoleKey.Escape, LevelMenuControl.GoBack},
+            {ConsoleKey.C, LevelMenuControl.Create},
+            {ConsoleKey.D, LevelMenuControl.Delete},
         };
     }
     

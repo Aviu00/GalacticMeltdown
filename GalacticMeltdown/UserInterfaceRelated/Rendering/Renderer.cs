@@ -1,40 +1,74 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using GalacticMeltdown.Collections;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.Rendering;
+namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, ConsoleColor BgColor);
 
-public static class Renderer
-{
-    private static LinkedList<(View, double, double, double, double)> _views;
-    private static LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
-    private static Dictionary<View, (int, int, int, int)> _viewBoundaries;
-    private static LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
+internal record struct ViewInfo(View View, (double, double, double, double) ScreenPart);
 
-    static Renderer()
+public class Renderer
+{
+    private OrderedSet<View> _views;
+    private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
+    private Dictionary<View, (int, int, int, int)> _viewBoundaries;
+    private LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
+    
+    private Dictionary<object, View> _objectViews = new();
+
+    public void SetView(object sender, View view)
+    {
+        if (_objectViews.ContainsKey(sender))
+        {
+            View oldView = _objectViews[sender];
+            _views.Remove(oldView);
+        }
+        
+        _objectViews[sender] = view;
+        AddView(view);
+    }
+
+    private void AddView(View view)
+    {
+        view.NeedRedraw += NeedRedrawHandler;
+        view.CellsChanged += AddAnimation;
+        _views.Add(view);
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
+    }
+    
+    public void RemoveView(object obj)
+    {
+        if (!_objectViews.ContainsKey(obj)) return;
+        _views.Remove(_objectViews[obj]);
+        _objectViews.Remove(obj);
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
+    }
+
+    public Renderer()
     {
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
-        _views = new LinkedList<(View, double, double, double, double)>();
+        _views = new OrderedSet<View>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
         _animations = new LinkedList<(View, HashSet<(int, int, ViewCellData)>)>();
     }
-    
-    public static void Redraw()
+
+    public void Redraw()
     {
         if (RedrawOnScreenSizeChange()) return;
         _animations.Clear();
         OutputAllCells();
     }
-    
-    public static void PlayAnimations()
+
+    public void PlayAnimations()
     {
         foreach (var (view, updatedCells) in _animations)
         {
@@ -58,41 +92,8 @@ public static class Renderer
 
         _animations.Clear();
     }
-    
-    public static void AddView(View view, double x0Portion, double y0Portion, double x1Portion, double y1Portion)
-    {
-        view.NeedRedraw += NeedRedrawHandler;
-        view.CellsChanged += AddAnimation;
-        _views.AddFirst((view, x0Portion, y0Portion, x1Portion, y1Portion));
-        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
-    }
-    
-    public static void RemoveLastView()
-    {
-        if (_views.Any())
-        {
-            var (view, _, _, _, _) = _views.First();
-            view.NeedRedraw -= NeedRedrawHandler;
-            view.CellsChanged -= AddAnimation;
-            _views.RemoveFirst();
-        }
 
-        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
-    }
-    
-    public static void ClearViews()
-    {
-        foreach (var (view, _, _, _, _) in _views)
-        {
-            view.NeedRedraw -= NeedRedrawHandler;
-            view.CellsChanged -= AddAnimation;
-        }
-
-        _views.Clear();
-        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
-    }
-
-    public static void CleanUp()
+    public void CleanUp()
     {
         Console.ResetColor();
         Console.Clear();
@@ -100,7 +101,7 @@ public static class Renderer
         Console.SetCursorPosition(0, 0);
     }
     
-    private static bool RedrawOnScreenSizeChange()
+    private bool RedrawOnScreenSizeChange()
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
@@ -114,13 +115,14 @@ public static class Renderer
 
         return false;
     }
-    
-    private static void RecalcAndRedraw(int windowWidth, int windowHeight)
+
+    private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
-        foreach (var (view, x0Portion, y0Portion, x1Portion, y1Portion) in _views)
+        foreach (View view in _views)
         {
+            var (x0Portion, y0Portion, x1Portion, y1Portion) = view.WantedPosition ?? (0, 0, 1, 1);
             int x0Screen = (int) Math.Round(windowWidth * x0Portion);
             int y0Screen = (int) Math.Round(windowHeight * y0Portion);
             int x1Screen = (int) Math.Round(windowWidth * x1Portion);
@@ -139,8 +141,8 @@ public static class Renderer
 
         OutputAllCells();
     }
-    
-    private static void OutputAllCells()
+
+    private void OutputAllCells()
     {
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
@@ -175,7 +177,7 @@ public static class Renderer
         Console.Write(currentSequence);
     }
 
-    private static void InitPixelFuncArr(int windowWidth, int windowHeight)
+    private void InitPixelFuncArr(int windowWidth, int windowHeight)
     {
         _pixelFuncs = new LinkedList<Func<ViewCellData>>[windowWidth, windowHeight];
         for (int x = 0; x < _pixelFuncs.GetLength(0); x++)
@@ -186,8 +188,8 @@ public static class Renderer
             }
         }
     }
-    
-    private static ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View view)
+
+    private ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View view)
     {
         (char symbol, ConsoleColor color)? symbolData = null;
         ConsoleColor? backgroundColor = null;
@@ -206,7 +208,7 @@ public static class Renderer
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
-    private static ScreenCellData GetCell(int x, int y)
+    private ScreenCellData GetCell(int x, int y)
     {
         (char symbol, ConsoleColor color)? symbolData = null;
         ConsoleColor? backgroundColor = null;
@@ -225,23 +227,23 @@ public static class Renderer
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
-    private static void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
+    private void SetConsoleColor(ConsoleColor fgColor, ConsoleColor bgColor)
     {
         if (Console.ForegroundColor != fgColor) Console.ForegroundColor = fgColor;
         if (Console.BackgroundColor != bgColor) Console.BackgroundColor = bgColor;
     }
 
-    private static int ConvertToConsoleY(int y)
+    private int ConvertToConsoleY(int y)
     {
         return _pixelFuncs.GetLength(1) - 1 - y;
     }
 
-    private static void AddAnimation(object sender, CellChangeEventArgs e)
+    private void AddAnimation(object sender, CellChangeEventArgs e)
     {
         _animations.AddLast(((View) sender, e.Cells));
     }
     
-    private static void NeedRedrawHandler(object sender, EventArgs _)
+    private void NeedRedrawHandler(object sender, EventArgs _)
     {
         Redraw(); // The renderer is fast enough
     }

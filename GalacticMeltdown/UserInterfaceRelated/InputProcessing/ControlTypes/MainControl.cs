@@ -1,4 +1,4 @@
-namespace GalacticMeltdown.InputProcessing;
+namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 
 public enum MainControl
 {
@@ -18,5 +18,5 @@ public enum MainControl
     ReduceViewRange, //for fov testing
     ToggleNoClip, //temporary cheat codes
     ToggleXRay, //temporary cheat codes
-    Quit
+    OpenPauseMenu
 }

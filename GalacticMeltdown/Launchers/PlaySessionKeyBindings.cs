@@ -1,15 +1,20 @@
 using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
+using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Launchers;
 
 public partial class PlaySession
 {
-    private static readonly Dictionary<MainControl, Action> MainActions = new()
+    private void SetControlDicts()
     {
+        _mainActions = new Dictionary<MainControl, Action>
+        {
         {MainControl.MoveUp, () => MoveControlled(0, 1)},
         {MainControl.MoveDown, () => MoveControlled(0, -1)},
         {MainControl.MoveRight, () => MoveControlled(1, 0)},
@@ -18,13 +23,14 @@ public partial class PlaySession
         {MainControl.MoveSe, () => MoveControlled(1, -1)},
         {MainControl.MoveSw, () => MoveControlled(-1, -1)},
         {MainControl.MoveNw, () => MoveControlled(-1, 1)},
-        {MainControl.StopTurn, () => {_player.StopTurn(); GiveBackControl();}},
-        {MainControl.DoNothing, GiveBackControl},
+        {MainControl.StopTurn, () => {_player.StopTurn(); UserInterface.YieldControl(this);}},
+        {MainControl.DoNothing, () => UserInterface.YieldControl(this)},
         {
             MainControl.UseCursor, () =>
             {
                 _controlledObject = _levelView.Cursor;
-                InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
+                UserInterface.SetController(this, new ActionHandler(
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
             }
         },
         {
@@ -37,22 +43,22 @@ public partial class PlaySession
                     _controlledObject = _player;
                     _levelView.SetFocus(_player);
                     _levelView.RemoveCursor();
-                    if (_level.InteractWithDoor(x, y, _player))
-                        GiveBackControl();
-                    else
-                        InputProcessor.RemoveLastBinding();
+                    UserInterface.SetController(this, new ActionHandler(
+                        UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
+                    if(_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
                 };  
-                InputProcessor.AddBinding(DataHolder.CurrentBindings.Cursor, CursorActions);
+                UserInterface.SetController(this, new ActionHandler(
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
             }
         },
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},
         {MainControl.ReduceViewRange, () => _player.ViewRange--},
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
         {MainControl.ToggleXRay, () => _player.Xray = !_player.Xray},
-        {MainControl.Quit, StopSession},
+        {MainControl.OpenPauseMenu, OpenPauseMenu},
     };
 
-    private static readonly Dictionary<CursorControl, Action> CursorActions = new()
+    _cursorActions = new Dictionary<CursorControl, Action>
     {
         {CursorControl.MoveUp, () => MoveControlled(0, 1)},
         {CursorControl.MoveDown, () => MoveControlled(0, -1)},
@@ -65,10 +71,11 @@ public partial class PlaySession
         {CursorControl.Interact, () => ((Cursor) _controlledObject).Interact()},
         {CursorControl.Back, () =>
             {
-                InputProcessor.RemoveLastBinding();
                 _controlledObject = _player;
                 _levelView.SetFocus(_player);
                 _levelView.RemoveCursor();
+                UserInterface.SetController(this, new ActionHandler(
+                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
             }
         },
         {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}},
@@ -77,4 +84,5 @@ public partial class PlaySession
             () => _levelView.SetFocus(((Cursor) _controlledObject).InFocus ? _player : _levelView.Cursor)
         }
     };
+    }
 }

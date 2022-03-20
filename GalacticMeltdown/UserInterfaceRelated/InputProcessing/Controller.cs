@@ -1,12 +1,12 @@
 using System;
 
-namespace GalacticMeltdown.InputProcessing;
+namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
-public abstract class KeyHandler
+public abstract class Controller
 {
     private bool _flushBuffer;
     
-    protected KeyHandler(bool flushBuffer)
+    protected Controller(bool flushBuffer)
     {
         _flushBuffer = flushBuffer;
     }
