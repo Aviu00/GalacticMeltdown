@@ -1,5 +1,4 @@
 using System.Linq;
-using GalacticMeltdown.Behaviors;
 using System;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
@@ -17,7 +16,6 @@ public class MeleeAttackStrategy : Behavior
     [JsonProperty] private readonly int _cooldown;
     [JsonProperty] private readonly int _meleeAttackCost;
     [JsonIgnore] private Counter meleeAtackCounter;
-
     public MeleeAttackStrategy(MeleeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         _minDamage = data.MinDamage;
