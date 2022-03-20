@@ -96,6 +96,9 @@ public class EnemyTypesExtractor : XmlExtractor
                 case "MeleeAttack":
                     behaviors.AddLast(ParseMeleeAttackStrategyData(locNode));
                     break;
+                case "RangeAttack":
+                    behaviors.AddLast(ParseRangeAttackStrategyData(locNode));
+                    break;
             }
         }
 
@@ -141,6 +144,41 @@ public class EnemyTypesExtractor : XmlExtractor
 
         return new MeleeAttackStrategyData(priority, minDamage, maxDamage, cooldown, meleeAttackCost);
     }
+    private BehaviorData ParseRangeAttackStrategyData(XmlNode node)
+    {
+        int? priority = null;
+        int minDamage = 0;
+        int maxDamage = 0;
+        int cooldown = 0;
+        int rangeAttackCost = 10;
+        int attackRange = 1;
+        foreach (XmlNode locNode in node)
+        {
+            switch (locNode.Name)
+            {
+                case "Priority":
+                    priority = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "MinDamage":
+                    minDamage = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "MaxDamage":
+                    maxDamage = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "Cooldown":
+                    cooldown = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "RangeAttackCost":
+                    rangeAttackCost = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "AttackRange":
+                    attackRange = Convert.ToInt32(locNode.InnerText);
+                    break;
+            }
+        }
+
+        return new RangeAttackStrategyData(priority, minDamage, maxDamage, cooldown, rangeAttackCost, attackRange);
+    }
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
     ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost, 
@@ -151,4 +189,8 @@ public record BehaviorData(int? Priority);
 public record MovementStrategyData(int? Priority) : BehaviorData(Priority);
 
 public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int MeleeAttackCost)
+    : BehaviorData(Priority);
+
+public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int RangeAttackCost,
+        int AttackRange)
     : BehaviorData(Priority);
