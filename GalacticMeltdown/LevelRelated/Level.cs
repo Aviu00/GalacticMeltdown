@@ -67,6 +67,8 @@ public partial class Level
 
     private readonly ChunkEventListener _listener;
 
+    private Dictionary<(int x, int y), Counter> _doorCounters;
+
     public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall,
         (int x, int y) finishPos)
     {
@@ -75,6 +77,7 @@ public partial class Level
         _listener = new ChunkEventListener(_chunks);
         _listener.NpcDied += NpcDeathHandler;
         _listener.SomethingMoved += SomethingMovedHandler;
+        _doorCounters = new();
 
         _southernWall = southernWall;
         _westernWall = westernWall;
@@ -398,6 +401,26 @@ public partial class Level
         if (tile is null || !tile.IsDoor || GetNonTileObject(x, y) is not null || checkWalkable && tile.IsWalkable) 
             return false;
         tile.InteractWithDoor();
+        Counter doorCounter;
+        if (!_doorCounters.ContainsKey((x, y)))
+        {
+            doorCounter = new Counter(this, 20, 20, counter =>
+            {
+                if (GetNonTileObject(x, y) is not null)
+                    counter.Timer.Value++;
+                else
+                    InteractWithDoor(x, y);
+            });
+            _doorCounters.Add((x, y), doorCounter);
+        }
+        else
+        {
+            doorCounter = _doorCounters[(x, y)];
+        }
+        if(tile.IsWalkable)
+            doorCounter.ResetTimer();
+        else
+            doorCounter.StopTimer();
         if(actor is not null) actor.Energy -= 100;
         return true;
     }
