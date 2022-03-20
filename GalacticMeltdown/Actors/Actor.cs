@@ -72,8 +72,8 @@ public abstract class Actor : IObjectOnMap
     [JsonIgnore] public int MaxHp => (int) HpLim.MaxValue!;
     [JsonIgnore] public int MaxEnergy => (int) EnergyLim.MaxValue!;
 
-    public int X { get; private set; }
-    public int Y { get; private set; }
+    [JsonProperty] public int X { get; private set; }
+    [JsonProperty] public int Y { get; private set; }
 
     public virtual (char symbol, ConsoleColor color) SymbolData { get; protected init; }
     public virtual ConsoleColor? BgColor { get; protected init; }

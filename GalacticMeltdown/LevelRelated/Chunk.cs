@@ -17,15 +17,15 @@ public class Chunk
     public event EventHandler NpcDied;
     public event EventHandler NpcInvolvedInTurn;
 
-    public readonly int MapX;
-    public readonly int MapY;
+    [JsonProperty] public readonly int MapX;
+    [JsonProperty] public readonly int MapY;
 
-    public readonly int Difficulty;
-    public readonly int Seed;
+    [JsonProperty] public readonly int Difficulty;
+    [JsonProperty] public readonly int Seed;
 
     public bool WasActiveBefore;
 
-    public readonly List<(int x, int y)> NeighborCoords;
+    [JsonProperty] public readonly List<(int x, int y)> NeighborCoords;
 
     [JsonIgnore] public bool IsActive;
     
