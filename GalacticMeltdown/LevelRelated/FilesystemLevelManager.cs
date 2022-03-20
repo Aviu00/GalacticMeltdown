@@ -44,7 +44,7 @@ public static class FilesystemLevelManager
         string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
         });
 
         RemoveLevel(path); //rewrite level

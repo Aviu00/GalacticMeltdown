@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
+[JsonObject(IsReference = false)]
 public class Tile : IDrawable
 {
     private TileTypeData _typeData;

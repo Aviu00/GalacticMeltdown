@@ -27,7 +27,7 @@ public partial class PlaySession
 
     public PlaySession(Level level, string levelName)
     {
-        new Counter(level, SaveInterval, counter =>
+        new Counter(level, SaveInterval, SaveInterval, counter =>
         {
             SaveLevel();
             counter.ResetTimer();

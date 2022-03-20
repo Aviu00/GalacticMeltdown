@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
+[JsonObject(IsReference = true)]
 public class Player : Actor, ISightedObject, IControllable
 {
     private const int PlayerHp = 100;

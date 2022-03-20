@@ -10,6 +10,7 @@ using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, i
 public class WeaponItem : Item
 {
     private readonly WeaponItemData _itemData;
+    [JsonProperty] protected override string ItemType => "MeleeWeapon";
     [JsonIgnore] public int MinHitDamage => _itemData.MinHitDamage;
     [JsonIgnore] public int MaxHitDamage => _itemData.MaxHitDamage;
     [JsonIgnore] public int HitEnergy => _itemData.HitEnergy;

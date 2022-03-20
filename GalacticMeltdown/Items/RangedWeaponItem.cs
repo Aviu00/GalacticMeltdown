@@ -1,3 +1,4 @@
+using System;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
@@ -7,6 +8,7 @@ namespace GalacticMeltdown.Items;
 public class RangedWeaponItem : WeaponItem
 {
     private readonly RangedWeaponItemData _itemData;
+    [JsonProperty] protected override string ItemType => "RangedWeapon";
 
     public RangedWeaponItem(RangedWeaponItemData data) : base(data)
     {

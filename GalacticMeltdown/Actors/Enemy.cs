@@ -16,24 +16,25 @@ public class Enemy : Npc
     [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     [JsonIgnore] public string Name => _typeData.Name;
     [JsonIgnore] public override ConsoleColor? BgColor => _typeData.BgColor;
+    [JsonIgnore] private int AlertRadius => _typeData.AlertRadius;
     [JsonProperty] public readonly string Id;
+    [JsonProperty] private Counter _alertCounter;
 
     [JsonConstructor]
     private Enemy()
     {
     }
-    
+
     public Enemy(EnemyTypeData typeData, int x, int y, Level level) : base(
         typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
         _typeData = typeData;
         Id = typeData.Id;
         Targets = new() {Level.Player}; //temp
+        _alertCounter = new Counter(Level, 1, 20);
+        
         Init();
-    }
-
-    private void Init()
-    {
+        
         if (_typeData.Behaviors == null) return;
         Behaviors = new SortedSet<Behavior>(new Behavior.BehaviorComparer());
         foreach (BehaviorData behaviorData in _typeData.Behaviors)
@@ -50,18 +51,47 @@ public class Enemy : Npc
         }
     }
 
+    private void Init()
+    {
+        Died += _alertCounter.RemoveCounter;
+        Targets = new() {Level.Player}; //temp
+    }
+
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
         _typeData = DataHolder.EnemyTypes[Id];
         Init();
     }
-    
+
     public override void TakeAction()
     {
         if (!IsActive) return;
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
             .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
+        if (CurrentTarget is not null && _alertCounter.FinishedCounting)
+        {
+            AlertEnemiesAboutTarget(X, Y);
+            _alertCounter.ResetTimer();
+        }
+
         base.TakeAction();
+    }
+
+    private void AlertEnemiesAboutTarget(int x, int y)
+    {
+        (int chunkCoordX, int chunkCoordY) = Level.GetChunkCoords(x, y);
+        foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY, AlertRadius / DataHolder.ChunkSize + 1))
+        {
+            foreach (var enemy in chunk.Enemies.Where(enemy =>
+                         UtilityFunctions.GetDistance(enemy.X, enemy.Y, X, Y) <= AlertRadius &&
+                         enemy.Behaviors is not null))
+            {
+                foreach (var behavior in enemy.Behaviors.OfType<MovementStrategy>())
+                {
+                    behavior.PreviousTarget = CurrentTarget;
+                }
+            }
+        }
     }
 }

@@ -1,10 +1,17 @@
 using System;
+using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
+using JsonSubTypes;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
 
+[JsonConverter(typeof(JsonSubtypes), "ItemType")]
+[JsonSubtypes.KnownSubType(typeof(RangedWeaponItem), "RangedWeapon")]
+[JsonSubtypes.KnownSubType(typeof(WeaponItem), "MeleeWeapon")]
+[JsonSubtypes.KnownSubType(typeof(UsableItem), "Usable")]
+[JsonSubtypes.KnownSubType(typeof(WearableItem), "Wearable")]
 public class Item : IDrawable
 {
     private readonly ItemData _itemData;
@@ -12,6 +19,8 @@ public class Item : IDrawable
     [JsonIgnore] public string Name => _itemData.Name;
     [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
     [JsonIgnore] public ConsoleColor? BgColor => ConsoleColor.Cyan;
+    
+    [JsonProperty] protected virtual string ItemType { get; }
 
     protected Item(ItemData data)
     {

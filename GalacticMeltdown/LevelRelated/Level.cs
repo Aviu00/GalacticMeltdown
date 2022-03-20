@@ -68,16 +68,23 @@ public partial class Level
     public LevelView LevelView;
 
     private ChunkEventListener _listener;
+    [JsonProperty] private Dictionary<(int x, int y), Counter> _doorCounters;
 
     [JsonConstructor]
     private Level()
     {
     }
     
+
     public Level(Chunk[,] chunks, (int x, int y) startPos, Tile[] southernWall, Tile[] westernWall,
         (int x, int y) finishPos)
     {
         _chunks = chunks;
+        _listener = new ChunkEventListener(_chunks);
+        _listener.NpcDied += NpcDeathHandler;
+        _listener.SomethingMoved += SomethingMovedHandler;
+        _doorCounters = new();
+
         _southernWall = southernWall;
         _westernWall = westernWall;
         _finishPos = finishPos;
@@ -94,9 +101,20 @@ public partial class Level
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
+        foreach (var keyValuePair in _doorCounters)
+        {
+            (int x, int y) = keyValuePair.Key;
+            keyValuePair.Value.Action = counter =>
+            {
+                if (GetNonTileObject(x, y) is not null)
+                    counter.Timer.Value++;
+                else
+                    InteractWithDoor(x, y);
+            };
+        }
         Init();
     }
-    
+
     private void Init()
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
@@ -196,7 +214,7 @@ public partial class Level
             : _chunks[chunkX, chunkY].GetDrawable(x, y) ?? GetTile(x, y);
     }
     
-    public Tile GetTile(int x, int y)
+    public Tile GetTile(int x, int y, (int chunkX, int chunkY)? chunkCoords = null)
     {
         switch (x, y)
         {
@@ -206,12 +224,15 @@ public partial class Level
                 return y >= _westernWall.Length ? null : _westernWall[y];
             case (>= 0, -1):
                 return x >= _southernWall.Length ? null : _southernWall[x];
+            case not (>= 0, >= 0):
+                return null;
         }
 
-        var (chunkX, chunkY) = GetChunkCoords(x, y);
+        var (chunkX, chunkY) = chunkCoords ?? GetChunkCoords(x, y);
+        if (chunkX >= _chunks.GetLength(0) || chunkY >= _chunks.GetLength(1)) return null;
         int localX = x % ChunkSize;
         int localY = y % ChunkSize;
-        return !CoordsInRangeOfChunkArray(x, y, chunkX, chunkY) ? null : _chunks[chunkX, chunkY].Tiles[localX, localY];
+        return _chunks[chunkX, chunkY].Tiles[localX, localY];
     }
 
     public IObjectOnMap GetNonTileObject(int x, int y)
@@ -262,7 +283,6 @@ public partial class Level
             }
         }
     }
-
 
     /// <summary>
     /// Get the neighboring chunks of a chunk
@@ -339,7 +359,7 @@ public partial class Level
         }
     }
 
-    private IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
+    public IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
     {
         for (int chunkX = Math.Max(chunkXCenter - radius, 0);
              chunkX < Math.Min(chunkXCenter + radius + 1, _chunks.GetLength(0));
@@ -396,6 +416,12 @@ public partial class Level
     {
         (int chunkX0, int chunkY0) = GetChunkCoords(x0, y0);
         (int chunkX1, int chunkY1) = GetChunkCoords(x1, y1);
+        if (chunkX0 == chunkX1 && chunkY0 == chunkY1)
+        {
+            LinkedList<(int, int)> list = new();
+            list.AddLast((chunkX0, chunkY0));
+            return list;
+        }
         return Algorithms.AStar(chunkX0, chunkY0, chunkX1, chunkY1,
             (x, y) => MapRouteGetNeighbors(x, y, onlyActiveChunks));
     }
@@ -415,6 +441,26 @@ public partial class Level
         if (tile is null || !tile.IsDoor || GetNonTileObject(x, y) is not null || checkWalkable && tile.IsWalkable) 
             return false;
         tile.InteractWithDoor();
+        Counter doorCounter;
+        if (!_doorCounters.ContainsKey((x, y)))
+        {
+            doorCounter = new Counter(this, 20, 20, counter =>
+            {
+                if (GetNonTileObject(x, y) is not null)
+                    counter.Timer.Value++;
+                else
+                    InteractWithDoor(x, y);
+            });
+            _doorCounters.Add((x, y), doorCounter);
+        }
+        else
+        {
+            doorCounter = _doorCounters[(x, y)];
+        }
+        if(tile.IsWalkable)
+            doorCounter.ResetTimer();
+        else
+            doorCounter.StopTimer();
         if(actor is not null) actor.Energy -= 100;
         return true;
     }

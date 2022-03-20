@@ -6,6 +6,7 @@ namespace GalacticMeltdown.Items;
 public class WearableItem : Item
 {
     private readonly WearableItemData _itemData;
+    [JsonProperty] protected override string ItemType => "Wearable";
     public WearableItem(WearableItemData data) : base(data)
     {
         _itemData = data;

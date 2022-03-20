@@ -12,7 +12,7 @@ namespace GalacticMeltdown.MapGeneration;
 public class MapGenerator
 {
     private const int MapOffset = 1; //amount of "layers" of rooms outside of main route
-    private const int MapWidth = 20; //width is specified; height is random
+    private const int MapWidth = 10; //width is specified; height is random
     private const int ConnectionChance = 60; //room connection chance(this probably shouldn't be touched)
     private const int ChunkSize = DataHolder.ChunkSize;
     private readonly List<RoomTypes> _roomTypes;
