@@ -45,12 +45,12 @@ public class LevelCreationDialog : Dialog
     {
         base.SendInfo();
         int? seed = null;
-        if (_seedLine.Text.Length != 0 && int.TryParse(_seedLine.Text, out int tempSeed))
+        if (int.TryParse(_seedLine.Text, out int tempSeed))
         {
             seed = tempSeed;
         }
         int? multiplier = null;
-        if (_diffMulLine.Text.Length != 0 && int.TryParse(_diffMulLine.Text, out int tempMul))
+        if (int.TryParse(_diffMulLine.Text, out int tempMul))
         {
             multiplier = tempMul;
         }
