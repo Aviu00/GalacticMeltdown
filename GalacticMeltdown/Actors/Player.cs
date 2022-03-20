@@ -47,7 +47,7 @@ public class Player : Actor, ISightedObject, IControllable
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
-    
+
     public Dictionary<ItemCategory, List<Item>> Inventory { get; }
     private Dictionary<BodyPart, EquippableItem> _equipment;
 
