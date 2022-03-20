@@ -11,27 +11,23 @@ namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
 public class LevelCreationDialog : Dialog
 {
-    private Action<string, int?, int?> _sender;
+    private Action<string, int?> _sender;
 
     private InputLine _nameLine;
     private InputLine _seedLine;
-    private InputLine _diffMulLine;
     
-    public LevelCreationDialog(Action<string, int?, int?> sender)
+    public LevelCreationDialog(Action<string, int?> sender)
     {
         _sender = sender;
         LineView = new LineView();
         _nameLine = new InputLine();
         _seedLine = new InputLine(char.IsDigit);
-        _diffMulLine = new InputLine(char.IsDigit);
         LineView.SetLines(new List<ListLine>
         {
             new TextLine("Name"),
             _nameLine,
             new TextLine("Seed"),
             _seedLine,
-            new TextLine("Difficulty multiplier"),
-            _diffMulLine,
         });
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(
             DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
@@ -52,11 +48,6 @@ public class LevelCreationDialog : Dialog
         {
             seed = tempSeed;
         }
-        int? multiplier = null;
-        if (int.TryParse(_diffMulLine.Text, out int tempMul))
-        {
-            multiplier = tempMul;
-        }
-        _sender(_nameLine.Text, seed, multiplier);
+        _sender(_nameLine.Text, seed);
     }
 }

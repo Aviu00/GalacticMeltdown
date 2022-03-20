@@ -48,12 +48,19 @@ public class LevelMenu : Menu
 
     private void OpenLevelCreationMenu()
     {
-        
+        LevelCreationDialog creationDialog = new(CreateLevel);
+        UserInterface.AddChild(this, creationDialog);
+        creationDialog.Open();
     }
 
     private void OpenLevelRemovalDialog()
     {
         
+    }
+
+    private void CreateLevel(string name, int? seed)
+    {
+        FilesystemLevelManager.CreateLevel(seed ?? Random.Shared.Next(), name);
     }
 
     private void TryStartLevel(string path)
