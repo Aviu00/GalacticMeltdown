@@ -58,6 +58,7 @@ public static class DataHolder
         public const ConsoleColor StrColor = ConsoleColor.DarkRed;
         public const ConsoleColor DexColor = ConsoleColor.Cyan;
         public const ConsoleColor DefColor = ConsoleColor.Gray;
+        public const ConsoleColor DefaultBackgroundColor = ConsoleColor.Black;
     }
 
     public struct CurrentBindings
