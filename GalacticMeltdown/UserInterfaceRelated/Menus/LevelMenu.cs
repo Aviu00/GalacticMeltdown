@@ -40,7 +40,9 @@ public class LevelMenu : Menu
 
     private void OpenLevelCreationMenu()
     {
-        
+        int seed = Random.Shared.Next(0, 1000000000);
+        Level level = FilesystemLevelManager.CreateLevel(seed, "Test");
+        Game.StartLevel(level, "Test");
     }
 
     private void OpenLevelRemovalDialog()

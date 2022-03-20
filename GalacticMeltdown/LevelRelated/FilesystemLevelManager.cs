@@ -30,18 +30,11 @@ public static class FilesystemLevelManager
         SaveLevel(level, name);
         return level;
     }
-    
+
     public static Level GetLevel(string name)
     {
         string path = Path.Combine(GetSaveFolder(), name, "level.json");
-        try
-        {
-            return JsonConvert.DeserializeObject<Level>(File.ReadAllText(path));
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
+        return JsonConvert.DeserializeObject<Level>(File.ReadAllText(path));
     }
 
     public static bool SaveLevel(Level level, string name)

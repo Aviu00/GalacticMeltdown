@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Utility;
 
@@ -42,6 +43,10 @@ public class LimitedNumber
         }
     }
 
+    [JsonConstructor]
+    private LimitedNumber()
+    {
+    }
     public LimitedNumber(int value, int? maxValue = null, int? minValue = null)
     {
         _value = value;
