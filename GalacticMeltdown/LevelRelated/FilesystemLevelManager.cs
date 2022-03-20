@@ -57,18 +57,25 @@ public static class FilesystemLevelManager
     public static bool RemoveLevel(string name)
     {
         if (!Directory.Exists(Path.Combine(GetSaveFolder(), name))) return false;
-        
-        var directory = new DirectoryInfo(name);
-        foreach (FileInfo file in directory.GetFiles())
+
+        try
         {
-            file.Delete();
+            var directory = new DirectoryInfo(name);
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                file.Delete();
+            }
+
+            foreach (DirectoryInfo dir in directory.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
+        catch (Exception e)
+        {
+            return false;
         }
 
-        foreach (DirectoryInfo dir in directory.GetDirectories())
-        {
-            dir.Delete(true);
-        }
-        
         return true;
     }
 

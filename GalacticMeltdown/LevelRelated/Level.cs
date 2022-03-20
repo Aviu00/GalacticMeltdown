@@ -38,14 +38,13 @@ public partial class Level
 {
     private const int ActiveChunkRadius = DataHolder.ActiveChunkRadius;
     private const int ChunkSize = DataHolder.ChunkSize;
-    
-    [JsonProperty] public readonly Player Player;
 
     [JsonProperty] private readonly Tile[] _southernWall;
     [JsonProperty] private readonly Tile[] _westernWall;
     [JsonProperty] private readonly Chunk[,] _chunks;
     private Tile _cornerTile;
 
+    [JsonProperty] public readonly Player Player;
     [JsonProperty] private (int x, int y) _finishPos;
 
     public event EventHandler TurnFinished;

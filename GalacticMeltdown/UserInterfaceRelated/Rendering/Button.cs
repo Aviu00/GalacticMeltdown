@@ -41,6 +41,14 @@ public class Button : PressableListLine
         const string noSpaceForRightText = $"{separator}{ellipsis}";
         int maxLeftStringLength = width - noSpaceForRightText.Length;
         string text;
+        
+        if (width < ellipsis.Length)
+        {
+            _renderedText = new string(' ', width);
+            base.SetWidth(width);
+            return;
+        }
+        
         if (TextRight.Length == 0)
         {
             text = TextLeft.Length > width
@@ -55,7 +63,8 @@ public class Button : PressableListLine
         }
         else if (TextLeft.Length >= maxLeftStringLength)
         {
-            text = TextLeft.Substring(0, maxLeftStringLength) + noSpaceForRightText;
+            if (maxLeftStringLength < 0) text = new string(' ', width);
+            else text = TextLeft.Substring(0, maxLeftStringLength) + noSpaceForRightText;
         }
         else
         {

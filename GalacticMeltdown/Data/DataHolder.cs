@@ -43,7 +43,7 @@ public static class DataHolder
         public const ConsoleColor TextColor = ConsoleColor.Magenta;
         public const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
         public const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
-        public const ConsoleColor InputLineBgColorSelected = ConsoleColor.Gray;
+        public const ConsoleColor InputLineBgColorSelected = ConsoleColor.DarkGreen;
         public const ConsoleColor InputLineBgColorUnselected = ConsoleColor.DarkGray;
         public const ConsoleColor InputLineTextColor = ConsoleColor.White;
         public const ConsoleColor MenuBorderColor = ConsoleColor.Yellow;
@@ -97,7 +97,7 @@ public static class DataHolder
             {ConsoleKey.RightArrow, SelectionControl.Right},
             {ConsoleKey.Enter, SelectionControl.Select},
             {ConsoleKey.Escape, SelectionControl.Back},
-            {ConsoleKey.Tab, SelectionControl.SwitchButtonGroup},
+            {ConsoleKey.Tab, SelectionControl.SpecialAction},
         };
 
         public static Dictionary<ConsoleKey, CursorControl> Cursor = new()

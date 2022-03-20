@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Collections;
-using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 

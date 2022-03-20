@@ -47,8 +47,10 @@ public class LineView : View
         if (_pressableLineIndexes.Any())
         {
             _selectedIndex = 0;
-            ((PressableListLine) _lines[_selectedIndex]).Select();
+            ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
         }
+        
+        if (Width != 0) _lines.ForEach(line => line.SetWidth(Width));
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
@@ -65,8 +67,8 @@ public class LineView : View
         _selectedIndex += 1;
         if (_selectedIndex == _pressableLineIndexes.Count) _selectedIndex = 0;
         if (prevIndex == _selectedIndex) return;
-        ((PressableListLine) _lines[prevIndex]).Deselect();
-        ((PressableListLine) _lines[_selectedIndex]).Select();
+        ((PressableListLine) _lines[_pressableLineIndexes[prevIndex]]).Deselect();
+        ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
@@ -77,8 +79,8 @@ public class LineView : View
         _selectedIndex -= 1;
         if (_selectedIndex == -1) _selectedIndex = _pressableLineIndexes.Count - 1;
         if (prevIndex == _selectedIndex) return;
-        ((PressableListLine) _lines[prevIndex]).Deselect();
-        ((PressableListLine) _lines[_selectedIndex]).Select();
+        ((PressableListLine) _lines[_pressableLineIndexes[prevIndex]]).Deselect();
+        ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
-[JsonObject(IsReference = true)]
 public class Player : Actor, ISightedObject, IControllable
 {
     private const int PlayerHp = 100;
@@ -14,6 +13,7 @@ public class Player : Actor, ISightedObject, IControllable
     private const int PlayerViewRange = 20;
     private const int PlayerStr = 10;
 
+    [JsonProperty] protected override string ActorName => "Player";
     private Action _giveControlToUser;
     
     private bool _xray;

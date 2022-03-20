@@ -12,6 +12,7 @@ namespace GalacticMeltdown.Actors;
 
 public class Enemy : Npc
 {
+    [JsonProperty] protected override string ActorName => "Enemy";
     private EnemyTypeData _typeData;
     [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     [JsonIgnore] public string Name => _typeData.Name;
@@ -32,10 +33,10 @@ public class Enemy : Npc
         Id = typeData.Id;
         Targets = new() {Level.Player}; //temp
         _alertCounter = new Counter(Level, 1, 20);
-        
-        Init();
+        Died += _alertCounter.RemoveCounter;
         
         if (_typeData.Behaviors == null) return;
+        
         Behaviors = new SortedSet<Behavior>(new Behavior.BehaviorComparer());
         foreach (BehaviorData behaviorData in _typeData.Behaviors)
         {
@@ -51,17 +52,11 @@ public class Enemy : Npc
         }
     }
 
-    private void Init()
-    {
-        Died += _alertCounter.RemoveCounter;
-        Targets = new() {Level.Player}; //temp
-    }
-
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
         _typeData = DataHolder.EnemyTypes[Id];
-        Init();
+        Died += _alertCounter.RemoveCounter;
     }
 
     public override void TakeAction()

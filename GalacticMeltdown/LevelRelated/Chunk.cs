@@ -17,6 +17,7 @@ public class Chunk
     public event EventHandler NpcDied;
     public event EventHandler NpcInvolvedInTurn;
 
+    [JsonProperty] public readonly List<(int x, int y)> NeighborCoords;
     [JsonProperty] public readonly int MapX;
     [JsonProperty] public readonly int MapY;
 
@@ -25,13 +26,12 @@ public class Chunk
 
     public bool WasActiveBefore;
 
-    [JsonProperty] public readonly List<(int x, int y)> NeighborCoords;
 
     [JsonIgnore] public bool IsActive;
     
     [JsonProperty] private readonly ItemDictionary _items;
-    [JsonProperty] public readonly List<Enemy> Enemies;
     [JsonProperty] public readonly Tile[,] Tiles;
+    [JsonProperty] public readonly List<Enemy> Enemies;
 
     [JsonConstructor]
     private Chunk()

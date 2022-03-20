@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Behaviors;
 
-
 public class MovementStrategy : Behavior
 {
     [JsonProperty] protected override string Strategy => "Movement";
@@ -52,8 +51,7 @@ public class MovementStrategy : Behavior
     {
         _previousTargetCounter.Action = _ => PreviousTarget = null;
         ControlledNpc.Died += _previousTargetCounter.RemoveCounter;
-        if (_wantsToGoTo is not null)
-            SetPathTo(_wantsToGoTo.Value.x, _wantsToGoTo.Value.y);
+
     }
 
     private IEnumerable<(int, int, int)> GetNeighbors(int x, int y)
@@ -118,7 +116,10 @@ public class MovementStrategy : Behavior
         }
         else if (_nextPathCellNode is null)
         {
-            CalculateIdleMovementPath();
+            if (_wantsToGoTo is not null)
+                SetPathTo(_wantsToGoTo.Value.x, _wantsToGoTo.Value.y);
+            else
+                CalculateIdleMovementPath();
         }
         else if (Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null)
         {

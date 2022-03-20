@@ -1,13 +1,21 @@
 using System;
+using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
+using JsonSubTypes;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
+[JsonConverter(typeof(JsonSubtypes), "ActorName")]
+[JsonSubtypes.KnownSubType(typeof(Player), "Player")]
+[JsonSubtypes.KnownSubType(typeof(Npc), "Npc")]
+[JsonSubtypes.KnownSubType(typeof(Enemy), "Enemy")]
 public abstract class Actor : IObjectOnMap
 {
+    [JsonProperty] protected abstract string ActorName { get; }
+    [JsonProperty] public Level Level;
     [JsonProperty] private bool _turnStopped;
 
     [JsonProperty] protected int _viewRange;
@@ -77,7 +85,6 @@ public abstract class Actor : IObjectOnMap
     public virtual (char symbol, ConsoleColor color) SymbolData { get; protected init; }
     public virtual ConsoleColor? BgColor { get; protected init; }
 
-    [JsonProperty] public Level Level;
 
     public event EventHandler Died;
     public event EventHandler SpentEnergy;

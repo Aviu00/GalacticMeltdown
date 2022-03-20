@@ -8,5 +8,5 @@ public enum SelectionControl
     Right,
     Select,
     Back,
-    SwitchButtonGroup,
+    SpecialAction,
 }

@@ -9,6 +9,7 @@ namespace GalacticMeltdown.Actors;
 
 public abstract class Npc : Actor
 {
+    [JsonProperty] protected override string ActorName => "Npc";
     [JsonProperty] protected HashSet<Actor> Targets { get; set; }
     [JsonIgnore] public Actor CurrentTarget { get; set; }
 

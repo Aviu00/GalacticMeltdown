@@ -12,6 +12,17 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Menus;
 
+internal class LevelButton : Button
+{
+    public string Name { get; }
+
+    public LevelButton(LevelInfo levelInfo, Action<LevelInfo> levelStarter) 
+        : base(levelInfo.Name, $"Seed: {levelInfo.Seed}", () => levelStarter(levelInfo))
+    {
+        Name = levelInfo.Name;
+    }
+}
+
 public class LevelMenu : Menu
 {
     public LevelMenu()
@@ -41,21 +52,37 @@ public class LevelMenu : Menu
             });
             return;
         }
-        List<Button> buttons = new(levelInfos.Select(levelInfo =>
-            new Button($"{levelInfo.Name}", $"seed: {levelInfo.Seed}", () => TryStartLevel(levelInfo))));
+        List<Button> buttons = new(levelInfos.Select(levelInfo => new LevelButton(levelInfo, TryStartLevel)));
         LineView.SetLines(buttons.Cast<ListLine>().ToList());
     }
 
     private void OpenLevelCreationMenu()
     {
-        int seed = Random.Shared.Next(0, 1000000000);
-        Level level = FilesystemLevelManager.CreateLevel(seed, "Test");
-        Game.StartLevel(level, "Test");
+        LevelCreationDialog creationDialog = new(CreateLevel);
+        UserInterface.AddChild(this, creationDialog);
+        creationDialog.Open();
     }
 
     private void OpenLevelRemovalDialog()
     {
-        
+        YesNoDialog levelRemovalDialog = new(RemoveSelectedLevel, "Are you sure you want to remove this level?");
+        UserInterface.AddChild(this, levelRemovalDialog);
+        levelRemovalDialog.Open();
+    }
+
+    private void RemoveSelectedLevel(bool doIt)
+    {
+        if (!doIt) return;
+        FilesystemLevelManager.RemoveLevel(((LevelButton) LineView.GetCurrent()).Name);
+        SetLevelButtons();
+    }
+
+    private void CreateLevel(string name, int? seed)
+    {
+        seed ??= Random.Shared.Next();
+        Level level= FilesystemLevelManager.CreateLevel(seed.Value, name);
+        DataHolder.CurrentSeed = seed.Value;
+        Game.StartLevel(level, name);
     }
 
     private void TryStartLevel(LevelInfo levelInfo)

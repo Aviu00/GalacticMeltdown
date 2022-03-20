@@ -19,7 +19,17 @@ public class InputLine : PressableListLine
 
     private bool _selected;
 
+    private Func<char, bool> _characterValidationFunction;
+
+    public string Text => _currentText.ToString();
+
     public event EventHandler Updated;
+
+    public InputLine(Func<char, bool> characterValidationFunction = null)
+    {
+        _currentText = new StringBuilder();
+        _characterValidationFunction = characterValidationFunction;
+    }
 
     public override ViewCellData this[int x]
     {
@@ -48,7 +58,8 @@ public class InputLine : PressableListLine
                         {TextInputControl.Back, () => UserInterface.Forget(this)},
                         {TextInputControl.DeleteCharacter, DeleteCharacter}
                     }),
-                chr => chr == ' ' || !(char.IsControl(chr) || char.IsSeparator(chr) || char.IsSurrogate(chr))));
+                _characterValidationFunction ?? (chr =>
+                    chr == ' ' || !(char.IsControl(chr) || char.IsSeparator(chr) || char.IsSurrogate(chr)))));
         UserInterface.TakeControl(this);
     }
 
