@@ -56,7 +56,7 @@ public class RangeAttackStrategy : Behavior
                 ControlledNpc.CurrentTarget.Y).All(coord => ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable) &&
             (_rangeAtackCounter is null || _rangeAtackCounter.FinishedCounting))
         {
-            ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
+            ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), true, false);
             ControlledNpc.Energy -= _rangeAttackCost;
             if (_rangeAtackCounter is not null)
                 _rangeAtackCounter.ResetTimer();
