@@ -83,16 +83,15 @@ public class MovementStrategy : Behavior
 
     public override bool TryAct()
     {
-        // setting wantsToGoTo point
+        if (ControlledNpc.CurrentTarget is not null) PreviousTarget = ControlledNpc.CurrentTarget;
         if (ControlledNpc.CurrentTarget is not null &&
             Level.GetTile(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).IsWalkable)
         {
-            if (_wantsToGoTo != (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
+            if (_wantsToGoTo != (PreviousTarget.X, PreviousTarget.Y))
             {
-                SetPathTo(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
-                _wantsToGoTo = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
+                SetPathTo(PreviousTarget.X, PreviousTarget.Y);
+                _wantsToGoTo = (PreviousTarget.X, PreviousTarget.Y);
             }
-            PreviousTarget = ControlledNpc.CurrentTarget;
         }
         else if (ControlledNpc.CurrentTarget is null && PreviousTarget is not null)
         {
