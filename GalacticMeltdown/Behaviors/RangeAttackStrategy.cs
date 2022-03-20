@@ -28,7 +28,7 @@ public class RangeAttackStrategy : Behavior
         ControlledNpc = controlledNpc;
         if (_cooldown > 0)
         {
-            rangeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);   
+            rangeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
         }
     }
     public override bool TryAct()
