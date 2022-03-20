@@ -1,3 +1,4 @@
+using System;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Views;
@@ -9,10 +10,27 @@ public static class UserInterface
     private static Renderer _renderer;
     private static InputProcessor _inputProcessor;
 
+    private static Action _nextTask;
+
     static UserInterface()
     {
         _renderer = new Renderer();
         _inputProcessor = new InputProcessor();
+    }
+
+    public static void Start()
+    {
+        while (_nextTask is not null)
+        {
+            Action task = _nextTask;
+            _nextTask = null;
+            task();
+        }
+    }
+
+    public static void SetTask(Action task)
+    {
+        _nextTask = task;
     }
 
     public static void SetView(object sender, View view)

@@ -14,7 +14,8 @@ public static class Game
     public static void Main()
     {
         UserInterface.SetRoot(Root);
-        OpenMainMenu();
+        UserInterface.SetTask(OpenMainMenu);
+        UserInterface.Start();
     }
 
     public static void StartLevel(Level level, string savePath)
@@ -22,7 +23,7 @@ public static class Game
         UserInterface.Forget(_menu);
         _session = new PlaySession(level, savePath);
         UserInterface.AddChild(Root, _session);
-        _session.Start();
+        UserInterface.SetTask(_session.Start);
     }
 
     public static void OpenMainMenu()
@@ -30,7 +31,7 @@ public static class Game
         UserInterface.Forget(_session);
         _menu = new MainMenu();
         UserInterface.AddChild(Root, _menu);
-        _menu.Open();
+        UserInterface.SetTask(_menu.Open);
     }
 
     public static void Quit()
