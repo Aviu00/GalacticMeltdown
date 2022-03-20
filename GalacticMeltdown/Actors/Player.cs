@@ -48,7 +48,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
     
-    private Dictionary<Type, Dictionary<Item, int>> _inventory;
+    private Dictionary<ItemCategory, Dictionary<Item, int>> _inventory;
 
     public event EventHandler VisiblePointsChanged;
 
@@ -59,13 +59,13 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        _inventory = new Dictionary<Type, Dictionary<Item, int>>
+        _inventory = new Dictionary<ItemCategory, Dictionary<Item, int>>
         {
-            {typeof(Item), new Dictionary<Item, int>()},
-            {typeof(RangedWeaponItem), new Dictionary<Item, int>()},
-            {typeof(UsableItem), new Dictionary<Item, int>()},
-            {typeof(WeaponItem), new Dictionary<Item, int>()},
-            {typeof(WearableItem), new Dictionary<Item, int>()},
+            {ItemCategory.Item, new Dictionary<Item, int>()},
+            {ItemCategory.RangedWeaponItem, new Dictionary<Item, int>()},
+            {ItemCategory.UsableItem, new Dictionary<Item, int>()},
+            {ItemCategory.WeaponItem, new Dictionary<Item, int>()},
+            {ItemCategory.WearableItem, new Dictionary<Item, int>()},
         };
     }
 
@@ -96,5 +96,17 @@ public class Player : Actor, ISightedObject, IControllable
     public void SetControlFunc(Action controlFunc)
     {
         _giveControlToUser = controlFunc;
+    }
+
+    public void PickUp(Item item)
+    {
+        Dictionary<Item, int> dictionary;
+        dictionary = _inventory[item.Category];
+        if (!dictionary.ContainsKey(item))
+        {
+            dictionary[item] = 0;
+        }
+
+        dictionary[item] += 1;
     }
 }

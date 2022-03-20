@@ -14,6 +14,7 @@ namespace GalacticMeltdown.Items;
 public class Item : IDrawable
 {
     private readonly ItemData _itemData;
+    public ItemCategory Category => _itemData.Category;
     public string Id => _itemData.Id;
     [JsonIgnore] public string Name => _itemData.Name;
     [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
