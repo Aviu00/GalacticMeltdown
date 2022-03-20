@@ -21,9 +21,9 @@ public class LevelCreationDialog : Dialog
         _sender = sender;
     }
 
-    protected override void SendInfo()
+    private void SendInfo()
     {
-        base.SendInfo();
+        UserInterface.Forget(this);
         int? seed = null;
         if (int.TryParse(_seedLine.Text, out int tempSeed))
         {
