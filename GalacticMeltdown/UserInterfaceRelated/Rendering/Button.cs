@@ -38,6 +38,12 @@ public class Button : PressableListLine
 
     public override void SetWidth(int width)
     {
+        _renderedText = RenderText(width);
+        base.SetWidth(width);
+    }
+
+    protected string RenderText(int width)
+    {
         const string ellipsis = "...";
         const string separator = "  ";
         const string noSpaceForRightText = $"{separator}{ellipsis}";
@@ -46,9 +52,7 @@ public class Button : PressableListLine
         
         if (width < ellipsis.Length)
         {
-            _renderedText = new string(' ', width);
-            base.SetWidth(width);
-            return;
+            return new string(' ', width);
         }
         
         if (TextRight.Length == 0)
@@ -78,7 +82,6 @@ public class Button : PressableListLine
                 : TextRight.PadLeft(spaceLeft);
         }
 
-        _renderedText = text;
-        base.SetWidth(width);
+        return text;
     }
 }
