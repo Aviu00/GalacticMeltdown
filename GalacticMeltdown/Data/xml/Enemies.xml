@@ -11,8 +11,31 @@
         <Dexterity>10</Dexterity>
         <Defence>10</Defence>
         <ViewRange>30</ViewRange>
-        <Cost>30</Cost>
+        <Cost>40</Cost>
         <AlertRadius>30</AlertRadius>
+    </Enemy>
+    <Enemy>
+        <Id>scout</Id>
+        <Name>scout</Name>
+        <Symbol>Y</Symbol>
+        <Color>green</Color>
+        <BgColor>dark_gray</BgColor>
+        <MaxHp>30</MaxHp>
+        <MaxEnergy>110</MaxEnergy>
+        <Dexterity>10</Dexterity>
+        <Defence>10</Defence>
+        <ViewRange>20</ViewRange>
+        <Cost>60</Cost>
+        <AlertRadius>20</AlertRadius>
+        <Behaviors>
+            <Movement/>
+            <MeleeAttack>
+                <MinDamage>2</MinDamage>
+                <MaxDamage>7</MaxDamage>
+                <MeleeAttackCost>30</MeleeAttackCost>
+                <Cooldown>2</Cooldown>
+            </MeleeAttack>
+        </Behaviors>
     </Enemy>
     <Enemy>
         <Id>rotten</Id>
