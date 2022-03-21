@@ -38,7 +38,8 @@ public class MeleeAttackStrategy : Behavior
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        ControlledNpc.Died += _meleeAttackCounter.RemoveCounter;
+        if(_meleeAttackCounter is not null)
+            ControlledNpc.Died += _meleeAttackCounter.RemoveCounter;
     }
 
     public override bool TryAct()
