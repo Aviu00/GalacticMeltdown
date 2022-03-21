@@ -22,7 +22,7 @@ internal class ItemButton : Button
     }
 }
 
-public class Inventory : TextWindow
+public class InventoryMenu : TextWindow
 {
     private const string Drop = "Drop";
     private const string Equip = "Equip";
@@ -33,7 +33,7 @@ public class Inventory : TextWindow
 
     private readonly Player _player;
 
-    public Inventory(Dictionary<ItemCategory, List<Item>> inventory, Player player)
+    public InventoryMenu(Dictionary<ItemCategory, List<Item>> inventory, Player player)
     {
         _player = player;
         _inventory = inventory;
