@@ -79,7 +79,7 @@ public static class UtilityFunctions
     public static int CalculateChanceToHitForRangeEnemy(int distance, int spread)
     {
         if (spread < 0) return 0;
-        return (int) (100 - 5 * distance * Math.Log(spread));
+        return (int) (100 - 5 * distance * Math.Log(spread + 1));
     }
 
     public static int CountDigits(int num) => num == 0 ? 1 : (int) Math.Floor(Math.Log10(Math.Abs(num))) + 1;
