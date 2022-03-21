@@ -112,4 +112,34 @@
             </MeleeAttack>
         </Behaviors>
     </Enemy>
+    <Enemy>
+        <Id>sniper</Id>
+        <Name>sniper</Name>
+        <Symbol>S</Symbol>
+        <Color>dark_green</Color>
+        <BgColor>black</BgColor>
+        <MaxHp>50</MaxHp>
+        <MaxEnergy>100</MaxEnergy>
+        <Dexterity>10</Dexterity>
+        <Defence>5</Defence>
+        <ViewRange>30</ViewRange>
+        <Cost>1000</Cost>
+        <AlertRadius>30</AlertRadius>
+        <Behaviors>
+            <Movement/>
+            <MeleeAttack>
+                <MinDamage>1</MinDamage>
+                <MaxDamage>5</MaxDamage>
+                <MeleeAttackCost>50</MeleeAttackCost>
+                <Cooldown>2</Cooldown>
+            </MeleeAttack>
+            <RangeAttack>
+                <MinDamage>40</MinDamage>
+                <MaxDamage>60</MaxDamage>
+                <RangeAttackCost>70</RangeAttackCost>
+                <AttackRange>25</AttackRange>
+                <Cooldown>10</Cooldown>
+            </RangeAttack>
+        </Behaviors>
+    </Enemy>
 </Enemies>
