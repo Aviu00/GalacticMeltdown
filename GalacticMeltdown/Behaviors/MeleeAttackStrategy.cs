@@ -11,7 +11,7 @@ namespace GalacticMeltdown.Behaviors;
 public class MeleeAttackStrategy : Behavior
 {
     [JsonProperty] protected override string Strategy => "MeleeAttack";
-    [JsonProperty] private const int DefaultPriority = 20;
+    [JsonProperty] private const int DefaultPriority = 15;
     [JsonProperty] private readonly int _minDamage;
     [JsonProperty] private readonly int _maxDamage;
     [JsonProperty] private readonly int _meleeAttackCost;
