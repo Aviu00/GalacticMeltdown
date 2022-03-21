@@ -60,11 +60,11 @@ public class MeleeAttackStrategy : Behavior
 
     private int RandomDamage(int minDamage, int maxDamage)
     {
-        if (ControlledNpc.Str < 0)
+        if (ControlledNpc.Strength < 0)
         {
-            return Random.Shared.Next(minDamage, maxDamage + 1) / (1 + Math.Abs(ControlledNpc.Str));
+            return Random.Shared.Next(minDamage, maxDamage + 1) / (1 + Math.Abs(ControlledNpc.Strength));
         }
 
-        return Random.Shared.Next(minDamage, maxDamage + 1) + ControlledNpc.Str / 2;
+        return Random.Shared.Next(minDamage, maxDamage + 1) + ControlledNpc.Strength / 2;
     }
 }
