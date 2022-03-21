@@ -107,7 +107,7 @@ public class Player : Actor, ISightedObject, IControllable
         _inventory[item.Category].Add(item);
     }
 
-    public void Wear(EquippableItem item)
+    public void Equip(EquippableItem item)
     {
         Item prevItem = _equipment[item.BodyPart];
         if (prevItem == item) return;
@@ -122,5 +122,6 @@ public class Player : Actor, ISightedObject, IControllable
     public void Drop(Item item)
     {
         _inventory[item.Category].Remove(item);
+        Level.AddItem(item, X, Y);
     }
 }
