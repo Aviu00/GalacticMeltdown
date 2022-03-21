@@ -50,16 +50,12 @@ public class RangeAttackStrategy : Behavior
         if (ControlledNpc.CurrentTarget is null)
             return false;
         // if there is nothing what can stop projectile
-        if (CanAttack())
-        {
-            ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), true, false);
-            ControlledNpc.Energy -= _rangeAttackCost;
-            if (_rangeAttackCounter is not null)
-                _rangeAttackCounter.ResetTimer();
-            return true;
-        }
-
-        return false;
+        if (!CanAttack()) return false;
+        ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), true, false);
+        ControlledNpc.Energy -= _rangeAttackCost;
+        if (_rangeAttackCounter is not null)
+            _rangeAttackCounter.ResetTimer();
+        return true;
     }
 
     // TODO: make advanced random damage 
