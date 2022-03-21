@@ -79,9 +79,14 @@ public class Chunk
         IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
         return objectOnMap;
     }
-    public void AddItem(Item item, int x, int y, bool copy)
+    public void AddItem(Item item, int localX, int localY)
     {
-        UtilityFunctions.AddItemOnMap(_items, item, x, y, copy);
+        if (!_items.ContainsKey((localX, localY)))
+        {
+            _items[(localX, localY)] = new List<Item>();
+        }
+
+        _items[(localX, localY)].Add(item);
     }
     public Item FindItem(int x, int y)
     {
