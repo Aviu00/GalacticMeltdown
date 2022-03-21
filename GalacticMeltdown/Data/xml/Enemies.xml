@@ -11,14 +11,15 @@
         <Dexterity>10</Dexterity>
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
-        <Cost>20</Cost>
+        <Cost>40</Cost>
         <AlertRadius>15</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
-                <MinDamage>5</MinDamage>
-                <MaxDamage>20</MaxDamage>
+                <MinDamage>2</MinDamage>
+                <MaxDamage>5</MaxDamage>
                 <MeleeAttackCost>30</MeleeAttackCost>
+                <Cooldown>3</Cooldown>
             </MeleeAttack>
         </Behaviors>
     </Enemy>
@@ -33,13 +34,13 @@
         <Dexterity>10</Dexterity>
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
-        <Cost>30</Cost>
+        <Cost>60</Cost>
         <AlertRadius>15</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
                 <MinDamage>5</MinDamage>
-                <MaxDamage>20</MaxDamage>
+                <MaxDamage>10</MaxDamage>
                 <MeleeAttackCost>30</MeleeAttackCost>
             </MeleeAttack>
         </Behaviors>
@@ -54,21 +55,23 @@
         <MaxEnergy>70</MaxEnergy>
         <Dexterity>10</Dexterity>
         <Defence>10</Defence>
-        <ViewRange>15</ViewRange>
-        <Cost>100</Cost>
+        <ViewRange>20</ViewRange>
+        <Cost>200</Cost>
         <AlertRadius>25</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
                 <MinDamage>5</MinDamage>
-                <MaxDamage>25</MaxDamage>
+                <MaxDamage>20</MaxDamage>
                 <MeleeAttackCost>45</MeleeAttackCost>
+                <Cooldown>4</Cooldown>
             </MeleeAttack>
             <RangeAttack>
-                <MinDamage>20</MinDamage>
-                <MaxDamage>40</MaxDamage>
-                <RangeAttackCost>50</RangeAttackCost>
-                <AttackRange>10</AttackRange>
+                <MinDamage>10</MinDamage>
+                <MaxDamage>50</MaxDamage>
+                <RangeAttackCost>60</RangeAttackCost>
+                <AttackRange>15</AttackRange>
+                <Cooldown>2</Cooldown>
             </RangeAttack>
         </Behaviors>
     </Enemy>
@@ -83,21 +86,16 @@
         <Dexterity>10</Dexterity>
         <Defence>10</Defence>
         <ViewRange>15</ViewRange>
-        <Cost>500</Cost>
+        <Cost>1000</Cost>
         <AlertRadius>25</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
-                <MinDamage>5</MinDamage>
-                <MaxDamage>30</MaxDamage>
-                <MeleeAttackCost>50</MeleeAttackCost>
-            </MeleeAttack>
-            <RangeAttack>
                 <MinDamage>20</MinDamage>
-                <MaxDamage>40</MaxDamage>
-                <RangeAttackCost>50</RangeAttackCost>
-                <AttackRange>10</AttackRange>
-            </RangeAttack>
+                <MaxDamage>60</MaxDamage>
+                <MeleeAttackCost>60</MeleeAttackCost>
+                <Cooldown>3</Cooldown>
+            </MeleeAttack>
         </Behaviors>
     </Enemy>
 </Enemies>
