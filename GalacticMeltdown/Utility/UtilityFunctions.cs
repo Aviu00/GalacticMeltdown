@@ -64,21 +64,6 @@ public static class UtilityFunctions
         return builder.ToString();
     }
 
-    public static void AddItemOnMap(ItemDictionary items, ItemData data, int x, int y)
-    {
-        AddItemOnMap(items, () => Item.CreateItem(data), x, y);
-    }
-
-    private static void AddItemOnMap(ItemDictionary items, Func<Item> getItem, int x, int y)
-    {
-        if (!items.ContainsKey((x, y)))
-        {
-            items[(x, y)] = new List<Item>();
-        }
-
-        items[(x, y)].Add(getItem());
-    }
-
     public static double GetDistance(int x0, int y0, int x1, int y1)
     {
         int xDist = x1 - x0;

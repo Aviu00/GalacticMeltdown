@@ -79,6 +79,7 @@ public class Chunk
         IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
         return objectOnMap;
     }
+
     public void AddItem(Item item, int localX, int localY)
     {
         if (!_items.ContainsKey((localX, localY)))
@@ -88,6 +89,7 @@ public class Chunk
 
         _items[(localX, localY)].Add(item);
     }
+
     public Item FindItem(int x, int y)
     {
         if (!_items.ContainsKey((x, y))) return null;

@@ -147,7 +147,7 @@ public class ChunkGenerator
     {
         if (DataHolder.ItemTypes.ContainsKey(id))
         {
-            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemTypes[id], x, y);
+            AddItem(items, DataHolder.ItemTypes[id], x, y);
             return;
         }
 
@@ -159,7 +159,7 @@ public class ChunkGenerator
             if (amount <= 0) return;
             for (; amount > 0; amount--)
             {
-                UtilityFunctions.AddItemOnMap(items, DataHolder.ItemTypes[itemLoot.ItemId], x, y);
+                AddItem(items, DataHolder.ItemTypes[itemLoot.ItemId], x, y);
             }
             return;
         }
@@ -180,6 +180,16 @@ public class ChunkGenerator
             if (!UtilityFunctions.Chance(ChanceFunction(itemObj.chance, itemObj.gain, itemObj.limit), _rng)) continue;
             SpawnItems(items, itemObj.lootId, x, y);
         }
+    }
+    
+    private static void AddItem(ItemDictionary items, ItemData data, int x, int y)
+    {
+        if (!items.ContainsKey((x, y)))
+        {
+            items[(x, y)] = new List<Item>();
+        }
+
+        items[(x, y)].Add(Item.CreateItem(data));
     }
 
     private int GetLimitedValue(int value, int limit)
