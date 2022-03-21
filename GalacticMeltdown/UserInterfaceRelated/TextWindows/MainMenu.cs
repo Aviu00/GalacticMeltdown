@@ -10,7 +10,7 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class MainMenu : Menu
+public class MainMenu : TextWindow
 {
     public MainMenu()
     {

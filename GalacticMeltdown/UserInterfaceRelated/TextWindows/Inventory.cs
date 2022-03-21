@@ -21,7 +21,7 @@ internal class ItemButton : Button
     }
 }
 
-public class Inventory : Menu
+public class Inventory : TextWindow
 {
     private Dictionary<ItemCategory, List<Item>> _inventory;
     private int _currentCategory;

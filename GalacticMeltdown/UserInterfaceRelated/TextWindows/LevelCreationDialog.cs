@@ -9,7 +9,7 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class LevelCreationDialog : Menu
+public class LevelCreationDialog : TextWindow
 {
     private readonly Action<string, int?> _sender;
 

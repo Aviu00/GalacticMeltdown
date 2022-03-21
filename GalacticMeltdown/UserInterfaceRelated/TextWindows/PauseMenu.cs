@@ -10,7 +10,7 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class PauseMenu : Menu
+public class PauseMenu : TextWindow
 {
     public PauseMenu()
     {

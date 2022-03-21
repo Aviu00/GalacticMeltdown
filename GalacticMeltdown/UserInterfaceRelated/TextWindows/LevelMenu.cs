@@ -23,7 +23,7 @@ internal class LevelButton : Button
     }
 }
 
-public class LevelMenu : Menu
+public class LevelMenu : TextWindow
 {
     private bool _noLevels;
     

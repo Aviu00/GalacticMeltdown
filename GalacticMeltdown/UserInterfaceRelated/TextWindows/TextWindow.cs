@@ -3,7 +3,7 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public abstract class Menu
+public abstract class TextWindow
 {
     protected LineView LineView;
     protected Controller Controller;
