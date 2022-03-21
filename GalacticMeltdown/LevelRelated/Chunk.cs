@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -36,6 +37,7 @@ public class Chunk
     [JsonConstructor]
     private Chunk()
     {
+
     }
     
     public Chunk(Tile[,] tiles, ItemDictionary items, List<(int x, int y)> neighborCoords, int difficulty, int seed,
@@ -49,6 +51,15 @@ public class Chunk
         Seed = seed;
         _items = items;
         Enemies = new List<Enemy>();
+    }
+
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        foreach (Npc npc in GetNpcs())
+        {
+            SubscribeNpc(npc);
+        }
     }
 
     public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
@@ -125,6 +136,11 @@ public class Chunk
     public void AddNpc(Npc npc)
     {
         if (npc is Enemy enemy) Enemies.Add(enemy);
+        SubscribeNpc(npc);
+    }
+
+    public void SubscribeNpc(Npc npc)
+    {
         npc.Moved += MovedHandler;
         npc.Died += DiedHandler;
         npc.InvolvedInTurn += InvolvedInTurnHandler;
