@@ -432,12 +432,14 @@ public partial class Level
 
     public void AddItem(Item item, int x, int y)
     {
+        if (!Inbounds(x, y)) return;
         (int chunkX, int chunkY) = GetChunkCoords(x, y);
         _chunks[chunkX, chunkY].AddItem(item, x % ChunkSize, y % ChunkSize);
     }
 
     public List<Item> GetItems(int x, int y)
     {
+        if (!Inbounds(x, y)) return null;
         (int chunkX, int chunkY) = GetChunkCoords(x, y);
         return _chunks[chunkX, chunkY].GetItems(x % ChunkSize, y % ChunkSize);
     }
@@ -493,6 +495,12 @@ public partial class Level
             doorCounter.StopTimer();
         if(actor is not null) actor.Energy -= 100;
         return true;
+    }
+
+    private bool Inbounds(int x, int y)
+    {
+        var (chunkX, chunkY) = GetChunkCoords(x, y);
+        return x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && y < _chunks.GetLength(1);
     }
     
     private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
