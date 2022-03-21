@@ -1,6 +1,7 @@
 using System.Linq;
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -16,7 +17,13 @@ public class MeleeAttackStrategy : Behavior
     [JsonProperty] private readonly int _maxDamage;
     [JsonProperty] private readonly int _cooldown;
     [JsonProperty] private readonly int _meleeAttackCost;
-    [JsonIgnore] private Counter meleeAtackCounter;
+    [JsonIgnore] private Counter _meleeAttackCounter;
+    private readonly Counter _meleeAtackCounter;
+
+    [JsonConstructor]
+    private MeleeAttackStrategy()
+    {
+    }
     public MeleeAttackStrategy(MeleeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         _minDamage = data.MinDamage;
@@ -26,8 +33,14 @@ public class MeleeAttackStrategy : Behavior
         ControlledNpc = controlledNpc;
         if (_cooldown > 0)
         {
-            meleeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
+            _meleeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
         }
+    }
+    
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        ControlledNpc.Died += _meleeAtackCounter.RemoveCounter;
     }
 
     public override bool TryAct()
@@ -36,12 +49,12 @@ public class MeleeAttackStrategy : Behavior
             return false;
         if (Algorithms.GetPointsOnSquareBorder(ControlledNpc.X, ControlledNpc.Y, 1).
                 Contains((ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)) &&
-            (meleeAtackCounter is null || meleeAtackCounter.FinishedCounting))
+            (_meleeAtackCounter is null || _meleeAtackCounter.FinishedCounting))
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
             ControlledNpc.Energy -= _meleeAttackCost;
-            if (meleeAtackCounter is not null)
-                meleeAtackCounter.ResetTimer();
+            if (_meleeAtackCounter is not null)
+                _meleeAtackCounter.ResetTimer();
         }
 
         return false;
