@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 using Newtonsoft.Json;
@@ -427,6 +428,12 @@ public partial class Level
     {
         (int x, int y) = GetChunkCoords(npc.X, npc.Y);
         _chunks[x, y].AddNpc(npc);
+    }
+
+    public void AddItem(Item item, int x, int y)
+    {
+        (int chunkX, int chunkY) = GetChunkCoords(x, y);
+        _chunks[chunkX, chunkY].AddItem(item, x % ChunkSize, y % ChunkSize);
     }
 
     public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1, bool onlyActiveChunks = true)
