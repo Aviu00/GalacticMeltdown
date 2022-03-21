@@ -23,6 +23,10 @@ internal class ItemButton : Button
 
 public class Inventory : TextWindow
 {
+    private const string Drop = "Drop";
+    private const string Equip = "Equip";
+    private const string Use = "Use";
+    
     private Dictionary<ItemCategory, List<Item>> _inventory;
     private int _currentCategory;
 
@@ -46,10 +50,17 @@ public class Inventory : TextWindow
     private void LoadCategoryScreen(ItemCategory category)
     {
         List<Item> items = _inventory[category];
-        LineView.SetLines(items.Select(item => new ItemButton(item, OpenItemScreen)).Cast<ListLine>().ToList());
+        LineView.SetLines(items.Select(item => new ItemButton(item, OpenItemDialog)).Cast<ListLine>().ToList());
     }
 
-    private void OpenItemScreen(Item item)
+    private void OpenItemDialog(Item item)
+    {
+        ItemDialog itemDialog = new(item, choice => ProcessChoice(item, choice));
+        UserInterface.AddChild(this, itemDialog);
+        itemDialog.Open();
+    }
+
+    private void ProcessChoice(Item item, string choice)
     {
         
     }
