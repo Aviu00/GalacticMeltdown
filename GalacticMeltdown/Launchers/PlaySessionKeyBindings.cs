@@ -6,6 +6,7 @@ using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
+using GalacticMeltdown.UserInterfaceRelated.TextWindows;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Launchers;
@@ -33,7 +34,6 @@ public partial class PlaySession
                 cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
                 cursor.Action = (_, _, x, y) =>
                 {
-                    cursor.Close();
                     List<Item> items = _level.GetItems(x, y);
                     if (items is null || items.Count == 0) return;
                     if (items.Count == 1)
@@ -43,7 +43,15 @@ public partial class PlaySession
                     }
                     else
                     {
-                        
+                        ItemPickupDialog dialog = new(items, PickUp);
+                        UserInterface.AddChild(this, dialog);
+                        dialog.Open();
+                    }
+                    
+                    void PickUp(Item item)
+                    {
+                        items.Remove(item);
+                        _player.AddToInventory(item);
                     }
                 };
                 UserInterface.AddChild(this, cursor);
