@@ -83,6 +83,29 @@
         </Behaviors>
     </Enemy>
     <Enemy>
+        <Id>turel</Id>
+        <Name>turel</Name>
+        <Symbol>T</Symbol>
+        <Color>dark_red</Color>
+        <BgColor>black</BgColor>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>120</MaxEnergy>
+        <Dexterity>10</Dexterity>
+        <Defence>10</Defence>
+        <ViewRange>20</ViewRange>
+        <Cost>150</Cost>
+        <AlertRadius>20</AlertRadius>
+        <Behaviors>
+            <RangeAttack>
+                <MinDamage>20</MinDamage>
+                <MaxDamage>50</MaxDamage>
+                <RangeAttackCost>60</RangeAttackCost>
+                <AttackRange>20</AttackRange>
+                <Cooldown>5</Cooldown>
+            </RangeAttack>
+        </Behaviors>
+    </Enemy>
+    <Enemy>
         <Id>elite</Id>
         <Name>elite</Name>
         <Symbol>E</Symbol>
