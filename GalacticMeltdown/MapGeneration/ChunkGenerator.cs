@@ -8,7 +8,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.MapGeneration;
-using ItemDictionary = Dictionary<(int x, int y), Dictionary<Item, int>>;
+using ItemDictionary = Dictionary<(int x, int y), List<Item>>;
 
 public class ChunkGenerator
 {

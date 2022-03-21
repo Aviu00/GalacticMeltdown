@@ -9,7 +9,7 @@ using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
-using ItemDictionary = Dictionary<(int x, int y), Dictionary<Item, int>>;
+using ItemDictionary = Dictionary<(int x, int y), List<Item>>;
 
 public class Chunk
 {
@@ -91,9 +91,9 @@ public class Chunk
     public Item FindItem(int x, int y)
     {
         if (!_items.ContainsKey((x, y))) return null;
-        Dictionary<Item, int> itemList = _items[(x, y)];
-        if (itemList == null || itemList.Count == 0) return null;
-        return itemList.Keys.First();
+        List<Item> itemList = _items[(x, y)];
+        if (itemList is null || itemList.Count == 0) return null;
+        return itemList.First();
     }
 
     public List<Npc> GetNpcs()
