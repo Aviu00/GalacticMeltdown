@@ -35,6 +35,7 @@ public class RangeAttackStrategy : Behavior
         if (_cooldown > 0)
         {
             _rangeAttackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
+            ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
         }
     }
     
