@@ -72,7 +72,7 @@ public class Enemy : Npc
 
         base.TakeAction();
     }
-
+    
     private void AlertEnemiesAboutTarget(int x, int y)
     {
         (int chunkCoordX, int chunkCoordY) = Level.GetChunkCoords(x, y);

@@ -79,7 +79,10 @@ public class Player : Actor, ISightedObject, IControllable
         if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
             return false;
         if (!NoClip && (tile is null || !tile.IsWalkable))
-            return Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
+        {
+            Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
+            return false;
+        }
         MoveTo(X + deltaX, Y + deltaY);
         VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         return true;
