@@ -7,6 +7,8 @@ namespace GalacticMeltdown.Behaviors;
 
 [JsonConverter(typeof(JsonSubtypes), "Strategy")]
 [JsonSubtypes.KnownSubType(typeof(MovementStrategy), "Movement")]
+[JsonSubtypes.KnownSubType(typeof(MeleeAttackStrategy), "MeleeAttack")]
+[JsonSubtypes.KnownSubType(typeof(RangeAttackStrategy), "RangeAttack")]
 public abstract class Behavior
 {
     [JsonProperty] protected abstract string Strategy { get; }
