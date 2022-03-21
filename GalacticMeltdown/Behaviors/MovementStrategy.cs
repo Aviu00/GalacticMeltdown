@@ -104,7 +104,7 @@ public class MovementStrategy : Behavior
     public override bool TryAct()
     {
         if (ControlledNpc.CurrentTarget is not null) PreviousTarget = ControlledNpc.CurrentTarget;
-        if (PreviousTarget is not null &&
+        if (PreviousTarget is not null && Level.GetTile(PreviousTarget.X, PreviousTarget.Y) is not null &&
             Level.GetTile(PreviousTarget.X, PreviousTarget.Y).IsWalkable)
         {
             _idleMovement = false;
