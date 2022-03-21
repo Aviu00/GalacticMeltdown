@@ -10,15 +10,15 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class ChoiceDialog : TextWindow
+public class ChoiceDialog<T> : TextWindow
 {
-    private Action<string> _send;
+    private Action<T> _send;
     
-    public ChoiceDialog(IEnumerable<string> choices, Action<string> send)
+    public ChoiceDialog(IEnumerable<(string text, T choice)> options, Action<T> send)
     {
         _send = send;
         LineView = new LineView();
-        LineView.SetLines(choices.Select(choice => new Button(choice, "", () => SendChoice(choice)))
+        LineView.SetLines(options.Select(info => new Button(info.text, "", () => SendChoice(info.choice)))
             .Cast<ListLine>()
             .ToList());
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
@@ -31,7 +31,7 @@ public class ChoiceDialog : TextWindow
             }));
     }
 
-    private void SendChoice(string choice)
+    private void SendChoice(T choice)
     {
         Close();
         _send(choice);
