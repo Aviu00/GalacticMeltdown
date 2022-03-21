@@ -50,8 +50,8 @@ public class MeleeAttackStrategy : Behavior
              Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 2 &&
             (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting))
         {
-            ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), false, false);
-            if (_stateChanger is not null)
+            bool hit = ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), false, false);
+            if (hit && _stateChanger is not null)
             {
                 DataHolder.ActorStateChangers[_stateChanger.Type]
                     (ControlledNpc.CurrentTarget, _stateChanger.Power, _stateChanger.Duration);
