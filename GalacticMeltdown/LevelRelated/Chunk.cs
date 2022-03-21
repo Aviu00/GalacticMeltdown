@@ -6,7 +6,6 @@ using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
-using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
@@ -99,6 +98,11 @@ public class Chunk
         }
 
         _items[(localX, localY)].Add(item);
+    }
+
+    public List<Item> GetItems(int localX, int localY)
+    {
+        return _items.ContainsKey((localX, localY)) ? _items[(localX, localY)] : null;
     }
 
     public Item FindItem(int x, int y)

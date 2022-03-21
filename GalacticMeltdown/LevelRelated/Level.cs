@@ -436,6 +436,12 @@ public partial class Level
         _chunks[chunkX, chunkY].AddItem(item, x % ChunkSize, y % ChunkSize);
     }
 
+    public List<Item> GetItems(int x, int y)
+    {
+        (int chunkX, int chunkY) = GetChunkCoords(x, y);
+        return _chunks[chunkX, chunkY].GetItems(x % ChunkSize, y % ChunkSize);
+    }
+
     public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1, bool onlyActiveChunks = true)
     {
         (int chunkX0, int chunkY0) = GetChunkCoords(x0, y0);
