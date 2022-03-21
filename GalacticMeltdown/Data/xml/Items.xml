@@ -55,10 +55,12 @@
         <Id>pistol_ammo</Id>
         <Name>pistol ammo</Name>
         <Symbol>∷</Symbol>
+        <Stackable>true</Stackable>
     </Item>
     <Item>
         <Id>assault_rifle_ammo</Id>
         <Name>assault rifle ammo</Name>
         <Symbol>∷</Symbol>
+        <Stackable>true</Stackable>
     </Item>
 </ItemDatas>
