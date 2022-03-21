@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
@@ -27,7 +28,7 @@ public class ItemDialog : ChoiceDialog<ItemAction>
         return choices;
     }
 
-    public ItemDialog(Item item, Action<ItemAction> send) : base(GetChoices(item), send)
+    public ItemDialog(Item item, Action<ItemAction> send) : base(GetChoices(item).ToList(), send)
     {
     }
 }

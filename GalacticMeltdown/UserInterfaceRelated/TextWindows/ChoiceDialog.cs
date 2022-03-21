@@ -13,10 +13,17 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 public class ChoiceDialog<T> : TextWindow
 {
     private Action<T> _send;
-    
-    public ChoiceDialog(IEnumerable<(string text, T choice)> options, Action<T> send, string message = null)
+    protected List<(string text, T choice)> _options;
+    private string _message;
+    private bool _closeOnChoice;
+
+    public ChoiceDialog(List<(string text, T choice)> options, Action<T> send, string message = null,
+        bool closeOnChoice = true)
     {
         _send = send;
+        _options = options;
+        _message = message;
+        _closeOnChoice = closeOnChoice;
         LineView = new LineView();
         List<ListLine> lines = new List<ListLine>();
         if (message is not null) lines.Add(new TextLine(message));
@@ -34,7 +41,7 @@ public class ChoiceDialog<T> : TextWindow
 
     protected virtual void SendChoice(T choice)
     {
-        Close();
+        if (_closeOnChoice) Close();
         _send(choice);
     }
 }
