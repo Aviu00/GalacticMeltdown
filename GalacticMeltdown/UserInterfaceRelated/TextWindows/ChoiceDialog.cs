@@ -13,7 +13,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 public class ChoiceDialog<T> : TextWindow
 {
     private Action<T> _send;
-    protected List<(string text, T choice)> _options;
+    protected List<(string text, T choice)> Options;
     private string _message;
     private bool _closeOnChoice;
 
@@ -21,14 +21,10 @@ public class ChoiceDialog<T> : TextWindow
         bool closeOnChoice = true)
     {
         _send = send;
-        _options = options;
+        Options = options;
         _message = message;
         _closeOnChoice = closeOnChoice;
         LineView = new LineView();
-        List<ListLine> lines = new List<ListLine>();
-        if (message is not null) lines.Add(new TextLine(message));
-        lines.AddRange(options.Select(info => new Button(info.text, "", () => SendChoice(info.choice))));
-        LineView.SetLines(lines);
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
@@ -37,6 +33,15 @@ public class ChoiceDialog<T> : TextWindow
                 {SelectionControl.Up, LineView.SelectPrev},
                 {SelectionControl.Select, LineView.PressCurrent},
             }));
+        UpdateLines();
+    }
+
+    protected void UpdateLines()
+    {
+        List<ListLine> lines = new List<ListLine>();
+        if (_message is not null) lines.Add(new TextLine(_message));
+        lines.AddRange(Options.Select(info => new Button(info.text, "", () => SendChoice(info.choice))));
+        LineView.SetLines(lines);
     }
 
     protected virtual void SendChoice(T choice)
