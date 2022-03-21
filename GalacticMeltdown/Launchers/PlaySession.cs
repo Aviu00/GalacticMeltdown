@@ -24,7 +24,6 @@ public partial class PlaySession
     private static LevelView _levelView;
 
     private Dictionary<MainControl, Action> _mainActions;
-    private Dictionary<CursorControl, Action> _cursorActions;
 
     public PlaySession(Level level, string levelName, int levelSeed)
     {

@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
-using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.UserInterfaceRelated.TextWindows;
-using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Launchers;
 
@@ -84,33 +81,6 @@ public partial class PlaySession
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
         {MainControl.ToggleXRay, () => _player.Xray = !_player.Xray},
         {MainControl.OpenPauseMenu, OpenPauseMenu},
-    };
-
-    _cursorActions = new Dictionary<CursorControl, Action>
-    {
-        {CursorControl.MoveUp, () => MoveControlled(0, 1)},
-        {CursorControl.MoveDown, () => MoveControlled(0, -1)},
-        {CursorControl.MoveRight, () => MoveControlled(1, 0)},
-        {CursorControl.MoveLeft, () => MoveControlled(-1, 0)},
-        {CursorControl.MoveNe, () => MoveControlled(1, 1)},
-        {CursorControl.MoveSe, () => MoveControlled(1, -1)},
-        {CursorControl.MoveSw, () => MoveControlled(-1, -1)},
-        {CursorControl.MoveNw, () => MoveControlled(-1, 1)},
-        {CursorControl.Interact, () => ((Cursor) _controlledObject).Interact()},
-        {CursorControl.Back, () =>
-            {
-                _controlledObject = _player;
-                _levelView.SetFocus(_player);
-                _levelView.RemoveCursor();
-                UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
-            }
-        },
-        {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}},
-        {
-            CursorControl.ToggleFocus,
-            () => _levelView.SetFocus(((Cursor) _controlledObject).InFocus ? _player : _levelView.Cursor)
-        }
     };
     }
 }
