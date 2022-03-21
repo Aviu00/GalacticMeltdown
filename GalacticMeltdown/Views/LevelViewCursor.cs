@@ -4,6 +4,8 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.UserInterfaceRelated.Cursor;
+using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 

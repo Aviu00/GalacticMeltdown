@@ -3,7 +3,7 @@ using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 
-namespace GalacticMeltdown.Views;
+namespace GalacticMeltdown.UserInterfaceRelated.Cursor;
 
 public class Cursor : IControllable
 {
