@@ -116,6 +116,7 @@ public class Player : Actor, ISightedObject, IControllable
             AddToInventory(prevItem);
         }
 
+        Inventory[item.Category].Remove(item);
         _equipment[item.BodyPart] = item;
     }
 
@@ -127,6 +128,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Consume(ConsumableItem item)
     {
+        Inventory[item.Category].Remove(item);
         item.Consume(this);
     }
 }
