@@ -37,13 +37,14 @@ public class Enemy : Npc
         
         if (_typeData.Behaviors == null) return;
         
-        Behaviors = new SortedSet<Behavior>(new Behavior.BehaviorComparer());
+        Behaviors = new SortedSet<Behavior>();
         foreach (BehaviorData behaviorData in _typeData.Behaviors)
         {
             Behavior behavior = behaviorData switch
             {
                 MovementStrategyData movementStrategyData => new MovementStrategy(movementStrategyData, this),
-                MeleeAttackStrategyData meleeAttackStrategyData => null, //not yet implemented
+                MeleeAttackStrategyData meleeAttackStrategyData => new MeleeAttackStrategy(meleeAttackStrategyData, this),
+                RangeAttackStrategyData rangeAttackStrategyData => new RangeAttackStrategy(rangeAttackStrategyData, this), 
                 _ => null
             };
 

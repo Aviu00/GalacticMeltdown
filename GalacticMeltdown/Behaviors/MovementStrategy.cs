@@ -13,7 +13,7 @@ namespace GalacticMeltdown.Behaviors;
 public class MovementStrategy : Behavior
 {
     [JsonProperty] protected override string Strategy => "Movement";
-    private const int DefaultPriority = 10;
+    private const int DefaultPriority = 20;
     private Level Level => ControlledNpc.Level;
     [JsonProperty] private (int x, int y)? _wantsToGoTo;
     [JsonIgnore] private LinkedListNode<(int x, int y)> _nextPathCellNode;
@@ -102,9 +102,13 @@ public class MovementStrategy : Behavior
 
     public override bool TryAct()
     {
+        Tile previousTargetTile = null;
+        if (PreviousTarget is not null)
+        {
+            previousTargetTile = Level.GetTile(PreviousTarget.X, PreviousTarget.Y);
+        }
         if (ControlledNpc.CurrentTarget is not null) PreviousTarget = ControlledNpc.CurrentTarget;
-        if (PreviousTarget is not null &&
-            Level.GetTile(PreviousTarget.X, PreviousTarget.Y).IsWalkable)
+        if (previousTargetTile is not null && previousTargetTile.IsWalkable)
         {
             _idleMovement = false;
             if (_wantsToGoTo != (PreviousTarget.X, PreviousTarget.Y))

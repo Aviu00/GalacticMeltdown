@@ -11,7 +11,7 @@ public class ContinuousEffect : Effect
 
     private void NextTurn(object _, EventArgs __)
     {
-        EffectAction(AffectedActor, Power, Duration);
+        EffectAction?.Invoke(AffectedActor, Power, Duration);
     }
 
     [JsonConstructor]
@@ -24,6 +24,13 @@ public class ContinuousEffect : Effect
     {
         Level.TurnFinished += NextTurn;
         EffectInit();
+    }
+
+    protected override void RemoveEffect()
+    {
+        Level.TurnFinished -= NextTurn;
+        EffectAction?.Invoke(AffectedActor, Power, Duration);
+        base.RemoveEffect();
     }
 
     public ContinuousEffect (Actor actor, int power, int duration, DataHolder.ActorStateChangerType effectTypeId)

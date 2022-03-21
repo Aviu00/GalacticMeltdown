@@ -38,7 +38,7 @@ public abstract class Actor : IObjectOnMap
         {
             if (value == HpLim.Value) return;
             HpLim.Value = value;
-            if (value == 0) Died?.Invoke(this, EventArgs.Empty);
+            if (HpLim.Value == 0) Died?.Invoke(this, EventArgs.Empty);
             FireStatAffected(Stat.Hp);
         }
     }

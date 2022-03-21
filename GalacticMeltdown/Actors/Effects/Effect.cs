@@ -43,6 +43,8 @@ public abstract class Effect : Counter
     protected virtual void RemoveEffect()
     {
         RemoveCounter();
+        EffectAction = null;
+        Action = null;
         AffectedActor.RemoveEffect(this);
     }
 }
