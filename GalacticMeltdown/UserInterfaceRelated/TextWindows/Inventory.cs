@@ -32,12 +32,10 @@ public class Inventory : TextWindow
     private int _currentCategory;
 
     private readonly Player _player;
-    private readonly Action<Item> _use;
 
-    public Inventory(Dictionary<ItemCategory, List<Item>> inventory, Player player, Action<Item> use)
+    public Inventory(Dictionary<ItemCategory, List<Item>> inventory, Player player)
     {
         _player = player;
-        _use = use;
         _inventory = inventory;
         LineView = new LineView();
         _currentCategory = 0;

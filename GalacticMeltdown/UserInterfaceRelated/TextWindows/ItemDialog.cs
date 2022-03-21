@@ -9,7 +9,7 @@ public class ItemDialog : ChoiceDialog
     private const string Drop = "Drop";
     private const string Equip = "Equip";
     private const string Use = "Use";
-    
+
     private static LinkedList<string> GetChoices(Item item)
     {
         var choices = new LinkedList<string>();
@@ -26,7 +26,7 @@ public class ItemDialog : ChoiceDialog
 
         return choices;
     }
-    
+
     public ItemDialog(Item item, Action<string> send) : base(GetChoices(item), send)
     {
     }
