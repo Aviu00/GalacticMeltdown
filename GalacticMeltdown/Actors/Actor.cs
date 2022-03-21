@@ -18,7 +18,18 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] protected abstract string ActorName { get; }
     [JsonProperty] public readonly Level Level;
     [JsonProperty] private bool _turnStopped;
-    [JsonIgnore] public int Str = 10;
+    private const int ActorStr = 10;
+    private int _strength;
+    public int Strength
+    {
+        get => _strength;
+        set
+        {
+            if (value == _strength) return;
+            _strength = value;
+            FireStatAffected(Stat.Strength);
+        }
+    }
 
     [JsonProperty] protected int _viewRange;
 
@@ -112,6 +123,7 @@ public abstract class Actor : IObjectOnMap
         X = x;
         Y = y;
         _turnStopped = false;
+        Strength = ActorStr;
     }
 
     public virtual void Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
