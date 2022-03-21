@@ -3,18 +3,20 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Behaviors;
 
 public class RangeAttackStrategy : Behavior
 {
-    private const int DefaultPriority = 20;
-    private readonly int _minDamage;
-    private readonly int _maxDamage;
-    private readonly int _cooldown;
-    private readonly int _rangeAttackCost;
-    private readonly int _attackRange;
-    private Counter rangeAtackCounter;
+    [JsonProperty] protected override string Strategy => "RangeAttack";
+    [JsonProperty] private const int DefaultPriority = 20;
+    [JsonProperty] private readonly int _minDamage;
+    [JsonProperty] private readonly int _maxDamage;
+    [JsonProperty] private readonly int _cooldown;
+    [JsonProperty] private readonly int _rangeAttackCost;
+    [JsonProperty] private readonly int _attackRange;
+    [JsonIgnore] private Counter rangeAtackCounter;
     
     public RangeAttackStrategy(RangeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
@@ -26,7 +28,7 @@ public class RangeAttackStrategy : Behavior
         ControlledNpc = controlledNpc;
         if (_cooldown > 0)
         {
-            rangeAtackCounter = new Counter(ControlledNpc.Level, _cooldown);   
+            rangeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);   
         }
     }
     public override bool TryAct()
