@@ -32,7 +32,7 @@ public class ChoiceDialog<T> : TextWindow
             }));
     }
 
-    private void SendChoice(T choice)
+    protected virtual void SendChoice(T choice)
     {
         Close();
         _send(choice);
