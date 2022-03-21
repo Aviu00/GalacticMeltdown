@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Enemies>
     <Enemy>
+        <Id>ward</Id>
+        <Name>ward</Name>
+        <Symbol>C</Symbol>
+        <Color>gray</Color>
+        <BgColor>black</BgColor>
+        <MaxHp>10</MaxHp>
+        <MaxEnergy>10</MaxEnergy>
+        <Dexterity>10</Dexterity>
+        <Defence>10</Defence>
+        <ViewRange>30</ViewRange>
+        <Cost>30</Cost>
+        <AlertRadius>30</AlertRadius>
+    </Enemy>
+    <Enemy>
         <Id>rotten</Id>
         <Name>rotten</Name>
         <Symbol>W</Symbol>
