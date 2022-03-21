@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
@@ -30,8 +31,13 @@ public class Inventory : TextWindow
     private Dictionary<ItemCategory, List<Item>> _inventory;
     private int _currentCategory;
 
-    public Inventory(Dictionary<ItemCategory, List<Item>> inventory)
+    private readonly Player _player;
+    private readonly Action<Item> _use;
+
+    public Inventory(Dictionary<ItemCategory, List<Item>> inventory, Player player, Action<Item> use)
     {
+        _player = player;
+        _use = use;
         _inventory = inventory;
         LineView = new LineView();
         _currentCategory = 0;
