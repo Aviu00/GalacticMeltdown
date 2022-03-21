@@ -7,10 +7,6 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 public class ItemDialog : ChoiceDialog<ItemAction>
 {
-    private const string Drop = "Drop";
-    private const string Equip = "Equip";
-    private const string Consume = "Consume";
-
     private static LinkedList<(string text, ItemAction choice)> GetChoices(Item item)
     {
         var choices = new LinkedList<(string text, ItemAction choice)>();

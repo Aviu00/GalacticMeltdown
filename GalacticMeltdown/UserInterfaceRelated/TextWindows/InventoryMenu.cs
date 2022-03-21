@@ -24,10 +24,6 @@ internal class ItemButton : Button
 
 public class InventoryMenu : TextWindow
 {
-    private const string Drop = "Drop";
-    private const string Equip = "Equip";
-    private const string Consume = "Consume";
-    
     private Dictionary<ItemCategory, List<Item>> _inventory;
     private int _currentCategory;
 
@@ -83,18 +79,24 @@ public class InventoryMenu : TextWindow
                 _player.Consume((ConsumableItem) item);
                 break;
         }
+        UpdateCurrentScreen();
     }
 
     private void OpenPreviousCategory()
     {
         _currentCategory -= 1;
         if (_currentCategory == -1) _currentCategory = Enum.GetValues<ItemCategory>().Length - 1;
-        LoadCategoryScreen(Enum.GetValues<ItemCategory>()[_currentCategory]);
+        UpdateCurrentScreen();
     }
     
     private void OpenNextCategory()
     {
         _currentCategory = (_currentCategory + 1) % Enum.GetValues<ItemCategory>().Length;
+        UpdateCurrentScreen();
+    }
+
+    private void UpdateCurrentScreen()
+    {
         LoadCategoryScreen(Enum.GetValues<ItemCategory>()[_currentCategory]);
     }
 }
