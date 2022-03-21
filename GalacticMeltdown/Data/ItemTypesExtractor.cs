@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Data;
@@ -29,6 +31,7 @@ public class ItemTypesExtractor : XmlExtractor
             int maxHitDamage = 0;
             int hitEnergy = 0;
             int ammoCapacity = 0;
+            BodyPart bodyPart = BodyPart.Hands;
             AmmoDictionary ammoList = null;
             foreach (XmlNode locNode in node)
             {
@@ -58,13 +61,16 @@ public class ItemTypesExtractor : XmlExtractor
                     case "AmmoTypes":
                         ammoList = ParseAmmoDictionary(locNode);
                         break;
+                    case "BodyPart":
+                        Enum.TryParse(locNode.InnerText, out bodyPart);
+                        break;
                 }
             }
 
             ItemData itemData = itemCategory switch
             {
                 ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory),
-                ItemCategory.WearableItem => new WearableItemData(symbol, name, id, itemCategory),
+                ItemCategory.WearableItem => new WearableItemData(symbol, name, id, itemCategory, bodyPart),
                 ItemCategory.WeaponItem => new WeaponItemData(symbol, name, id, itemCategory, minHitDamage, maxHitDamage, hitEnergy,
                     ammoCapacity, ammoList),
                 ItemCategory.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, itemCategory, minHitDamage, maxHitDamage,
@@ -122,8 +128,8 @@ public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCate
         int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) //Hit chance not yet included
     : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
 
-public record WearableItemData(char Symbol, string Name, string Id, ItemCategory Category) : ItemData(Symbol, Name, Id,
-    Category); //WIP
+public record WearableItemData (char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart) 
+    : ItemData(Symbol, Name, Id, Category); //WIP
 
 public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category) : ItemData(Symbol, Name, Id,
     Category); //WIP

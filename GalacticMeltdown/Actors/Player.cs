@@ -49,6 +49,7 @@ public class Player : Actor, ISightedObject, IControllable
     }
     
     private Dictionary<ItemCategory, List<Item>> _inventory;
+    private Dictionary<BodyPart, WearableItem> _equipment;
 
     public event EventHandler VisiblePointsChanged;
 
@@ -63,6 +64,12 @@ public class Player : Actor, ISightedObject, IControllable
         foreach (ItemCategory val in Enum.GetValues<ItemCategory>())
         {
             _inventory[val] = new List<Item>();
+        }
+
+        _equipment = new Dictionary<BodyPart, WearableItem>();
+        foreach (BodyPart val in Enum.GetValues<BodyPart>())
+        {
+            _equipment[val] = null;
         }
     }
 
