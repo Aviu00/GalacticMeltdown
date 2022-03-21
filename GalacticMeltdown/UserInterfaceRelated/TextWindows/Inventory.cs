@@ -26,7 +26,7 @@ public class Inventory : TextWindow
 {
     private const string Drop = "Drop";
     private const string Equip = "Equip";
-    private const string Use = "Use";
+    private const string Consume = "Consume";
     
     private Dictionary<ItemCategory, List<Item>> _inventory;
     private int _currentCategory;
@@ -66,7 +66,18 @@ public class Inventory : TextWindow
 
     private void ProcessChoice(Item item, string choice)
     {
-        
+        switch (choice)
+        {
+            case Drop:
+                _player.Drop(item);
+                break;
+            case Equip:
+                _player.Equip((EquippableItem) item);
+                break;
+            case Consume:
+                _player.Consume((ConsumableItem) item);
+                break;
+        }
     }
 
     private void OpenPreviousCategory()

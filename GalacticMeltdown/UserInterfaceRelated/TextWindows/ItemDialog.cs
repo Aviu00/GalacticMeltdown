@@ -8,7 +8,7 @@ public class ItemDialog : ChoiceDialog
 {
     private const string Drop = "Drop";
     private const string Equip = "Equip";
-    private const string Use = "Use";
+    private const string Consume = "Consume";
 
     private static LinkedList<string> GetChoices(Item item)
     {
@@ -20,7 +20,7 @@ public class ItemDialog : ChoiceDialog
                 choices.AddFirst(Equip);
                 break;
             case ConsumableItem:
-                choices.AddFirst(Use);
+                choices.AddFirst(Consume);
                 break;
         }
 
