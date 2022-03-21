@@ -49,17 +49,12 @@ public class RangeAttackStrategy : Behavior
     {
         if (ControlledNpc.CurrentTarget is null)
             return false;
-        // if there is nothing what can stop projectile
-        if (CanAttack())
-        {
-            ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
-            ControlledNpc.Energy -= _rangeAttackCost;
-            if (_rangeAttackCounter is not null)
-                _rangeAttackCounter.ResetTimer();
-            return true;
-        }
-
-        return false;
+        if (!CanAttack()) return false;
+        ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
+        ControlledNpc.Energy -= _rangeAttackCost;
+        if (_rangeAttackCounter is not null)
+            _rangeAttackCounter.ResetTimer();
+        return true;
     }
 
     // TODO: make advanced random damage 
@@ -81,7 +76,8 @@ public class RangeAttackStrategy : Behavior
                      ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
         {
             // shoot to wall (or etc) or friendly fire
-            if (ControlledNpc.Level.GetNonTileObject(coord.x, coord.y) is Enemy ||
+            if (ControlledNpc.Level.GetNonTileObject(coord.x, coord.y) is Enemy &&
+                 coord != (ControlledNpc.X, ControlledNpc.Y) ||
                 !ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable)
             {
                 return false;
