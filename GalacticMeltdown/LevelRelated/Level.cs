@@ -434,14 +434,14 @@ public partial class Level
     {
         if (!Inbounds(x, y)) return;
         (int chunkX, int chunkY) = GetChunkCoords(x, y);
-        _chunks[chunkX, chunkY].AddItem(item, x % ChunkSize, y % ChunkSize);
+        _chunks[chunkX, chunkY].AddItem(item, x, y);
     }
 
     public List<Item> GetItems(int x, int y)
     {
         if (!Inbounds(x, y)) return null;
         (int chunkX, int chunkY) = GetChunkCoords(x, y);
-        return _chunks[chunkX, chunkY].GetItems(x % ChunkSize, y % ChunkSize);
+        return _chunks[chunkX, chunkY].GetItems(x, y);
     }
 
     public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1, bool onlyActiveChunks = true)
