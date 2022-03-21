@@ -1,6 +1,4 @@
-using System.Linq;
 using System;
-using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
@@ -46,14 +44,15 @@ public class MeleeAttackStrategy : Behavior
     {
         if (ControlledNpc.CurrentTarget is null)
             return false;
-        if (Algorithms.GetPointsOnSquareBorder(ControlledNpc.X, ControlledNpc.Y, 1).
-                Contains((ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)) &&
+        if ( Math.Abs(ControlledNpc.X - ControlledNpc.CurrentTarget.X) + 
+             Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 3 &&
             (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting))
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
             ControlledNpc.Energy -= _meleeAttackCost;
             if (_meleeAttackCounter is not null)
                 _meleeAttackCounter.ResetTimer();
+            return true;
         }
 
         return false;

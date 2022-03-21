@@ -14,7 +14,7 @@ namespace GalacticMeltdown.Behaviors;
 public class MovementStrategy : Behavior
 {
     [JsonProperty] protected override string Strategy => "Movement";
-    private const int DefaultPriority = 10;
+    private const int DefaultPriority = 20;
     private Level Level => ControlledNpc.Level;
     [JsonProperty] private (int x, int y)? _wantsToGoTo;
     [JsonIgnore] private LinkedListNode<(int x, int y)> _nextPathCellNode;
