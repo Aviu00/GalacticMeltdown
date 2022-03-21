@@ -8,7 +8,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.MapGeneration;
-using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>;
+using ItemDictionary = Dictionary<(int x, int y), List<Item>>;
 
 public class ChunkGenerator
 {
@@ -147,7 +147,7 @@ public class ChunkGenerator
     {
         if (DataHolder.ItemTypes.ContainsKey(id))
         {
-            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemTypes[id], 1, x, y);
+            AddItem(items, DataHolder.ItemTypes[id], x, y);
             return;
         }
 
@@ -157,7 +157,10 @@ public class ChunkGenerator
             int amount = GetLimitedValue(itemLoot.Limit, 
                 _rng.Next(itemLoot.Min, itemLoot.Max + (int) (Difficulty * itemLoot.Gain) + 1));
             if (amount <= 0) return;
-            UtilityFunctions.AddItemOnMap(items, DataHolder.ItemTypes[itemLoot.ItemId], amount, x, y);
+            for (; amount > 0; amount--)
+            {
+                AddItem(items, DataHolder.ItemTypes[itemLoot.ItemId], x, y);
+            }
             return;
         }
 
@@ -177,6 +180,16 @@ public class ChunkGenerator
             if (!UtilityFunctions.Chance(ChanceFunction(itemObj.chance, itemObj.gain, itemObj.limit), _rng)) continue;
             SpawnItems(items, itemObj.lootId, x, y);
         }
+    }
+    
+    private static void AddItem(ItemDictionary items, ItemData data, int x, int y)
+    {
+        if (!items.ContainsKey((x, y)))
+        {
+            items[(x, y)] = new List<Item>();
+        }
+
+        items[(x, y)].Add(Item.CreateItem(data));
     }
 
     private int GetLimitedValue(int value, int limit)
