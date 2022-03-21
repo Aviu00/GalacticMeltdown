@@ -21,7 +21,7 @@ public class EquippableItem : Item
     }
     
     [JsonConstructor]
-    private EquippableItem(string id) : this((WearableItemData)DataHolder.ItemTypes[id])
+    private EquippableItem(string id) : this((WearableItemData) DataHolder.ItemTypes[id])
     {
     }
 }

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 namespace GalacticMeltdown.Items;
 using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage)>;
 
-public class WeaponItem : Item
+public class WeaponItem : EquippableItem
 {
     private readonly WeaponItemData _itemData;
     [JsonProperty] protected override string ItemType => "MeleeWeapon";
@@ -30,7 +30,7 @@ public class WeaponItem : Item
     }
 
     [JsonConstructor]
-    protected WeaponItem(string id, LimitedNumber ammoAmount) : base(DataHolder.ItemTypes[id])
+    protected WeaponItem(string id, LimitedNumber ammoAmount) : base((WeaponItemData) DataHolder.ItemTypes[id])
     {
         _itemData = (WeaponItemData)DataHolder.ItemTypes[id];
         AmmoAmount = ammoAmount;

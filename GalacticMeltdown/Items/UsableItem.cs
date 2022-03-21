@@ -18,7 +18,7 @@ public class UsableItem : Item
     }
 
     [JsonConstructor]
-    private UsableItem(string id) : this((UsableItemData)DataHolder.ItemTypes[id])
+    private UsableItem(string id) : this((UsableItemData) DataHolder.ItemTypes[id])
     {
     }
 }

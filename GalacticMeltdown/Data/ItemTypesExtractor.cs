@@ -121,15 +121,15 @@ public class ItemTypesExtractor : XmlExtractor
 
 public record ItemData(char Symbol, string Name, string Id, ItemCategory Category);
 
+public record WearableItemData (char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart) 
+    : ItemData(Symbol, Name, Id, Category); //WIP
+
 public record WeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
-    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) : ItemData(Symbol, Name, Id, Category);
+    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) : WearableItemData(Symbol, Name, Id, Category, BodyPart.Hands);
 
 public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
         int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) //Hit chance not yet included
     : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
-
-public record WearableItemData (char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart) 
-    : ItemData(Symbol, Name, Id, Category); //WIP
 
 public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category) : ItemData(Symbol, Name, Id,
     Category); //WIP
