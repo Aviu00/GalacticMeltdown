@@ -84,7 +84,7 @@ public partial class PlaySession
 
     private void OpenPauseMenu()
     {
-        PauseMenu pauseMenu = new PauseMenu(this);
+        PauseMenu pauseMenu = new PauseMenu();
         UserInterface.AddChild(this, pauseMenu);
         pauseMenu.Open();
     }

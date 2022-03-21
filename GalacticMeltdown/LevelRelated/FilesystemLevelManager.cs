@@ -70,7 +70,6 @@ public static class FilesystemLevelManager
             return false;
         }
 
-        // returns false on failure
         return true;
     }
 
@@ -91,9 +90,8 @@ public static class FilesystemLevelManager
     private static string GetSaveFolder()
     {
         bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        string home = Environment.GetEnvironmentVariable("HOME");
+        string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
         return Path.Combine(home, isWindows
-            ? @"\AppData\Roaming\galactic-meltdown\levels"
-            : ".local/share/galactic-meltdown/levels");
+            ? @"AppData\Roaming\galactic-meltdown\levels" : ".local/share/galactic-meltdown/levels");
     }
 }
