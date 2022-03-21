@@ -102,8 +102,19 @@ public class Player : Actor, ISightedObject, IControllable
         _giveControlToUser = controlFunc;
     }
 
-    public void PickUp(Item item)
+    public void AddToInventory(Item item)
     {
         _inventory[item.Category].Add(item);
+    }
+
+    public void Wear(WearableItem item)
+    {
+        if (_equipment[item.BodyPart] == item) return;
+        if (_equipment[item.BodyPart] is not null)
+        {
+            AddToInventory(_equipment[item.BodyPart]);
+        }
+
+        _equipment[item.BodyPart] = item;
     }
 }
