@@ -54,6 +54,11 @@ public class InventoryMenu : TextWindow
     private void LoadCategoryScreen(ItemCategory category)
     {
         List<Item> items = _inventory[category];
+        if (!items.Any())
+        {
+            LineView.SetLines(new List<ListLine> {new TextLine("Nothing here yet")});
+            return;
+        }
         LineView.SetLines(items.Select(item => new ItemButton(item, OpenItemDialog)).Cast<ListLine>().ToList());
     }
 
