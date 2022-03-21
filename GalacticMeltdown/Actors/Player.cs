@@ -97,9 +97,4 @@ public class Player : Actor, ISightedObject, IControllable
     {
         _giveControlToUser = controlFunc;
     }
-
-    public override void Hit(Actor hitter, int damage)
-    {
-        Hp -= damage;
-    }
 }

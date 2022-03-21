@@ -25,6 +25,12 @@ public static class UtilityFunctions
         return rng.Next(1, 101) <= chance;
     }
 
+    public static bool ChanceRoll(int chance, int rolls, Random rng = null)
+    {
+        rng ??= Random.Shared;
+        return rng.Next(1, 101) <= 100 - Math.Pow(100-chance, rolls) / Math.Pow(100, rolls-1);
+    }
+
     public static int MultiChance(int[] chances, Random rng = null)
     {
         rng ??= Random.Shared;

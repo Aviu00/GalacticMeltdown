@@ -64,4 +64,10 @@ public abstract class Npc : Actor
     {
         return ReferenceEquals(this, obj);
     }
+
+    public override void Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
+    {
+        base.Hit(damage, ignoreDexterity, ignoreDefence);
+        SendAffected();
+    }
 }

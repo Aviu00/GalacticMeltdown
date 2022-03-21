@@ -108,10 +108,16 @@ public abstract class Actor : IObjectOnMap
         _turnStopped = false;
     }
 
-    public virtual void Hit(Actor hitter, int damage)
+    public virtual void Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
     {
+        if (!ignoreDexterity && Dexterity != 0 && UtilityFunctions.ChanceRoll(5, _dexterity))
+            return;
+        if (!ignoreDefence && Defence != 0)
+        {
+            damage -= Random.Shared.Next(0, Defence + 1);
+            if (damage < 0) damage = 0;
+        }
         Hp -= damage;
-        SendAffected();
     }
 
     public virtual void FinishTurn()
