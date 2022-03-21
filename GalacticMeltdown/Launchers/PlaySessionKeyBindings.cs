@@ -38,8 +38,7 @@ public partial class PlaySession
                     if (items is null || items.Count == 0) return;
                     if (items.Count == 1)
                     {
-                        _player.AddToInventory(items[0]);
-                        items.Remove(items[0]);
+                        PickUp(items[0]);
                     }
                     else
                     {
