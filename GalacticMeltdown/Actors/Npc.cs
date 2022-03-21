@@ -42,10 +42,11 @@ public abstract class Npc : Actor
             });
     }
 
-    public void MoveNpcTo(int x, int y)
+    public bool MoveNpcTo(int x, int y)
     {
-        if (!Level.InteractWithDoor(x, y, this, true))
-            MoveTo(x, y);
+        if (Level.InteractWithDoor(x, y, this, true)) return false;
+        MoveTo(x, y);
+        return true;
     }
 
     public override void TakeAction()

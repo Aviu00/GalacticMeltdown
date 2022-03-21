@@ -108,7 +108,7 @@ public partial class Level
                 if (GetNonTileObject(x, y) is not null)
                     counter.Timer.Value++;
                 else
-                    InteractWithDoor(x, y);
+                    GetTile(x, y).InteractWithDoor();
             };
         }
         Init();
@@ -448,7 +448,7 @@ public partial class Level
                 if (GetNonTileObject(x, y) is not null)
                     counter.Timer.Value++;
                 else
-                    InteractWithDoor(x, y);
+                    GetTile(x, y).InteractWithDoor();
             });
             _doorCounters.Add((x, y), doorCounter);
         }

@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
-using JsonSubTypes;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Behaviors;
@@ -139,10 +138,7 @@ public class MovementStrategy : Behavior
         Tile nextPathTile =  Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         if (!nextPathTile.IsWalkable && !nextPathTile.IsDoor ||
             Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null) return false;
-        // open door
-        if(nextPathTile.IsDoor && !nextPathTile.IsWalkable)
-            nextPathTile.InteractWithDoor.Invoke();
-        ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
+        if (!ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y)) return true;//door interact
         _nextPathCellNode = _nextPathCellNode.Next;
         if (_nextPathCellNode is null) _wantsToGoTo = null;
         return true;
