@@ -9,7 +9,7 @@ using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
-using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>;
+using ItemDictionary = Dictionary<(int x, int y), Dictionary<Item, int>>;
 
 public class Chunk
 {
@@ -91,28 +91,9 @@ public class Chunk
     public Item FindItem(int x, int y)
     {
         if (!_items.ContainsKey((x, y))) return null;
-        List<(Item item, int amount)> itemList = _items[(x, y)];
+        Dictionary<Item, int> itemList = _items[(x, y)];
         if (itemList == null || itemList.Count == 0) return null;
-        return itemList[0].item;
-    }
-    /// <summary>
-    /// This method is not final!!!
-    /// </summary>
-    public Item GetItem(ItemData data, int amount, int x, int y)
-    {
-        if (!_items.ContainsKey((x, y))) throw new ArgumentException($"no item with data ${data.Id} in x: {x} y: {y}");
-        List<(Item item, int amount)> itemList = _items[(x, y)];
-        int index = itemList.FindIndex(itemTuple => itemTuple.item.Id == data.Id);
-        if (index == -1) throw new ArgumentException($"no item with data ${data.Id} in x: {x} y: {y}");
-        var (item, itemAmount) = itemList[index];
-        int newAmount = itemAmount - amount;
-        if (newAmount < 0)
-            throw new ArgumentException("amount must be not less than amount of item on the ground");
-
-        if (newAmount != 0) return Item.CreateItem(data);
-
-        itemList.RemoveAt(index);
-        return item;
+        return itemList.Keys.First();
     }
 
     public List<Npc> GetNpcs()

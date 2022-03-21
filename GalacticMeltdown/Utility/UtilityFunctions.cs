@@ -5,7 +5,7 @@ using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Utility;
-using ItemDictionary = Dictionary<(int x, int y), List<(Item item, int amount)>>;
+using ItemDictionary = Dictionary<(int x, int y), Dictionary<Item, int>>;
 
 public static class UtilityFunctions
 {
@@ -78,26 +78,19 @@ public static class UtilityFunctions
     private static void AddItemOnMap(ItemDictionary items, Func<Item> getItem, int amount, int x, int y, string id)
     {
         if (amount <= 0) return;
-        List<(Item item, int amount)> itemsList;
-        if (items.ContainsKey((x, y)))
+        if (!items.ContainsKey((x, y)))
         {
-            itemsList = items[(x, y)];
-            int index = itemsList.FindIndex(itemTuple => itemTuple.item.Id == id);
-            if (index != -1)
-            {
-                var valueTuple = itemsList[index];
-                valueTuple.amount += amount;
-                itemsList[index] = valueTuple;
-                return;
-            }
-        }
-        else
-        {
-            itemsList = new();
-            items[(x, y)] = itemsList;
+            items[(x, y)] = new Dictionary<Item, int>();
         }
 
-        itemsList.Add((getItem(), amount));
+        Dictionary<Item, int> cellItems = items[(x, y)];
+        Item item = getItem();
+        if (!cellItems.ContainsKey(item))
+        {
+            cellItems[item] = 0;
+        }
+
+        cellItems[item] += amount;
     }
 
     public static double GetDistance(int x0, int y0, int x1, int y1)
