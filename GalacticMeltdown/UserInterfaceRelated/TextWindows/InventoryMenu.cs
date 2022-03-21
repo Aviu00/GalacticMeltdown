@@ -14,11 +14,27 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 internal class ItemButton : Button
 {
-    public Item Item { get; }
+    public Item StoredItem { get; }
 
     public ItemButton(Item item, Action<Item> openItemScreen) : base(item.Name, "", () => openItemScreen(item))
     {
-        Item = item;
+        StoredItem = item;
+    }
+
+    public override ViewCellData this[int x] 
+    {
+        get
+        {
+            if (x == 0) return new ViewCellData(StoredItem.SymbolData, StoredItem.BgColor ?? BgColor);
+            if (x == 1) return new ViewCellData(null, BgColor);
+            return new ViewCellData((RenderedText[x - 2], TextColor), BgColor);
+        }
+    }
+
+    public override void SetWidth(int width)
+    {
+        base.SetWidth(width);
+        RenderedText = RenderText(width - 2);
     }
 }
 
