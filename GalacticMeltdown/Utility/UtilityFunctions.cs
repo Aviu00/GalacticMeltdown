@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Utility;
