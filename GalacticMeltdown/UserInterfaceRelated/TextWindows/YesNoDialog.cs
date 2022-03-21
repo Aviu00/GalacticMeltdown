@@ -17,8 +17,8 @@ public class YesNoDialog : TextWindow
         LineView.SetLines(new List<ListLine>
         {
             new TextLine(message),
-            new Button("Yes", "", () => { UserInterface.Forget(this); sendInfo(true); }),
-            new Button("No", "", () => { UserInterface.Forget(this); sendInfo(false); }),
+            new Button("Yes", "", () => { Close(); sendInfo(true); }),
+            new Button("No", "", () => { Close(); sendInfo(false); }),
         });
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>

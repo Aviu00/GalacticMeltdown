@@ -33,7 +33,7 @@ public class ChoiceDialog : TextWindow
 
     private void SendChoice(string choice)
     {
-        UserInterface.Forget(this);
+        Close();
         _send(choice);
     }
 }
