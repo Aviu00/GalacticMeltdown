@@ -4,30 +4,30 @@ using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class ItemDialog : ChoiceDialog<string>
+public class ItemDialog : ChoiceDialog<ItemAction>
 {
     private const string Drop = "Drop";
     private const string Equip = "Equip";
     private const string Consume = "Consume";
 
-    private static LinkedList<(string text, string choice)> GetChoices(Item item)
+    private static LinkedList<(string text, ItemAction choice)> GetChoices(Item item)
     {
-        var choices = new LinkedList<(string text, string choice)>();
-        choices.AddFirst(("Drop", Drop));
+        var choices = new LinkedList<(string text, ItemAction choice)>();
+        choices.AddFirst(("Drop", ItemAction.Drop));
         switch (item)
         {
             case EquippableItem:
-                choices.AddFirst(("Equip", Equip));
+                choices.AddFirst(("Equip", ItemAction.Equip));
                 break;
             case ConsumableItem:
-                choices.AddFirst(("Consume", Consume));
+                choices.AddFirst(("Consume", ItemAction.Consume));
                 break;
         }
 
         return choices;
     }
 
-    public ItemDialog(Item item, Action<string> send) : base(GetChoices(item), send)
+    public ItemDialog(Item item, Action<ItemAction> send) : base(GetChoices(item), send)
     {
     }
 }

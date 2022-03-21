@@ -64,17 +64,17 @@ public class InventoryMenu : TextWindow
         itemDialog.Open();
     }
 
-    private void ProcessChoice(Item item, string choice)
+    private void ProcessChoice(Item item, ItemAction choice)
     {
         switch (choice)
         {
-            case Drop:
+            case ItemAction.Drop:
                 _player.Drop(item);
                 break;
-            case Equip:
+            case ItemAction.Equip:
                 _player.Equip((EquippableItem) item);
                 break;
-            case Consume:
+            case ItemAction.Consume:
                 _player.Consume((ConsumableItem) item);
                 break;
         }
