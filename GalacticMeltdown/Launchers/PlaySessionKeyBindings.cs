@@ -35,10 +35,15 @@ public partial class PlaySession
                 {
                     cursor.Close();
                     List<Item> items = _level.GetItems(x, y);
+                    if (items is null || items.Count == 0) return;
                     if (items.Count == 1)
                     {
                         _player.AddToInventory(items[0]);
                         items.Remove(items[0]);
+                    }
+                    else
+                    {
+                        
                     }
                 };
                 UserInterface.AddChild(this, cursor);
