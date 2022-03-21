@@ -83,8 +83,8 @@
         </Behaviors>
     </Enemy>
     <Enemy>
-        <Id>turel</Id>
-        <Name>turel</Name>
+        <Id>turret</Id>
+        <Name>turret</Name>
         <Symbol>T</Symbol>
         <Color>dark_red</Color>
         <BgColor>black</BgColor>
