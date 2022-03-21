@@ -4,7 +4,7 @@ using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 
 namespace GalacticMeltdown.Data;
 
-public static class DataHolder
+public static partial class DataHolder
 {
     public const int ChunkSize = 25;
     public const int ActiveChunkRadius = 2;

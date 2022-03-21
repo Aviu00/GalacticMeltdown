@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using GalacticMeltdown.Actors.Effects;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -14,23 +16,25 @@ namespace GalacticMeltdown.Actors;
 public abstract class Actor : IObjectOnMap
 {
     [JsonProperty] protected abstract string ActorName { get; }
-    [JsonProperty] public Level Level;
+    [JsonProperty] public readonly Level Level;
     [JsonProperty] private bool _turnStopped;
 
     [JsonProperty] protected int _viewRange;
 
     [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
-    [JsonProperty] protected readonly LimitedNumber HpLim;
-    [JsonProperty] protected readonly LimitedNumber EnergyLim;
+    [JsonProperty] public readonly LimitedNumber HpLim;
+    [JsonProperty] public readonly LimitedNumber EnergyLim;
     [JsonProperty] private int _dexterity;
     [JsonProperty] private int _defence;
+
+    [JsonProperty] private List<Effect> _effects;
 
     [JsonProperty]
     public int Hp
     {
         get => HpLim.Value;
-        protected set
+        set
         {
             if (value == HpLim.Value) return;
             HpLim.Value = value;
@@ -54,8 +58,8 @@ public abstract class Actor : IObjectOnMap
     [JsonIgnore]
     public int Dexterity
     {
-        get => _dexterity;
-        protected set
+        get => _dexterity < 0 ? 0 : _dexterity;
+        set
         {
             if (value == _dexterity) return;
             _dexterity = value;
@@ -66,8 +70,8 @@ public abstract class Actor : IObjectOnMap
     [JsonIgnore]
     public int Defence
     {
-        get => _defence;
-        protected set
+        get => _defence < 0 ? 0 : _defence;
+        set
         {
             if (value == _defence) return;
             _defence = value;
@@ -97,6 +101,7 @@ public abstract class Actor : IObjectOnMap
     }
     protected Actor(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
     {
+        _effects = new();
         Level = level;
         HpLim = new LimitedNumber(maxHp, maxHp, 0);
         EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
@@ -144,6 +149,16 @@ public abstract class Actor : IObjectOnMap
     protected void FireStatAffected(Stat stat)
     {
         StatChanged?.Invoke(this, new StatChangeEventArgs(stat));
+    }
+
+    public void AddEffect(Effect effect)
+    {
+        _effects.Add(effect);
+    }
+
+    public void RemoveEffect(Effect effect)
+    {
+        _effects.Remove(effect);
     }
 
     public abstract void TakeAction();

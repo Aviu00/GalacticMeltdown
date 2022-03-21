@@ -116,6 +116,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int minDamage = 0;
         int maxDamage = 0;
         int cooldown = 0;
+        ActorStateChangerDataExtractor.ActorStateChangerData actorStateChangerData = null;
         foreach (XmlNode locNode in node)
         {
             switch (node.Name)
@@ -132,10 +133,13 @@ public class EnemyTypesExtractor : XmlExtractor
                 case "Cooldown":
                     cooldown = Convert.ToInt32(locNode.InnerText);
                     break;
+                case "StateChanger":
+                    actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                    break;
             }
         }
 
-        return new MeleeAttackStrategyData(priority, minDamage, maxDamage, cooldown);
+        return new MeleeAttackStrategyData(priority, minDamage, maxDamage, cooldown, actorStateChangerData);
     }
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
@@ -146,5 +150,6 @@ public record BehaviorData(int? Priority);
 
 public record MovementStrategyData(int? Priority) : BehaviorData(Priority);
 
-public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown)
+public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown,
+        ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData)
     : BehaviorData(Priority);

@@ -13,7 +13,7 @@ public class Counter
     [JsonIgnore] public bool FinishedCounting => Timer.Value == 0;
 
     [JsonConstructor]
-    private Counter()
+    protected Counter()
     {
     }
     public Counter(Level level, int timer, int startingTime, Action<Counter> action = null)
