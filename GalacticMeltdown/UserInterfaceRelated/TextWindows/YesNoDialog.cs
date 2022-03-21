@@ -9,24 +9,10 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class YesNoDialog : TextWindow
+public class YesNoDialog : ChoiceDialog<bool>
 {
-    public YesNoDialog(Action<bool> sendInfo, string message)
+    public YesNoDialog(Action<bool> sendInfo, string message) 
+        : base(new List<(string text, bool choice)> {("Yes", true), ("No", false)}, sendInfo, message)
     {
-        LineView = new LineView();
-        LineView.SetLines(new List<ListLine>
-        {
-            new TextLine(message),
-            new Button("Yes", "", () => { Close(); sendInfo(true); }),
-            new Button("No", "", () => { Close(); sendInfo(false); }),
-        });
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
-            new Dictionary<SelectionControl, Action>
-            {
-                {SelectionControl.Back, Close},
-                {SelectionControl.Down, LineView.SelectNext},
-                {SelectionControl.Up, LineView.SelectPrev},
-                {SelectionControl.Select, LineView.PressCurrent}
-            }));
     }
 }

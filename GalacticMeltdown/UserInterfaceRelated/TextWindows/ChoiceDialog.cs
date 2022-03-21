@@ -14,13 +14,14 @@ public class ChoiceDialog<T> : TextWindow
 {
     private Action<T> _send;
     
-    public ChoiceDialog(IEnumerable<(string text, T choice)> options, Action<T> send)
+    public ChoiceDialog(IEnumerable<(string text, T choice)> options, Action<T> send, string message = null)
     {
         _send = send;
         LineView = new LineView();
-        LineView.SetLines(options.Select(info => new Button(info.text, "", () => SendChoice(info.choice)))
-            .Cast<ListLine>()
-            .ToList());
+        List<ListLine> lines = new List<ListLine>();
+        if (message is not null) lines.Add(new TextLine(message));
+        lines.AddRange(options.Select(info => new Button(info.text, "", () => SendChoice(info.choice))));
+        LineView.SetLines(lines);
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
