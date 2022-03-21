@@ -500,7 +500,7 @@ public partial class Level
     private bool Inbounds(int x, int y)
     {
         var (chunkX, chunkY) = GetChunkCoords(x, y);
-        return x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && y < _chunks.GetLength(1);
+        return x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && chunkY < _chunks.GetLength(1);
     }
     
     private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
