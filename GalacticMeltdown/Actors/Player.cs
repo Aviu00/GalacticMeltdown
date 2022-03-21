@@ -109,12 +109,18 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Wear(EquippableItem item)
     {
-        if (_equipment[item.BodyPart] == item) return;
-        if (_equipment[item.BodyPart] is not null)
+        Item prevItem = _equipment[item.BodyPart];
+        if (prevItem == item) return;
+        if (prevItem is not null)
         {
-            AddToInventory(_equipment[item.BodyPart]);
+            AddToInventory(prevItem);
         }
 
         _equipment[item.BodyPart] = item;
+    }
+
+    public void Drop(Item item)
+    {
+        _inventory[item.Category].Remove(item);
     }
 }
