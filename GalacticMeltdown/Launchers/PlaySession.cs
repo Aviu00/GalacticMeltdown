@@ -17,6 +17,7 @@ public partial class PlaySession
     private const int SaveInterval = 30;
     
     private readonly string _levelName;
+    private readonly int _levelSeed;
     private static Player _player;
     private static IControllable _controlledObject;
     private static Level _level;
@@ -25,7 +26,7 @@ public partial class PlaySession
     private Dictionary<MainControl, Action> _mainActions;
     private Dictionary<CursorControl, Action> _cursorActions;
 
-    public PlaySession(Level level, string levelName)
+    public PlaySession(Level level, string levelName, int levelSeed)
     {
         new Counter(level, SaveInterval, SaveInterval, counter =>
         {
@@ -33,6 +34,7 @@ public partial class PlaySession
             counter.ResetTimer();
         });
         _levelName = levelName;
+        _levelSeed = levelSeed;
         _level = level;
         _player = _level.Player;
         _player.SetControlFunc(() =>
@@ -71,7 +73,7 @@ public partial class PlaySession
 
     public void SaveLevel()
     {
-        FilesystemLevelManager.SaveLevel(_level, _levelName);
+        FilesystemLevelManager.SaveLevel(_level, _levelName, _levelSeed);
     }
 
     private void MoveControlled(int deltaX, int deltaY)

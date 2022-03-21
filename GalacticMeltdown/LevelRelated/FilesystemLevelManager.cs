@@ -19,16 +19,28 @@ public static class FilesystemLevelManager
         string path = GetSaveFolder();
         foreach (var dir in Directory.GetDirectories(path))
         {
-            levelInfos.Add(new LevelInfo(0, Path.GetFileName(dir)));
+            string name = Path.GetFileName(dir);
+            int seed;
+            try
+            {
+                seed = Convert.ToInt32(File.ReadAllText(Path.Combine(path, name, "seed.txt")));
+            }
+            catch (Exception e)
+            {
+                seed = -1;
+            }
+
+            levelInfos.Add(new LevelInfo(seed, name));
         }
+
         return levelInfos;
     }
-    
+
     public static Level CreateLevel(int seed, string name)
     {
         Level level = new MapGenerator(seed).Generate();
         // Save seed and name
-        SaveLevel(level, name);
+        SaveLevel(level, name, seed);
         return level;
     }
 
@@ -38,38 +50,35 @@ public static class FilesystemLevelManager
         return JsonConvert.DeserializeObject<Level>(File.ReadAllText(path));
     }
 
-    public static bool SaveLevel(Level level, string name)
+    public static bool SaveLevel(Level level, string name, int seed)
     {
-        string path = Path.Combine(GetSaveFolder(), name);
-        string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
+        try
         {
-            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
-        });
+            string path = Path.Combine(GetSaveFolder(), name);
+            string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
+            {
+                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+            });
 
-        RemoveLevel(path); //rewrite level
-        Directory.CreateDirectory(path);
-        File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
+            Directory.CreateDirectory(path);
+            File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
+            File.WriteAllText(Path.Combine(path, "seed.txt"), seed.ToString());
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
         // returns false on failure
         return true;
     }
 
     public static bool RemoveLevel(string name)
     {
-        if (!Directory.Exists(Path.Combine(GetSaveFolder(), name))) return false;
-
         try
         {
-            var directory = new DirectoryInfo(name);
-            foreach (FileInfo file in directory.GetFiles())
-            {
-                file.Delete();
-            }
-
-            foreach (DirectoryInfo dir in directory.GetDirectories())
-            {
-                dir.Delete(true);
-            }
+            Directory.Delete(Path.Combine(GetSaveFolder(), name), true);
         }
         catch (Exception e)
         {
