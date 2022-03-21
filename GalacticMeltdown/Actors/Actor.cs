@@ -18,7 +18,7 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] protected abstract string ActorName { get; }
     [JsonProperty] public readonly Level Level;
     [JsonProperty] private bool _turnStopped;
-    private const int ActorStr = 10;
+    public const int ActorStr = 10;
     private const int ActorMoveSpeed = 0;
     [JsonProperty] private int _strength;
     [JsonProperty] private int _moveSpeed;
