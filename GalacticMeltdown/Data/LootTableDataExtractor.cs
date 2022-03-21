@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 
 namespace GalacticMeltdown.Data;
@@ -61,7 +62,7 @@ public class LootTableDataExtractor : XmlExtractor
                     max = Convert.ToInt32(node.InnerText);
                     break;
                 case "Gain":
-                    gain = Convert.ToDouble(node.InnerText);
+                    gain = Convert.ToDouble(node.InnerText, CultureInfo.InvariantCulture);
                     break;
                 case "Limit":
                     limit = Convert.ToInt32(node.InnerText);
