@@ -97,6 +97,7 @@
         <AlertRadius>20</AlertRadius>
         <Behaviors>
             <RangeAttack>
+                <Spread>2</Spread>
                 <MinDamage>20</MinDamage>
                 <MaxDamage>50</MaxDamage>
                 <RangeAttackCost>60</RangeAttackCost>
@@ -127,6 +128,7 @@
                 <Cooldown>4</Cooldown>
             </MeleeAttack>
             <RangeAttack>
+                <Spread>1</Spread>
                 <MinDamage>10</MinDamage>
                 <MaxDamage>50</MaxDamage>
                 <RangeAttackCost>60</RangeAttackCost>
@@ -180,6 +182,7 @@
                 <Cooldown>2</Cooldown>
             </MeleeAttack>
             <RangeAttack>
+                <Spread>1</Spread>
                 <MinDamage>40</MinDamage>
                 <MaxDamage>60</MaxDamage>
                 <RangeAttackCost>70</RangeAttackCost>
