@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -16,7 +17,13 @@ public class RangeAttackStrategy : Behavior
     [JsonProperty] private readonly int _cooldown;
     [JsonProperty] private readonly int _rangeAttackCost;
     [JsonProperty] private readonly int _attackRange;
-    [JsonIgnore] private Counter rangeAtackCounter;
+    [JsonIgnore] private Counter _rangeAttackCounter;
+    private readonly Counter _rangeAtackCounter;
+
+    [JsonConstructor]
+    private RangeAttackStrategy()
+    {
+    }
     
     public RangeAttackStrategy(RangeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
@@ -28,9 +35,16 @@ public class RangeAttackStrategy : Behavior
         ControlledNpc = controlledNpc;
         if (_cooldown > 0)
         {
-            rangeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
+            _rangeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
         }
     }
+    
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        ControlledNpc.Died += _rangeAtackCounter.RemoveCounter;
+    }
+    
     public override bool TryAct()
     {
         if (ControlledNpc.CurrentTarget is null)
@@ -40,12 +54,12 @@ public class RangeAttackStrategy : Behavior
                 ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < _attackRange &&
             Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X,
                 ControlledNpc.CurrentTarget.Y).All(coord => ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable) &&
-            (rangeAtackCounter is null || rangeAtackCounter.FinishedCounting))
+            (_rangeAtackCounter is null || _rangeAtackCounter.FinishedCounting))
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
             ControlledNpc.Energy -= _rangeAttackCost;
-            if (rangeAtackCounter is not null)
-                rangeAtackCounter.ResetTimer();
+            if (_rangeAtackCounter is not null)
+                _rangeAtackCounter.ResetTimer();
             return true;
         }
         return false;
