@@ -48,7 +48,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
     
-    private Dictionary<ItemCategory, List<Item>> _inventory;
+    public Dictionary<ItemCategory, List<Item>> Inventory { get; }
     private Dictionary<BodyPart, EquippableItem> _equipment;
 
     public event EventHandler VisiblePointsChanged;
@@ -60,10 +60,10 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        _inventory = new Dictionary<ItemCategory, List<Item>>();
+        Inventory = new Dictionary<ItemCategory, List<Item>>();
         foreach (ItemCategory val in Enum.GetValues<ItemCategory>())
         {
-            _inventory[val] = new List<Item>();
+            Inventory[val] = new List<Item>();
         }
 
         _equipment = new Dictionary<BodyPart, EquippableItem>();
@@ -104,7 +104,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void AddToInventory(Item item)
     {
-        _inventory[item.Category].Add(item);
+        Inventory[item.Category].Add(item);
     }
 
     public void Equip(EquippableItem item)
@@ -121,7 +121,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Drop(Item item)
     {
-        _inventory[item.Category].Remove(item);
+        Inventory[item.Category].Remove(item);
         Level.AddItem(item, X, Y);
     }
 

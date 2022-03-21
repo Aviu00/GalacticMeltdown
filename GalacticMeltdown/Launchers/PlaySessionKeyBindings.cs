@@ -81,6 +81,7 @@ public partial class PlaySession
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
         {MainControl.ToggleXRay, () => _player.Xray = !_player.Xray},
         {MainControl.OpenPauseMenu, OpenPauseMenu},
+        {MainControl.OpenInventory, OpenInventory}
     };
     }
 }

@@ -33,10 +33,10 @@ public class InventoryMenu : TextWindow
 
     private readonly Player _player;
 
-    public InventoryMenu(Dictionary<ItemCategory, List<Item>> inventory, Player player)
+    public InventoryMenu(Player player)
     {
         _player = player;
-        _inventory = inventory;
+        _inventory = _player.Inventory;
         LineView = new LineView();
         _currentCategory = 0;
         LoadCategoryScreen(Enum.GetValues<ItemCategory>()[_currentCategory]);

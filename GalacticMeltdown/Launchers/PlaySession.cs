@@ -83,8 +83,15 @@ public partial class PlaySession
 
     private void OpenPauseMenu()
     {
-        PauseMenu pauseMenu = new PauseMenu();
+        PauseMenu pauseMenu = new();
         UserInterface.AddChild(this, pauseMenu);
         pauseMenu.Open();
+    }
+
+    private void OpenInventory()
+    {
+        InventoryMenu inventoryMenu = new(_player);
+        UserInterface.AddChild(this, inventoryMenu);
+        inventoryMenu.Open();
     }
 }

@@ -80,6 +80,7 @@ public static partial class DataHolder
             {ConsoleKey.D5, MainControl.StopTurn},
             {ConsoleKey.D, MainControl.DoNothing},
             {ConsoleKey.P, MainControl.PickUpItem},
+            {ConsoleKey.E, MainControl.OpenInventory},
             {ConsoleKey.O, MainControl.InteractWithDoors},
             {ConsoleKey.C, MainControl.UseCursor},
             {ConsoleKey.Multiply, MainControl.IncreaseViewRange},
