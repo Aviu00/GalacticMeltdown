@@ -18,6 +18,8 @@ public class Button : PressableListLine
     
     private readonly Action _action;
 
+    public (string left, string right) Text => (TextLeft, TextRight);
+
     public Button(string textLeft, string textRight, Action action)
     {
         TextLeft = textLeft;
