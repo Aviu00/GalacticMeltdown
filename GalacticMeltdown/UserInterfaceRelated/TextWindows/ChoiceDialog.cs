@@ -14,7 +14,7 @@ public class ChoiceDialog : TextWindow
 {
     private Action<string> _send;
     
-    public ChoiceDialog(List<string> choices, Action<string> send)
+    public ChoiceDialog(IEnumerable<string> choices, Action<string> send)
     {
         _send = send;
         LineView = new LineView();
