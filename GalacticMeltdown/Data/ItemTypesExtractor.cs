@@ -32,6 +32,7 @@ public class ItemTypesExtractor : XmlExtractor
             int hitEnergy = 0;
             int ammoCapacity = 0;
             BodyPart bodyPart = BodyPart.Hands;
+            bool stackable = false;
             AmmoDictionary ammoList = null;
             foreach (XmlNode locNode in node)
             {
@@ -62,20 +63,23 @@ public class ItemTypesExtractor : XmlExtractor
                         ammoList = ParseAmmoDictionary(locNode);
                         break;
                     case "BodyPart":
-                        Enum.TryParse(locNode.InnerText, out bodyPart);
+                        bodyPart = Enum.Parse<BodyPart>(locNode.InnerText);
+                        break;
+                    case "Stackable":
+                        stackable = Convert.ToBoolean(locNode.InnerText);
                         break;
                 }
             }
 
             ItemData itemData = itemCategory switch
             {
-                ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory),
+                ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory, stackable),
                 ItemCategory.WearableItem => new WearableItemData(symbol, name, id, itemCategory, bodyPart),
-                ItemCategory.WeaponItem => new WeaponItemData(symbol, name, id, itemCategory, minHitDamage, maxHitDamage, hitEnergy,
-                    ammoCapacity, ammoList),
-                ItemCategory.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, itemCategory, minHitDamage, maxHitDamage,
-                    hitEnergy, ammoCapacity, ammoList),
-                _ => new ItemData(symbol, name, id, itemCategory)
+                ItemCategory.WeaponItem => new WeaponItemData(symbol, name, id, itemCategory, minHitDamage,
+                    maxHitDamage, hitEnergy, ammoCapacity, ammoList),
+                ItemCategory.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, itemCategory, minHitDamage,
+                    maxHitDamage, hitEnergy, ammoCapacity, ammoList),
+                _ => new ItemData(symbol, name, id, itemCategory, stackable)
             };
             ItemTypes.Add(itemData.Id, itemData);
         }
@@ -119,17 +123,19 @@ public class ItemTypesExtractor : XmlExtractor
     }
 }
 
-public record ItemData(char Symbol, string Name, string Id, ItemCategory Category);
+public record ItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable);
 
-public record WearableItemData (char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart) 
-    : ItemData(Symbol, Name, Id, Category); //WIP
+public record WearableItemData
+    (char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart) : ItemData(Symbol, Name, Id,
+        Category, false); //WIP
 
 public record WeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
-    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) : WearableItemData(Symbol, Name, Id, Category, BodyPart.Hands);
+    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) : WearableItemData(Symbol, Name, Id,
+    Category, BodyPart.Hands);
 
 public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
         int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) //Hit chance not yet included
     : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
 
-public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category) : ItemData(Symbol, Name, Id,
-    Category); //WIP
+public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable) : ItemData(
+    Symbol, Name, Id, Category, Stackable); //WIP
