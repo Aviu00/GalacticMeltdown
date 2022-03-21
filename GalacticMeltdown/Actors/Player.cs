@@ -60,7 +60,7 @@ public class Player : Actor, ISightedObject, IControllable
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
         _inventory = new Dictionary<ItemCategory, List<Item>>();
-        foreach (ItemCategory val in Enum.GetValues(typeof(ItemCategory)))
+        foreach (ItemCategory val in Enum.GetValues<ItemCategory>())
         {
             _inventory[val] = new List<Item>();
         }
