@@ -25,9 +25,12 @@ internal class ItemButton : Button
     {
         get
         {
-            if (x == 0) return new ViewCellData(StoredItem.SymbolData, StoredItem.BgColor ?? BgColor);
-            if (x == 1) return new ViewCellData(null, BgColor);
-            return new ViewCellData((RenderedText[x - 2], TextColor), BgColor);
+            return x switch
+            {
+                0 => new ViewCellData(StoredItem.SymbolData, StoredItem.BgColor ?? BgColor),
+                1 => new ViewCellData(null, BgColor),
+                _ => new ViewCellData((RenderedText[x - 2], TextColor), BgColor)
+            };
         }
     }
 
