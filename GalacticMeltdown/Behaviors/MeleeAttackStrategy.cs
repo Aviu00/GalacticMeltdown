@@ -30,6 +30,7 @@ public class MeleeAttackStrategy : Behavior
         if (data.Cooldown > 0)
         {
             _meleeAttackCounter = new Counter(ControlledNpc.Level, data.Cooldown, 0);
+            ControlledNpc.Died += _meleeAttackCounter.RemoveCounter;
         }
     }
     
