@@ -9,7 +9,7 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class YesNoDialog : Dialog
+public class YesNoDialog : Menu
 {
     public YesNoDialog(Action<bool> sendInfo, string message)
     {
