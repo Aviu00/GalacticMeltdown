@@ -42,7 +42,8 @@ public class RangeAttackStrategy : Behavior
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
+        if(_rangeAttackCounter is not null)
+            ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
     }
     
     public override bool TryAct()
