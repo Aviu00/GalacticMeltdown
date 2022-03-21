@@ -77,7 +77,11 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
         if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
+        {// temporary except of "return false"
+            Actor act = (Actor) Level.GetNonTileObject(X + deltaX, Y + deltaY);
+            act.Hit(50,true, true);
             return false;
+        }//temporary
         if (!NoClip && (tile is null || !tile.IsWalkable))
         {
             Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
