@@ -25,6 +25,8 @@ internal class LevelButton : Button
 
 public class LevelMenu : Menu
 {
+    private bool _noLevels;
+    
     public LevelMenu()
     {
         LineView = new LineView();
@@ -46,12 +48,15 @@ public class LevelMenu : Menu
         List<LevelInfo> levelInfos = FilesystemLevelManager.GetLevelInfo();
         if (!levelInfos.Any())
         {
+            _noLevels = true;
             LineView.SetLines(new List<ListLine>
             {
                 new TextLine("Press C to create a level")
             });
             return;
         }
+
+        _noLevels = false;
         List<Button> buttons = new(levelInfos.Select(levelInfo => new LevelButton(levelInfo, TryStartLevel)));
         LineView.SetLines(buttons.Cast<ListLine>().ToList());
     }
@@ -65,6 +70,7 @@ public class LevelMenu : Menu
 
     private void OpenLevelRemovalDialog()
     {
+        if (_noLevels) return;
         YesNoDialog levelRemovalDialog = new(RemoveSelectedLevel, "Are you sure you want to remove this level?");
         UserInterface.AddChild(this, levelRemovalDialog);
         levelRemovalDialog.Open();
