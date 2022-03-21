@@ -56,7 +56,6 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        
     }
 
     public bool TryMove(int deltaX, int deltaY)
