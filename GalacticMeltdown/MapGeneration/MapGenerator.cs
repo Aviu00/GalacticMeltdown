@@ -193,6 +193,8 @@ public class MapGenerator
 
             (previousChunk, currentChunk) = (currentChunk, currentChunk.GetNextRoom(previousChunk));
         }
+
+        startPoint!.Difficulty = 0;
     }
 
     private void FillMap()
@@ -253,10 +255,19 @@ public class MapGenerator
 
     private void FinalizeRoom(int x, int y)
     {
-        int roomType = CalculateRoomType(x, y);
-        var matchingRooms =
-            _roomTypes.Where(room => ValidateRoomType(room.Type, roomType) && Chance(room.Chance, _rng)).ToArray();
-        RoomTypes room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
+        RoomTypes room;
+        if (_tempMap[x, y].IsEndPoint || _tempMap[x, y].IsStartPoint)
+        {
+            room = _roomTypes[0];
+        }
+        else
+        {
+            int roomType = CalculateRoomType(x, y);
+            var matchingRooms =
+                _roomTypes.Where(r => ValidateRoomType(r.Type, roomType) && Chance(r.Chance, _rng)).ToArray();
+            room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
+        }
+
         var roomData = (TileInformation[,]) room.RoomInterior.Clone();
         RotateRoomPattern(x, y, roomData, room);
         Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
