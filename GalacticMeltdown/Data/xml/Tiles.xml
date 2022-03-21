@@ -79,4 +79,23 @@
         <IsConnection>True</IsConnection>
         <MoveCost>100</MoveCost>
     </Tile>
+    <Tile>
+        <Id>gate-closed</Id>
+        <Name>closed fence gate</Name>
+        <Symbol>%</Symbol>
+        <Color>blue</Color>
+        <IsWalkable>False</IsWalkable>
+        <IsTransparent>False</IsTransparent>
+        <IsConnection>True</IsConnection>
+    </Tile>
+    <Tile>
+        <Id>gate-open</Id>
+        <Name>open fence gate</Name>
+        <Symbol>_</Symbol>
+        <Color>blue</Color>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+        <IsConnection>True</IsConnection>
+        <MoveCost>100</MoveCost>
+    </Tile>
 </Tiles>
