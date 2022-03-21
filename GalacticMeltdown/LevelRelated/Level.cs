@@ -69,6 +69,12 @@ public partial class Level
     private ChunkEventListener _listener;
     [JsonProperty] private Dictionary<(int x, int y), Counter> _doorCounters;
 
+    [JsonProperty] private int _currentlyActiveIndex;
+    [JsonProperty] private bool _energySpent;
+    [JsonIgnore] public bool IsSaving;
+    [JsonProperty] private List<Actor> _savedActors;
+
+
     [JsonConstructor]
     private Level()
     {
@@ -94,6 +100,7 @@ public partial class Level
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
         ControllableObjects = new ObservableCollection<IControllable> {Player};
         LevelView = new LevelView(this, Player);
+        _currentlyActiveIndex = 0;
         Init();
     }
 
@@ -139,20 +146,31 @@ public partial class Level
         _listener.NpcInvolvedInTurn += NpcInvolvedInTurnHandler;
 
         List<Actor> currentlyActive;
-        var energySpent = false;
-        while ((currentlyActive = GetActive(inActiveChunks)).Any())
+        while ((currentlyActive = _savedActors ?? GetActive(inActiveChunks)).Any())
         {
-            foreach (Actor actor in currentlyActive)
+            _savedActors = null;
+            for (; _currentlyActiveIndex < currentlyActive.Count; _currentlyActiveIndex++)
             {
+                Actor actor = currentlyActive[_currentlyActiveIndex];
                 // A player may have reached the finish or died
-                if (!IsActive) return FinishMapTurn();
+                if (!IsActive)
+                {
+                    _currentlyActiveIndex = 0;
+                    return FinishMapTurn();
+                }
                 // An actor could die due to actions of another actor
                 if (actor.IsActive) actor.TakeAction();
+                if (IsSaving)
+                {
+                    _savedActors = currentlyActive;
+                    return false;
+                }
             }
+            _currentlyActiveIndex = 0;
 
-            if (!energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
+            if (!_energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
 
-            energySpent = false;
+            _energySpent = false;
 
             inActiveChunks = GetActorsInActiveChunks();
             foreach (Actor actor in inActiveChunks.Where(actor => !involved.Contains(actor))) WatchActor(actor);
@@ -200,7 +218,7 @@ public partial class Level
             if (!involved.Contains(npc)) involved.Add((Npc) npc);
         }
         
-        void SpentEnergyHandler(object sender, EventArgs _) => energySpent = true;
+        void SpentEnergyHandler(object sender, EventArgs _) => _energySpent = true;
     }
     
     public IDrawable GetDrawable(int x, int y)

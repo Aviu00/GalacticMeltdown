@@ -18,7 +18,7 @@ public class PauseMenu : Menu
         LineView.SetLines(new List<ListLine>
         {
             new Button("Back", "", Close),
-            new Button("To main menu", "", Game.OpenMainMenu)
+            new Button("To main menu", "", Game.SaveAndQuit)
         });
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>()
         {
