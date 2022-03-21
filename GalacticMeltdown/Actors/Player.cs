@@ -59,14 +59,11 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        _inventory = new Dictionary<ItemCategory, List<Item>>
+        _inventory = new Dictionary<ItemCategory, List<Item>>();
+        foreach (ItemCategory val in Enum.GetValues(typeof(ItemCategory)))
         {
-            {ItemCategory.Item, new List<Item>()},
-            {ItemCategory.RangedWeaponItem, new List<Item>()},
-            {ItemCategory.UsableItem, new List<Item>()},
-            {ItemCategory.WeaponItem, new List<Item>()},
-            {ItemCategory.WearableItem, new List<Item>()},
-        };
+            _inventory[val] = new List<Item>();
+        }
     }
 
     public bool TryMove(int deltaX, int deltaY)
