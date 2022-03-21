@@ -19,7 +19,9 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] public readonly Level Level;
     [JsonProperty] private bool _turnStopped;
     private const int ActorStr = 10;
-    private int _strength;
+    private const int ActorMoveSpeed = 0;
+    [JsonProperty] private int _strength;
+    [JsonProperty] private int _moveSpeed;
     public int Strength
     {
         get => _strength;
@@ -28,6 +30,16 @@ public abstract class Actor : IObjectOnMap
             if (value == _strength) return;
             _strength = value;
             FireStatAffected(Stat.Strength);
+        }
+    }
+    public int MoveSpeed
+    {
+        get => _strength;
+        set
+        {
+            if (value == _moveSpeed) return;
+            _moveSpeed = value;
+            FireStatAffected(Stat.MoveSpeed);
         }
     }
 
@@ -124,6 +136,7 @@ public abstract class Actor : IObjectOnMap
         Y = y;
         _turnStopped = false;
         Strength = ActorStr;
+        MoveSpeed = ActorMoveSpeed;
     }
 
     public virtual bool Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
@@ -154,7 +167,16 @@ public abstract class Actor : IObjectOnMap
         X = x;
         Y = y;
         Tile tile = Level.GetTile(x, y);
-        if (tile is not null) Energy -= tile.MoveCost;
+        if (tile is not null)
+        {
+            if (tile.MoveCost - MoveSpeed <= 0)
+                Energy -= 1;
+            else
+            {
+                Energy -= tile.MoveCost - MoveSpeed;
+            }
+               
+        }
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
 
