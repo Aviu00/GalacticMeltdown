@@ -17,6 +17,8 @@ public static class FilesystemLevelManager
     {
         List<LevelInfo> levelInfos = new();
         string path = GetSaveFolder();
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path!);
         foreach (var dir in Directory.GetDirectories(path))
         {
             string name = Path.GetFileName(dir);
