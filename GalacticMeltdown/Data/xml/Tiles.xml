@@ -85,7 +85,7 @@
         <Symbol>%</Symbol>
         <Color>blue</Color>
         <IsWalkable>False</IsWalkable>
-        <IsTransparent>False</IsTransparent>
+        <IsTransparent>True</IsTransparent>
         <IsConnection>True</IsConnection>
     </Tile>
     <Tile>
@@ -97,5 +97,29 @@
         <IsTransparent>True</IsTransparent>
         <IsConnection>True</IsConnection>
         <MoveCost>100</MoveCost>
+    </Tile>
+    <Tile>
+        <Id>table</Id>
+        <Name>table</Name>
+        <Symbol>T</Symbol>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+        <MoveCost>300</MoveCost>
+    </Tile>
+    <Tile>
+        <Id>chair</Id>
+        <Name>chair</Name>
+        <Symbol>h</Symbol>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+        <MoveCost>200</MoveCost>
+    </Tile>
+    <Tile>
+        <Id>cabinet</Id>
+        <Name>cabinet</Name>
+        <Symbol>=</Symbol>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+        <MoveCost>250</MoveCost>
     </Tile>
 </Tiles>
