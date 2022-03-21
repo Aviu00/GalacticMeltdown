@@ -19,7 +19,7 @@ public class ItemDialog : ChoiceDialog
             case EquippableItem:
                 choices.AddFirst(Equip);
                 break;
-            case UsableItem:
+            case ConsumableItem:
                 choices.AddFirst(Use);
                 break;
         }

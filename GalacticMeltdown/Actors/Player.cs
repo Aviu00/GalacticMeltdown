@@ -124,4 +124,9 @@ public class Player : Actor, ISightedObject, IControllable
         _inventory[item.Category].Remove(item);
         Level.AddItem(item, X, Y);
     }
+
+    public void Consume(ConsumableItem item)
+    {
+        item.Consume(this);
+    }
 }
