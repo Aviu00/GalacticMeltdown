@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
@@ -23,7 +22,7 @@ public class RangeAttackStrategy : Behavior
     private RangeAttackStrategy()
     {
     }
-    
+
     public RangeAttackStrategy(RangeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         _minDamage = data.MinDamage;
@@ -38,24 +37,20 @@ public class RangeAttackStrategy : Behavior
             ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
         }
     }
-    
+
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        if(_rangeAttackCounter is not null)
+        if (_rangeAttackCounter is not null)
             ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
     }
-    
+
     public override bool TryAct()
     {
         if (ControlledNpc.CurrentTarget is null)
             return false;
         // if there is nothing what can stop projectile
-        if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
-                ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) < _attackRange &&
-            Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X,
-                ControlledNpc.CurrentTarget.Y).All(coord => ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable) &&
-            (_rangeAttackCounter is null || _rangeAttackCounter.FinishedCounting))
+        if (CanAttack())
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
             ControlledNpc.Energy -= _rangeAttackCost;
@@ -63,11 +58,36 @@ public class RangeAttackStrategy : Behavior
                 _rangeAttackCounter.ResetTimer();
             return true;
         }
+
         return false;
     }
+
     // TODO: make advanced random damage 
     private int RandomDamage(int minDamage, int maxDamage)
     {
         return Random.Shared.Next(minDamage, maxDamage + 1);
+    }
+
+    private bool CanAttack()
+    {
+        // can't attack due to cooldown
+        if (_rangeAttackCounter is not null && !_rangeAttackCounter.FinishedCounting)
+            return false;
+        // can't attack due to range
+        if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
+                ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) > _attackRange)
+            return false;
+        foreach (var coord in Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y,
+                     ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
+        {
+            // shoot to wall (or etc) or friendly fire
+            if (ControlledNpc.Level.GetNonTileObject(coord.x, coord.y) is not null &&
+                 ControlledNpc.Level.GetNonTileObject(coord.x, coord.y) is Enemy ||
+                !ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
