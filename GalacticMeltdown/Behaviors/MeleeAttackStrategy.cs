@@ -14,10 +14,8 @@ public class MeleeAttackStrategy : Behavior
     [JsonProperty] private const int DefaultPriority = 20;
     [JsonProperty] private readonly int _minDamage;
     [JsonProperty] private readonly int _maxDamage;
-    [JsonProperty] private readonly int _cooldown;
     [JsonProperty] private readonly int _meleeAttackCost;
     [JsonIgnore] private Counter _meleeAttackCounter;
-    private readonly Counter _meleeAtackCounter;
 
     [JsonConstructor]
     private MeleeAttackStrategy()
@@ -27,19 +25,18 @@ public class MeleeAttackStrategy : Behavior
     {
         _minDamage = data.MinDamage;
         _maxDamage = data.MaxDamage;
-        _cooldown = data.Cooldown;
         _meleeAttackCost = data.MeleeAttackCost;
         ControlledNpc = controlledNpc;
-        if (_cooldown > 0)
+        if (data.Cooldown > 0)
         {
-            _meleeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
+            _meleeAttackCounter = new Counter(ControlledNpc.Level, data.Cooldown, 0);
         }
     }
     
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        ControlledNpc.Died += _meleeAtackCounter.RemoveCounter;
+        ControlledNpc.Died += _meleeAttackCounter.RemoveCounter;
     }
 
     public override bool TryAct()
@@ -48,17 +45,16 @@ public class MeleeAttackStrategy : Behavior
             return false;
         if (Algorithms.GetPointsOnSquareBorder(ControlledNpc.X, ControlledNpc.Y, 1).
                 Contains((ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)) &&
-            (_meleeAtackCounter is null || _meleeAtackCounter.FinishedCounting))
+            (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting))
         {
             ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), false, false);
             ControlledNpc.Energy -= _meleeAttackCost;
-            if (_meleeAtackCounter is not null)
-                _meleeAtackCounter.ResetTimer();
+            if (_meleeAttackCounter is not null)
+                _meleeAttackCounter.ResetTimer();
         }
 
         return false;
     }
-    // TODO: make advanced random damage 
     private int RandomDamage(int minDamage, int maxDamage)
     {
         return Random.Shared.Next(minDamage, maxDamage + 1);
