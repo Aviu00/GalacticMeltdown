@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
@@ -25,6 +26,25 @@ public partial class PlaySession
         {MainControl.MoveNw, () => MoveControlled(-1, 1)},
         {MainControl.StopTurn, () => {_player.StopTurn(); UserInterface.YieldControl(this);}},
         {MainControl.DoNothing, () => UserInterface.YieldControl(this)},
+        {
+            MainControl.PickUpItem, () =>
+            {
+                Cursor cursor = _levelView.Cursor;
+                cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
+                cursor.Action = (_, _, x, y) =>
+                {
+                    cursor.Close();
+                    List<Item> items = _level.GetItems(x, y);
+                    if (items.Count == 1)
+                    {
+                        _player.AddToInventory(items[0]);
+                        items.Remove(items[0]);
+                    }
+                };
+                UserInterface.AddChild(this, cursor);
+                cursor.Start();
+            }
+        },
         {
             MainControl.UseCursor, () =>
             {
