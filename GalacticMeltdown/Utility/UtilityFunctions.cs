@@ -64,18 +64,18 @@ public static class UtilityFunctions
         return builder.ToString();
     }
 
-    public static void AddItemOnMap(ItemDictionary items, Item item, int amount, int x, int y, bool copy)
+    public static void AddItemOnMap(ItemDictionary items, Item item, int x, int y, bool copy)
     {
         Func<Item> func = copy ? () => Item.CreateItem(item) : () => item;
-        AddItemOnMap(items, func, amount, x, y, item.Id);
+        AddItemOnMap(items, func, x, y);
     }
 
-    public static void AddItemOnMap(ItemDictionary items, ItemData data, int amount, int x, int y)
+    public static void AddItemOnMap(ItemDictionary items, ItemData data, int x, int y)
     {
-        AddItemOnMap(items, () => Item.CreateItem(data), amount, x, y, data.Id);
+        AddItemOnMap(items, () => Item.CreateItem(data), x, y);
     }
 
-    private static void AddItemOnMap(ItemDictionary items, Func<Item> getItem, int amount, int x, int y, string id)
+    private static void AddItemOnMap(ItemDictionary items, Func<Item> getItem, int x, int y)
     {
         if (!items.ContainsKey((x, y)))
         {
