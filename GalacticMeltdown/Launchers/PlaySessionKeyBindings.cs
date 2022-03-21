@@ -28,27 +28,23 @@ public partial class PlaySession
         {
             MainControl.UseCursor, () =>
             {
-                _controlledObject = _levelView.Cursor;
-                UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
+                Cursor cursor = _levelView.Cursor;
+                UserInterface.AddChild(this, cursor);
+                cursor.Start();
             }
         },
         {
             MainControl.InteractWithDoors, () =>
             {
-                _controlledObject = _levelView.Cursor;
-                _levelView.Cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
-                _levelView.Cursor.Action = (_, _, x, y) =>
+                Cursor cursor = _levelView.Cursor;
+                cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
+                cursor.Action = (_, _, x, y) =>
                 {
-                    _controlledObject = _player;
-                    _levelView.SetFocus(_player);
-                    _levelView.RemoveCursor();
-                    UserInterface.SetController(this, new ActionHandler(
-                        UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
+                    cursor.Close();
                     if(_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
-                };  
-                UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
+                };
+                UserInterface.AddChild(this, cursor);
+                cursor.Start();
             }
         },
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},

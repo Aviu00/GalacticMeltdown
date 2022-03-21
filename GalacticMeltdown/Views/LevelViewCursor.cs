@@ -4,8 +4,8 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
-using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
@@ -16,7 +16,7 @@ public partial class LevelView
     private HashSet<(int, int)> _cursorLinePoints = new();
     private Cursor _cursor;
 
-    private (int, int)? _cursorLineStartCoords;
+    private IFocusable _prevFocus;
 
     [JsonIgnore]
     public Cursor Cursor
@@ -24,7 +24,7 @@ public partial class LevelView
         get
         {
             if (_cursor is not null) return _cursor;
-            _cursor = new Cursor(_focusObject.X, _focusObject.Y, GetCursorStartCoords, () => ViewBounds);
+            _cursor = new Cursor(_focusObject.X, _focusObject.Y, GetCursorStartCoords, () => ViewBounds, this);
             _cursor.Moved += CursorMoveHandler;
             NeedRedraw?.Invoke(this, EventArgs.Empty);
             return _cursor;
@@ -48,10 +48,12 @@ public partial class LevelView
 
     public void RemoveCursor()
     {
-        if (_cursor.InFocus) return;
-        DrawCursorLine = false;
+        if (ReferenceEquals(_cursor, _focusObject)) ToggleCursorFocus();
+        _drawCursorLine = false;
+        _cursorLinePoints.Clear();
         _cursor.Moved -= CursorMoveHandler;
         _cursor = null;
+        _prevFocus = null;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
@@ -80,6 +82,31 @@ public partial class LevelView
 
     private (int, int) GetCursorStartCoords()
     {
-        return _cursorLineStartCoords ?? (_focusObject.X, _focusObject.Y);
+        return _prevFocus is not null ? (_prevFocus.X, _prevFocus.Y) : (_focusObject.X, _focusObject.Y);
+    }
+
+    public void ToggleCursorLine()
+    {
+        _drawCursorLine = !_drawCursorLine;
+        _cursorLinePoints.Clear();
+        if (_drawCursorLine) CalculateCursorLinePoints();
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+
+    public void ToggleCursorFocus()
+    {
+        if (_cursor is null) return;
+        if (!ReferenceEquals(_cursor, _focusObject))
+        {
+            _prevFocus = _focusObject;
+            SetFocus(_cursor);
+        }
+        else
+        {
+            SetFocus(_prevFocus);
+            _prevFocus = null;
+            _cursor.MoveInbounds();
+        }
+        
     }
 }
