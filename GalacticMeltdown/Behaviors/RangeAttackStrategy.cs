@@ -81,7 +81,8 @@ public class RangeAttackStrategy : Behavior
                      ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
         {
             // shoot to wall (or etc) or friendly fire
-            if (ControlledNpc.Level.GetNonTileObject(coord.x, coord.y) is Enemy ||
+            if (ControlledNpc.Level.GetNonTileObject(coord.x, coord.y) is Enemy &&
+                 coord != (ControlledNpc.X, ControlledNpc.Y) ||
                 !ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable)
             {
                 return false;

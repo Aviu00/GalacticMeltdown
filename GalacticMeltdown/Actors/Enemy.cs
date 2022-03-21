@@ -43,7 +43,8 @@ public class Enemy : Npc
             Behavior behavior = behaviorData switch
             {
                 MovementStrategyData movementStrategyData => new MovementStrategy(movementStrategyData, this),
-                MeleeAttackStrategyData meleeAttackStrategyData => new MeleeAttackStrategy(meleeAttackStrategyData, this), 
+                MeleeAttackStrategyData meleeAttackStrategyData => new MeleeAttackStrategy(meleeAttackStrategyData, this),
+                RangeAttackStrategyData rangeAttackStrategyData => new RangeAttackStrategy(rangeAttackStrategyData, this), 
                 _ => null
             };
 
