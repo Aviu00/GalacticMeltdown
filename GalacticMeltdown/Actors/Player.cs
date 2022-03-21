@@ -11,7 +11,7 @@ public class Player : Actor, ISightedObject, IControllable
     private const int PlayerDexterity = 16;
     private const int PlayerDefence = 4;
     private const int PlayerViewRange = 20;
-    private const int PlayerStr = 10;
+    //private const int PlayerStr = 10;
 
     [JsonProperty] protected override string ActorName => "Player";
     private Action _giveControlToUser;
@@ -70,7 +70,7 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        _strength = PlayerStr;
+        _strength = Str;
     }
 
     public bool TryMove(int deltaX, int deltaY)

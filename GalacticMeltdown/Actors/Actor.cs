@@ -16,6 +16,7 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] protected abstract string ActorName { get; }
     [JsonProperty] public Level Level;
     [JsonProperty] private bool _turnStopped;
+    [JsonIgnore] public int Str = 10;
 
     [JsonProperty] protected int _viewRange;
 
