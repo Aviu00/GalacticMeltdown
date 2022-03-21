@@ -11,7 +11,7 @@ namespace GalacticMeltdown.Behaviors;
 public class RangeAttackStrategy : Behavior
 {
     [JsonProperty] protected override string Strategy => "RangeAttack";
-    [JsonProperty] private const int DefaultPriority = 20;
+    [JsonProperty] private const int DefaultPriority = 10;
     [JsonProperty] private readonly int _minDamage;
     [JsonProperty] private readonly int _maxDamage;
     [JsonProperty] private readonly int _cooldown;
