@@ -44,8 +44,8 @@ public class MeleeAttackStrategy : Behavior
     {
         if (ControlledNpc.CurrentTarget is null)
             return false;
-        if ( Math.Abs(ControlledNpc.X - ControlledNpc.CurrentTarget.X) + 
-             Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 3 &&
+        if ( Math.Abs(ControlledNpc.X - ControlledNpc.CurrentTarget.X) < 2 && 
+             Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 2 &&
             (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting))
         {
             ControlledNpc.CurrentTarget.Hit(ControlledNpc, RandomDamage(_minDamage, _maxDamage));
