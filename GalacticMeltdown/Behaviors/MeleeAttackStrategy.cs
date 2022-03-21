@@ -3,17 +3,19 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
+using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Behaviors;
 
 public class MeleeAttackStrategy : Behavior
 {
-    private const int DefaultPriority = 20;
-    private readonly int _minDamage;
-    private readonly int _maxDamage;
-    private readonly int _cooldown;
-    private readonly int _meleeAttackCost;
-    private Counter meleeAtackCounter;
+    [JsonProperty] protected override string Strategy => "MeleeAttack";
+    [JsonProperty] private const int DefaultPriority = 20;
+    [JsonProperty] private readonly int _minDamage;
+    [JsonProperty] private readonly int _maxDamage;
+    [JsonProperty] private readonly int _cooldown;
+    [JsonProperty] private readonly int _meleeAttackCost;
+    [JsonIgnore] private Counter meleeAtackCounter;
     
     public MeleeAttackStrategy(MeleeAttackStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
@@ -24,7 +26,7 @@ public class MeleeAttackStrategy : Behavior
         ControlledNpc = controlledNpc;
         if (_cooldown > 0)
         {
-            meleeAtackCounter = new Counter(ControlledNpc.Level, _cooldown);   
+            meleeAtackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);   
         }
     }
     
