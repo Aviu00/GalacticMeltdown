@@ -1,32 +1,38 @@
 using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Launchers;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.UserInterfaceRelated.Menus;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class YesNoDialog : Dialog
+public class MainMenu : Menu
 {
-    public YesNoDialog(Action<bool> sendInfo, string message)
+    public MainMenu()
     {
         LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
-            new TextLine(message),
-            new Button("Yes", "", () => { UserInterface.Forget(this); sendInfo(true); }),
-            new Button("No", "", () => { UserInterface.Forget(this); sendInfo(false); }),
+            new Button("Select level", "", OpenLevelMenu),
+            new Button("Quit", "", Game.Quit)
         });
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
-                {SelectionControl.Back, Close},
                 {SelectionControl.Down, LineView.SelectNext},
                 {SelectionControl.Up, LineView.SelectPrev},
                 {SelectionControl.Select, LineView.PressCurrent}
             }));
+    }
+
+    private void OpenLevelMenu()
+    {
+        LevelMenu levelMenu = new();
+        UserInterface.AddChild(this, levelMenu);
+        levelMenu.Open();
     }
 }

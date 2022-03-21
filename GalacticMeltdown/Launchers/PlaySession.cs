@@ -6,7 +6,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
-using GalacticMeltdown.UserInterfaceRelated.Menus;
+using GalacticMeltdown.UserInterfaceRelated.TextWindows;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 

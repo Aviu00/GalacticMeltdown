@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
-using GalacticMeltdown.UserInterfaceRelated.Menus;
+using GalacticMeltdown.UserInterfaceRelated.TextWindows;
 using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Launchers;

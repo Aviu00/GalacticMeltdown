@@ -1,7 +1,7 @@
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.UserInterfaceRelated.Menus;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 public abstract class Menu
 {
