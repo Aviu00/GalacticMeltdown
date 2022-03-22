@@ -15,7 +15,7 @@ namespace GalacticMeltdown.Launchers;
 
 public partial class PlaySession
 {
-    private const int SaveInterval = 30;
+    private const int SaveInterval = 100;
     
     private readonly string _levelName;
     private readonly int _levelSeed;

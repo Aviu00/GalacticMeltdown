@@ -27,7 +27,9 @@ public static partial class DataHolder
         ModifyDefenceEffect,
         ModifyStrengthEffect,
         ModifySpeedEffect,
-        ModifyViewRangeEffect
+        ModifyViewRangeEffect,
+        AdrenalineEffect,
+        MassiveHealEffect
     }
 
     public static readonly Dictionary<ActorStateChangerType, Action<Actor, int, int>> ActorStateChangers = new()
@@ -116,14 +118,14 @@ public static partial class DataHolder
         {
             ActorStateChangerType.ModifyMaxHealthEffect, (actor, power, duration) =>
             {
-                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyDexterity);
+                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyMaxHealth);
                 actor.AddEffect(effect);
             }
         },
         {
             ActorStateChangerType.ModifyDefenceEffect, (actor, power, duration) =>
             {
-                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyMaxHealth);
+                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyDefence);
                 actor.AddEffect(effect);
             }
         },
@@ -152,6 +154,23 @@ public static partial class DataHolder
             ActorStateChangerType.ModifyViewRangeEffect, (actor, power, duration) =>
             {
                 FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyViewRange);
+                actor.AddEffect(effect);
+            }
+        },
+        {
+            ActorStateChangerType.AdrenalineEffect, (actor, power, duration) =>
+            {
+                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyMaxEnergy);
+                actor.AddEffect(effect);
+                FlatEffect effect1 = new FlatEffect(actor, 1, 7, ActorStateChangerType.PoisonEffect);
+                actor.AddEffect(effect1);
+            }
+        },
+        {
+            ActorStateChangerType.MassiveHealEffect, (actor, power, duration) =>
+            {
+                actor.Hp += power;
+                ContinuousEffect effect = new ContinuousEffect(actor, 1, duration, ActorStateChangerType.Heal);
                 actor.AddEffect(effect);
             }
         },

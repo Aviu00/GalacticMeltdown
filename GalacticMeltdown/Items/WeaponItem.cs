@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
@@ -35,5 +36,13 @@ public class WeaponItem : EquippableItem
     {
         _itemData = (WeaponItemData)DataHolder.ItemTypes[id];
         AmmoAmount = ammoAmount;
+    }
+
+    public override void Equip(Actor actor)
+    {
+    }
+
+    public override void UnEquip(Actor actor)
+    {
     }
 }

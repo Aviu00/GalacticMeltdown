@@ -37,6 +37,42 @@
     </Room>
     <Room>
         <Pattern>
+            ,,,#,,,,,,,,,,,,,,,,#,,,
+            ####,,,,,,,,,,,,,,,,####
+            ,,HH,,,,,,,,,,,,,,,,HH,,
+            ,,,HH,,,,,,,,,,,,,,HH,,,
+            ,,,,HH,,,,,,,,,,,,HH,,,,
+            ,,,,,HH,,,,,,,,,,HH,,,,,
+            ,,,,,,HH,,,,,,,,HH,,,,,,
+            ,,,,,,,HH,,,,,,HH,,,,,,,
+            ,,,,,,,,HH,,,,HH,,,,,,,,
+            ,,,,,,,,,HH,,HH,,,,,,,,,
+            ,,,,,,,,,,H%%H,,,,,,,,,,
+            ,,,,,,,,,,%,,%,,,,,,,,,,
+            ,,,,,,,,,,%1,%,,,,,,,,,,
+            ,,,,,,,,,,H%%H,,,,,,,,,,
+            ,,,,,,,,,HH,,HH,,,,,,,,,
+            ,,,,,,,,HH,,,,HH,,,,,,,,
+            ,,,,,,,HH,,,,,,HH,,,,,,,
+            ,,,,,,HH,,,,,,,,HH,,,,,,
+            ,,,,,HH,,,,,,,,,,HH,,,,,
+            ,,,,HH,,,,,,,,,,,,HH,,,,
+            ,,,HH,,,,,,,,,,,,,,HH,,,
+            ,,HH,,,,,,,,,,,,,,,,HH,,
+            ####,,,,,,,,,,,,,,,,####
+            ,,,#,,,,,,,,,,,,,,,,#,,,
+        </Pattern>
+        <Type>4</Type>
+        <RotationalSymmetry>True</RotationalSymmetry>
+        <CentralSymmetry>True</CentralSymmetry>
+        <Chance>0</Chance>
+        <Terrain>
+            <Tile char="," tile_id="nospawnfloor"/>
+            <Tile char="1" tile_id="nospawnfloor" loot_id="wood_plank"/>
+        </Terrain>
+    </Room>
+    <Room>
+        <Pattern>
             ........................
             ........................
             ........................
@@ -226,16 +262,16 @@
             ..N..........#..........
             nn####+####..####+####..
             ..N.......#..#.......#..
+            ..N.......#..#..3....#..
+            ..N.....1.#..#.......#..
             ..N.......#..#.......#..
-            ..N.......#..#.......#..
-            ..N.......#..#.......#..
-            nn#.......#..#.......#..
+            nn#..4....#..#....2..#..
             ..#.......#..#.......#..
             ..#.......#..#.......#..
-            ..#.......#..#.......#ss
+            ..#.......#..#.....4.#ss
+            ..#.....3.#..#.1.....S..
             ..#.......#..#.......S..
-            ..#.......#..#.......S..
-            ..#.......#..#.......S..
+            ..#.2.....#..#.......S..
             ..#.......#..#.......S..
             ..####+####..####+####ss
             ..........#..........S..
@@ -246,6 +282,12 @@
         </Pattern>
         <Type>4</Type>
         <CentralSymmetry>True</CentralSymmetry>
+        <Terrain>
+            <Tile char="1" tile_id="floor" loot_id="consumable_table_1" loot_chance="10" gain="1.5" limit="70"/>
+            <Tile char="2" tile_id="floor" loot_id="consumable_table_2" loot_chance="10" gain="1.5" limit="70"/>
+            <Tile char="3" tile_id="floor" loot_id="consumable_table_3" loot_chance="10" gain="1.5" limit="70"/>
+            <Tile char="4" tile_id="floor" loot_id="weapon_distr_1" loot_chance="10" gain="1" limit="60"/>
+        </Terrain>
     </Room>
     <Room>
         <Pattern>
@@ -347,7 +389,7 @@
         <Terrain>
             <Tile char="1" tile_id="floor" loot_id="gasoline_jerrycan" loot_chance="10" gain="2" limit="70"/>
             <Tile char="2" tile_id="floor" loot_id="energy_cells" loot_chance="0" gain="1.5" limit="60"/>
-            <Tile char="3" tile_id="shelf" loot_id="consumable_table_3" loot_chance="15" gain="2" limit="100"/>
+            <Tile char="3" tile_id="shelf" loot_id="consumable_table_3" loot_chance="30" gain="2" limit="100"/>
         </Terrain>
     </Room>
     <Room>
@@ -385,7 +427,7 @@
             <Tile char="2" tile_id="water" loot_id="consumable_table_3" loot_chance="10" gain="2" limit="80"/>
             <Tile char="3" tile_id="water" loot_id="weapon_distr_1" loot_chance="10" gain="2" limit="80"/>
             <Tile char="4" tile_id="floor" loot_id="weapon_distr_2" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="6" tile_id="shelf" loot_id="armor_distr" loot_chance="5" gain="2" limit="100"/>
+            <Tile char="6" tile_id="water" loot_id="armor_distr" loot_chance="5" gain="2" limit="100"/>
         </Terrain>
     </Room>
     <Room>
@@ -418,18 +460,18 @@
         <Type>4</Type>
         <Chance>60</Chance>
         <Terrain>
-            <Tile char="1" tile_id="floor" loot_id="weapon_distr_2" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="2" tile_id="shelf" loot_id="armor_distr" loot_chance="5" gain="2" limit="100"/>
+            <Tile char="1" tile_id="floor" loot_id="weapon_distr_2" loot_chance="20" gain="2" limit="80"/>
+            <Tile char="2" tile_id="floor" loot_id="armor_distr" loot_chance="30" gain="2" limit="100"/>
         </Terrain>
     </Room>
     <Room>
         <Pattern>
-            ....N....^....^....N....
-            ....N....^....^....N....
+            ....x....^....^....x....
+            ....x....^....^....x....
             ....N....#....#....N....
             ....N....#....#....N....
             ....N....#....#....N....
-            ....N....#....#....N....
+            ....N....#....#.1..N....
             ....N....#....#....N....
             ....N....#....#....N....
             ....N....#....#....N....
@@ -442,12 +484,12 @@
             ....S....#....#....S....
             ....S....#....#....S....
             ....S....#....#....S....
+            ....S.1..#....#....S....
             ....S....#....#....S....
             ....S....#....#....S....
             ....S....#....#....S....
-            ....S....#....#....S....
-            ....S....v....v....S....
-            ....S....v....v....S....
+            ....z....v....v....z....
+            ....z....v....v....z....
         </Pattern>
         <Type>4</Type>
         <CentralSymmetry>True</CentralSymmetry>
@@ -458,6 +500,9 @@
             <Tile char="d" tile_id="floor_door-closed_south"/>
             <Tile char="^" tile_id="wall_door-closed_north"/>
             <Tile char="v" tile_id="wall_door-closed_south"/>
+            <Tile char="x" tile_id="door-closed_floor_north"/>
+            <Tile char="z" tile_id="door-closed_floor_south"/>
+            <Tile char="1" tile_id="floor" loot_id="storage_1" loot_chance="25" gain="2.5" limit="50"/>
         </Terrain>
     </Room>
     <Room>
@@ -489,10 +534,10 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="1" tile_id="shelf" loot_id="consumable_table_1" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="2" tile_id="shelf" loot_id="consumable_table_2" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="3" tile_id="shelf" loot_id="consumable_table_3" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="6" tile_id="shelf" loot_id="armor_distr" loot_chance="5" gain="2" limit="100"/>
+            <Tile char="1" tile_id="shelf" loot_id="consumable_table_1" loot_chance="40" gain="2" limit="80"/>
+            <Tile char="2" tile_id="shelf" loot_id="consumable_table_2" loot_chance="40" gain="2" limit="80"/>
+            <Tile char="3" tile_id="shelf" loot_id="consumable_table_3" loot_chance="40" gain="2" limit="80"/>
+            <Tile char="6" tile_id="shelf" loot_id="armor_distr" loot_chance="25" gain="2" limit="100"/>
         </Terrain>
     </Room>
     <Room>
@@ -505,7 +550,7 @@
             ....H........#=..#..#=5=
             ....H........#1..+..####
             ....H........#=..#..#=2=
-            ....H........#####++#...
+            .7..H........#####++#...
             ....H........#......#...
             #####........O......##+#
             ....#........O..........
@@ -524,11 +569,12 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="1" tile_id="shelf" loot_id="storage_1" loot_chance="10" gain="2.5" limit="80"/>
-            <Tile char="2" tile_id="shelf" loot_id="consumable_table_2" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="3" tile_id="table" loot_id="consumable_table_1" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="5" tile_id="shelf" loot_id="weapon_distr_2" loot_chance="10" gain="2" limit="80"/>
-            <Tile char="6" tile_id="shelf" loot_id="armor_distr" loot_chance="5" gain="2" limit="100"/>
+            <Tile char="1" tile_id="shelf" loot_id="storage_1" loot_chance="20" gain="2.5" limit="80"/>
+            <Tile char="2" tile_id="shelf" loot_id="consumable_table_2" loot_chance="40" gain="2" limit="80"/>
+            <Tile char="3" tile_id="table" loot_id="consumable_table_1" loot_chance="40" gain="2" limit="80"/>
+            <Tile char="5" tile_id="shelf" loot_id="weapon_distr_2" loot_chance="40" gain="2" limit="80"/>
+            <Tile char="6" tile_id="shelf" loot_id="armor_distr" loot_chance="25" gain="2" limit="100"/>
+            <Tile char="7" tile_id="shelf" loot_id="weapon_distr_1" loot_chance="20" gain="2" limit="80"/>
         </Terrain>
     </Room>
     <Room>
@@ -544,7 +590,7 @@
             ``##..#```#..#```#..##``
             `##...##`##..##`##...##`
             L#.....###....###.....#R
-            lw....................er
+            lw.........1..........er
             lw....................er
             L#.....###....###.....#R
             `##...##`##..##`##...##`
@@ -571,6 +617,7 @@
             <Tile char="r" tile_id="floor_void_east"/>
             <Tile char="d" tile_id="floor_void_south"/>
             <Tile char="l" tile_id="floor_void_west"/>
+            <Tile char="1" tile_id="floor" loot_id="weapon_distr_1" loot_chance="20" gain="2" limit="80"/>
         </Terrain>
     </Room>
     <Room>
@@ -613,7 +660,7 @@
             ~......................~
             ~........~~~~~~........~
             ~........~~~~~~~..~~~~~~
-            ~........~~~~~~~..~~~~~~
+            ~........~~~1~~~..~~~~~~
             ~~~~~..~~~~~~~~~..~~~~~~
             ~~~~~..~~~~~~~.......~~~
             ~~........~~~~.......~~~
@@ -633,12 +680,13 @@
             ~~~~~~~~~~~dd~~~~~~~~~~~
         </Pattern>
         <Type>4</Type>
-        <Chance>50</Chance>
+        <Chance>60</Chance>
         <Terrain>
             <Tile char="u" tile_id="floor_water_north"/>
             <Tile char="r" tile_id="floor_water_east"/>
             <Tile char="d" tile_id="floor_water_south"/>
             <Tile char="l" tile_id="floor_water_west"/>
+            <Tile char="1" tile_id="water" loot_id="gasoline_jerrycan" loot_chance="10" gain="2" limit="70"/>
         </Terrain>
     </Room>
     <Room>
@@ -658,7 +706,7 @@
             .......#......1.#.......
             .......#........#.......
             .......#..2.....#.......
-            .......#........#.......
+            .......#......3.#.......
             ###+#######++#######+###
             .......#........#.......
             .......#........#.......
@@ -670,8 +718,9 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="1" tile_id="floor" loot_id="weapon_distr_2" loot_chance="5" gain="2" limit="80"/>
-            <Tile char="2" tile_id="floor" loot_id="armor_distr" loot_chance="5" gain="2" limit="100"/>
+            <Tile char="1" tile_id="floor" loot_id="weapon_distr_2" loot_chance="25" gain="2" limit="80"/>
+            <Tile char="2" tile_id="floor" loot_id="armor_distr" loot_chance="25" gain="2" limit="100"/>
+            <Tile char="3" tile_id="floor" loot_id="storage_1" loot_chance="25" gain="2.5" limit="50"/>
         </Terrain>
     </Room>
     <Room>
@@ -703,8 +752,8 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="1" tile_id="floor" loot_id="weapon_distr_1" loot_chance="0" gain="2" limit="80"/>
-            <Tile char="2" tile_id="shelf" loot_id="storage_1" loot_chance="15" gain="2.5" limit="50"/>
+            <Tile char="1" tile_id="shelf" loot_id="weapon_distr_1" loot_chance="20" gain="2" limit="80"/>
+            <Tile char="2" tile_id="shelf" loot_id="storage_1" loot_chance="25" gain="2.5" limit="50"/>
         </Terrain>
     </Room>
 </Rooms>

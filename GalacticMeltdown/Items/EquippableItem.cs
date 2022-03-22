@@ -1,14 +1,19 @@
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
+using JsonSubTypes;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
 
+[JsonConverter(typeof(JsonSubtypes), "ItemType")]
+[JsonSubtypes.KnownSubType(typeof(RangedWeaponItem), "RangedWeapon")]
+[JsonSubtypes.KnownSubType(typeof(WeaponItem), "MeleeWeapon")]
+[JsonSubtypes.KnownSubType(typeof(EquippableItem), "Equippable")]
 public class EquippableItem : Item
 {
     [JsonIgnore] public BodyPart BodyPart => _itemData.BodyPart;
 
-    public ActorStateChangerData StateChanger;
+    [JsonIgnore] public ActorStateChangerData StateChanger => _itemData.ActorStateChangerData;
     
     private readonly WearableItemData _itemData;
     [JsonProperty] protected override string ItemType => "Equippable";
@@ -27,15 +32,13 @@ public class EquippableItem : Item
     {
     }
 
-    public void Equip(Actor actor)
+    public virtual void Equip(Actor actor)
     {
-        ActorStateChangerData data = _itemData.ActorStateChangerData;
-        DataHolder.ActorStateChangers[data.Type](actor, data.Power, 0);
+        DataHolder.ActorStateChangers[StateChanger.Type](actor, StateChanger.Power, 0);
     }
 
-    public void Unequip(Actor actor)
+    public virtual void UnEquip(Actor actor)
     {
-        ActorStateChangerData data = _itemData.ActorStateChangerData;
-        DataHolder.ActorStateChangers[data.Type](actor, -data.Power, 0);
+        DataHolder.ActorStateChangers[StateChanger.Type](actor, -StateChanger.Power, 0);
     }
 }

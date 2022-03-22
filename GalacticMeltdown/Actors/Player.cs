@@ -13,9 +13,13 @@ public class Player : Actor, ISightedObject, IControllable
 {
     private const int PlayerHp = 100;
     private const int PlayerEnergy = 100;
-    private const int PlayerDexterity = 4;
+    private const int PlayerDexterity = 8;
     private const int PlayerDefence = 0;
     private const int PlayerViewRange = 20;
+
+    private const int DefaultAttackEnergy = 40;
+    private const int DefaultMinDamage = 0;
+    private const int DefaultMaxDamage = 10;
 
     [JsonProperty] protected override string ActorName => "Player";
     private Action _giveControlToUser;
@@ -23,7 +27,7 @@ public class Player : Actor, ISightedObject, IControllable
     private bool _xray;
 
     public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
-    public override ConsoleColor? BgColor => null;
+    [JsonIgnore] public override ConsoleColor? BgColor => null;
 
     [JsonIgnore] public bool NoClip;
 
@@ -79,10 +83,10 @@ public class Player : Actor, ISightedObject, IControllable
     public bool TryMove(int deltaX, int deltaY)
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
-        if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
+        if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is Enemy)
         {
-            Actor act = (Actor) Level.GetNonTileObject(X + deltaX, Y + deltaY);
-            act.Hit(50,true, true);
+            Enemy enemy = (Enemy) Level.GetNonTileObject(X + deltaX, Y + deltaY);
+            HitTarget(enemy);
             return true;
         }
         if (!NoClip && (tile is null || !tile.IsWalkable))
@@ -115,7 +119,7 @@ public class Player : Actor, ISightedObject, IControllable
         if (prevItem == item) return;
         if (prevItem is not null)
         {
-            ((EquippableItem)prevItem).Unequip(this);
+            ((EquippableItem)prevItem).UnEquip(this);
             AddToInventory(prevItem);
         }
 
@@ -136,30 +140,68 @@ public class Player : Actor, ISightedObject, IControllable
         item.Consume(this);
     }
 
+    private void HitTarget(Actor target)
+    {
+        if (Equipment[BodyPart.Hands] is null)
+        {
+            target.Hit(Random.Shared.Next(DefaultMinDamage, DefaultMaxDamage), false, false);
+            Energy -= DefaultAttackEnergy;
+            return;
+        }
+
+        WeaponItem weaponItem = (WeaponItem) Equipment[BodyPart.Hands];
+        int minDamage = weaponItem.MinHitDamage;
+        int maxDamage = weaponItem.MaxHitDamage;
+        if (weaponItem.AmmoTypes is not null && weaponItem is not RangedWeaponItem)
+        {
+            Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => weaponItem.AmmoTypes.ContainsKey(item.Id));
+            if (ammo is not null)
+            {
+                minDamage += weaponItem.AmmoTypes[ammo.Id].minDamage;
+                maxDamage += weaponItem.AmmoTypes[ammo.Id].maxDamage;
+                Inventory[ItemCategory.Item].Remove(ammo);
+                var actorStateChangerData = weaponItem.AmmoTypes[ammo.Id].actorStateChangerData;
+                if (actorStateChangerData is not null)
+                {
+                    DataHolder.ActorStateChangers[actorStateChangerData.Type](target, actorStateChangerData.Power,
+                        actorStateChangerData.Duration);
+                }
+            }
+        }
+
+        var stateChanger = weaponItem.StateChanger;
+        if (stateChanger is not null)
+        {
+            DataHolder.ActorStateChangers[stateChanger.Type](target, stateChanger.Power,
+                stateChanger.Duration);
+        }
+        target.Hit(Random.Shared.Next(minDamage, maxDamage), false, false);
+        Energy -= weaponItem.HitEnergy;
+    }
+
     public void Shoot(int x, int y)
     {
         if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun) return;
-        Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => gun.ammoTypes.ContainsKey(item.Id));
+        Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => gun.AmmoTypes.ContainsKey(item.Id));
         if (ammo is null) return;
         if (UtilityFunctions.Chance(
                 UtilityFunctions.RangeAttackHitChance((int) UtilityFunctions.GetDistance(X, Y, x, y), gun.Spread)))
         {
             foreach (var (xi, yi) in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
             {
-                if (Level.GetNonTileObject(xi, yi) is Enemy enemy)
+                if (Level.GetNonTileObject(xi, yi) is not Enemy enemy) continue;
+                
+                Inventory[ItemCategory.Item].Remove(ammo);
+                enemy.Hit(
+                    Random.Shared.Next(gun.MinHitDamage + gun.AmmoTypes[ammo.Id].minDamage,
+                        gun.MaxHitDamage + gun.AmmoTypes[ammo.Id].maxDamage + 1), true, false);
+                ActorStateChangerData stateChanger = gun.AmmoTypes[ammo.Id].actorStateChangerData;
+                if (stateChanger is not null)
                 {
-                    Inventory[ItemCategory.Item].Remove(ammo);
-                    enemy.Hit(
-                        Random.Shared.Next(gun.MinHitDamage + gun.ammoTypes[ammo.Id].minDamage,
-                            gun.MaxHitDamage + gun.ammoTypes[ammo.Id].maxDamage + 1), true, false);
-                    ActorStateChangerData stateChanger = gun.ammoTypes[ammo.Id].actorStateChangerData;
-                    if (stateChanger is not null)
-                    {
-                        DataHolder.ActorStateChangers[stateChanger.Type](enemy, stateChanger.Power,
-                            stateChanger.Duration);
-                    }
-                    break;
+                    DataHolder.ActorStateChangers[stateChanger.Type](enemy, stateChanger.Power,
+                        stateChanger.Duration);
                 }
+                break;
             }
         }
 

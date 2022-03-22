@@ -70,7 +70,7 @@ public abstract class Actor : IObjectOnMap
         get => HpLim.Value;
         set
         {
-            if (value == HpLim.Value) return;
+            if (value == HpLim.Value || value > HpLim.MaxValue) return;
             HpLim.Value = value;
             if (HpLim.Value == 0) Died?.Invoke(this, EventArgs.Empty);
             FireStatAffected(Stat.Hp);

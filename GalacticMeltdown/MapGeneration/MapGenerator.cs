@@ -176,7 +176,7 @@ public class MapGenerator
 
         int endRoomIndex = mainRouteRoomCount / 2;
         int addDifficulty = 1;
-        int difficulty = 0;
+        int difficulty = 1;
         ChunkGenerator previousChunk = null;
         ChunkGenerator currentChunk = startPoint!;
         for (int i = 0; i < mainRouteRoomCount; i++)
@@ -193,8 +193,6 @@ public class MapGenerator
 
             (previousChunk, currentChunk) = (currentChunk, currentChunk.GetNextRoom(previousChunk));
         }
-
-        startPoint!.Difficulty = 0;
     }
 
     private void FillMap()
@@ -256,9 +254,13 @@ public class MapGenerator
     private void FinalizeRoom(int x, int y)
     {
         RoomTypes room;
-        if (_tempMap[x, y].IsEndPoint || _tempMap[x, y].IsStartPoint)
+        if (_tempMap[x, y].IsEndPoint)
         {
             room = _roomTypes[0];
+        }
+        else if (_tempMap[x, y].IsStartPoint)
+        {
+            room = _roomTypes[1];
         }
         else
         {

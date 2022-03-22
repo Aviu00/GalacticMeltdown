@@ -41,7 +41,7 @@ public class MovementStrategy : Behavior
     public MovementStrategy(MovementStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         ControlledNpc = controlledNpc;
-        _previousTargetCounter = new Counter(Level, 3, 0, _ => PreviousTarget = null);
+        _previousTargetCounter = new Counter(Level, 4, 0, _ => PreviousTarget = null);
         ControlledNpc.Died += _previousTargetCounter.RemoveCounter;
     }
 
@@ -152,8 +152,10 @@ public class MovementStrategy : Behavior
         _idleMovement = true;
         (int x, int y) = Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y);
         var neighboringChunks = Level.GetChunkNeighbors(x, y, returnNotActiveChunks: false).ToList();
+        if(neighboringChunks.Count == 0) return;
         var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
         var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
+        if(randomChunkPoints.Count == 0) return;
         (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
         _wantsToGoTo = (randomPoint.x, randomPoint.y);
         SetPathTo(randomPoint.x, randomPoint.y);

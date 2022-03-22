@@ -12,7 +12,7 @@ namespace GalacticMeltdown.LevelRelated;
 public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
-    private const int DifficultyMultiplier = 30;
+    private const int DifficultyMultiplier = 35;
 
     [JsonProperty] private readonly Level _level;
     [JsonProperty] private double _currency;
@@ -57,8 +57,10 @@ public class EnemySpawner
     {
         Random rng = new Random(chunk.Seed);
         double currency = chunk.Difficulty * DifficultyMultiplier;
-        currency *= (rng.NextDouble() + 0.5);
+        currency *= rng.NextDouble() + 0.5;
         var points = chunk.GetFloorTileCoords();
+        if(points is null || points.Count == 0)
+            return;
         foreach (var enemy in CalculateEnemies(ref currency, rng))
         {
             var (x, y) = points[rng.Next(0, points.Count)];
@@ -92,6 +94,8 @@ public class EnemySpawner
             prevChunkIndices.Add(index);
             points.AddRange(TargetChunks[index].GetFloorTileCoords(false));
         }
+        if(points.Count == 0)
+            return;
         foreach (var enemy in enemies)
         {
             (int x, int y) = points[Random.Shared.Next(0, points.Count)];
@@ -103,7 +107,7 @@ public class EnemySpawner
 
     private void CalculateNextCurrencyAmount()
     {
-        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(5, 11);
+        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(5, 11) + _currency;
     }
 
     private List<EnemyTypeData> CalculateEnemies(ref double currency, Random rng = null)
