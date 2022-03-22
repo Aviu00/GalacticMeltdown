@@ -9,13 +9,13 @@ namespace GalacticMeltdown.Items;
 [JsonConverter(typeof(JsonSubtypes), "ItemType")]
 [JsonSubtypes.KnownSubType(typeof(RangedWeaponItem), "RangedWeapon")]
 [JsonSubtypes.KnownSubType(typeof(WeaponItem), "MeleeWeapon")]
-[JsonSubtypes.KnownSubType(typeof(ConsumableItem), "Usable")]
-[JsonSubtypes.KnownSubType(typeof(EquippableItem), "Wearable")]
+[JsonSubtypes.KnownSubType(typeof(ConsumableItem), "Consumable")]
+[JsonSubtypes.KnownSubType(typeof(EquippableItem), "Equippable")]
 public class Item : IDrawable
 {
     private readonly ItemData _itemData;
-    public bool Stackable => _itemData.Stackable;
-    public ItemCategory Category => _itemData.Category;
+    [JsonIgnore] public bool Stackable => _itemData.Stackable;
+    [JsonIgnore] public ItemCategory Category => _itemData.Category;
     public string Id => _itemData.Id;
     [JsonIgnore] public string Name => _itemData.Name;
     [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
