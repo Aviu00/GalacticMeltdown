@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
@@ -11,6 +12,7 @@ namespace GalacticMeltdown.LevelRelated;
 public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
+    private const int DifficultyMultiplier = 30;
 
     [JsonProperty] private readonly Level _level;
     [JsonProperty] private double _currency;
@@ -27,26 +29,34 @@ public class EnemySpawner
     {
         CalculateNextCurrencyAmount();
         _level = level;
-        level.TurnFinished += NextTurn;
     }
 
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
+        Init();
+    }
+
+    private void Init()
+    {
         _level.TurnFinished += NextTurn;
+        new Counter(_level, 5, 5, counter =>
+        {
+            _currencyGain += 1;
+            counter.ResetTimer();
+        });
     }
     
     private void NextTurn(object _, EventArgs __)
     {
         _currency += _currencyGain;
-        //_currencyGain += 1;
         if (_currency > _nextCurrencyAmount) SpawnRandomEnemies();
     }
 
     public void SpawnEnemiesInChunk(Chunk chunk)
     {
         Random rng = new Random(chunk.Seed);
-        double currency = chunk.Difficulty * 20;
+        double currency = chunk.Difficulty * DifficultyMultiplier;
         currency *= (rng.NextDouble() + 0.5);
         var points = chunk.GetFloorTileCoords();
         foreach (var enemy in CalculateEnemies(ref currency, rng))

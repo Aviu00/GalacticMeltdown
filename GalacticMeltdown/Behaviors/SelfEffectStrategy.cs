@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -8,7 +9,7 @@ namespace GalacticMeltdown.Behaviors;
 public class SelfEffectStrategy : Behavior
 {
     [JsonProperty] protected override string Strategy => "SelfEffect";
-    private const int DefaultPriority = 25;
+    private const int DefaultPriority = 5;
     [JsonProperty] private Counter _selfEffectStrategyCounter;
     [JsonProperty] private ActorStateChangerDataExtractor.ActorStateChangerData _stateChanger;
 
@@ -23,17 +24,22 @@ public class SelfEffectStrategy : Behavior
         }
     }
 
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        if (_selfEffectStrategyCounter is not null)
+            ControlledNpc.Died += _selfEffectStrategyCounter.RemoveCounter;
+    }
+    
     public override bool TryAct()
     {
-        if (_stateChanger is not null &&
-            (_selfEffectStrategyCounter is null || _selfEffectStrategyCounter.FinishedCounting))
-        {
-            DataHolder.ActorStateChangers[_stateChanger.Type](ControlledNpc, _stateChanger.Power,
-                _stateChanger.Duration);
-            if (_selfEffectStrategyCounter is not null) _selfEffectStrategyCounter.ResetTimer();
-            return true;
-        }
+        if (_stateChanger is null ||
+            _selfEffectStrategyCounter is not null && !_selfEffectStrategyCounter.FinishedCounting) return false;
+        
+        DataHolder.ActorStateChangers[_stateChanger.Type](ControlledNpc, _stateChanger.Power,
+            _stateChanger.Duration);
+        _selfEffectStrategyCounter?.ResetTimer();
+        return true;
 
-        return false;
     }
 }

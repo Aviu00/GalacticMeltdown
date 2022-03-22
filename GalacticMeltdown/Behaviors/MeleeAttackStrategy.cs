@@ -10,7 +10,7 @@ namespace GalacticMeltdown.Behaviors;
 public class MeleeAttackStrategy : Behavior
 {
     [JsonProperty] protected override string Strategy => "MeleeAttack";
-    private const int DefaultPriority = 15;
+    private const int DefaultPriority = 10;
     [JsonProperty] private readonly int _minDamage;
     [JsonProperty] private readonly int _maxDamage;
     [JsonProperty] private readonly int _meleeAttackCost;
@@ -57,8 +57,7 @@ public class MeleeAttackStrategy : Behavior
                     (ControlledNpc.CurrentTarget, _stateChanger.Power, _stateChanger.Duration);
             }
             ControlledNpc.Energy -= _meleeAttackCost;
-            if (_meleeAttackCounter is not null)
-                _meleeAttackCounter.ResetTimer();
+            _meleeAttackCounter?.ResetTimer();
             return true;
         }
 
@@ -67,11 +66,6 @@ public class MeleeAttackStrategy : Behavior
 
     private int RandomDamage(int minDamage, int maxDamage)
     {
-        if (ControlledNpc.Strength < Actor.ActorStr)
-        {
-            return Random.Shared.Next(minDamage, maxDamage + 1) / (1 + Actor.ActorStr - ControlledNpc.Strength);
-        }
-
-        return Random.Shared.Next(minDamage, maxDamage + 1) + ControlledNpc.Strength - Actor.ActorStr;
+        return Random.Shared.Next(minDamage, maxDamage + 1) / (1 + (Actor.ActorStr - ControlledNpc.Strength) / 10);
     }
 }

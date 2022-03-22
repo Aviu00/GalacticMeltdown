@@ -41,7 +41,7 @@ public class MovementStrategy : Behavior
     public MovementStrategy(MovementStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         ControlledNpc = controlledNpc;
-        _previousTargetCounter = new Counter(Level, 5, 0, _ => PreviousTarget = null);
+        _previousTargetCounter = new Counter(Level, 3, 0, _ => PreviousTarget = null);
         ControlledNpc.Died += _previousTargetCounter.RemoveCounter;
     }
 

@@ -21,6 +21,8 @@ public static partial class DataHolder
         ModifySpeed,
         RegenerationEffect,
         PoisonEffect,
+        ModifyMaxHealthEffect,
+        ModifyMaxEnergyEffect,
         ModifyDexterityEffect,
         ModifyDefenceEffect,
         ModifyStrengthEffect,
@@ -105,9 +107,23 @@ public static partial class DataHolder
             }
         },
         {
+            ActorStateChangerType.ModifyMaxEnergyEffect, (actor, power, duration) =>
+            {
+                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyMaxEnergy);
+                actor.AddEffect(effect);
+            }
+        },
+        {
+            ActorStateChangerType.ModifyMaxHealthEffect, (actor, power, duration) =>
+            {
+                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyDexterity);
+                actor.AddEffect(effect);
+            }
+        },
+        {
             ActorStateChangerType.ModifyDefenceEffect, (actor, power, duration) =>
             {
-                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyDefence);
+                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyMaxHealth);
                 actor.AddEffect(effect);
             }
         },

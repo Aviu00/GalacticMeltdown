@@ -10,8 +10,8 @@ public class Player : Actor, ISightedObject, IControllable
 {
     private const int PlayerHp = 100;
     private const int PlayerEnergy = 100;
-    private const int PlayerDexterity = 16;
-    private const int PlayerDefence = 4;
+    private const int PlayerDexterity = 4;
+    private const int PlayerDefence = 0;
     private const int PlayerViewRange = 20;
 
     [JsonProperty] protected override string ActorName => "Player";
