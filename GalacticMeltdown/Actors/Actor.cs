@@ -35,7 +35,7 @@ public abstract class Actor : IObjectOnMap
     }
     public int MoveSpeed
     {
-        get => _strength;
+        get => _moveSpeed;
         set
         {
             if (value == _moveSpeed) return;
