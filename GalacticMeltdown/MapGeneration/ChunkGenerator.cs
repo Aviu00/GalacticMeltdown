@@ -51,7 +51,6 @@ public class ChunkGenerator
     {
         _rng = new Random(seed);
         ItemDictionary items = new();
-        CalculateSymbol();
         Tiles = new Tile[ChunkSize, ChunkSize];
         for (int y = 0; y < ChunkSize - 1; y++)
         {
@@ -75,7 +74,7 @@ public class ChunkGenerator
         }
 
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
-        return new Chunk(Tiles, items, GetNeighborCoords(), Difficulty, seed+1, MapX, MapY);
+        return new Chunk(Tiles, items, GetNeighborCoords(), Difficulty, seed+1, MapX, MapY, CalculateSymbol());
     }
 
     private List<(int x, int y)> GetNeighborCoords()

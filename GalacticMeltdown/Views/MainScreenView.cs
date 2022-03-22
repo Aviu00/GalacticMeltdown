@@ -6,22 +6,26 @@ namespace GalacticMeltdown.Views;
 
 public class MainScreenView : View
 {
-    private const double LevelViewWidth = 0.8; 
+    private const double LevelViewWidth = 0.8;
+    private const double MinimapHeight = 0.2; 
     
     private int _levelViewWidth;
+    private int _minimapHeight;
     
     private LevelView _levelView;
     private OverlayView _overlayView;
+    private MinimapView _minimapView;
     
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangeEventArgs> CellsChanged;
 
     public override (double, double, double, double)? WantedPosition => null;
     
-    public MainScreenView(LevelView levelView, OverlayView overlayView)
+    public MainScreenView(LevelView levelView, OverlayView overlayView, MinimapView minimapView)
     {
         _levelView = levelView;
         _overlayView = overlayView;
+        _minimapView = minimapView;
         _levelView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
         _levelView.CellsChanged += (_, args) => CellsChanged?.Invoke(this, args);
         _overlayView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
@@ -34,18 +38,27 @@ public class MainScreenView : View
                 })
                 .ToHashSet()));
         };
+        _minimapView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        return x < _levelViewWidth ? _levelView.GetSymbol(x, y) : _overlayView.GetSymbol(x - _levelViewWidth, y);
+        if (x < _levelViewWidth)
+        {
+            return _levelView.GetSymbol(x, y);
+        }
+        return y < _minimapHeight
+            ? _minimapView.GetSymbol(x - _levelViewWidth, y)
+            : _overlayView.GetSymbol(x - _levelViewWidth, y - _minimapHeight);
     }
 
     public override void Resize(int width, int height)
     {
         _levelViewWidth = Convert.ToInt32(width * LevelViewWidth);
+        _minimapHeight = Convert.ToInt32(height * MinimapHeight);
         _levelView.Resize(_levelViewWidth, height);
-        _overlayView.Resize(width - _levelViewWidth, height);
+        _overlayView.Resize(width - _levelViewWidth, height - _minimapHeight);
+        _minimapView.Resize(width - _levelViewWidth, _minimapHeight);
         base.Resize(width, height);
     }
 }
