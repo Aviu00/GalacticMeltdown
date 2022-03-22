@@ -104,6 +104,7 @@
         <Symbol>T</Symbol>
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
+        <Color>dark_red</Color>
         <MoveCost>300</MoveCost>
     </Tile>
     <Tile>
@@ -112,14 +113,16 @@
         <Symbol>h</Symbol>
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
+        <Color>dark_yellow</Color>
         <MoveCost>200</MoveCost>
     </Tile>
     <Tile>
-        <Id>cabinet</Id>
-        <Name>cabinet</Name>
+        <Id>shelf</Id>
+        <Name>shelf</Name>
         <Symbol>=</Symbol>
+        <Color>dark_red</Color>
         <IsWalkable>True</IsWalkable>
         <IsTransparent>True</IsTransparent>
-        <MoveCost>250</MoveCost>
+        <MoveCost>300</MoveCost>
     </Tile>
 </Tiles>
