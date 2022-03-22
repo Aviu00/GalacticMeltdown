@@ -49,7 +49,7 @@ public partial class PlaySession
 
     public void Start()
     {
-        UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView));
+        UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView, _level.MinimapView));
         UserInterface.SetController(this,
             new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
         UserInterface.SetTask(this, MapTurn);
