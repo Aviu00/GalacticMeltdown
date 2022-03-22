@@ -6,6 +6,9 @@ namespace GalacticMeltdown.Items;
 
 public class RangedWeaponItem : WeaponItem
 {
+    public int Spread => _itemData.Spread;
+    public int ShootEnergy => _itemData.ShootEnergy;
+    
     private readonly RangedWeaponItemData _itemData;
     [JsonProperty] protected override string ItemType => "RangedWeapon";
 

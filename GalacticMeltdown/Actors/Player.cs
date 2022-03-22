@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
@@ -129,5 +131,24 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Inventory[item.Category].Remove(item);
         item.Consume(this);
+    }
+
+    public void Shoot(int x, int y)
+    {
+        if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun) return;
+        if (UtilityFunctions.Chance(
+                UtilityFunctions.RangeAttackHitChance((int) UtilityFunctions.GetDistance(X, Y, x, y), gun.Spread)))
+        {
+            foreach (var (xi, yi) in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
+            {
+                if (Level.GetNonTileObject(xi, yi) is Enemy enemy)
+                {
+                    enemy.Hit(Random.Shared.Next(gun.MinHitDamage, gun.MaxHitDamage + 1), true, false);
+                    break;
+                }
+            }
+        }
+
+        Energy -= gun.ShootEnergy;
     }
 }
