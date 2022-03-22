@@ -177,7 +177,7 @@ public abstract class Actor : IObjectOnMap
         Energy += EnergyLim.MaxValue.Value;
     }
 
-    public void StopTurn() => _turnStopped = true;
+    public virtual void StopTurn() => _turnStopped = true;
 
     protected void MoveTo(int x, int y)
     {
