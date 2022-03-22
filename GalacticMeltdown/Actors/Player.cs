@@ -36,13 +36,12 @@ public class Player : Actor, ISightedObject, IControllable
     }
 
     [JsonIgnore]
-    public int ViewRange
+    public override int ViewRange
     {
-        get => _viewRange;
+        get => base.ViewRange;
         set
         {
-            if (value <= 0) return;
-            _viewRange = value;
+            base.ViewRange = value;
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }

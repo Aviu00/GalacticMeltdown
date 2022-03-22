@@ -75,16 +75,19 @@ public static partial class DataHolder
         {
             ActorStateChangerType.ModifyViewRange, (actor, power, _) =>
             {
+                actor.ViewRange += power;
             }
         },
         {
             ActorStateChangerType.ModifyStrength, (actor, power, _) =>
             {
+                actor.Strength += power;
             }
         },
         {
             ActorStateChangerType.ModifySpeed, (actor, power, _) =>
             {
+                actor.MoveSpeed += power;
             }
         },
         {

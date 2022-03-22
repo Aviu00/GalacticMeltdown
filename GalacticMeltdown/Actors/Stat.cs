@@ -7,5 +7,6 @@ public enum Stat
     Dexterity,
     Defence,
     Strength,
-    MoveSpeed
+    MoveSpeed,
+    ViewRange
 }
