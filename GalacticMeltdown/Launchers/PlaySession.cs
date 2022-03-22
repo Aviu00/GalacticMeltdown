@@ -65,6 +65,7 @@ public partial class PlaySession
             else
             {
             }
+            UserInterface.SetTask(this, Game.OpenMainMenu);
             return;
         }
         UserInterface.SetTask(this, MapTurn);
