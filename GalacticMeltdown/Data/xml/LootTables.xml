@@ -18,7 +18,7 @@
         <Min>5</Min>
         <Max>30</Max>
         <Gain>2.5</Gain>
-        <Limit>1000</Limit>
+        <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>pistol_ammo_1</Id>
@@ -26,7 +26,7 @@
         <Min>2</Min>
         <Max>10</Max>
         <Gain>2.5</Gain>
-        <Limit>1000</Limit>
+        <Limit>200</Limit>
     </ItemLoot>
     <CollectionTable>
         <Id>storage_1</Id>

@@ -11,7 +11,7 @@ public class SelfEffectStrategy : Behavior
     [JsonProperty] protected override string Strategy => "SelfEffect";
     private const int DefaultPriority = 5;
     [JsonProperty] private Counter _selfEffectStrategyCounter;
-    [JsonProperty] private ActorStateChangerDataExtractor.ActorStateChangerData _stateChanger;
+    [JsonProperty] private ActorStateChangerData _stateChanger;
 
     public SelfEffectStrategy(SelfEffectStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {

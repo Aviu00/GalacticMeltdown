@@ -15,7 +15,7 @@ public class MeleeAttackStrategy : Behavior
     [JsonProperty] private readonly int _maxDamage;
     [JsonProperty] private readonly int _meleeAttackCost;
     [JsonProperty] private Counter _meleeAttackCounter;
-    [JsonProperty] private ActorStateChangerDataExtractor.ActorStateChangerData _stateChanger;
+    [JsonProperty] private ActorStateChangerData _stateChanger;
 
     [JsonConstructor]
     private MeleeAttackStrategy()

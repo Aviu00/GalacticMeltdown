@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Data;
-using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage)>;
+using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage,
+    ActorStateChangerData actorStateChangerData)>;
 
 public class ItemTypesExtractor : XmlExtractor
 {
@@ -30,10 +30,13 @@ public class ItemTypesExtractor : XmlExtractor
             int minHitDamage = 0;
             int maxHitDamage = 0;
             int hitEnergy = 0;
+            int shootEnergy = 0;
             int ammoCapacity = 0;
+            int spread = 0;
             BodyPart bodyPart = BodyPart.Hands;
             bool stackable = false;
             AmmoDictionary ammoList = null;
+            ActorStateChangerData actorStateChangerData = null;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -47,6 +50,9 @@ public class ItemTypesExtractor : XmlExtractor
                     case "Symbol":
                         symbol = Convert.ToChar(locNode.InnerText);
                         break;
+                    case "Spread":
+                        spread = Convert.ToInt32(locNode.InnerText);
+                        break;
                     case "MinHitDamage":
                         minHitDamage = Convert.ToInt32(locNode.InnerText);
                         break;
@@ -55,6 +61,9 @@ public class ItemTypesExtractor : XmlExtractor
                         break;
                     case "HitEnergy":
                         hitEnergy = Convert.ToInt32(locNode.InnerText);
+                        break;
+                    case "ShootEnergy":
+                        shootEnergy = Convert.ToInt32(locNode.InnerText);
                         break;
                     case "AmmoCapacity":
                         ammoCapacity = Convert.ToInt32(locNode.InnerText);
@@ -68,17 +77,21 @@ public class ItemTypesExtractor : XmlExtractor
                     case "Stackable":
                         stackable = Convert.ToBoolean(locNode.InnerText);
                         break;
+                    case "StateChanger":
+                        actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                        break;
                 }
             }
 
             ItemData itemData = itemCategory switch
             {
-                ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory, stackable),
+                ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory, stackable,
+                    actorStateChangerData),
                 ItemCategory.WearableItem => new WearableItemData(symbol, name, id, itemCategory, bodyPart),
                 ItemCategory.WeaponItem => new WeaponItemData(symbol, name, id, itemCategory, minHitDamage,
-                    maxHitDamage, hitEnergy, ammoCapacity, ammoList),
+                    maxHitDamage, hitEnergy, ammoCapacity, ammoList, actorStateChangerData),
                 ItemCategory.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, itemCategory, minHitDamage,
-                    maxHitDamage, hitEnergy, ammoCapacity, ammoList),
+                    maxHitDamage, hitEnergy, shootEnergy, spread, ammoCapacity, ammoList, actorStateChangerData),
                 _ => new ItemData(symbol, name, id, itemCategory, stackable)
             };
             ItemTypes.Add(itemData.Id, itemData);
@@ -95,6 +108,7 @@ public class ItemTypesExtractor : XmlExtractor
             int reloadEnergy = 0;
             int minDamage = 0;
             int maxDamage = 0;
+            ActorStateChangerData actorStateChangerData = null;
             foreach (XmlNode ammoNode in locNode)
             {
                 switch (locNode.Name)
@@ -114,10 +128,13 @@ public class ItemTypesExtractor : XmlExtractor
                     case "MaxDamage":
                         maxDamage = Convert.ToInt32(locNode.InnerText);
                         break;
+                    case "StateChanger":
+                        actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                        break;
                 }
             }
 
-            dictionary.Add(ammoId, (reloadAmount, reloadEnergy, minDamage, maxDamage));
+            dictionary.Add(ammoId, (reloadAmount, reloadEnergy, minDamage, maxDamage, actorStateChangerData));
         }
         return dictionary;
     }
@@ -130,12 +147,16 @@ public record WearableItemData
         Category, false); //WIP
 
 public record WeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
-    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) : WearableItemData(Symbol, Name, Id,
+    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes,
+    ActorStateChangerData ActorStateChangerData) : WearableItemData(Symbol, Name, Id,
     Category, BodyPart.Hands);
 
 public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
-        int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) //Hit chance not yet included
-    : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
+        int MaxHitDamage, int HitEnergy, int ShootEnergy, int Spread, int AmmoCapacity, AmmoDictionary AmmoTypes,
+        ActorStateChangerData ActorStateChangerData) //Hit chance not yet included
+    : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes,
+        ActorStateChangerData);
 
-public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable) : ItemData(
-    Symbol, Name, Id, Category, Stackable); //WIP
+public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable,
+    ActorStateChangerData ActorStateChangerData) : ItemData(
+    Symbol, Name, Id, Category, Stackable);

@@ -122,7 +122,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int minDamage = 0;
         int maxDamage = 0;
         int cooldown = 0;
-        ActorStateChangerDataExtractor.ActorStateChangerData actorStateChangerData = null;
+        ActorStateChangerData actorStateChangerData = null;
         int meleeAttackCost = 10;
         foreach (XmlNode locNode in node)
         {
@@ -161,7 +161,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int rangeAttackCost = 10;
         int attackRange = 1;
         int spread = 1;
-        ActorStateChangerDataExtractor.ActorStateChangerData actorStateChangerData = null;
+        ActorStateChangerData actorStateChangerData = null;
         foreach (XmlNode locNode in node)
         {
             switch (locNode.Name)
@@ -201,7 +201,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int? priority = null;
         int cooldown = 0;
         int selfEffectCost = 10;
-        ActorStateChangerDataExtractor.ActorStateChangerData actorStateChangerData = null;
+        ActorStateChangerData actorStateChangerData = null;
         foreach (XmlNode locNode in node)
         {
             switch (locNode.Name)
@@ -234,13 +234,13 @@ public record BehaviorData(int? Priority);
 
 public record MovementStrategyData(int? Priority) : BehaviorData(Priority);
 
-public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int MeleeAttackCost,
-        ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData)
+public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int MeleeAttackCost, 
+        ActorStateChangerData ActorStateChangerData)
     : BehaviorData(Priority);
 
 public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int RangeAttackCost,
-        int AttackRange, int Spread, ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData)
+        int AttackRange, int Spread, ActorStateChangerData ActorStateChangerData)
     : BehaviorData(Priority);
 
 public record SelfEffectStrategyData(int? Priority, int Cooldown, int SelfEffectCost,
-    ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData) : BehaviorData(Priority);
+    ActorStateChangerData ActorStateChangerData) : BehaviorData(Priority);

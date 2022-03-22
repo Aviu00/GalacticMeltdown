@@ -76,7 +76,7 @@ public static class UtilityFunctions
         return Math.Sqrt(xDist * xDist + yDist * yDist);
     }
 
-    public static int CalculateChanceToHitForRangeEnemy(int distance, int spread)
+    public static int RangeAttackHitChance(int distance, int spread)
     {
         if (spread < 0) return 0;
         return (int) (100 - 5 * distance * Math.Log(spread + 1));

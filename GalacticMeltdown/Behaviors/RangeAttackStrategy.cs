@@ -18,7 +18,7 @@ public class RangeAttackStrategy : Behavior
     [JsonProperty] private readonly int _attackRange;
     [JsonProperty] private readonly int _spread;
     [JsonProperty] private Counter _rangeAttackCounter;
-    [JsonProperty] private ActorStateChangerDataExtractor.ActorStateChangerData _stateChanger;
+    [JsonProperty] private ActorStateChangerData _stateChanger;
 
     [JsonConstructor]
     private RangeAttackStrategy()
@@ -56,7 +56,7 @@ public class RangeAttackStrategy : Behavior
         // if there is nothing what can stop projectile
         if (!CanAttack()) return false;
         var damage = 0;
-        if (UtilityFunctions.Chance(UtilityFunctions.CalculateChanceToHitForRangeEnemy
+        if (UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance
             ((int) UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
                 ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y), _spread)))
             damage = RandomDamage(_minDamage, _maxDamage);

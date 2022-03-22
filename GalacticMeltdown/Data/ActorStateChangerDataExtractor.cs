@@ -29,5 +29,6 @@ public static class ActorStateChangerDataExtractor
         return new ActorStateChangerData(type.Value, power, duration);
     }
 
-    public record ActorStateChangerData(DataHolder.ActorStateChangerType Type, int Power, int Duration);
 }
+
+public record ActorStateChangerData(DataHolder.ActorStateChangerType Type, int Power, int Duration);

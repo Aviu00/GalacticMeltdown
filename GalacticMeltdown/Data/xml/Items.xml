@@ -4,31 +4,204 @@
         <Id>metal_bar</Id>
         <Name>metal bar</Name>
         <Symbol>/</Symbol>
-        <MinHitDamage>20</MinHitDamage>
-        <MaxHitDamage>50</MaxHitDamage>
-        <HitEnergy>50</HitEnergy>
+        <MinHitDamage>10</MinHitDamage>
+        <MaxHitDamage>35</MaxHitDamage>
+        <HitEnergy>150</HitEnergy>
     </WeaponItem>
     <WeaponItem>
         <Id>wood_plank</Id>
         <Name>wood plank</Name>
         <Symbol>/</Symbol>
         <MinHitDamage>8</MinHitDamage>
-        <MaxHitDamage>30</MaxHitDamage>
-        <HitEnergy>40</HitEnergy>
+        <MaxHitDamage>25</MaxHitDamage>
+        <HitEnergy>170</HitEnergy>
     </WeaponItem>
+    <WeaponItem>
+        <Id>sword</Id>
+        <Name>sword</Name>
+        <Symbol>l</Symbol>
+        <MinHitDamage>20</MinHitDamage>
+        <MaxHitDamage>60</MaxHitDamage>
+        <HitEnergy>150</HitEnergy>
+    </WeaponItem>
+    <WeaponItem>
+        <Id>knife</Id>
+        <Name>knife</Name>
+        <Symbol>,</Symbol>
+        <MinHitDamage>5</MinHitDamage>
+        <MaxHitDamage>30</MaxHitDamage>
+        <HitEnergy>30</HitEnergy>
+    </WeaponItem>
+    <WeaponItem>
+        <Id>g_knife</Id>
+        <Name>golden knife</Name>
+        <Symbol>,</Symbol>
+        <MinHitDamage>10</MinHitDamage>
+        <MaxHitDamage>50</MaxHitDamage>
+        <HitEnergy>30</HitEnergy>
+    </WeaponItem>
+    <WeaponItem>
+        <Id>plunger</Id>
+        <Name>plunger</Name>
+        <Symbol>I</Symbol>
+        <MinHitDamage>10</MinHitDamage>
+        <MaxHitDamage>40</MaxHitDamage>
+        <HitEnergy>120</HitEnergy>
+        <StateChanger>
+            <Type>Stun</Type>
+            <Power>40</Power>
+        </StateChanger>
+    </WeaponItem>
+    <WeaponItem>
+        <Id>r_plunger</Id>
+        <Name>reinforced plunger</Name>
+        <Symbol>I</Symbol>
+        <MinHitDamage>20</MinHitDamage>
+        <MaxHitDamage>60</MaxHitDamage>
+        <HitEnergy>120</HitEnergy>
+        <StateChanger>
+            <Type>Stun</Type>
+            <Power>50</Power>
+        </StateChanger>
+    </WeaponItem>
+    <WeaponItem>
+        <Id>chainsaw</Id>
+        <Name>chainsaw</Name>
+        <Symbol>P</Symbol>
+        <MinHitDamage>0</MinHitDamage>
+        <MaxHitDamage>5</MaxHitDamage>
+        <HitEnergy>10</HitEnergy>
+        <AmmoCapacity>50</AmmoCapacity>
+        <AmmoTypes>
+            <Ammo>gasoline_jerrycan</Ammo>
+            <MinDamage>5</MinDamage>
+            <MaxDamage>30</MaxDamage>
+            <ReloadEnergy>200</ReloadEnergy>
+            <ReloadAmount>100</ReloadAmount>
+        </AmmoTypes>
+    </WeaponItem>
+    <WeaponItem>
+        <Id>chainsword</Id>
+        <Name>chainsword</Name>
+        <Symbol>L</Symbol>
+        <MinHitDamage>0</MinHitDamage>
+        <MaxHitDamage>15</MaxHitDamage>
+        <HitEnergy>10</HitEnergy>
+        <AmmoCapacity>50</AmmoCapacity>
+        <AmmoTypes>
+            <Ammo>gasoline_jerrycan</Ammo>
+            <MinDamage>10</MinDamage>
+            <MaxDamage>50</MaxDamage>
+            <ReloadEnergy>200</ReloadEnergy>
+            <ReloadAmount>100</ReloadAmount>
+        </AmmoTypes>
+    </WeaponItem>
+    <WeaponItem>
+        <Id>lightsaber</Id>
+        <Name>lightsaber</Name>
+        <Symbol>L</Symbol>
+        <MinHitDamage>5</MinHitDamage>
+        <MaxHitDamage>30</MaxHitDamage>
+        <HitEnergy>120</HitEnergy>
+        <AmmoCapacity>10</AmmoCapacity>
+        <AmmoTypes>
+            <Ammo>energy_cell</Ammo>
+            <MinDamage>10</MinDamage>
+            <MaxDamage>70</MaxDamage>
+            <ReloadEnergy>15</ReloadEnergy>
+            <ReloadAmount>2</ReloadAmount>
+        </AmmoTypes>
+    </WeaponItem>
+    <RangedWeaponItem>
+        <Id>crossbow</Id>
+        <Name>crossbow</Name>
+        <Symbol>^</Symbol>
+        <MinHitDamage>5</MinHitDamage>
+        <MaxHitDamage>25</MaxHitDamage>
+        <HitEnergy>70</HitEnergy>
+        <Spread>1</Spread>
+        <AmmoCapacity>1</AmmoCapacity>
+        <AmmoTypes>
+            <Ammo>
+                <Id>arrow</Id>
+                <MinDamage>15</MinDamage>
+                <MaxDamage>80</MaxDamage>
+                <ReloadEnergy>30</ReloadEnergy>
+            </Ammo>
+            <Ammo>
+                <Id>poisoned_arrow</Id>
+                <MinDamage>15</MinDamage>
+                <MaxDamage>80</MaxDamage>
+                <ReloadEnergy>30</ReloadEnergy>
+                <StateChanger>
+                    <Type>PoisonEffect</Type>
+                    <Power>8</Power>
+                    <Duration>8</Duration>
+                </StateChanger>
+            </Ammo>
+        </AmmoTypes>
+    </RangedWeaponItem>
+    <RangedWeaponItem>
+        <Id>r_crossbow</Id>
+        <Name>reinforced crossbow</Name>
+        <Symbol>^</Symbol>
+        <MinHitDamage>10</MinHitDamage>
+        <MaxHitDamage>50</MaxHitDamage>
+        <ShootEnergy>40</ShootEnergy>
+        <HitEnergy>80</HitEnergy>
+        <Spread>1</Spread>
+        <AmmoCapacity>1</AmmoCapacity>
+        <AmmoTypes>
+            <Ammo>
+                <Id>arrow</Id>
+                <MinDamage>30</MinDamage>
+                <MaxDamage>100</MaxDamage>
+                <ReloadEnergy>30</ReloadEnergy>
+            </Ammo>
+            <Ammo>
+                <Id>poisoned_arrow</Id>
+                <MinDamage>30</MinDamage>
+                <MaxDamage>100</MaxDamage>
+                <ReloadEnergy>30</ReloadEnergy>
+                <StateChanger>
+                    <Type>PoisonEffect</Type>
+                    <Power>8</Power>
+                    <Duration>8</Duration>
+                </StateChanger>
+            </Ammo>
+            <Ammo>
+                <Id>metal_bar</Id>
+                <MinDamage>30</MinDamage>
+                <MaxDamage>150</MaxDamage>
+                <ReloadEnergy>100</ReloadEnergy>
+                <StateChanger>
+                    <Type>Stun</Type>
+                    <Power>30</Power>
+                </StateChanger>
+            </Ammo>
+        </AmmoTypes>
+    </RangedWeaponItem>
     <RangedWeaponItem>
         <Id>pistol</Id>
         <Name>pistol</Name>
         <Symbol>г</Symbol>
         <MinHitDamage>5</MinHitDamage>
         <MaxHitDamage>25</MaxHitDamage>
-        <HitEnergy>15</HitEnergy>
+        <HitEnergy>45</HitEnergy>
+        <Spread>1</Spread>
+        <ShootEnergy>25</ShootEnergy>
         <AmmoCapacity>10</AmmoCapacity>
         <AmmoTypes>
             <Ammo>
                 <Id>pistol_ammo</Id>
                 <MinDamage>30</MinDamage>
                 <MaxDamage>80</MaxDamage>
+                <ReloadEnergy>5</ReloadEnergy>
+            </Ammo>
+            <Ammo>
+                <Id>advanced_pistol_ammo</Id>
+                <MinDamage>50</MinDamage>
+                <MaxDamage>120</MaxDamage>
                 <ReloadEnergy>5</ReloadEnergy>
             </Ammo>
         </AmmoTypes>
@@ -39,7 +212,9 @@
         <Symbol>f</Symbol>
         <MinHitDamage>20</MinHitDamage>
         <MaxHitDamage>50</MaxHitDamage>
-        <HitEnergy>50</HitEnergy>
+        <HitEnergy>100</HitEnergy>
+        <Spread>2</Spread>
+        <ShootEnergy>7</ShootEnergy>
         <AmmoId>assault_rifle_ammo</AmmoId>
         <AmmoCapacity>30</AmmoCapacity>
         <AmmoTypes>
@@ -49,8 +224,65 @@
                 <MaxDamage>100</MaxDamage>
                 <ReloadEnergy>7</ReloadEnergy>
             </Ammo>
+            <Ammo>
+                <Id>advanced_assault_rifle_ammo</Id>
+                <MinDamage>60</MinDamage>
+                <MaxDamage>140</MaxDamage>
+                <ReloadEnergy>7</ReloadEnergy>
+            </Ammo>
         </AmmoTypes>
     </RangedWeaponItem>
+    <RangedWeaponItem>
+        <Id>laser_pistol</Id>
+        <Name>laser_pistol</Name>
+        <Symbol>r</Symbol>
+        <MinHitDamage>5</MinHitDamage>
+        <MaxHitDamage>25</MaxHitDamage>
+        <HitEnergy>45</HitEnergy>
+        <Spread>1</Spread>
+        <ShootEnergy>30</ShootEnergy>
+        <AmmoCapacity>10</AmmoCapacity>
+        <AmmoTypes>
+            <Ammo>
+                <Id>energy_cell</Id>
+                <MinDamage>70</MinDamage>
+                <MaxDamage>180</MaxDamage>
+                <ReloadEnergy>13</ReloadEnergy>
+                <ReloadAmount>2</ReloadAmount>
+                <StateChanger>
+                    <Type>ModifyViewRangeEffect</Type>
+                    <Power>-5</Power>
+                    <Duration>5</Duration>
+                </StateChanger>
+            </Ammo>
+        </AmmoTypes>
+    </RangedWeaponItem>
+    <RangedWeaponItem>
+        <Id>laser_rifle</Id>
+        <Name>assault rifle</Name>
+        <Symbol>F</Symbol>
+        <MinHitDamage>20</MinHitDamage>
+        <MaxHitDamage>50</MaxHitDamage>
+        <Spread>2</Spread>
+        <HitEnergy>100</HitEnergy>
+        <ShootEnergy>10</ShootEnergy>
+        <AmmoId>assault_rifle_ammo</AmmoId>
+        <AmmoCapacity>30</AmmoCapacity>
+        <AmmoTypes>
+            <Ammo>
+                <Id>energy_cell</Id>
+                <MinDamage>90</MinDamage>
+                <MaxDamage>210</MaxDamage>
+                <ReloadEnergy>15</ReloadEnergy>
+                <ReloadAmount>2</ReloadAmount>
+            </Ammo>
+        </AmmoTypes>
+    </RangedWeaponItem>
+    <Item>
+        <Id>gasoline_jerrycan</Id>
+        <Name>gasoline jerrycan</Name>
+        <Symbol>U</Symbol>
+    </Item>
     <Item>
         <Id>pistol_ammo</Id>
         <Name>pistol ammo</Name>
@@ -61,6 +293,24 @@
         <Id>assault_rifle_ammo</Id>
         <Name>assault rifle ammo</Name>
         <Symbol>∷</Symbol>
+        <Stackable>true</Stackable>
+    </Item>
+    <Item>
+        <Id>advanced_pistol_ammo</Id>
+        <Name>advanced pistol ammo</Name>
+        <Symbol>∷</Symbol>
+        <Stackable>true</Stackable>
+    </Item>
+    <Item>
+        <Id>advanced_assault_rifle_ammo</Id>
+        <Name>advanced assault rifle ammo</Name>
+        <Symbol>∷</Symbol>
+        <Stackable>true</Stackable>
+    </Item>
+    <Item>
+        <Id>energy_cell</Id>
+        <Name>energy cell</Name>
+        <Symbol>*</Symbol>
         <Stackable>true</Stackable>
     </Item>
 </ItemDatas>
