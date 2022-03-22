@@ -77,15 +77,14 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
         if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
-        {// temporary except of "return false"
+        {
             Actor act = (Actor) Level.GetNonTileObject(X + deltaX, Y + deltaY);
             act.Hit(50,true, true);
-            return false;
-        }//temporary
+            return true;
+        }
         if (!NoClip && (tile is null || !tile.IsWalkable))
         {
-            Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
-            return false;
+            return Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
         }
         MoveTo(X + deltaX, Y + deltaY);
         VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
