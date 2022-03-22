@@ -2,12 +2,23 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown.ActorActions;
 
-public class ActorAction
+public enum ActorAction
 {
-    public List<(int, int)> AffectedCells { get; set; }
+    Move,
+    InteractWithDoor,
+    Shoot,
+    Attack,
+    ApplyEffect,
+}
 
-    public ActorAction(List<(int, int)> affectedCells)
+public class ActorActionInfo
+{
+    public ActorAction Action { get; }
+    public List<(int, int)> AffectedCells { get; }
+
+    public ActorActionInfo(ActorAction action, List<(int, int)> affectedCells)
     {
+        Action = action;
         AffectedCells = affectedCells;
     }
 }
