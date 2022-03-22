@@ -17,6 +17,7 @@ public class EndGameMessage : TextWindow
             new TextLine(message),
             new Button("OK", "", Close)
         });
+        LineView.SetPos((0.3, 0.6, 0.6, 0.9));
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
