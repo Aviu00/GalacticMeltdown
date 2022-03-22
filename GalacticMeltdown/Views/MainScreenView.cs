@@ -49,7 +49,7 @@ public class MainScreenView : View
         }
         return y < _minimapHeight
             ? _minimapView.GetSymbol(x - _levelViewWidth, y)
-            : _overlayView.GetSymbol(x - _levelViewWidth, y);
+            : _overlayView.GetSymbol(x - _levelViewWidth, y - _minimapHeight);
     }
 
     public override void Resize(int width, int height)
