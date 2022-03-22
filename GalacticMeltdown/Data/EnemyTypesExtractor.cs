@@ -158,6 +158,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int rangeAttackCost = 10;
         int attackRange = 1;
         int spread = 1;
+        ActorStateChangerDataExtractor.ActorStateChangerData actorStateChangerData = null;
         foreach (XmlNode locNode in node)
         {
             switch (locNode.Name)
@@ -183,10 +184,14 @@ public class EnemyTypesExtractor : XmlExtractor
                 case "Spread":
                     spread = Convert.ToInt32(locNode.InnerText);
                     break;
+                case "StateChanger":
+                    actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                    break;
             }
         }
 
-        return new RangeAttackStrategyData(priority, minDamage, maxDamage, cooldown, rangeAttackCost, attackRange, spread);
+        return new RangeAttackStrategyData(priority, minDamage, maxDamage, cooldown, rangeAttackCost, attackRange, spread,
+            actorStateChangerData);
     }
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
@@ -202,5 +207,5 @@ public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamag
     : BehaviorData(Priority);
 
 public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int RangeAttackCost,
-        int AttackRange, int Spread)
+        int AttackRange, int Spread, ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData)
     : BehaviorData(Priority);
