@@ -74,7 +74,7 @@ public class ChunkGenerator
         }
 
         FillBorderWalls(roomData, northernTileMap, easternTileMap);
-        return new Chunk(Tiles, items, GetNeighborCoords(), Difficulty, seed+1, MapX, MapY);
+        return new Chunk(Tiles, items, GetNeighborCoords(), Difficulty, seed+1, MapX, MapY, CalculateSymbol());
     }
 
     private List<(int x, int y)> GetNeighborCoords()

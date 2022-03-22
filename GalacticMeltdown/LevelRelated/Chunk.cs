@@ -32,6 +32,8 @@ public class Chunk
     [JsonProperty] private readonly ItemDictionary _items;
     [JsonProperty] public readonly Tile[,] Tiles;
     [JsonProperty] public readonly List<Enemy> Enemies;
+    
+    public char Symbol { get; }
 
     [JsonConstructor]
     private Chunk()
@@ -40,7 +42,7 @@ public class Chunk
     }
     
     public Chunk(Tile[,] tiles, ItemDictionary items, List<(int x, int y)> neighborCoords, int difficulty, int seed,
-        int x, int y)
+        int x, int y, char symbol)
     {
         Tiles = tiles;
         Difficulty = difficulty;
@@ -49,6 +51,7 @@ public class Chunk
         NeighborCoords = neighborCoords;
         Seed = seed;
         _items = items;
+        Symbol = symbol;
         Enemies = new List<Enemy>();
     }
 
