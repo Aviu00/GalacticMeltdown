@@ -7,6 +7,8 @@ namespace GalacticMeltdown.Items;
 public class EquippableItem : Item
 {
     [JsonIgnore] public BodyPart BodyPart => _itemData.BodyPart;
+
+    public ActorStateChangerData StateChanger;
     
     private readonly WearableItemData _itemData;
     [JsonProperty] protected override string ItemType => "Equippable";

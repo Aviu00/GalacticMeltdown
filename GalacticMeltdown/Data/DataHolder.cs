@@ -93,6 +93,7 @@ public static partial class DataHolder
             {ConsoleKey.E, MainControl.OpenInventory},
             {ConsoleKey.O, MainControl.InteractWithDoors},
             {ConsoleKey.C, MainControl.UseCursor},
+            {ConsoleKey.U, MainControl.Shoot},
             {ConsoleKey.Multiply, MainControl.IncreaseViewRange},
             {ConsoleKey.Subtract, MainControl.ReduceViewRange},
             {ConsoleKey.Z, MainControl.ToggleNoClip},

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
@@ -131,5 +134,35 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Inventory[item.Category].Remove(item);
         item.Consume(this);
+    }
+
+    public void Shoot(int x, int y)
+    {
+        if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun) return;
+        Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => gun.ammoTypes.ContainsKey(item.Id));
+        if (ammo is null) return;
+        if (UtilityFunctions.Chance(
+                UtilityFunctions.RangeAttackHitChance((int) UtilityFunctions.GetDistance(X, Y, x, y), gun.Spread)))
+        {
+            foreach (var (xi, yi) in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
+            {
+                if (Level.GetNonTileObject(xi, yi) is Enemy enemy)
+                {
+                    Inventory[ItemCategory.Item].Remove(ammo);
+                    enemy.Hit(
+                        Random.Shared.Next(gun.MinHitDamage + gun.ammoTypes[ammo.Id].minDamage,
+                            gun.MaxHitDamage + gun.ammoTypes[ammo.Id].maxDamage + 1), true, false);
+                    ActorStateChangerData stateChanger = gun.ammoTypes[ammo.Id].actorStateChangerData;
+                    if (stateChanger is not null)
+                    {
+                        DataHolder.ActorStateChangers[stateChanger.Type](enemy, stateChanger.Power,
+                            stateChanger.Duration);
+                    }
+                    break;
+                }
+            }
+        }
+
+        Energy -= gun.ShootEnergy;
     }
 }

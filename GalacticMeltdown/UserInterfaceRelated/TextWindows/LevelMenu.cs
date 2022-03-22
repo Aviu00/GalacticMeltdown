@@ -96,7 +96,6 @@ public class LevelMenu : TextWindow
         if (level is null)
         {
             SetLevelButtons();
-            // TODO: failure animation
             return;
         }
 
