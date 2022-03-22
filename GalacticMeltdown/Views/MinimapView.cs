@@ -28,7 +28,8 @@ public class MinimapView : View
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerViewX, centerViewY);
         var (xAbs, yAbs) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, xPlayer, yPlayer);
         if (!Inbounds(xAbs, yAbs)) return new ViewCellData(null, null);
-        return new ViewCellData((_chunks[xAbs, yAbs].Symbol, ConsoleColor.DarkYellow), null);
+        return new ViewCellData((_chunks[xAbs, yAbs].Symbol, ConsoleColor.DarkYellow),
+            x == centerViewX && y == centerViewY ? ConsoleColor.Green : null);
     }
 
     private bool Inbounds(int x, int y)
