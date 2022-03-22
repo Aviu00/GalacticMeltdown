@@ -203,11 +203,8 @@ public partial class LevelView : View
     {
         if (sender is not Actor actor) return;
 
-        if (!CanPlayerSeePoint(actor.X, actor.Y)) return;
-
-        var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
-        CellsChanged?.Invoke(this,
-            new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)> {(viewX, viewY, GetSymbol(viewX, viewY))}));
+        if (!IsPointInsideView(actor.X, actor.Y)) return;
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private void DoorUpdateHandler(object sender, DoorChangeEventArgs e)
