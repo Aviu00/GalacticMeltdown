@@ -32,7 +32,7 @@ public class Enemy : Npc
         _typeData = typeData;
         Id = typeData.Id;
         Targets = new() {Level.Player}; //temp
-        _alertCounter = new Counter(Level, 1, 20);
+        _alertCounter = new Counter(Level, 1, 30);
         Died += _alertCounter.RemoveCounter;
         
         if (_typeData.Behaviors == null) return;
