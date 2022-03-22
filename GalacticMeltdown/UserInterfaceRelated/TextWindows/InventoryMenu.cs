@@ -16,7 +16,8 @@ internal class ItemButton : Button
 {
     public Item StoredItem { get; }
 
-    public ItemButton(Item item, Action<Item> openItemScreen) : base(item.Name, "", () => openItemScreen(item))
+    public ItemButton(Item item, Action<Item> openItemScreen, int? count = null) : base(item.Name,
+        count is null ? "" : $"{count}", () => openItemScreen(item))
     {
         StoredItem = item;
     }
@@ -74,7 +75,33 @@ public class InventoryMenu : TextWindow
             LineView.SetLines(new List<ListLine> {new TextLine("Nothing here yet")});
             return;
         }
-        LineView.SetLines(items.Select(item => new ItemButton(item, OpenItemDialog)).Cast<ListLine>().ToList());
+
+        List<Item> itemLines = new List<Item>();
+        Dictionary<string, int> stackableItemCounts = new();
+        foreach (var item in items)
+        {
+            if (item.Stackable)
+            {
+                if (!stackableItemCounts.ContainsKey(item.Id))
+                {
+                    stackableItemCounts[item.Id] = 0;
+                    itemLines.Add(item);
+                }
+
+                stackableItemCounts[item.Id] += 1;
+            }
+            else
+            {
+                itemLines.Add(item);
+            }
+        }
+
+        List<ListLine> lines = itemLines.Select(itemLine => itemLine.Stackable
+                ? new ItemButton(itemLine, OpenItemDialog, stackableItemCounts[itemLine.Id])
+                : new ItemButton(itemLine, OpenItemDialog))
+            .Cast<ListLine>()
+            .ToList();
+        LineView.SetLines(lines);
     }
 
     private void OpenItemDialog(Item item)
