@@ -10,7 +10,7 @@ public class RangedWeaponItem : WeaponItem
     public int Spread => _itemData.Spread;
     public int ShootEnergy => _itemData.ShootEnergy;
 
-    public Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage, ActorStateChangerData
+    public Dictionary<string, (int reloadAmount, int minDamage, int maxDamage, ActorStateChangerData
         actorStateChangerData)> ammoTypes =>
         _itemData.AmmoTypes;
 
