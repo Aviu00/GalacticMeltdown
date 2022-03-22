@@ -33,7 +33,6 @@
                 <MinDamage>5</MinDamage>
                 <MaxDamage>10</MaxDamage>
                 <MeleeAttackCost>30</MeleeAttackCost>
-                <Cooldown>2</Cooldown>
             </MeleeAttack>
         </Behaviors>
     </Enemy>
@@ -56,7 +55,6 @@
                 <MinDamage>5</MinDamage>
                 <MaxDamage>10</MaxDamage>
                 <MeleeAttackCost>30</MeleeAttackCost>
-                <Cooldown>3</Cooldown>
             </MeleeAttack>
         </Behaviors>
     </Enemy>
