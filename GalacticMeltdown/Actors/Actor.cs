@@ -22,6 +22,7 @@ public abstract class Actor : IObjectOnMap
     private const int ActorMoveSpeed = 0;
     [JsonProperty] private int _strength;
     [JsonProperty] private int _moveSpeed;
+    [JsonProperty] private int _viewRange;
     public int Strength
     {
         get => _strength;
@@ -43,7 +44,16 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
-    [JsonProperty] protected int _viewRange;
+    public virtual int ViewRange
+    {
+        get => _viewRange < 1 ? 1 : _viewRange;
+        set
+        {
+            if(value == _viewRange) return;
+            _viewRange = value;
+            FireStatAffected(Stat.ViewRange);
+        }
+    }
 
     [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
@@ -131,7 +141,7 @@ public abstract class Actor : IObjectOnMap
         EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dexterity = dexterity;
         Defence = defence;
-        _viewRange = viewRange;
+        ViewRange = viewRange;
         X = x;
         Y = y;
         _turnStopped = false;
