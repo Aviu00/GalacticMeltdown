@@ -48,8 +48,8 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
 
-    public Dictionary<ItemCategory, List<Item>> Inventory { get; }
-    private Dictionary<BodyPart, EquippableItem> _equipment;
+    [JsonProperty] public Dictionary<ItemCategory, List<Item>> Inventory;
+    [JsonProperty] private readonly Dictionary<BodyPart, EquippableItem> _equipment;
 
     public event EventHandler VisiblePointsChanged;
 

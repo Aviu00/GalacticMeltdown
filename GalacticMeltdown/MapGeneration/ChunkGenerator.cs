@@ -156,7 +156,8 @@ public class ChunkGenerator
             ItemLoot itemLoot = (ItemLoot) DataHolder.LootTables[id];
             int amount = GetLimitedValue(itemLoot.Limit, 
                 _rng.Next(itemLoot.Min, itemLoot.Max + (int) (Difficulty * itemLoot.Gain) + 1));
-            if (amount <= 0) return;
+            if (amount <= 0)
+                return;
             for (; amount > 0; amount--)
             {
                 AddItem(items, DataHolder.ItemTypes[itemLoot.ItemId], x, y);
@@ -192,7 +193,7 @@ public class ChunkGenerator
         items[(x, y)].Add(Item.CreateItem(data));
     }
 
-    private int GetLimitedValue(int value, int limit)
+    private int GetLimitedValue(int limit, int value)
     {
         return limit == -1 ? value : Math.Min(limit, value);
     }

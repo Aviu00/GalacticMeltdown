@@ -73,7 +73,7 @@ public class RoomTypesExtractor : XmlExtractor
             string tileId = "";
             string lootId = null;
             int lootChance = 100;
-            double gain = 0;
+            double gain = 1;
             int limit = 100;
             foreach (XmlAttribute attribute in node.Attributes)
             {
