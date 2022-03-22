@@ -34,16 +34,9 @@ public partial class PlaySession
                 {
                     List<Item> items = _level.GetItems(x, y);
                     if (items is null || items.Count == 0) return;
-                    if (items.Count == 1)
-                    {
-                        PickUp(items[0]);
-                    }
-                    else
-                    {
-                        ItemPickupDialog dialog = new(items, PickUp);
-                        UserInterface.AddChild(this, dialog);
-                        dialog.Open();
-                    }
+                    ItemPickupDialog dialog = new(items, PickUp);
+                    UserInterface.AddChild(this, dialog);
+                    dialog.Open();
                     
                     void PickUp(Item item)
                     {
