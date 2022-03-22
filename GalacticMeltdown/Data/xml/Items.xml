@@ -115,6 +115,10 @@
                 <MaxDamage>70</MaxDamage>
                 <ReloadEnergy>15</ReloadEnergy>
                 <ReloadAmount>2</ReloadAmount>
+                <StateChanger>
+                    <Type>Stun</Type>
+                    <Power>50</Power>
+                </StateChanger>
             </Ammo>
         </AmmoTypes>
     </WeaponItem>
@@ -131,13 +135,13 @@
             <Ammo>
                 <Id>arrow</Id>
                 <MinDamage>15</MinDamage>
-                <MaxDamage>80</MaxDamage>
+                <MaxDamage>100</MaxDamage>
                 <ReloadEnergy>30</ReloadEnergy>
             </Ammo>
             <Ammo>
                 <Id>poisoned_arrow</Id>
                 <MinDamage>15</MinDamage>
-                <MaxDamage>80</MaxDamage>
+                <MaxDamage>100</MaxDamage>
                 <ReloadEnergy>30</ReloadEnergy>
                 <StateChanger>
                     <Type>PoisonEffect</Type>
@@ -160,14 +164,14 @@
         <AmmoTypes>
             <Ammo>
                 <Id>arrow</Id>
-                <MinDamage>30</MinDamage>
-                <MaxDamage>100</MaxDamage>
+                <MinDamage>35</MinDamage>
+                <MaxDamage>120</MaxDamage>
                 <ReloadEnergy>30</ReloadEnergy>
             </Ammo>
             <Ammo>
                 <Id>poisoned_arrow</Id>
-                <MinDamage>30</MinDamage>
-                <MaxDamage>100</MaxDamage>
+                <MinDamage>35</MinDamage>
+                <MaxDamage>120</MaxDamage>
                 <ReloadEnergy>30</ReloadEnergy>
                 <StateChanger>
                     <Type>PoisonEffect</Type>
@@ -322,6 +326,18 @@
         <Id>energy_cell</Id>
         <Name>energy cell</Name>
         <Symbol>*</Symbol>
+        <Stackable>true</Stackable>
+    </Item>
+    <Item>
+        <Id>arrow</Id>
+        <Name>arrow</Name>
+        <Symbol>|</Symbol>
+        <Stackable>true</Stackable>
+    </Item>
+    <Item>
+        <Id>poisoned_arrow</Id>
+        <Name>arrow</Name>
+        <Symbol>|</Symbol>
         <Stackable>true</Stackable>
     </Item>
     <ConsumableItem>
