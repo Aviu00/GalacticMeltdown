@@ -421,7 +421,7 @@
         <Stackable>true</Stackable>
         <ConsumeEnergy>3</ConsumeEnergy>
         <StateChanger>
-            <Type>ModifyMaxHealth</Type>
+            <Type>ModifyMaxHealthEffect</Type>
             <Power>10</Power>
             <Duration>30</Duration>
         </StateChanger>

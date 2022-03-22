@@ -195,7 +195,7 @@
                 <MinDamage>0</MinDamage>
                 <MeleeAttackCost>70</MeleeAttackCost>
                 <StateChanger>
-                    <Type>ModifyMoveSpeedEffect</Type>
+                    <Type>ModifySpeedEffect</Type>
                     <Power>-5</Power>
                     <Duration>5</Duration>
                 </StateChanger>
