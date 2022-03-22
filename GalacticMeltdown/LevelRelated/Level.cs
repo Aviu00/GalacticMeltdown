@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 using Newtonsoft.Json;
@@ -429,6 +430,20 @@ public partial class Level
         _chunks[x, y].AddNpc(npc);
     }
 
+    public void AddItem(Item item, int x, int y)
+    {
+        if (!Inbounds(x, y)) return;
+        (int chunkX, int chunkY) = GetChunkCoords(x, y);
+        _chunks[chunkX, chunkY].AddItem(item, x, y);
+    }
+
+    public List<Item> GetItems(int x, int y)
+    {
+        if (!Inbounds(x, y)) return null;
+        (int chunkX, int chunkY) = GetChunkCoords(x, y);
+        return _chunks[chunkX, chunkY].GetItems(x, y);
+    }
+
     public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1, bool onlyActiveChunks = true)
     {
         (int chunkX0, int chunkY0) = GetChunkCoords(x0, y0);
@@ -480,6 +495,12 @@ public partial class Level
             doorCounter.StopTimer();
         if(actor is not null) actor.Energy -= 100;
         return true;
+    }
+
+    private bool Inbounds(int x, int y)
+    {
+        var (chunkX, chunkY) = GetChunkCoords(x, y);
+        return x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && chunkY < _chunks.GetLength(1);
     }
     
     private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);

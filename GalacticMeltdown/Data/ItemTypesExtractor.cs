@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
+using GalacticMeltdown.Actors;
+using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Data;
 using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage)>;
@@ -15,21 +18,12 @@ public class ItemTypesExtractor : XmlExtractor
         ParseDocument("Items.xml");
     }
 
-    private enum ItemType
-    {
-        Item,
-        WeaponItem,
-        RangedWeaponItem,
-        UsableItem,
-        WearableItem
-    }
-
     private void ParseDocument(string docName)
     {
         XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
-            if(!Enum.TryParse(node.Name, out ItemType itemType)) continue;
+            if(!Enum.TryParse(node.Name, out ItemCategory itemCategory)) continue;
             string id = "";
             string name = "";
             char symbol = ' ';
@@ -37,6 +31,8 @@ public class ItemTypesExtractor : XmlExtractor
             int maxHitDamage = 0;
             int hitEnergy = 0;
             int ammoCapacity = 0;
+            BodyPart bodyPart = BodyPart.Hands;
+            bool stackable = false;
             AmmoDictionary ammoList = null;
             foreach (XmlNode locNode in node)
             {
@@ -66,18 +62,24 @@ public class ItemTypesExtractor : XmlExtractor
                     case "AmmoTypes":
                         ammoList = ParseAmmoDictionary(locNode);
                         break;
+                    case "BodyPart":
+                        bodyPart = Enum.Parse<BodyPart>(locNode.InnerText);
+                        break;
+                    case "Stackable":
+                        stackable = Convert.ToBoolean(locNode.InnerText);
+                        break;
                 }
             }
 
-            ItemData itemData = itemType switch
+            ItemData itemData = itemCategory switch
             {
-                ItemType.UsableItem => new UsableItemData(symbol, name, id),
-                ItemType.WearableItem => new WearableItemData(symbol, name, id),
-                ItemType.WeaponItem => new WeaponItemData(symbol, name, id, minHitDamage, maxHitDamage, hitEnergy,
-                    ammoCapacity, ammoList),
-                ItemType.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, minHitDamage, maxHitDamage,
-                    hitEnergy, ammoCapacity, ammoList),
-                _ => new ItemData(symbol, name, id)
+                ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory, stackable),
+                ItemCategory.WearableItem => new WearableItemData(symbol, name, id, itemCategory, bodyPart),
+                ItemCategory.WeaponItem => new WeaponItemData(symbol, name, id, itemCategory, minHitDamage,
+                    maxHitDamage, hitEnergy, ammoCapacity, ammoList),
+                ItemCategory.RangedWeaponItem => new RangedWeaponItemData(symbol, name, id, itemCategory, minHitDamage,
+                    maxHitDamage, hitEnergy, ammoCapacity, ammoList),
+                _ => new ItemData(symbol, name, id, itemCategory, stackable)
             };
             ItemTypes.Add(itemData.Id, itemData);
         }
@@ -121,17 +123,19 @@ public class ItemTypesExtractor : XmlExtractor
     }
 }
 
-public record ItemData(char Symbol, string Name, string Id);
+public record ItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable);
 
-public record WeaponItemData(char Symbol, string Name, string Id, int MinHitDamage, int MaxHitDamage, int HitEnergy,
-        int AmmoCapacity, AmmoDictionary AmmoTypes)
-    : ItemData(Symbol, Name, Id);
+public record WearableItemData
+    (char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart) : ItemData(Symbol, Name, Id,
+        Category, false); //WIP
 
-public record RangedWeaponItemData(char Symbol, string Name, string Id, int MinHitDamage, int MaxHitDamage,
-        int HitEnergy, int AmmoCapacity, 
-        AmmoDictionary AmmoTypes) //Hit chance not yet included
-    : WeaponItemData(Symbol, Name, Id, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
+public record WeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
+    int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) : WearableItemData(Symbol, Name, Id,
+    Category, BodyPart.Hands);
 
-public record WearableItemData(char Symbol, string Name, string Id) : ItemData(Symbol, Name, Id); //WIP
+public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
+        int MaxHitDamage, int HitEnergy, int AmmoCapacity, AmmoDictionary AmmoTypes) //Hit chance not yet included
+    : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes);
 
-public record UsableItemData(char Symbol, string Name, string Id) : ItemData(Symbol, Name, Id); //WIP
+public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable) : ItemData(
+    Symbol, Name, Id, Category, Stackable); //WIP

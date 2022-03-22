@@ -8,13 +8,12 @@ using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.UserInterfaceRelated.Menus;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class PauseMenu : Menu
+public class PauseMenu : TextWindow
 {
     public PauseMenu()
     {
-        LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
             new Button("Back", "", Close),

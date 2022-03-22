@@ -133,16 +133,9 @@ public partial class LevelView : View
         _focusObject.InFocus = false;
         _focusObject.Moved -= FocusObjectMoved;
 
-        /* Remember starting cursor line coordinates when bringing cursor
-           into focus and forget when it is no longer in focus */
-        if (ReferenceEquals(focusObj, _cursor)) _cursorLineStartCoords = (_focusObject.X, _focusObject.Y);
-        else if (ReferenceEquals(_focusObject, _cursor)) _cursorLineStartCoords = null;
-
         _focusObject = focusObj;
         _focusObject.InFocus = true;
         _focusObject.Moved += FocusObjectMoved;
-        
-        _cursor?.MoveInbounds();
         
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }

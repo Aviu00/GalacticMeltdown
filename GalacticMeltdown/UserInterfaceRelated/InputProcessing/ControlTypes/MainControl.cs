@@ -12,6 +12,8 @@ public enum MainControl
     MoveNw,
     StopTurn,
     DoNothing,
+    PickUpItem,
+    OpenInventory,
     InteractWithDoors,
     UseCursor,
     IncreaseViewRange, //for fov testing
