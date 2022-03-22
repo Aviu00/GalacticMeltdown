@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -146,7 +147,15 @@ public class Player : Actor, ISightedObject, IControllable
                 if (Level.GetNonTileObject(xi, yi) is Enemy enemy)
                 {
                     Inventory[ItemCategory.Item].Remove(ammo);
-                    enemy.Hit(Random.Shared.Next(gun.MinHitDamage, gun.MaxHitDamage + 1), true, false);
+                    enemy.Hit(
+                        Random.Shared.Next(gun.MinHitDamage + gun.ammoTypes[ammo.Id].minDamage,
+                            gun.MaxHitDamage + gun.ammoTypes[ammo.Id].maxDamage + 1), true, false);
+                    ActorStateChangerData stateChanger = gun.ammoTypes[ammo.Id].actorStateChangerData;
+                    if (stateChanger is not null)
+                    {
+                        DataHolder.ActorStateChangers[stateChanger.Type](enemy, stateChanger.Power,
+                            stateChanger.Duration);
+                    }
                     break;
                 }
             }
