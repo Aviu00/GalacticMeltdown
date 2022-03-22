@@ -83,6 +83,31 @@
         </Behaviors>
     </Enemy>
     <Enemy>
+        <Id>healer</Id>
+        <Name>healer</Name>
+        <Symbol>H</Symbol>
+        <Color>yellow</Color>
+        <BgColor>black</BgColor>
+        <MaxHp>150</MaxHp>
+        <MaxEnergy>70</MaxEnergy>
+        <Dexterity>10</Dexterity>
+        <Defence>10</Defence>
+        <ViewRange>15</ViewRange>
+        <Cost>100</Cost>
+        <AlertRadius>15</AlertRadius>
+        <Behaviors>
+            <Movement/>
+            <SelfEffect>
+                <Cooldown>4</Cooldown>
+                <SelfEffectCost>50</SelfEffectCost>
+                <StateChanger>
+                    <Type>Heal</Type>
+                    <Power>20</Power>
+                </StateChanger>
+            </SelfEffect>
+        </Behaviors>
+    </Enemy>
+    <Enemy>
         <Id>turret</Id>
         <Name>turret</Name>
         <Symbol>T</Symbol>
