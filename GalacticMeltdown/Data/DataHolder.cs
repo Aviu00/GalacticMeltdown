@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 
 namespace GalacticMeltdown.Data;
@@ -34,6 +35,15 @@ public static partial class DataHolder
         {"dark_magenta", ConsoleColor.DarkMagenta},
         {"dark_red", ConsoleColor.DarkRed},
         {"dark_yellow", ConsoleColor.DarkYellow},
+    };
+    
+    public static readonly Dictionary<ItemCategory, string> CategoryName = new()
+    {
+        {ItemCategory.Item, "Other"},
+        {ItemCategory.UsableItem, "Consumables"},
+        {ItemCategory.WeaponItem, "Weapons"},
+        {ItemCategory.WearableItem, "Armor"},
+        {ItemCategory.RangedWeaponItem, "Guns"}
     };
 
     public readonly struct Colors
