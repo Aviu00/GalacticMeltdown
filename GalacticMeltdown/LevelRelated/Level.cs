@@ -51,6 +51,7 @@ public partial class Level
     public event EventHandler TurnFinished;
     public event EventHandler NpcDied;
     public event EventHandler<MoveEventArgs> SomethingMoved;
+    public event EventHandler<DoorChangeEventArgs> DoorChanged;
 
     [JsonIgnore]
     public (int x, int y) Size => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
@@ -492,11 +493,12 @@ public partial class Level
         {
             doorCounter = _doorCounters[(x, y)];
         }
-        if(tile.IsWalkable)
+        if (tile.IsWalkable)
             doorCounter.ResetTimer();
         else
             doorCounter.StopTimer();
-        if(actor is not null) actor.Energy -= 100;
+        if (actor is not null) actor.Energy -= 100;
+        DoorChanged?.Invoke(this, new DoorChangeEventArgs((x, y)));
         return true;
     }
 

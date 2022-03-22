@@ -81,6 +81,7 @@ public partial class LevelView : View
     {
         _level.SomethingMoved += MoveHandler;
         _level.NpcDied += DeathHandler;
+        _level.DoorChanged += DoorUpdateHandler;
         _sightedObjects = _level.SightedObjects;
         _sightedObjects.CollectionChanged += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
@@ -207,6 +208,14 @@ public partial class LevelView : View
         var (viewX, viewY) = ToViewCoords(actor.X, actor.Y);
         CellsChanged?.Invoke(this,
             new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)> {(viewX, viewY, GetSymbol(viewX, viewY))}));
+    }
+
+    private void DoorUpdateHandler(object sender, DoorChangeEventArgs e)
+    {
+        if (IsPointInsideView(e.Coords.x, e.Coords.y))
+        {
+            UpdateVisiblePoints();
+        }
     }
 
     private void FocusObjectMoved(object sender, MoveEventArgs _)
