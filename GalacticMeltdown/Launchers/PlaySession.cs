@@ -6,7 +6,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
-using GalacticMeltdown.UserInterfaceRelated.Menus;
+using GalacticMeltdown.UserInterfaceRelated.TextWindows;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
@@ -24,7 +24,6 @@ public partial class PlaySession
     private static LevelView _levelView;
 
     private Dictionary<MainControl, Action> _mainActions;
-    private Dictionary<CursorControl, Action> _cursorActions;
 
     public PlaySession(Level level, string levelName, int levelSeed)
     {
@@ -84,8 +83,15 @@ public partial class PlaySession
 
     private void OpenPauseMenu()
     {
-        PauseMenu pauseMenu = new PauseMenu();
+        PauseMenu pauseMenu = new();
         UserInterface.AddChild(this, pauseMenu);
         pauseMenu.Open();
+    }
+
+    private void OpenInventory()
+    {
+        InventoryMenu inventoryMenu = new(_player);
+        UserInterface.AddChild(this, inventoryMenu);
+        inventoryMenu.Open();
     }
 }

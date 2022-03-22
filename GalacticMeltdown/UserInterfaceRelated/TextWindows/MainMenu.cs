@@ -8,13 +8,12 @@ using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.UserInterfaceRelated.Menus;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class MainMenu : Menu
+public class MainMenu : TextWindow
 {
     public MainMenu()
     {
-        LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
             new Button("Select level", "", OpenLevelMenu),

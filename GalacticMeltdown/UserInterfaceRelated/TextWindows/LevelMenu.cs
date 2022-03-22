@@ -10,7 +10,7 @@ using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.UserInterfaceRelated.Menus;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 internal class LevelButton : Button
 {
@@ -23,13 +23,12 @@ internal class LevelButton : Button
     }
 }
 
-public class LevelMenu : Menu
+public class LevelMenu : TextWindow
 {
     private bool _noLevels;
     
     public LevelMenu()
     {
-        LineView = new LineView();
         SetLevelButtons();
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.LevelMenu,
             new Dictionary<LevelMenuControl, Action>

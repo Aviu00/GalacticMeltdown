@@ -9,11 +9,13 @@ namespace GalacticMeltdown.Items;
 [JsonConverter(typeof(JsonSubtypes), "ItemType")]
 [JsonSubtypes.KnownSubType(typeof(RangedWeaponItem), "RangedWeapon")]
 [JsonSubtypes.KnownSubType(typeof(WeaponItem), "MeleeWeapon")]
-[JsonSubtypes.KnownSubType(typeof(UsableItem), "Usable")]
-[JsonSubtypes.KnownSubType(typeof(WearableItem), "Wearable")]
+[JsonSubtypes.KnownSubType(typeof(ConsumableItem), "Usable")]
+[JsonSubtypes.KnownSubType(typeof(EquippableItem), "Wearable")]
 public class Item : IDrawable
 {
     private readonly ItemData _itemData;
+    public bool Stackable => _itemData.Stackable;
+    public ItemCategory Category => _itemData.Category;
     public string Id => _itemData.Id;
     [JsonIgnore] public string Name => _itemData.Name;
     [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
@@ -41,8 +43,8 @@ public class Item : IDrawable
         {
             RangedWeaponItemData itemData => new RangedWeaponItem(itemData),
             WeaponItemData itemData => new WeaponItem(itemData),
-            UsableItemData itemData => new UsableItem(itemData),
-            WearableItemData itemData => new WearableItem(itemData),
+            UsableItemData itemData => new ConsumableItem(itemData),
+            WearableItemData itemData => new EquippableItem(itemData),
             _ => new Item(data)
         };
     }
@@ -53,8 +55,8 @@ public class Item : IDrawable
         {
             RangedWeaponItem itemObj => new RangedWeaponItem(itemObj),
             WeaponItem itemObj => new WeaponItem(itemObj),
-            UsableItem itemObj => new UsableItem(itemObj),
-            WearableItem itemObj => new WearableItem(itemObj),
+            ConsumableItem itemObj => new ConsumableItem(itemObj),
+            EquippableItem itemObj => new EquippableItem(itemObj),
             _ => new Item(item)
         };
     }

@@ -7,9 +7,9 @@ using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
-namespace GalacticMeltdown.UserInterfaceRelated.Menus;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class LevelCreationDialog : Dialog
+public class LevelCreationDialog : TextWindow
 {
     private readonly Action<string, int?> _sender;
 
@@ -19,6 +19,23 @@ public class LevelCreationDialog : Dialog
     public LevelCreationDialog(Action<string, int?> sender)
     {
         _sender = sender;
+        
+        _nameLine = new InputLine();
+        _seedLine = new InputLine(char.IsDigit);
+        
+        LineView.SetLines(new List<ListLine>
+        {
+            new TextLine("Name"), _nameLine, new TextLine("Seed"), _seedLine,
+        });
+        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+            new Dictionary<SelectionControl, Action>
+            {
+                {SelectionControl.Back, Close},
+                {SelectionControl.Select, LineView.PressCurrent},
+                {SelectionControl.Down, LineView.SelectNext},
+                {SelectionControl.Up, LineView.SelectPrev},
+                {SelectionControl.SpecialAction, SendInfo}
+            }));
     }
 
     private void SendInfo()
@@ -34,27 +51,8 @@ public class LevelCreationDialog : Dialog
 
     public override void Open()
     {
-        LineView = new LineView();
-
-        _nameLine = new InputLine();
         UserInterface.AddChild(this, _nameLine);
-
-        _seedLine = new InputLine(char.IsDigit);
         UserInterface.AddChild(this, _seedLine);
-
-        LineView.SetLines(new List<ListLine>
-        {
-            new TextLine("Name"), _nameLine, new TextLine("Seed"), _seedLine,
-        });
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
-            new Dictionary<SelectionControl, Action>
-            {
-                {SelectionControl.Back, Close},
-                {SelectionControl.Select, LineView.PressCurrent},
-                {SelectionControl.Down, LineView.SelectNext},
-                {SelectionControl.Up, LineView.SelectPrev},
-                {SelectionControl.SpecialAction, SendInfo}
-            }));
         base.Open();
     }
 }

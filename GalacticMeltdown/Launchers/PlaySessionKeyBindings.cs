@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using GalacticMeltdown.Data;
+using System.Linq;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated;
-using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.Cursor;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
-using GalacticMeltdown.Utility;
-using GalacticMeltdown.Views;
+using GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 namespace GalacticMeltdown.Launchers;
 
@@ -26,29 +26,59 @@ public partial class PlaySession
         {MainControl.StopTurn, () => {_player.StopTurn(); UserInterface.YieldControl(this);}},
         {MainControl.DoNothing, () => UserInterface.YieldControl(this)},
         {
+            MainControl.PickUpItem, () =>
+            {
+                Cursor cursor = _levelView.Cursor;
+                cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
+                cursor.Action = (_, _, x, y) =>
+                {
+                    List<Item> items = _level.GetItems(x, y);
+                    if (items is null || items.Count == 0) return;
+                    ItemPickupDialog dialog = new(items, PickUp);
+                    UserInterface.AddChild(this, dialog);
+                    dialog.Open();
+                    
+                    void PickUp(Item item)
+                    {
+                        if (item.Stackable)
+                        {
+                            foreach (Item listItem in items.FindAll(listItem => listItem.Id == item.Id).ToList())
+                            {
+                                items.Remove(listItem);
+                                _player.AddToInventory(item);
+                            }
+                        }
+                        else
+                        {
+                            items.Remove(item);
+                            _player.AddToInventory(item);
+                        }
+                    }
+                };
+                UserInterface.AddChild(this, cursor);
+                cursor.Start();
+            }
+        },
+        {
             MainControl.UseCursor, () =>
             {
-                _controlledObject = _levelView.Cursor;
-                UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
+                Cursor cursor = _levelView.Cursor;
+                UserInterface.AddChild(this, cursor);
+                cursor.Start();
             }
         },
         {
             MainControl.InteractWithDoors, () =>
             {
-                _controlledObject = _levelView.Cursor;
-                _levelView.Cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
-                _levelView.Cursor.Action = (_, _, x, y) =>
+                Cursor cursor = _levelView.Cursor;
+                cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
+                cursor.Action = (_, _, x, y) =>
                 {
-                    _controlledObject = _player;
-                    _levelView.SetFocus(_player);
-                    _levelView.RemoveCursor();
-                    UserInterface.SetController(this, new ActionHandler(
-                        UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
+                    cursor.Close();
                     if(_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
-                };  
-                UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor, _cursorActions)));
+                };
+                UserInterface.AddChild(this, cursor);
+                cursor.Start();
             }
         },
         {MainControl.IncreaseViewRange, () => _player.ViewRange++},
@@ -56,33 +86,7 @@ public partial class PlaySession
         {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
         {MainControl.ToggleXRay, () => _player.Xray = !_player.Xray},
         {MainControl.OpenPauseMenu, OpenPauseMenu},
-    };
-
-    _cursorActions = new Dictionary<CursorControl, Action>
-    {
-        {CursorControl.MoveUp, () => MoveControlled(0, 1)},
-        {CursorControl.MoveDown, () => MoveControlled(0, -1)},
-        {CursorControl.MoveRight, () => MoveControlled(1, 0)},
-        {CursorControl.MoveLeft, () => MoveControlled(-1, 0)},
-        {CursorControl.MoveNe, () => MoveControlled(1, 1)},
-        {CursorControl.MoveSe, () => MoveControlled(1, -1)},
-        {CursorControl.MoveSw, () => MoveControlled(-1, -1)},
-        {CursorControl.MoveNw, () => MoveControlled(-1, 1)},
-        {CursorControl.Interact, () => ((Cursor) _controlledObject).Interact()},
-        {CursorControl.Back, () =>
-            {
-                _controlledObject = _player;
-                _levelView.SetFocus(_player);
-                _levelView.RemoveCursor();
-                UserInterface.SetController(this, new ActionHandler(
-                    UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
-            }
-        },
-        {CursorControl.ToggleLine, () => { _levelView.DrawCursorLine = !_levelView.DrawCursorLine;}},
-        {
-            CursorControl.ToggleFocus,
-            () => _levelView.SetFocus(((Cursor) _controlledObject).InFocus ? _player : _levelView.Cursor)
-        }
+        {MainControl.OpenInventory, OpenInventory}
     };
     }
 }

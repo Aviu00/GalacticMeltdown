@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
 using Newtonsoft.Json;
 
@@ -46,6 +48,9 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
 
+    public Dictionary<ItemCategory, List<Item>> Inventory { get; }
+    private Dictionary<BodyPart, EquippableItem> _equipment;
+
     public event EventHandler VisiblePointsChanged;
 
     [JsonConstructor]
@@ -55,6 +60,17 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
+        Inventory = new Dictionary<ItemCategory, List<Item>>();
+        foreach (ItemCategory val in Enum.GetValues<ItemCategory>())
+        {
+            Inventory[val] = new List<Item>();
+        }
+
+        _equipment = new Dictionary<BodyPart, EquippableItem>();
+        foreach (BodyPart val in Enum.GetValues<BodyPart>())
+        {
+            _equipment[val] = null;
+        }
     }
 
     public bool TryMove(int deltaX, int deltaY)
@@ -84,5 +100,35 @@ public class Player : Actor, ISightedObject, IControllable
     public void SetControlFunc(Action controlFunc)
     {
         _giveControlToUser = controlFunc;
+    }
+
+    public void AddToInventory(Item item)
+    {
+        Inventory[item.Category].Add(item);
+    }
+
+    public void Equip(EquippableItem item)
+    {
+        Item prevItem = _equipment[item.BodyPart];
+        if (prevItem == item) return;
+        if (prevItem is not null)
+        {
+            AddToInventory(prevItem);
+        }
+
+        Inventory[item.Category].Remove(item);
+        _equipment[item.BodyPart] = item;
+    }
+
+    public void Drop(Item item)
+    {
+        Inventory[item.Category].Remove(item);
+        Level.AddItem(item, X, Y);
+    }
+
+    public void Consume(ConsumableItem item)
+    {
+        Inventory[item.Category].Remove(item);
+        item.Consume(this);
     }
 }
