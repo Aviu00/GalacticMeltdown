@@ -68,10 +68,13 @@ public class InventoryMenu : TextWindow
 
     private void LoadCategoryScreen(ItemCategory category)
     {
+        List<ListLine> lines = new List<ListLine>();
+        lines.Add(new TextLine($"<--- {DataHolder.CategoryName[category]} --->"));
         List<Item> items = _inventory[category];
         if (!items.Any())
         {
-            LineView.SetLines(new List<ListLine> {new TextLine("Nothing here yet")});
+            lines.Add(new TextLine("Nothing here yet"));
+            LineView.SetLines(lines);
             return;
         }
 
@@ -95,11 +98,11 @@ public class InventoryMenu : TextWindow
             }
         }
 
-        List<ListLine> lines = itemLines.Select(itemLine => itemLine.Stackable
+        lines.AddRange(itemLines.Select(itemLine => itemLine.Stackable
                 ? new ItemButton(itemLine, OpenItemDialog, stackableItemCounts[itemLine.Id])
                 : new ItemButton(itemLine, OpenItemDialog))
             .Cast<ListLine>()
-            .ToList();
+            .ToList());
         LineView.SetLines(lines);
     }
 
