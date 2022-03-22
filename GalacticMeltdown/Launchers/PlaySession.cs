@@ -38,6 +38,7 @@ public partial class PlaySession
         {
             UserInterface.PlayAnimations();
             UserInterface.TakeControl(this);
+            return null;
         });
         _controlledObject = _player;
         _levelView = _level.LevelView;

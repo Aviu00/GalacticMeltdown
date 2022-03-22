@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors.Effects;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
@@ -214,10 +215,10 @@ public abstract class Actor : IObjectOnMap
         _effects.Remove(effect);
     }
 
-    public abstract void TakeAction();
-
     public int GetViewRange()
     {
         return _viewRange < 1 ? 1 : _viewRange;
     }
+
+    public abstract ActorActionInfo TakeAction();
 }

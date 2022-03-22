@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
@@ -61,9 +62,9 @@ public class Enemy : Npc
         Died += _alertCounter.RemoveCounter;
     }
 
-    public override void TakeAction()
+    public override ActorActionInfo TakeAction()
     {
-        if (!IsActive) return;
+        if (!IsActive) return null;
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
             .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
         if (CurrentTarget is not null && _alertCounter.FinishedCounting)
@@ -72,7 +73,7 @@ public class Enemy : Npc
             _alertCounter.ResetTimer();
         }
 
-        base.TakeAction();
+        return base.TakeAction();
     }
     
     private void AlertEnemiesAboutTarget(int x, int y)

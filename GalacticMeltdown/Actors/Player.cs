@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
@@ -23,8 +24,7 @@ public class Player : Actor, ISightedObject, IControllable
     private const int DefaultMaxDamage = 10;
 
     [JsonProperty] protected override string ActorName => "Player";
-    private Action _giveControlToUser;
-
+    private Func<ActorActionInfo> _giveControlToUser;
     private bool _xray;
 
     public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
@@ -94,12 +94,12 @@ public class Player : Actor, ISightedObject, IControllable
         return true;
     }
 
-    public override void TakeAction()
+    public override ActorActionInfo TakeAction()
     {
-        _giveControlToUser?.Invoke();
+        return _giveControlToUser?.Invoke();
     }
 
-    public void SetControlFunc(Action controlFunc)
+    public void SetControlFunc(Func<ActorActionInfo> controlFunc)
     {
         _giveControlToUser = controlFunc;
     }

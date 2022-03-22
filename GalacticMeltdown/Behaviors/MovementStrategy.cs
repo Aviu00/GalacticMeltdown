@@ -3,6 +3,7 @@ using GalacticMeltdown.LevelRelated;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -100,7 +101,7 @@ public class MovementStrategy : Behavior
     }
 
 
-    public override bool TryAct()
+    public override ActorActionInfo TryAct()
     {
         Tile previousTargetTile = null;
         if (PreviousTarget is not null)
@@ -134,23 +135,27 @@ public class MovementStrategy : Behavior
         if (_idleMovement && UtilityFunctions.Chance(60))
         {
             ControlledNpc.StopTurn();
-            return true;
+            return new ActorActionInfo(ActorAction.StopTurn, new List<(int, int)>());
         }
-        
+
         if (_nextPathCellNode is null)
-            return false;
-        if(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null) return false;
+            return null;
+        if (Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null) return null;
         Tile nextPathTile =  Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         if (!nextPathTile.IsWalkable)
         {
-            if (!nextPathTile.IsDoor) return false;
+            if (!nextPathTile.IsDoor) return null;
             Level.InteractWithDoor(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y, ControlledNpc);
-            return true;
+            return new ActorActionInfo(ActorAction.InteractWithDoor,
+                new List<(int, int)> {(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y)});;
         }
+        int oldX = ControlledNpc.X, oldY = ControlledNpc.Y; 
+        int newX = _nextPathCellNode.Value.x, newY = _nextPathCellNode.Value.y;
         ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         _nextPathCellNode = _nextPathCellNode.Next;
         if (_nextPathCellNode is null) _wantsToGoTo = null;
-        return true;
+        return new ActorActionInfo(ActorAction.Move,
+            new List<(int, int)> {(oldX, oldY), (newX, newY)});
     }
     private void CalculateIdleMovementPath()
     {

@@ -1,4 +1,5 @@
 using System;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using JsonSubTypes;
 using Newtonsoft.Json;
@@ -26,7 +27,7 @@ public abstract class Behavior : IComparable<Behavior>
     [JsonProperty] protected Npc ControlledNpc { get; init; }
 
 
-    public abstract bool TryAct();
+    public abstract ActorActionInfo TryAct();
     
     public int CompareTo(Behavior obj)
     {

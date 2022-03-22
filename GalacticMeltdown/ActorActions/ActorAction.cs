@@ -7,8 +7,9 @@ public enum ActorAction
     Move,
     InteractWithDoor,
     Shoot,
-    Attack,
+    MeleeAttack,
     ApplyEffect,
+    StopTurn,
 }
 
 public class ActorActionInfo
