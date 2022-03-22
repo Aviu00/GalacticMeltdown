@@ -49,7 +49,7 @@ public class Player : Actor, ISightedObject, IControllable
     }
 
     [JsonProperty] public Dictionary<ItemCategory, List<Item>> Inventory;
-    [JsonProperty] private readonly Dictionary<BodyPart, EquippableItem> _equipment;
+    [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
     public event EventHandler VisiblePointsChanged;
 
@@ -66,10 +66,10 @@ public class Player : Actor, ISightedObject, IControllable
             Inventory[val] = new List<Item>();
         }
 
-        _equipment = new Dictionary<BodyPart, EquippableItem>();
+        Equipment = new Dictionary<BodyPart, EquippableItem>();
         foreach (BodyPart val in Enum.GetValues<BodyPart>())
         {
-            _equipment[val] = null;
+            Equipment[val] = null;
         }
     }
 
@@ -108,7 +108,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Equip(EquippableItem item)
     {
-        Item prevItem = _equipment[item.BodyPart];
+        Item prevItem = Equipment[item.BodyPart];
         if (prevItem == item) return;
         if (prevItem is not null)
         {
@@ -116,7 +116,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
 
         Inventory[item.Category].Remove(item);
-        _equipment[item.BodyPart] = item;
+        Equipment[item.BodyPart] = item;
     }
 
     public void Drop(Item item)
