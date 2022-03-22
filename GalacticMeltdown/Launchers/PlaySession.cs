@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
@@ -59,12 +60,10 @@ public partial class PlaySession
     {
         if (!_level.DoTurn())
         {
-            if (_level.PlayerWon)
-            {
-            }
-            else
-            {
-            }
+            Thread.Sleep(800);
+            EndGameMessage endGameMessage = new(_level.PlayerWon ? "You won" : "You died");
+            UserInterface.AddChild(this, endGameMessage);
+            endGameMessage.Open();
             UserInterface.SetTask(this, Game.OpenMainMenu);
             return;
         }
