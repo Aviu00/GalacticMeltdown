@@ -32,6 +32,7 @@ public class ItemTypesExtractor : XmlExtractor
             int hitEnergy = 0;
             int shootEnergy = 0;
             int ammoCapacity = 0;
+            int consumeEnergy = 0;
             int spread = 0;
             BodyPart bodyPart = BodyPart.Hands;
             bool stackable = false;
@@ -65,6 +66,9 @@ public class ItemTypesExtractor : XmlExtractor
                     case "ShootEnergy":
                         shootEnergy = Convert.ToInt32(locNode.InnerText);
                         break;
+                    case "ConsumeEnergy":
+                        consumeEnergy = Convert.ToInt32(locNode.InnerText);
+                        break;
                     case "AmmoCapacity":
                         ammoCapacity = Convert.ToInt32(locNode.InnerText);
                         break;
@@ -85,8 +89,8 @@ public class ItemTypesExtractor : XmlExtractor
 
             ItemData itemData = itemCategory switch
             {
-                ItemCategory.UsableItem => new UsableItemData(symbol, name, id, itemCategory, stackable,
-                    actorStateChangerData),
+                ItemCategory.ConsumableItem => new ConsumableItemData(symbol, name, id, itemCategory, stackable, 
+                    consumeEnergy, actorStateChangerData),
                 ItemCategory.WearableItem => new WearableItemData(symbol, name, id, itemCategory, bodyPart),
                 ItemCategory.WeaponItem => new WeaponItemData(symbol, name, id, itemCategory, minHitDamage,
                     maxHitDamage, hitEnergy, ammoCapacity, ammoList, actorStateChangerData),
@@ -111,25 +115,25 @@ public class ItemTypesExtractor : XmlExtractor
             ActorStateChangerData actorStateChangerData = null;
             foreach (XmlNode ammoNode in locNode)
             {
-                switch (locNode.Name)
+                switch (ammoNode.Name)
                 {
                     case "Id":
-                        ammoId = locNode.InnerText;
+                        ammoId = ammoNode.InnerText;
                         break;
                     case "ReloadAmount":
-                        reloadAmount = Convert.ToInt32(locNode.InnerText);
+                        reloadAmount = Convert.ToInt32(ammoNode.InnerText);
                         break;
                     case "ReloadEnergy":
-                        reloadAmount = Convert.ToInt32(locNode.InnerText);
+                        reloadAmount = Convert.ToInt32(ammoNode.InnerText);
                         break;
                     case "MinDamage":
-                        minDamage = Convert.ToInt32(locNode.InnerText);
+                        minDamage = Convert.ToInt32(ammoNode.InnerText);
                         break;
                     case "MaxDamage":
-                        maxDamage = Convert.ToInt32(locNode.InnerText);
+                        maxDamage = Convert.ToInt32(ammoNode.InnerText);
                         break;
                     case "StateChanger":
-                        actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                        actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(ammoNode);
                         break;
                 }
             }
@@ -157,6 +161,6 @@ public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCate
     : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoCapacity, AmmoTypes,
         ActorStateChangerData);
 
-public record UsableItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable,
-    ActorStateChangerData ActorStateChangerData) : ItemData(
-    Symbol, Name, Id, Category, Stackable);
+public record ConsumableItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable,
+    int ConsumeTime, ActorStateChangerData ActorStateChangerData)
+    : ItemData(Symbol, Name, Id, Category, Stackable);

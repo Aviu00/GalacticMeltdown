@@ -3,7 +3,7 @@
     <Enemy>
         <Id>xeno_dog</Id>
         <Name>xeno dog</Name>
-        <Symbol>P</Symbol>
+        <Symbol>X</Symbol>
         <Color>dark_magenta</Color>
         <MaxHp>30</MaxHp>
         <Defence>0</Defence>
@@ -170,7 +170,7 @@
                 <MeleeAttackCost>20</MeleeAttackCost>
                 <StateChanger>
                     <Type>ModifyViewRangeEffect</Type>
-                    <Power>-5</Power>
+                    <Power>-10</Power>
                     <Duration>3</Duration>
                 </StateChanger>
             </MeleeAttack>
@@ -194,6 +194,11 @@
                 <MaxDamage>15</MaxDamage>
                 <MinDamage>0</MinDamage>
                 <MeleeAttackCost>70</MeleeAttackCost>
+                <StateChanger>
+                    <Type>ModifyMoveSpeedEffect</Type>
+                    <Power>-5</Power>
+                    <Duration>5</Duration>
+                </StateChanger>
             </MeleeAttack>
             <SelfEffect>
                 <Cooldown>4</Cooldown>
@@ -210,20 +215,20 @@
         <Name>turret</Name>
         <Symbol>T</Symbol>
         <Color>dark_red</Color>
-        <BgColor>black</BgColor>
+        <BgColor>dark_cyan</BgColor>
         <MaxHp>100</MaxHp>
         <MaxEnergy>120</MaxEnergy>
         <Dexterity>0</Dexterity>
         <Defence>50</Defence>
         <ViewRange>30</ViewRange>
-        <Cost>180</Cost>
-        <AlertRadius>22</AlertRadius>
+        <Cost>250</Cost>
+        <AlertRadius>5</AlertRadius>
         <Behaviors>
             <RangeAttack>
                 <Spread>2</Spread>
                 <MinDamage>10</MinDamage>
                 <MaxDamage>40</MaxDamage>
-                <RangeAttackCost>30</RangeAttackCost>
+                <RangeAttackCost>40</RangeAttackCost>
                 <AttackRange>30</AttackRange>
             </RangeAttack>
         </Behaviors>
@@ -287,7 +292,7 @@
                 <SelfEffectCost>100</SelfEffectCost>
                 <StateChanger>
                     <Type>ModifySpeedEffect</Type>
-                    <Power>50</Power>
+                    <Power>60</Power>
                     <Duration>5</Duration>
                 </StateChanger>
             </SelfEffect>

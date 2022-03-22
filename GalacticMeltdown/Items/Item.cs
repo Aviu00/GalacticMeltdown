@@ -43,7 +43,7 @@ public class Item : IDrawable
         {
             RangedWeaponItemData itemData => new RangedWeaponItem(itemData),
             WeaponItemData itemData => new WeaponItem(itemData),
-            UsableItemData itemData => new ConsumableItem(itemData),
+            ConsumableItemData itemData => new ConsumableItem(itemData),
             WearableItemData itemData => new EquippableItem(itemData),
             _ => new Item(data)
         };

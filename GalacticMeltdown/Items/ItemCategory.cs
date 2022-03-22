@@ -5,6 +5,6 @@ public enum ItemCategory
     Item,
     WeaponItem,
     RangedWeaponItem,
-    UsableItem,
+    ConsumableItem,
     WearableItem
 }

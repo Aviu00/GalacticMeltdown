@@ -40,7 +40,7 @@ public static partial class DataHolder
     public static readonly Dictionary<ItemCategory, string> CategoryName = new()
     {
         {ItemCategory.Item, "Other"},
-        {ItemCategory.UsableItem, "Consumables"},
+        {ItemCategory.ConsumableItem, "Consumables"},
         {ItemCategory.WeaponItem, "Weapons"},
         {ItemCategory.WearableItem, "Armor"},
         {ItemCategory.RangedWeaponItem, "Guns"}

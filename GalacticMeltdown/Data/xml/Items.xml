@@ -73,11 +73,13 @@
         <HitEnergy>10</HitEnergy>
         <AmmoCapacity>50</AmmoCapacity>
         <AmmoTypes>
-            <Ammo>gasoline_jerrycan</Ammo>
-            <MinDamage>5</MinDamage>
-            <MaxDamage>30</MaxDamage>
-            <ReloadEnergy>200</ReloadEnergy>
-            <ReloadAmount>100</ReloadAmount>
+            <Ammo>
+                <Id>gasoline_jerrycan</Id>
+                <MinDamage>5</MinDamage>
+                <MaxDamage>30</MaxDamage>
+                <ReloadEnergy>200</ReloadEnergy>
+                <ReloadAmount>100</ReloadAmount>
+            </Ammo>
         </AmmoTypes>
     </WeaponItem>
     <WeaponItem>
@@ -89,11 +91,13 @@
         <HitEnergy>10</HitEnergy>
         <AmmoCapacity>50</AmmoCapacity>
         <AmmoTypes>
-            <Ammo>gasoline_jerrycan</Ammo>
-            <MinDamage>10</MinDamage>
-            <MaxDamage>50</MaxDamage>
-            <ReloadEnergy>200</ReloadEnergy>
-            <ReloadAmount>100</ReloadAmount>
+            <Ammo>
+                <Id>gasoline_jerrycan</Id>
+                <MinDamage>10</MinDamage>
+                <MaxDamage>50</MaxDamage>
+                <ReloadEnergy>200</ReloadEnergy>
+                <ReloadAmount>100</ReloadAmount>
+            </Ammo>
         </AmmoTypes>
     </WeaponItem>
     <WeaponItem>
@@ -105,11 +109,13 @@
         <HitEnergy>120</HitEnergy>
         <AmmoCapacity>10</AmmoCapacity>
         <AmmoTypes>
-            <Ammo>energy_cell</Ammo>
-            <MinDamage>10</MinDamage>
-            <MaxDamage>70</MaxDamage>
-            <ReloadEnergy>15</ReloadEnergy>
-            <ReloadAmount>2</ReloadAmount>
+            <Ammo>
+                <Id>energy_cell</Id>
+                <MinDamage>10</MinDamage>
+                <MaxDamage>70</MaxDamage>
+                <ReloadEnergy>15</ReloadEnergy>
+                <ReloadAmount>2</ReloadAmount>
+            </Ammo>
         </AmmoTypes>
     </WeaponItem>
     <RangedWeaponItem>
@@ -275,6 +281,11 @@
                 <MaxDamage>210</MaxDamage>
                 <ReloadEnergy>15</ReloadEnergy>
                 <ReloadAmount>2</ReloadAmount>
+                <StateChanger>
+                    <Type>ModifyViewRangeEffect</Type>
+                    <Power>-5</Power>
+                    <Duration>7</Duration>
+                </StateChanger>
             </Ammo>
         </AmmoTypes>
     </RangedWeaponItem>
@@ -313,4 +324,118 @@
         <Symbol>*</Symbol>
         <Stackable>true</Stackable>
     </Item>
+    <ConsumableItem>
+        <Id>chicken_wing</Id>
+        <Name>chicken wing</Name>
+        <Symbol>"</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>5</ConsumeEnergy>
+        <StateChanger>
+            <Type>Heal</Type>
+            <Power>5</Power>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>bandage</Id>
+        <Name>bandage</Name>
+        <Symbol>b</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>20</ConsumeEnergy>
+        <StateChanger>
+            <Type>Heal</Type>
+            <Power>30</Power>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>medkit</Id>
+        <Name>medkit</Name>
+        <Symbol>B</Symbol>
+        <ConsumeEnergy>50</ConsumeEnergy>
+        <StateChanger>
+            <Type>Heal</Type>
+            <Power>50</Power>
+        </StateChanger>
+        <StateChanger>
+            <Type>RegenerationEffect</Type>
+            <Power>1</Power>
+            <Duration>20</Duration>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>energy_drink</Id>
+        <Name>energy drink</Name>
+        <Symbol>v</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>10</ConsumeEnergy>
+        <StateChanger>
+            <Type>ModifyMaxEnergyEffect</Type>
+            <Power>20</Power>
+            <Duration>20</Duration>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>adrenaline_syringe</Id>
+        <Name>adrenaline syringe</Name>
+        <Symbol>!</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>10</ConsumeEnergy>
+        <StateChanger>
+            <Type>ModifyMaxEnergyEffect</Type>
+            <Power>50</Power>
+            <Duration>30</Duration>
+        </StateChanger>
+        <StateChanger>
+            <Type>PoisonEffect</Type>
+            <Power>1</Power>
+            <Duration>7</Duration>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>strength_elixir</Id>
+        <Name>strength elixir</Name>
+        <Symbol>V</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>10</ConsumeEnergy>
+        <StateChanger>
+            <Type>ModifyStrengthEffect</Type>
+            <Power>5</Power>
+            <Duration>15</Duration>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>eyedrops</Id>
+        <Name>eyedrops</Name>
+        <Symbol>;</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>3</ConsumeEnergy>
+        <StateChanger>
+            <Type>ModifyViewRangeEffect</Type>
+            <Power>40</Power>
+            <Duration>3</Duration>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>painkillers</Id>
+        <Name>painkillers</Name>
+        <Symbol>:</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>3</ConsumeEnergy>
+        <StateChanger>
+            <Type>ModifyMaxHealth</Type>
+            <Power>10</Power>
+            <Duration>30</Duration>
+        </StateChanger>
+    </ConsumableItem>
+    <ConsumableItem>
+        <Id>cough_syrup</Id>
+        <Name>cough_syrup</Name>
+        <Symbol>6</Symbol>
+        <Stackable>true</Stackable>
+        <ConsumeEnergy>5</ConsumeEnergy>
+        <StateChanger>
+            <Type>RegenerationEffect</Type>
+            <Power>1</Power>
+            <Duration>50</Duration>
+        </StateChanger>
+    </ConsumableItem>
 </ItemDatas>

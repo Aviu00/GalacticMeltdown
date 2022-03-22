@@ -9,9 +9,9 @@ public class ConsumableItem : Item
 {
     public Action<Player> Consume { get; } 
 
-    private readonly UsableItemData _itemData;
+    private readonly ConsumableItemData _itemData;
     [JsonProperty] protected override string ItemType => "Usable";
-    public ConsumableItem(UsableItemData data) : base(data)
+    public ConsumableItem(ConsumableItemData data) : base(data)
     {
         _itemData = data;
     }
@@ -22,7 +22,7 @@ public class ConsumableItem : Item
     }
 
     [JsonConstructor]
-    private ConsumableItem(string id) : this((UsableItemData) DataHolder.ItemTypes[id])
+    private ConsumableItem(string id) : this((ConsumableItemData) DataHolder.ItemTypes[id])
     {
     }
 }
