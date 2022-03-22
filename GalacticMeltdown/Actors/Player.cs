@@ -136,6 +136,8 @@ public class Player : Actor, ISightedObject, IControllable
     public void Shoot(int x, int y)
     {
         if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun) return;
+        Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => gun.ammoTypes.ContainsKey(item.Id));
+        if (ammo is null) return;
         if (UtilityFunctions.Chance(
                 UtilityFunctions.RangeAttackHitChance((int) UtilityFunctions.GetDistance(X, Y, x, y), gun.Spread)))
         {
@@ -143,6 +145,7 @@ public class Player : Actor, ISightedObject, IControllable
             {
                 if (Level.GetNonTileObject(xi, yi) is Enemy enemy)
                 {
+                    Inventory[ItemCategory.Item].Remove(ammo);
                     enemy.Hit(Random.Shared.Next(gun.MinHitDamage, gun.MaxHitDamage + 1), true, false);
                     break;
                 }
