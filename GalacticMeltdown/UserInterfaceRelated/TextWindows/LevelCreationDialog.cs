@@ -23,7 +23,6 @@ public class LevelCreationDialog : TextWindow
         _nameLine = new InputLine();
         _seedLine = new InputLine(char.IsDigit);
         
-        LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
             new TextLine("Name"), _nameLine, new TextLine("Seed"), _seedLine,

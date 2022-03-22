@@ -1,29 +1,72 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
+using GalacticMeltdown.UserInterfaceRelated.Rendering;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class ItemPickupDialog : ChoiceDialog<Item>
+public class ItemPickupDialog : TextWindow
 {
-    public ItemPickupDialog(List<Item> items, Action<Item> pickUp) 
-        : base(items.Select(item => (item.Name, item)).ToList(), pickUp, "Choose an item to pickup", false)
+    private Action<Item> _pickUp;
+    private List<Item> _items;
+    
+    public ItemPickupDialog(List<Item> items, Action<Item> pickUp)
     {
+        _pickUp = pickUp;
+        _items = items;
+        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
+        {
+            {SelectionControl.Back, Close},
+            {SelectionControl.Select, LineView.PressCurrent},
+            {SelectionControl.Down, LineView.SelectNext},
+            {SelectionControl.Up, LineView.SelectPrev},
+        }));
+        UpdateLines();
     }
 
-    protected override void SendChoice(Item choice)
+    private void UpdateLines()
     {
-        for (var i = 0; i < Options.Count; i++)
+        List<Item> itemLines = new List<Item>();
+        Dictionary<string, int> stackableItemCounts = new();
+        foreach (var item in _items)
         {
-            if (Options[i].choice == choice)
+            if (item.Stackable)
             {
-                Options.RemoveAt(i);
-                break;
+                if (!stackableItemCounts.ContainsKey(item.Id))
+                {
+                    stackableItemCounts[item.Id] = 0;
+                    itemLines.Add(item);
+                }
+
+                stackableItemCounts[item.Id] += 1;
+            }
+            else
+            {
+                itemLines.Add(item);
             }
         }
+
+        List<ListLine> lines = itemLines.Select(itemLine => itemLine.Stackable
+                ? new ItemButton(itemLine, PickUp, stackableItemCounts[itemLine.Id])
+                : new ItemButton(itemLine, PickUp))
+            .Cast<ListLine>()
+            .ToList();
+        if (!lines.Any())
+        {
+            Close();
+            return;
+        }
+        LineView.SetLines(lines);
+    }
+
+    private void PickUp(Item item)
+    {
+        _pickUp(item);
         UpdateLines();
-        base.SendChoice(choice);
-        if (Options.Count == 0) Close();
     }
 }

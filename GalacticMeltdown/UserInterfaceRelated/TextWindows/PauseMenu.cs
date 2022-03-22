@@ -14,7 +14,6 @@ public class PauseMenu : TextWindow
 {
     public PauseMenu()
     {
-        LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
             new Button("Back", "", Close),

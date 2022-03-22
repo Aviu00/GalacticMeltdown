@@ -5,7 +5,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 public abstract class TextWindow
 {
-    protected LineView LineView;
+    protected LineView LineView = new();
     protected Controller Controller;
     
     public virtual void Open()

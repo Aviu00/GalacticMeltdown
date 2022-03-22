@@ -14,7 +14,6 @@ public class MainMenu : TextWindow
 {
     public MainMenu()
     {
-        LineView = new LineView();
         LineView.SetLines(new List<ListLine>
         {
             new Button("Select level", "", OpenLevelMenu),

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
@@ -46,8 +47,19 @@ public partial class PlaySession
                     
                     void PickUp(Item item)
                     {
-                        items.Remove(item);
-                        _player.AddToInventory(item);
+                        if (item.Stackable)
+                        {
+                            foreach (Item listItem in items.FindAll(listItem => listItem.Id == item.Id).ToList())
+                            {
+                                items.Remove(listItem);
+                                _player.AddToInventory(item);
+                            }
+                        }
+                        else
+                        {
+                            items.Remove(item);
+                            _player.AddToInventory(item);
+                        }
                     }
                 };
                 UserInterface.AddChild(this, cursor);

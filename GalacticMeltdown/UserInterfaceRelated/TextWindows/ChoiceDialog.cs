@@ -24,7 +24,6 @@ public class ChoiceDialog<T> : TextWindow
         Options = options;
         _message = message;
         _closeOnChoice = closeOnChoice;
-        LineView = new LineView();
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {

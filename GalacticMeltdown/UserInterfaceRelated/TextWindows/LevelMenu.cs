@@ -29,7 +29,6 @@ public class LevelMenu : TextWindow
     
     public LevelMenu()
     {
-        LineView = new LineView();
         SetLevelButtons();
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.LevelMenu,
             new Dictionary<LevelMenuControl, Action>

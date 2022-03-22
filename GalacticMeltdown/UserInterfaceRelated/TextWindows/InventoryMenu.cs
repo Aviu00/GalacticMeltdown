@@ -53,7 +53,6 @@ public class InventoryMenu : TextWindow
     {
         _player = player;
         _inventory = _player.Inventory;
-        LineView = new LineView();
         _currentCategory = 0;
         LoadCategoryScreen(Enum.GetValues<ItemCategory>()[_currentCategory]);
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
