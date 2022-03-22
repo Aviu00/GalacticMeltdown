@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
@@ -76,6 +77,22 @@ public partial class PlaySession
                 {
                     cursor.Close();
                     if(_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
+                };
+                UserInterface.AddChild(this, cursor);
+                cursor.Start();
+            }
+        },
+        {
+            MainControl.Shoot, () =>
+            {
+                if (_player.Equipment[BodyPart.Hands] is not RangedWeaponItem) return;
+                Cursor cursor = _levelView.Cursor;
+                _levelView.ToggleCursorLine();
+                cursor.Action = (_, _, x, y) =>
+                {
+                    cursor.Close();
+                    _player.Shoot(x, y);
+                    UserInterface.YieldControl(this);
                 };
                 UserInterface.AddChild(this, cursor);
                 cursor.Start();

@@ -16,6 +16,7 @@ public enum MainControl
     OpenInventory,
     InteractWithDoors,
     UseCursor,
+    Shoot,
     IncreaseViewRange, //for fov testing
     ReduceViewRange, //for fov testing
     ToggleNoClip, //temporary cheat codes
