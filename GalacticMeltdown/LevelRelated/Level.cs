@@ -60,6 +60,7 @@ public partial class Level
 
     [JsonProperty] private readonly EnemySpawner _enemySpawner;
     [JsonIgnore] public OverlayView OverlayView;
+    public MinimapView MinimapView;
 
     [JsonIgnore] public List<Chunk> ActiveChunks { get; private set; }
 
@@ -102,6 +103,8 @@ public partial class Level
         ControllableObjects = new ObservableCollection<IControllable> {Player};
         LevelView = new LevelView(this, Player);
         _currentlyActiveIndex = 0;
+
+        MinimapView = new MinimapView(_chunks, () => GetChunkCoords(Player.X, Player.Y));
         Init();
     }
 
