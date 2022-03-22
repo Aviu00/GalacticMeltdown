@@ -77,7 +77,6 @@
                 <Id>gasoline_jerrycan</Id>
                 <MinDamage>5</MinDamage>
                 <MaxDamage>30</MaxDamage>
-                <ReloadEnergy>200</ReloadEnergy>
                 <ReloadAmount>100</ReloadAmount>
             </Ammo>
         </AmmoTypes>
@@ -95,7 +94,6 @@
                 <Id>gasoline_jerrycan</Id>
                 <MinDamage>10</MinDamage>
                 <MaxDamage>50</MaxDamage>
-                <ReloadEnergy>200</ReloadEnergy>
                 <ReloadAmount>100</ReloadAmount>
             </Ammo>
         </AmmoTypes>
@@ -113,7 +111,6 @@
                 <Id>energy_cell</Id>
                 <MinDamage>10</MinDamage>
                 <MaxDamage>70</MaxDamage>
-                <ReloadEnergy>15</ReloadEnergy>
                 <ReloadAmount>2</ReloadAmount>
                 <StateChanger>
                     <Type>Stun</Type>
@@ -136,13 +133,11 @@
                 <Id>arrow</Id>
                 <MinDamage>15</MinDamage>
                 <MaxDamage>100</MaxDamage>
-                <ReloadEnergy>30</ReloadEnergy>
             </Ammo>
             <Ammo>
                 <Id>poisoned_arrow</Id>
                 <MinDamage>15</MinDamage>
                 <MaxDamage>100</MaxDamage>
-                <ReloadEnergy>30</ReloadEnergy>
                 <StateChanger>
                     <Type>PoisonEffect</Type>
                     <Power>8</Power>
@@ -166,13 +161,11 @@
                 <Id>arrow</Id>
                 <MinDamage>35</MinDamage>
                 <MaxDamage>120</MaxDamage>
-                <ReloadEnergy>30</ReloadEnergy>
             </Ammo>
             <Ammo>
                 <Id>poisoned_arrow</Id>
                 <MinDamage>35</MinDamage>
                 <MaxDamage>120</MaxDamage>
-                <ReloadEnergy>30</ReloadEnergy>
                 <StateChanger>
                     <Type>PoisonEffect</Type>
                     <Power>8</Power>
@@ -183,7 +176,6 @@
                 <Id>metal_bar</Id>
                 <MinDamage>30</MinDamage>
                 <MaxDamage>150</MaxDamage>
-                <ReloadEnergy>100</ReloadEnergy>
                 <StateChanger>
                     <Type>Stun</Type>
                     <Power>30</Power>
@@ -206,13 +198,11 @@
                 <Id>pistol_ammo</Id>
                 <MinDamage>30</MinDamage>
                 <MaxDamage>80</MaxDamage>
-                <ReloadEnergy>5</ReloadEnergy>
             </Ammo>
             <Ammo>
                 <Id>advanced_pistol_ammo</Id>
                 <MinDamage>50</MinDamage>
                 <MaxDamage>120</MaxDamage>
-                <ReloadEnergy>5</ReloadEnergy>
             </Ammo>
         </AmmoTypes>
     </RangedWeaponItem>
@@ -232,13 +222,11 @@
                 <Id>assault_rifle_ammo</Id>
                 <MinDamage>40</MinDamage>
                 <MaxDamage>100</MaxDamage>
-                <ReloadEnergy>7</ReloadEnergy>
             </Ammo>
             <Ammo>
                 <Id>advanced_assault_rifle_ammo</Id>
                 <MinDamage>60</MinDamage>
                 <MaxDamage>140</MaxDamage>
-                <ReloadEnergy>7</ReloadEnergy>
             </Ammo>
         </AmmoTypes>
     </RangedWeaponItem>
@@ -257,7 +245,6 @@
                 <Id>energy_cell</Id>
                 <MinDamage>70</MinDamage>
                 <MaxDamage>180</MaxDamage>
-                <ReloadEnergy>13</ReloadEnergy>
                 <ReloadAmount>2</ReloadAmount>
                 <StateChanger>
                     <Type>ModifyViewRangeEffect</Type>
@@ -283,7 +270,6 @@
                 <Id>energy_cell</Id>
                 <MinDamage>90</MinDamage>
                 <MaxDamage>210</MaxDamage>
-                <ReloadEnergy>15</ReloadEnergy>
                 <ReloadAmount>2</ReloadAmount>
                 <StateChanger>
                     <Type>ModifyViewRangeEffect</Type>
@@ -345,7 +331,6 @@
         <Name>chicken wing</Name>
         <Symbol>"</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>5</ConsumeEnergy>
         <StateChanger>
             <Type>Heal</Type>
             <Power>5</Power>
@@ -356,7 +341,6 @@
         <Name>bandage</Name>
         <Symbol>b</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>20</ConsumeEnergy>
         <StateChanger>
             <Type>Heal</Type>
             <Power>30</Power>
@@ -366,7 +350,6 @@
         <Id>medkit</Id>
         <Name>medkit</Name>
         <Symbol>B</Symbol>
-        <ConsumeEnergy>50</ConsumeEnergy>
         <StateChanger>
             <Type>Heal</Type>
             <Power>50</Power>
@@ -382,7 +365,6 @@
         <Name>energy drink</Name>
         <Symbol>v</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>10</ConsumeEnergy>
         <StateChanger>
             <Type>ModifyMaxEnergyEffect</Type>
             <Power>20</Power>
@@ -394,7 +376,6 @@
         <Name>adrenaline syringe</Name>
         <Symbol>!</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>10</ConsumeEnergy>
         <StateChanger>
             <Type>ModifyMaxEnergyEffect</Type>
             <Power>50</Power>
@@ -411,7 +392,6 @@
         <Name>strength elixir</Name>
         <Symbol>V</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>10</ConsumeEnergy>
         <StateChanger>
             <Type>ModifyStrengthEffect</Type>
             <Power>5</Power>
@@ -423,7 +403,6 @@
         <Name>eyedrops</Name>
         <Symbol>;</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>3</ConsumeEnergy>
         <StateChanger>
             <Type>ModifyViewRangeEffect</Type>
             <Power>40</Power>
@@ -435,7 +414,6 @@
         <Name>painkillers</Name>
         <Symbol>:</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>3</ConsumeEnergy>
         <StateChanger>
             <Type>ModifyMaxHealthEffect</Type>
             <Power>10</Power>
@@ -447,11 +425,54 @@
         <Name>cough_syrup</Name>
         <Symbol>6</Symbol>
         <Stackable>true</Stackable>
-        <ConsumeEnergy>5</ConsumeEnergy>
         <StateChanger>
             <Type>RegenerationEffect</Type>
             <Power>1</Power>
             <Duration>50</Duration>
         </StateChanger>
     </ConsumableItem>
+    <EquippableItem>
+        <Id>metal_helmet</Id>
+        <Name>metal helmet</Name>
+        <Symbol>[</Symbol>
+        <Stackable>false</Stackable>
+        <BodyPart>Head</BodyPart>
+        <StateChanger>
+            <Type>ModifyDefence</Type>
+            <Power>10</Power>
+        </StateChanger>
+    </EquippableItem>
+    <EquippableItem>
+        <Id>metal_chestplate</Id>
+        <Name>metal helmet</Name>
+        <Symbol>T</Symbol>
+        <Stackable>false</Stackable>
+        <BodyPart>Torso</BodyPart>
+        <StateChanger>
+            <Type>ModifyDefence</Type>
+            <Power>16</Power>
+        </StateChanger>
+    </EquippableItem>
+    <EquippableItem>
+        <Id>metal_leggings</Id>
+        <Name>metal leggings</Name>
+        <Symbol>{</Symbol>
+        <Stackable>false</Stackable>
+        <BodyPart>Legs</BodyPart>
+        <StateChanger>
+            <Type>ModifyDefence</Type>
+            <Power>12</Power>
+        </StateChanger>
+    </EquippableItem>
+    <EquippableItem>
+        <Id>metal_boots</Id>
+        <Name>metal boots</Name>
+        <Symbol>i</Symbol>
+        <Stackable>false</Stackable>
+        <BodyPart>Feet</BodyPart>
+        <StateChanger>
+            <Type>ModifyDefence</Type>
+            <Power>8</Power>
+        </StateChanger>
+    </EquippableItem>
 </ItemDatas>

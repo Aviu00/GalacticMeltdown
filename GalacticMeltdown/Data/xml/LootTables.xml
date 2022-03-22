@@ -197,6 +197,15 @@
             <Item id="lightsaber_table" chance="0" gain="1" limit="5"/>
         </Items>
     </DistributionTable>
+    <DistributionTable>
+        <Id>armor_distr</Id>
+        <Items>
+            <Item id="metal_chestplate" chance="10" gain="2" limit="25"/>
+            <Item id="metal_leggings" chance="10" gain="2" limit="25"/>
+            <Item id="metal_boots" chance="10" gain="2" limit="25"/>
+            <Item id="metal_helmet" chance="10" gain="2" limit="25"/>
+        </Items>
+    </DistributionTable>
     <CollectionTable>
         <Id>consumable_table_1</Id>
         <Items>

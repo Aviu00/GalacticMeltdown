@@ -4,7 +4,7 @@ using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
-using AmmoDictionary = Dictionary<string, (int reloadAmount, int reloadEnergy, int minDamage, int maxDamage,
+using AmmoDictionary = Dictionary<string, (int reloadAmount, int minDamage, int maxDamage,
      ActorStateChangerData actorStateChangerData)>;
 
 public class WeaponItem : EquippableItem

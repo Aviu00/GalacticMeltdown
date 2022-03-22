@@ -42,7 +42,7 @@ public static partial class DataHolder
         {ItemCategory.Item, "Other"},
         {ItemCategory.ConsumableItem, "Consumables"},
         {ItemCategory.WeaponItem, "Weapons"},
-        {ItemCategory.WearableItem, "Armor"},
+        {ItemCategory.EquippableItem, "Armor"},
         {ItemCategory.RangedWeaponItem, "Guns"}
     };
 

@@ -24,4 +24,16 @@ public class EquippableItem : Item
     private EquippableItem(string id) : this((WearableItemData) DataHolder.ItemTypes[id])
     {
     }
+
+    public void Equip(Actor actor)
+    {
+        ActorStateChangerData data = _itemData.ActorStateChangerData;
+        DataHolder.ActorStateChangers[data.Type](actor, data.Power, 0);
+    }
+
+    public void Unequip(Actor actor)
+    {
+        ActorStateChangerData data = _itemData.ActorStateChangerData;
+        DataHolder.ActorStateChangers[data.Type](actor, -data.Power, 0);
+    }
 }

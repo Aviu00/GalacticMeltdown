@@ -112,11 +112,13 @@ public class Player : Actor, ISightedObject, IControllable
         if (prevItem == item) return;
         if (prevItem is not null)
         {
+            ((EquippableItem)prevItem).Unequip(this);
             AddToInventory(prevItem);
         }
 
         Inventory[item.Category].Remove(item);
         Equipment[item.BodyPart] = item;
+        item.Equip(this);
     }
 
     public void Drop(Item item)
