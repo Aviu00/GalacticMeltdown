@@ -34,6 +34,7 @@ public class RangeAttackStrategy : Behavior
         _attackRange = data.AttackRange;
         _spread = data.Spread;
         ControlledNpc = controlledNpc;
+        _stateChanger = data.ActorStateChangerData;
         if (_cooldown > 0)
         {
             _rangeAttackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);

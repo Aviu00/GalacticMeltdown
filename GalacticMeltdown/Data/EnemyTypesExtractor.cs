@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using GalacticMeltdown.Behaviors;
 
 namespace GalacticMeltdown.Data;
 
@@ -193,6 +194,32 @@ public class EnemyTypesExtractor : XmlExtractor
         return new RangeAttackStrategyData(priority, minDamage, maxDamage, cooldown, rangeAttackCost, attackRange, spread,
             actorStateChangerData);
     }
+    private BehaviorData SelfEffectStrategyData(XmlNode node)
+    {
+        int? priority = null;
+        int cooldown = 0;
+        int selfEffectCost = 10;
+        ActorStateChangerDataExtractor.ActorStateChangerData actorStateChangerData = null;
+        foreach (XmlNode locNode in node)
+        {
+            switch (locNode.Name)
+            {
+                case "Priority":
+                    priority = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "Cooldown":
+                    cooldown = Convert.ToInt32(locNode.InnerText);
+                    break;
+                case "StateChanger":
+                    actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                    break;
+            }
+        }
+
+        return new SelfEffectStrategyData(priority, cooldown, actorStateChangerData);
+    }
+    
+    
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
     ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost, 
@@ -209,3 +236,6 @@ public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamag
 public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int RangeAttackCost,
         int AttackRange, int Spread, ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData)
     : BehaviorData(Priority);
+
+public record SelfEffectStrategyData(int? Priority, int Cooldown, 
+    ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData) : BehaviorData(Priority);
