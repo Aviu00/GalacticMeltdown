@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
-using GalacticMeltdown.Behaviors;
 
 namespace GalacticMeltdown.Data;
 
@@ -99,6 +98,9 @@ public class EnemyTypesExtractor : XmlExtractor
                     break;
                 case "RangeAttack":
                     behaviors.AddLast(ParseRangeAttackStrategyData(locNode));
+                    break;
+                case "SelfEffect":
+                    behaviors.AddFirst(SelfEffectStrategyData(locNode));
                     break;
             }
         }
@@ -210,13 +212,16 @@ public class EnemyTypesExtractor : XmlExtractor
                 case "Cooldown":
                     cooldown = Convert.ToInt32(locNode.InnerText);
                     break;
+                case "SelfEffectCost":
+                    selfEffectCost = Convert.ToInt32(locNode.InnerText);
+                    break;
                 case "StateChanger":
                     actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
                     break;
             }
         }
 
-        return new SelfEffectStrategyData(priority, cooldown, actorStateChangerData);
+        return new SelfEffectStrategyData(priority, cooldown, selfEffectCost, actorStateChangerData);
     }
     
     
@@ -237,5 +242,5 @@ public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamag
         int AttackRange, int Spread, ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData)
     : BehaviorData(Priority);
 
-public record SelfEffectStrategyData(int? Priority, int Cooldown, 
+public record SelfEffectStrategyData(int? Priority, int Cooldown, int SelfEffectCost,
     ActorStateChangerDataExtractor.ActorStateChangerData ActorStateChangerData) : BehaviorData(Priority);
