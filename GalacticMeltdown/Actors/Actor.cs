@@ -18,8 +18,42 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] protected abstract string ActorName { get; }
     [JsonProperty] public readonly Level Level;
     [JsonProperty] private bool _turnStopped;
+    public const int ActorStr = 10;
+    private const int ActorMoveSpeed = 0;
+    [JsonProperty] private int _strength;
+    [JsonProperty] private int _moveSpeed;
+    [JsonProperty] private int _viewRange;
+    public int Strength
+    {
+        get => _strength;
+        set
+        {
+            if (value == _strength) return;
+            _strength = value;
+            FireStatAffected(Stat.Strength);
+        }
+    }
+    public int MoveSpeed
+    {
+        get => _strength;
+        set
+        {
+            if (value == _moveSpeed) return;
+            _moveSpeed = value;
+            FireStatAffected(Stat.MoveSpeed);
+        }
+    }
 
-    [JsonProperty] protected int _viewRange;
+    public virtual int ViewRange
+    {
+        get => _viewRange < 1 ? 1 : _viewRange;
+        set
+        {
+            if(value == _viewRange) return;
+            _viewRange = value;
+            FireStatAffected(Stat.ViewRange);
+        }
+    }
 
     [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
@@ -107,10 +141,12 @@ public abstract class Actor : IObjectOnMap
         EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dexterity = dexterity;
         Defence = defence;
-        _viewRange = viewRange;
+        ViewRange = viewRange;
         X = x;
         Y = y;
         _turnStopped = false;
+        Strength = ActorStr;
+        MoveSpeed = ActorMoveSpeed;
     }
 
     public virtual bool Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
@@ -141,7 +177,16 @@ public abstract class Actor : IObjectOnMap
         X = x;
         Y = y;
         Tile tile = Level.GetTile(x, y);
-        if (tile is not null) Energy -= tile.MoveCost;
+        if (tile is not null)
+        {
+            if (tile.MoveCost - MoveSpeed <= 0)
+                Energy -= 1;
+            else
+            {
+                Energy -= tile.MoveCost - MoveSpeed;
+            }
+               
+        }
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
     }
 

@@ -11,25 +11,11 @@ public class Player : Actor, ISightedObject, IControllable
     private const int PlayerDexterity = 16;
     private const int PlayerDefence = 4;
     private const int PlayerViewRange = 20;
-    private const int PlayerStr = 10;
 
     [JsonProperty] protected override string ActorName => "Player";
     private Action _giveControlToUser;
     
     private bool _xray;
-
-    private int _strength;
-
-    public int Strength
-    {
-        get => _strength;
-        set
-        {
-            if (value == _strength) return;
-            _strength = value;
-            FireStatAffected(Stat.Strength);
-        }
-    }
 
     public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
     public override ConsoleColor? BgColor => null;
@@ -50,13 +36,12 @@ public class Player : Actor, ISightedObject, IControllable
     }
 
     [JsonIgnore]
-    public int ViewRange
+    public override int ViewRange
     {
-        get => _viewRange;
+        get => base.ViewRange;
         set
         {
-            if (value <= 0) return;
-            _viewRange = value;
+            base.ViewRange = value;
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -70,14 +55,17 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        _strength = PlayerStr;
     }
 
     public bool TryMove(int deltaX, int deltaY)
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
         if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
+        {// temporary except of "return false"
+            Actor act = (Actor) Level.GetNonTileObject(X + deltaX, Y + deltaY);
+            act.Hit(50,true, true);
             return false;
+        }//temporary
         if (!NoClip && (tile is null || !tile.IsWalkable))
         {
             Level.InteractWithDoor(X + deltaX, Y + deltaY, this);

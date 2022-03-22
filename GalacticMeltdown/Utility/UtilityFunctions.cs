@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Utility;
@@ -76,6 +75,12 @@ public static class UtilityFunctions
         int yDist = y1 - y0;
         return Math.Sqrt(xDist * xDist + yDist * yDist);
     }
-    
+
+    public static int CalculateChanceToHitForRangeEnemy(int distance, int spread)
+    {
+        if (spread < 0) return 0;
+        return (int) (100 - 5 * distance * Math.Log(spread + 1));
+    }
+
     public static int CountDigits(int num) => num == 0 ? 1 : (int) Math.Floor(Math.Log10(Math.Abs(num))) + 1;
 }

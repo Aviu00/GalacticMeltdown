@@ -16,6 +16,7 @@ public class RangeAttackStrategy : Behavior
     [JsonProperty] private readonly int _cooldown;
     [JsonProperty] private readonly int _rangeAttackCost;
     [JsonProperty] private readonly int _attackRange;
+    [JsonProperty] private readonly int _spread;
     [JsonProperty] private Counter _rangeAttackCounter;
 
     [JsonConstructor]
@@ -30,6 +31,7 @@ public class RangeAttackStrategy : Behavior
         _cooldown = data.Cooldown;
         _rangeAttackCost = data.RangeAttackCost;
         _attackRange = data.AttackRange;
+        _spread = data.Spread;
         ControlledNpc = controlledNpc;
         if (_cooldown > 0)
         {
@@ -50,16 +52,17 @@ public class RangeAttackStrategy : Behavior
         if (ControlledNpc.CurrentTarget is null)
             return false;
         // if there is nothing what can stop projectile
-        if (CanAttack())
-        {
-            ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), true, false);
-            ControlledNpc.Energy -= _rangeAttackCost;
-            if (_rangeAttackCounter is not null)
-                _rangeAttackCounter.ResetTimer();
-            return true;
-        }
-
-        return false;
+        if (!CanAttack()) return false;
+        var damage = 0;
+        if (UtilityFunctions.Chance(UtilityFunctions.CalculateChanceToHitForRangeEnemy
+            ((int) UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
+                ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y), _spread)))
+            damage = RandomDamage(_minDamage, _maxDamage);
+        ControlledNpc.CurrentTarget.Hit(damage, true, false);
+        ControlledNpc.Energy -= _rangeAttackCost;
+        if (_rangeAttackCounter is not null)
+            _rangeAttackCounter.ResetTimer();
+        return true;
     }
 
     // TODO: make advanced random damage 
