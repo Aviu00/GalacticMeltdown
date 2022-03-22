@@ -27,6 +27,7 @@ public class OverlayView : View
     private const ConsoleColor StrColor = DataHolder.Colors.StrColor;
     private const ConsoleColor DexColor = DataHolder.Colors.DexColor;
     private const ConsoleColor DefColor = DataHolder.Colors.DefColor;
+    private const ConsoleColor OtherTextColor = ConsoleColor.Blue;
     
     public override (double, double, double, double)? WantedPosition => null;
     
@@ -78,6 +79,31 @@ public class OverlayView : View
         {
             if (_dexInfo.Val != _player.Dexterity) RenderStats();
             if (x < _dexInfo.Text.Length) return new ViewCellData((_dexInfo.Text[x], DexColor), null);
+        }
+        else if (y == Height - 6 && _player.Equipment[BodyPart.Hands] is not null)
+        {
+            string s = $"Held: {_player.Equipment[BodyPart.Hands].Name}";
+            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
+        }
+        else if (y == Height - 7 && _player.Equipment[BodyPart.Head] is not null)
+        {
+            string s = $"Head: {_player.Equipment[BodyPart.Head].Name}";
+            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
+        }
+        else if (y == Height - 8 && _player.Equipment[BodyPart.Torso] is not null)
+        {
+            string s = $"Torso: {_player.Equipment[BodyPart.Torso].Name}";
+            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
+        }
+        else if (y == Height - 9 && _player.Equipment[BodyPart.Legs] is not null)
+        {
+            string s = $"Legs: {_player.Equipment[BodyPart.Legs].Name}";
+            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
+        }
+        else if (y == Height - 10 && _player.Equipment[BodyPart.Feet] is not null)
+        {
+            string s = $"Feet: {_player.Equipment[BodyPart.Feet].Name}";
+            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
         return new ViewCellData(null, null);
     }

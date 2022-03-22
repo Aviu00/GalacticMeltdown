@@ -49,7 +49,7 @@ public class Player : Actor, ISightedObject, IControllable
     }
 
     [JsonProperty] public Dictionary<ItemCategory, List<Item>> Inventory;
-    [JsonProperty] private readonly Dictionary<BodyPart, EquippableItem> _equipment;
+    [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
     public event EventHandler VisiblePointsChanged;
 
@@ -66,10 +66,10 @@ public class Player : Actor, ISightedObject, IControllable
             Inventory[val] = new List<Item>();
         }
 
-        _equipment = new Dictionary<BodyPart, EquippableItem>();
+        Equipment = new Dictionary<BodyPart, EquippableItem>();
         foreach (BodyPart val in Enum.GetValues<BodyPart>())
         {
-            _equipment[val] = null;
+            Equipment[val] = null;
         }
     }
 
@@ -77,15 +77,14 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
         if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is not null)
-        {// temporary except of "return false"
+        {
             Actor act = (Actor) Level.GetNonTileObject(X + deltaX, Y + deltaY);
             act.Hit(50,true, true);
-            return false;
-        }//temporary
+            return true;
+        }
         if (!NoClip && (tile is null || !tile.IsWalkable))
         {
-            Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
-            return false;
+            return Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
         }
         MoveTo(X + deltaX, Y + deltaY);
         VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
@@ -109,7 +108,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Equip(EquippableItem item)
     {
-        Item prevItem = _equipment[item.BodyPart];
+        Item prevItem = Equipment[item.BodyPart];
         if (prevItem == item) return;
         if (prevItem is not null)
         {
@@ -117,7 +116,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
 
         Inventory[item.Category].Remove(item);
-        _equipment[item.BodyPart] = item;
+        Equipment[item.BodyPart] = item;
     }
 
     public void Drop(Item item)
