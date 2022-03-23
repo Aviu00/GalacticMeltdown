@@ -91,8 +91,8 @@ public partial class PlaySession
                 cursor.Action = (_, _, x, y) =>
                 {
                     cursor.Close();
-                    _player.Shoot(x, y);
-                    UserInterface.YieldControl(this);
+                    if(_player.Shoot(x, y))
+                        UserInterface.YieldControl(this);
                 };
                 UserInterface.AddChild(this, cursor);
                 cursor.Start();

@@ -50,7 +50,8 @@ public class MeleeAttackStrategy : Behavior
              Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 2 &&
             (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting))
         {
-            bool hit = ControlledNpc.CurrentTarget.Hit(RandomDamage(_minDamage, _maxDamage), false, false);
+            bool hit = ControlledNpc.CurrentTarget.Hit
+                (UtilityFunctions.CalculateMeleeDamage(_minDamage, _maxDamage, ControlledNpc.Strength), false, false);
             if (hit && _stateChanger is not null)
             {
                 DataHolder.ActorStateChangers[_stateChanger.Type]
@@ -62,10 +63,5 @@ public class MeleeAttackStrategy : Behavior
         }
 
         return false;
-    }
-
-    private int RandomDamage(int minDamage, int maxDamage)
-    {
-        return Random.Shared.Next(minDamage, maxDamage + 1) / (1 + (Actor.ActorStr - ControlledNpc.Strength) / 10);
     }
 }

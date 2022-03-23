@@ -23,7 +23,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     [JsonProperty] protected override string ActorName => "Player";
     private Action _giveControlToUser;
-    
+
     private bool _xray;
 
     public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
@@ -64,6 +64,7 @@ public class Player : Actor, ISightedObject, IControllable
     private Player()
     {
     }
+
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
@@ -89,10 +90,12 @@ public class Player : Actor, ISightedObject, IControllable
             HitTarget(enemy);
             return true;
         }
+
         if (!NoClip && (tile is null || !tile.IsWalkable))
         {
             return Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
         }
+
         MoveTo(X + deltaX, Y + deltaY);
         VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         return true;
@@ -119,7 +122,7 @@ public class Player : Actor, ISightedObject, IControllable
         if (prevItem == item) return;
         if (prevItem is not null)
         {
-            ((EquippableItem)prevItem).UnEquip(this);
+            ((EquippableItem) prevItem).UnEquip(this);
             AddToInventory(prevItem);
         }
 
@@ -169,42 +172,47 @@ public class Player : Actor, ISightedObject, IControllable
             }
         }
 
+        int damage = UtilityFunctions.CalculateMeleeDamage(minDamage, maxDamage, Strength);
+        target.Hit(damage, false, false);
         var stateChanger = weaponItem.StateChanger;
         if (stateChanger is not null)
         {
             DataHolder.ActorStateChangers[stateChanger.Type](target, stateChanger.Power,
                 stateChanger.Duration);
         }
-        target.Hit(Random.Shared.Next(minDamage, maxDamage), false, false);
+
         Energy -= weaponItem.HitEnergy;
     }
 
-    public void Shoot(int x, int y)
+    public bool Shoot(int x, int y)
     {
-        if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun) return;
+        if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun) return false;
         Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => gun.AmmoTypes.ContainsKey(item.Id));
-        if (ammo is null) return;
-        if (UtilityFunctions.Chance(
-                UtilityFunctions.RangeAttackHitChance((int) UtilityFunctions.GetDistance(X, Y, x, y), gun.Spread)))
+        if (ammo is null) return false;
+        foreach (var (xi, yi) in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
         {
-            foreach (var (xi, yi) in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
+            if(!Level.GetTile(xi, yi).IsWalkable) break;
+            IObjectOnMap obj = Level.GetNonTileObject(xi, yi);
+            if(obj is null) continue;
+            if (obj is not Actor actor) break;
+
+            double distance = UtilityFunctions.GetDistance(X, Y, xi, yi);
+            if (!UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance(distance, gun.Spread))) continue;
+            actor.Hit(
+                Random.Shared.Next(gun.MinHitDamage + gun.AmmoTypes[ammo.Id].minDamage,
+                    gun.MaxHitDamage + gun.AmmoTypes[ammo.Id].maxDamage + 1), true, false);
+            ActorStateChangerData stateChanger = gun.AmmoTypes[ammo.Id].actorStateChangerData;
+            if (stateChanger is not null)
             {
-                if (Level.GetNonTileObject(xi, yi) is not Enemy enemy) continue;
-                
-                Inventory[ItemCategory.Item].Remove(ammo);
-                enemy.Hit(
-                    Random.Shared.Next(gun.MinHitDamage + gun.AmmoTypes[ammo.Id].minDamage,
-                        gun.MaxHitDamage + gun.AmmoTypes[ammo.Id].maxDamage + 1), true, false);
-                ActorStateChangerData stateChanger = gun.AmmoTypes[ammo.Id].actorStateChangerData;
-                if (stateChanger is not null)
-                {
-                    DataHolder.ActorStateChangers[stateChanger.Type](enemy, stateChanger.Power,
-                        stateChanger.Duration);
-                }
-                break;
+                DataHolder.ActorStateChangers[stateChanger.Type](actor, stateChanger.Power,
+                    stateChanger.Duration);
             }
+
+            break;
         }
 
+        Inventory[ItemCategory.Item].Remove(ammo);
         Energy -= gun.ShootEnergy;
+        return true;
     }
 }

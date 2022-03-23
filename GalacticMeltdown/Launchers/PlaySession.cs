@@ -23,16 +23,13 @@ public partial class PlaySession
     private static IControllable _controlledObject;
     private static Level _level;
     private static LevelView _levelView;
+    private static Counter _saveCounter;
 
     private Dictionary<MainControl, Action> _mainActions;
 
     public PlaySession(Level level, string levelName, int levelSeed)
     {
-        new Counter(level, SaveInterval, SaveInterval, counter =>
-        {
-            SaveLevel();
-            counter.ResetTimer();
-        });
+        _saveCounter = new Counter(level, SaveInterval, SaveInterval);
         _levelName = levelName;
         _levelSeed = levelSeed;
         _level = level;
@@ -66,6 +63,12 @@ public partial class PlaySession
             endGameMessage.Open();
             UserInterface.SetTask(this, Game.OpenMainMenu);
             return;
+        }
+
+        if (_saveCounter.FinishedCounting)
+        {
+            SaveLevel();
+            _saveCounter.ResetTimer();
         }
         UserInterface.SetTask(this, MapTurn);
     }

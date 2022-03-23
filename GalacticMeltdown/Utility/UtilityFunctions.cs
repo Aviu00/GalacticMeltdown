@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Utility;
@@ -76,10 +77,15 @@ public static class UtilityFunctions
         return Math.Sqrt(xDist * xDist + yDist * yDist);
     }
 
-    public static int RangeAttackHitChance(int distance, int spread)
+    public static int RangeAttackHitChance(double distance, int spread)
     {
         if (spread < 0) return 0;
-        return (int) (100 - 5 * distance * Math.Log(spread + 1));
+        return  100 - (int) (5 * distance * Math.Log10(spread + 1));
+    }
+
+    public static int CalculateMeleeDamage(int min, int max, int strength)
+    {
+        return Random.Shared.Next(min , max + 1) / (1 + (Actor.ActorStr - strength) / 10);
     }
 
     public static int CountDigits(int num) => num == 0 ? 1 : (int) Math.Floor(Math.Log10(Math.Abs(num))) + 1;

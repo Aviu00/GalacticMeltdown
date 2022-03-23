@@ -21,7 +21,7 @@
         <Name>sword</Name>
         <Symbol>l</Symbol>
         <MinHitDamage>20</MinHitDamage>
-        <MaxHitDamage>60</MaxHitDamage>
+        <MaxHitDamage>80</MaxHitDamage>
         <HitEnergy>100</HitEnergy>
     </WeaponItem>
     <WeaponItem>
@@ -29,7 +29,7 @@
         <Name>knife</Name>
         <Symbol>,</Symbol>
         <MinHitDamage>5</MinHitDamage>
-        <MaxHitDamage>35</MaxHitDamage>
+        <MaxHitDamage>30</MaxHitDamage>
         <HitEnergy>40</HitEnergy>
     </WeaponItem>
     <WeaponItem>
@@ -37,7 +37,7 @@
         <Name>golden knife</Name>
         <Symbol>,</Symbol>
         <MinHitDamage>8</MinHitDamage>
-        <MaxHitDamage>60</MaxHitDamage>
+        <MaxHitDamage>50</MaxHitDamage>
         <HitEnergy>40</HitEnergy>
     </WeaponItem>
     <WeaponItem>
@@ -75,14 +75,14 @@
             <Ammo>
                 <Id>gasoline</Id>
                 <MinDamage>5</MinDamage>
-                <MaxDamage>30</MaxDamage>
+                <MaxDamage>20</MaxDamage>
             </Ammo>
         </AmmoTypes>
     </WeaponItem>
     <WeaponItem>
         <Id>chainsword</Id>
         <Name>chainsword</Name>
-        <Symbol>L</Symbol>
+        <Symbol>R</Symbol>
         <MinHitDamage>0</MinHitDamage>
         <MaxHitDamage>15</MaxHitDamage>
         <HitEnergy>10</HitEnergy>
@@ -90,7 +90,7 @@
             <Ammo>
                 <Id>gasoline</Id>
                 <MinDamage>10</MinDamage>
-                <MaxDamage>50</MaxDamage>
+                <MaxDamage>40</MaxDamage>
             </Ammo>
         </AmmoTypes>
     </WeaponItem>
@@ -104,8 +104,8 @@
         <AmmoTypes>
             <Ammo>
                 <Id>energy_cell</Id>
-                <MinDamage>10</MinDamage>
-                <MaxDamage>70</MaxDamage>
+                <MinDamage>40</MinDamage>
+                <MaxDamage>180</MaxDamage>
                 <StateChanger>
                     <Type>Stun</Type>
                     <Power>50</Power>
@@ -235,8 +235,8 @@
                 <MinDamage>70</MinDamage>
                 <MaxDamage>180</MaxDamage>
                 <StateChanger>
-                    <Type>ModifyViewRangeEffect</Type>
-                    <Power>-5</Power>
+                    <Type>ModifySpeedEffect</Type>
+                    <Power>-50</Power>
                     <Duration>5</Duration>
                 </StateChanger>
             </Ammo>
@@ -258,8 +258,8 @@
                 <MinDamage>90</MinDamage>
                 <MaxDamage>210</MaxDamage>
                 <StateChanger>
-                    <Type>ModifyViewRangeEffect</Type>
-                    <Power>-5</Power>
+                    <Type>ModifySpeedEffect</Type>
+                    <Power>-50</Power>
                     <Duration>7</Duration>
                 </StateChanger>
             </Ammo>
@@ -273,6 +273,7 @@
     <Item>
         <Id>gasoline</Id>
         <Name>gasoline</Name>
+        <Stackable>true</Stackable>
         <Symbol>~</Symbol>
     </Item>
     <Item>
@@ -365,7 +366,7 @@
         <Stackable>true</Stackable>
         <StateChanger>
             <Type>AdrenalineEffect</Type>
-            <Power>50</Power>
+            <Power>100</Power>
             <Duration>30</Duration>
         </StateChanger>
     </ConsumableItem>

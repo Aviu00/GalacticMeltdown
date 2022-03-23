@@ -5,47 +5,39 @@
         <ItemId>chicken_wing</ItemId>
         <Min>1</Min>
         <Max>5</Max>
-        <Gain>3</Gain>
-        <Limit>200</Limit>
+        <Gain>1.5</Gain>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>bandages</Id>
         <ItemId>bandage</ItemId>
         <Min>1</Min>
         <Max>2</Max>
-        <Gain>2</Gain>
-        <Limit>200</Limit>
+        <Gain>1</Gain>
+        <Limit>50</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>energy_drinks</Id>
         <ItemId>energy_drink</ItemId>
         <Min>1</Min>
         <Max>2</Max>
-        <Gain>2</Gain>
-        <Limit>200</Limit>
+        <Gain>1.5</Gain>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>painkillers_loot</Id>
         <ItemId>painkillers</ItemId>
         <Min>1</Min>
         <Max>2</Max>
-        <Gain>2</Gain>
-        <Limit>200</Limit>
-    </ItemLoot>
-    <ItemLoot>
-        <Id>eyedrops_loot</Id>
-        <ItemId>eyedrops</ItemId>
-        <Min>1</Min>
-        <Max>1</Max>
-        <Gain>1</Gain>
-        <Limit>200</Limit>
+        <Gain>1.5</Gain>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>assault_rifle_ammo_1</Id>
         <ItemId>assault_rifle_ammo</ItemId>
         <Min>2</Min>
         <Max>20</Max>
-        <Gain>3</Gain>
+        <Gain>2.1</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -61,7 +53,7 @@
         <ItemId>advanced_assault_rifle_ammo</ItemId>
         <Min>2</Min>
         <Max>10</Max>
-        <Gain>3</Gain>
+        <Gain>2</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -69,7 +61,7 @@
         <ItemId>advanced_pistol_ammo</ItemId>
         <Min>1</Min>
         <Max>5</Max>
-        <Gain>2</Gain>
+        <Gain>1.9</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -78,7 +70,7 @@
         <Min>1</Min>
         <Max>5</Max>
         <Gain>2</Gain>
-        <Limit>50</Limit>
+        <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>arrows_2</Id>
@@ -86,14 +78,14 @@
         <Min>1</Min>
         <Max>3</Max>
         <Gain>2</Gain>
-        <Limit>50</Limit>
+        <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>energy_cells</Id>
         <ItemId>energy_cell</ItemId>
         <Min>1</Min>
         <Max>2</Max>
-        <Gain>2.5</Gain>
+        <Gain>2.2</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -101,6 +93,8 @@
         <ItemId>gasoline</ItemId>
         <Min>50</Min>
         <Max>50</Max>
+        <Gain>3</Gain>
+        <Limit>1000</Limit>
     </ItemLoot>
     <CollectionTable>
         <Id>gasoline_jerrycan</Id>
@@ -187,36 +181,81 @@
         </Items>
     </CollectionTable>
     <DistributionTable>
+        <Id>ammo_distr</Id>
+        <Items>
+            <Item id="energy_cells" chance="18"/>
+            <Item id="arrows_distr" chance="30"/>
+            <Item id="assault_rifle_ammo_distr" chance="22"/>
+            <Item id="pistol_ammo_distr" chance="30"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
         <Id>weapon_distr_1</Id>
         <Items>
-            <Item id="pistol_table" chance="11" gain="1.6" limit="22"/>
-            <Item id="assault_rifle_table" chance="7" gain="1.1" limit="14"/>
-            <Item id="crossbow_table_1" chance="11" gain="1.7" limit="22"/>
-            <Item id="crossbow_table_2" chance="9" gain="1.4" limit="18"/>
-            <Item id="laser_rifle_table" chance="5" gain="1" limit="10"/>
-            <Item id="laser_pistol_table" chance="7" gain="1" limit="14"/>
+            <Item id="weapon_distr_1_1" chance="10" gain="2" limit="35"/>
+            <Item id="weapon_distr_1_2" chance="2" gain="1.7" limit="33"/>
+            <Item id="weapon_distr_1_3" chance="0" gain="1.4" limit="32"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
+        <Id>weapon_distr_1_1</Id>
+        <Items>
+            <Item id="pistol_table" chance="50"/>
+            <Item id="crossbow_table_1" chance="50"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
+        <Id>weapon_distr_1_2</Id>
+        <Items>
+            <Item id="assault_rifle_table" chance="45"/>
+            <Item id="crossbow_table_2" chance="55"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
+        <Id>weapon_distr_1_3</Id>
+        <Items>
+            <Item id="laser_rifle_table" chance="30"/>
+            <Item id="laser_pistol_table" chance="70"/>
         </Items>
     </DistributionTable>
     <DistributionTable>
         <Id>weapon_distr_2</Id>
         <Items>
-            <Item id="sword" chance="8" gain="1.8" limit="16"/>
-            <Item id="knife" chance="10" gain="2" limit="20"/>
-            <Item id="g_knife" chance="8" gain="1.8" limit="16"/>
-            <Item id="plunger" chance="7" gain="1.7" limit="14"/>
-            <Item id="r_plunger" chance="5" gain="1.6" limit="11"/>
-            <Item id="chainsaw" chance="5" gain="1.6" limit="11"/>
-            <Item id="chainsword" chance="4" gain="1.3" limit="7"/>
-            <Item id="lightsaber_table" chance="1" gain="1.1" limit="5"/>
+            <Item id="weapon_distr_2_1" chance="20" gain="2.5" limit="35"/>
+            <Item id="weapon_distr_2_2" chance="7" gain="2.2" limit="33"/>
+            <Item id="weapon_distr_2_3" chance="0" gain="1.5" limit="32"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
+        <Id>weapon_distr_2_1</Id>
+        <Items>
+            <Item id="sword" chance="34"/>
+            <Item id="knife" chance="38"/>
+            <Item id="plunger" chance="28"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
+        <Id>weapon_distr_2_2</Id>
+        <Items>
+            <Item id="g_knife" chance="37"/>
+            <Item id="r_plunger" chance="30"/>
+            <Item id="chainsaw" chance="33"/>
+        </Items>
+    </DistributionTable>
+    <DistributionTable>
+        <Id>weapon_distr_2_3</Id>
+        <Items>
+            <Item id="chainsword" chance="60"/>
+            <Item id="lightsaber" chance="40"/>
         </Items>
     </DistributionTable>
     <DistributionTable>
         <Id>armor_distr</Id>
         <Items>
-            <Item id="metal_chestplate" chance="10" gain="2" limit="25"/>
-            <Item id="metal_leggings" chance="10" gain="2" limit="25"/>
-            <Item id="metal_boots" chance="10" gain="2" limit="25"/>
-            <Item id="metal_helmet" chance="10" gain="2" limit="25"/>
+            <Item id="metal_chestplate" chance="10" gain="2.5" limit="25"/>
+            <Item id="metal_leggings" chance="10" gain="2.5" limit="25"/>
+            <Item id="metal_boots" chance="10" gain="2.5" limit="25"/>
+            <Item id="metal_helmet" chance="10" gain="2.5" limit="25"/>
         </Items>
     </DistributionTable>
     <CollectionTable>
@@ -230,16 +269,25 @@
         <Id>consumable_table_2</Id>
         <Items>
             <Item id="bandages" chance="15" gain="2" limit="30"/>
-            <Item id="medkit" chance="12" gain="1.5" limit="20"/>
-            <Item id="adrenaline_syringe" chance="5" gain="1.5" limit="15"/>
-            <Item id="cough_syrup" chance="6" gain="1.5" limit="10"/>
+            <Item id="medkit" chance="12" gain="2" limit="50"/>
+            <Item id="adrenaline_syringe" chance="5" gain="2" limit="45"/>
+            <Item id="cough_syrup" chance="6" gain="2" limit="30"/>
         </Items>
     </CollectionTable>
     <CollectionTable>
         <Id>consumable_table_3</Id>
         <Items>
-            <Item id="eyedrops_loot" chance="6" gain="1.5" limit="10"/>
+            <Item id="eyedrops" chance="5" gain="1.5" limit="30"/>
             <Item id="painkillers_loot" chance="25" gain="2" limit="40"/>
+            <Item id="strength_elixir" chance="25" gain="2" limit="40"/>
         </Items>
     </CollectionTable>
+    <DistributionTable>
+        <Id>consumable_distr</Id>
+        <Items>
+            <Item id="consumable_table_1" chance="33"/>
+            <Item id="consumable_table_2" chance="33"/>
+            <Item id="consumable_table_3" chance="33"/>
+        </Items>
+    </DistributionTable>
 </LootTables>

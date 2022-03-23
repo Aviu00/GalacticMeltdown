@@ -7,11 +7,11 @@
         <Color>dark_magenta</Color>
         <MaxHp>20</MaxHp>
         <Defence>0</Defence>
-        <Dexterity>10</Dexterity>
-        <ViewRange>8</ViewRange>
-        <AlertRadius>10</AlertRadius>
+        <Dexterity>12</Dexterity>
+        <ViewRange>3</ViewRange>
+        <AlertRadius>5</AlertRadius>
         <MaxEnergy>150</MaxEnergy>
-        <Cost>80</Cost>
+        <Cost>70</Cost>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
@@ -68,7 +68,7 @@
         <Defence>0</Defence>
         <ViewRange>5</ViewRange>
         <Cost>40</Cost>
-        <AlertRadius>5</AlertRadius>
+        <AlertRadius>7</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
@@ -101,7 +101,7 @@
                 <StateChanger>
                     <Type>PoisonEffect</Type>
                     <Power>1</Power>
-                    <Duration>10</Duration>
+                    <Duration>20</Duration>
                 </StateChanger>
             </MeleeAttack>
             <MeleeAttack>
@@ -124,7 +124,7 @@
         <MaxHp>100</MaxHp>
         <MaxEnergy>80</MaxEnergy>
         <Dexterity>0</Dexterity>
-        <Defence>40</Defence>
+        <Defence>20</Defence>
         <ViewRange>5</ViewRange>
         <Cost>200</Cost>
         <AlertRadius>3</AlertRadius>
@@ -183,7 +183,7 @@
         <Color>yellow</Color>
         <MaxHp>150</MaxHp>
         <MaxEnergy>70</MaxEnergy>
-        <Dexterity>15</Dexterity>
+        <Dexterity>10</Dexterity>
         <Defence>3</Defence>
         <ViewRange>20</ViewRange>
         <Cost>150</Cost>
@@ -219,15 +219,20 @@
         <MaxHp>100</MaxHp>
         <MaxEnergy>120</MaxEnergy>
         <Dexterity>0</Dexterity>
-        <Defence>20</Defence>
+        <Defence>30</Defence>
         <ViewRange>30</ViewRange>
         <Cost>250</Cost>
         <AlertRadius>5</AlertRadius>
         <Behaviors>
+            <MeleeAttack>
+                <MinDamage>0</MinDamage>
+                <MaxDamage>0</MaxDamage>
+                <MeleeAttackCost>120</MeleeAttackCost>
+            </MeleeAttack>
             <RangeAttack>
                 <Spread>3</Spread>
                 <MinDamage>7</MinDamage>
-                <MaxDamage>25</MaxDamage>
+                <MaxDamage>30</MaxDamage>
                 <RangeAttackCost>40</RangeAttackCost>
                 <AttackRange>30</AttackRange>
             </RangeAttack>
@@ -239,35 +244,74 @@
         <Symbol>E</Symbol>
         <Color>yellow</Color>
         <BgColor>red</BgColor>
-        <MaxHp>100</MaxHp>
+        <MaxHp>150</MaxHp>
         <MaxEnergy>100</MaxEnergy>
-        <Dexterity>9</Dexterity>
-        <Defence>15</Defence>
+        <Dexterity>5</Dexterity>
+        <Defence>18</Defence>
         <ViewRange>20</ViewRange>
         <Cost>250</Cost>
-        <AlertRadius>24</AlertRadius>
+        <AlertRadius>15</AlertRadius>
         <Behaviors>
             <Movement/>
             <MeleeAttack>
                 <MinDamage>5</MinDamage>
                 <MaxDamage>50</MaxDamage>
-                <MeleeAttackCost>45</MeleeAttackCost>
+                <MeleeAttackCost>100</MeleeAttackCost>
                 <StateChanger>
                     <Type>ModifyStrengthEffect</Type>
                     <Duration>100</Duration>
-                    <Power>-1</Power>
+                    <Power>-2</Power>
                 </StateChanger>
             </MeleeAttack>
             <RangeAttack>
                 <Spread>1</Spread>
                 <MinDamage>10</MinDamage>
                 <MaxDamage>50</MaxDamage>
-                <RangeAttackCost>60</RangeAttackCost>
+                <RangeAttackCost>100</RangeAttackCost>
                 <AttackRange>15</AttackRange>
-                <Cooldown>2</Cooldown>
+                <Cooldown>3</Cooldown>
                 <StateChanger>
                     <Type>Stun</Type>
-                    <Power>10</Power>
+                    <Power>40</Power>
+                </StateChanger>
+            </RangeAttack>
+        </Behaviors>
+    </Enemy>
+    <Enemy>
+        <Id>observer</Id>
+        <Name>observer</Name>
+        <Symbol>O</Symbol>
+        <Color>blue</Color>
+        <BgColor>yellow</BgColor>
+        <MaxHp>100</MaxHp>
+        <MaxEnergy>90</MaxEnergy>
+        <Dexterity>8</Dexterity>
+        <Defence>5</Defence>
+        <ViewRange>30</ViewRange>
+        <Cost>250</Cost>
+        <AlertRadius>24</AlertRadius>
+        <Behaviors>
+            <Movement/>
+            <MeleeAttack>
+                <Cooldown>5</Cooldown>
+                <MinDamage>5</MinDamage>
+                <MaxDamage>30</MaxDamage>
+                <StateChanger>
+                    <Type>ModifySpeedEffect</Type>
+                    <Power>-50</Power>
+                    <Duration>10</Duration>
+                </StateChanger>
+            </MeleeAttack>
+            <RangeAttack>
+                <Spread>3</Spread>
+                <MinDamage>0</MinDamage>
+                <MaxDamage>5</MaxDamage>
+                <RangeAttackCost>20</RangeAttackCost>
+                <AttackRange>20</AttackRange>
+                <StateChanger>
+                    <Type>ModifySpeedEffect</Type>
+                    <Power>-5</Power>
+                    <Duration>3</Duration>
                 </StateChanger>
             </RangeAttack>
         </Behaviors>
@@ -281,7 +325,7 @@
         <MaxHp>300</MaxHp>
         <MaxEnergy>100</MaxEnergy>
         <Dexterity>10</Dexterity>
-        <Defence>30</Defence>
+        <Defence>25</Defence>
         <ViewRange>10</ViewRange>
         <Cost>500</Cost>
         <AlertRadius>5</AlertRadius>
@@ -292,7 +336,7 @@
                 <SelfEffectCost>100</SelfEffectCost>
                 <StateChanger>
                     <Type>ModifySpeedEffect</Type>
-                    <Power>60</Power>
+                    <Power>70</Power>
                     <Duration>5</Duration>
                 </StateChanger>
             </SelfEffect>
@@ -303,7 +347,7 @@
                 <StateChanger>
                     <Type>ModifyMaxEnergyEffect</Type>
                     <Duration>5</Duration>
-                    <Power>10</Power>
+                    <Power>-10</Power>
                 </StateChanger>
             </MeleeAttack>
         </Behaviors>
@@ -330,8 +374,8 @@
                 <RangeAttackCost>70</RangeAttackCost>
                 <AttackRange>25</AttackRange>
                 <StateChanger>
-                    <Type>ModifySpeedEffect</Type>
-                    <Power>-20</Power>
+                    <Type>ModifyMaxEnergyEffect</Type>
+                    <Power>-10</Power>
                     <Duration>5</Duration>
                 </StateChanger>
             </RangeAttack>
@@ -342,7 +386,7 @@
         <Name>ninja</Name>
         <Symbol>N</Symbol>
         <Color>dark_gray</Color>
-        <MaxHp>100</MaxHp>
+        <MaxHp>150</MaxHp>
         <MaxEnergy>150</MaxEnergy>
         <Dexterity>15</Dexterity>
         <Defence>1</Defence>
@@ -371,7 +415,7 @@
                 <MeleeAttackCost>30</MeleeAttackCost>
                 <StateChanger>
                     <Type>Stun</Type>
-                    <Power>5</Power>
+                    <Power>7</Power>
                 </StateChanger>
             </MeleeAttack>
         </Behaviors>

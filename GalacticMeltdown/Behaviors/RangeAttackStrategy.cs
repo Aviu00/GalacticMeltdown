@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
@@ -55,11 +56,12 @@ public class RangeAttackStrategy : Behavior
             return false;
         // if there is nothing what can stop projectile
         if (!CanAttack()) return false;
-        var damage = 0;
-        if (UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance
-            ((int) UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
+        if (!UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance
+            (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
                 ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y), _spread)))
-            damage = RandomDamage(_minDamage, _maxDamage);
+            return true;
+        
+        int damage = RandomDamage(_minDamage, _maxDamage);
         ControlledNpc.CurrentTarget.Hit(damage, true, false);
         if (_stateChanger is not null)
         {
@@ -67,12 +69,10 @@ public class RangeAttackStrategy : Behavior
                 (ControlledNpc.CurrentTarget, _stateChanger.Power, _stateChanger.Duration);
         }
         ControlledNpc.Energy -= _rangeAttackCost;
-        if (_rangeAttackCounter is not null)
-            _rangeAttackCounter.ResetTimer();
+        _rangeAttackCounter?.ResetTimer();
         return true;
     }
 
-    // TODO: make advanced random damage 
     private int RandomDamage(int minDamage, int maxDamage)
     {
         return Random.Shared.Next(minDamage, maxDamage + 1);
@@ -87,13 +87,12 @@ public class RangeAttackStrategy : Behavior
         if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
                 ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) > _attackRange)
             return false;
-        foreach (var coord in Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y,
-                     ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y))
+        foreach (var (x, y) in Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y,
+                     ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).Skip(1))
         {
             // shoot to wall (or etc) or friendly fire
-            if (ControlledNpc.Level.GetNonTileObject(coord.x, coord.y) is Enemy &&
-                 coord != (ControlledNpc.X, ControlledNpc.Y) ||
-                !ControlledNpc.Level.GetTile(coord.x, coord.y).IsWalkable)
+            if (ControlledNpc.Level.GetNonTileObject(x, y) is Enemy ||
+                !ControlledNpc.Level.GetTile(x, y).IsWalkable)
             {
                 return false;
             }

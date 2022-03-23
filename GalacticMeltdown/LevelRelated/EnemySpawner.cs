@@ -12,7 +12,7 @@ namespace GalacticMeltdown.LevelRelated;
 public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
-    private const int DifficultyMultiplier = 35;
+    private const int DifficultyMultiplier = 30;
 
     [JsonProperty] private readonly Level _level;
     [JsonProperty] private double _currency;
