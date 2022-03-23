@@ -422,7 +422,7 @@
         <BodyPart>Head</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>10</Power>
+            <Power>14</Power>
         </StateChanger>
     </EquippableItem>
     <EquippableItem>
@@ -433,7 +433,7 @@
         <BodyPart>Torso</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>16</Power>
+            <Power>20</Power>
         </StateChanger>
     </EquippableItem>
     <EquippableItem>
@@ -444,7 +444,7 @@
         <BodyPart>Legs</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>12</Power>
+            <Power>16</Power>
         </StateChanger>
     </EquippableItem>
     <EquippableItem>
@@ -455,7 +455,7 @@
         <BodyPart>Feet</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>8</Power>
+            <Power>12</Power>
         </StateChanger>
     </EquippableItem>
 </ItemDatas>

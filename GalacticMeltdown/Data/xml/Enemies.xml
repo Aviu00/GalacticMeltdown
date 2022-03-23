@@ -230,7 +230,7 @@
                 <MeleeAttackCost>120</MeleeAttackCost>
             </MeleeAttack>
             <RangeAttack>
-                <Spread>3</Spread>
+                <Spread>4</Spread>
                 <MinDamage>7</MinDamage>
                 <MaxDamage>30</MaxDamage>
                 <RangeAttackCost>40</RangeAttackCost>

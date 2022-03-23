@@ -139,10 +139,15 @@ public class MovementStrategy : Behavior
         
         if (_nextPathCellNode is null)
             return false;
+        if(Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null) return false;
         Tile nextPathTile =  Level.GetTile(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
-        if (!nextPathTile.IsWalkable && !nextPathTile.IsDoor ||
-            Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null) return false;
-        if (!ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y)) return true;//door interact
+        if (!nextPathTile.IsWalkable)
+        {
+            if (!nextPathTile.IsDoor) return false;
+            Level.InteractWithDoor(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y, ControlledNpc);
+            return true;
+        }
+        ControlledNpc.MoveNpcTo(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y);
         _nextPathCellNode = _nextPathCellNode.Next;
         if (_nextPathCellNode is null) _wantsToGoTo = null;
         return true;

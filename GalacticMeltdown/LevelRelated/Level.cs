@@ -119,7 +119,7 @@ public partial class Level
                 if (GetNonTileObject(x, y) is not null)
                     counter.Timer.Value++;
                 else
-                    GetTile(x, y).InteractWithDoor();
+                    InteractWithDoor(x, y);
             };
         }
         Init();
@@ -471,10 +471,10 @@ public partial class Level
         }
     }
 
-    public bool InteractWithDoor(int x, int y, Actor actor = null, bool checkWalkable = false)
+    public bool InteractWithDoor(int x, int y, Actor actor = null)
     {
         Tile tile = GetTile(x, y);
-        if (tile is null || !tile.IsDoor || GetNonTileObject(x, y) is not null || checkWalkable && tile.IsWalkable) 
+        if (tile is null || !tile.IsDoor || GetNonTileObject(x, y) is not null)
             return false;
         tile.InteractWithDoor();
         Counter doorCounter;
@@ -485,7 +485,7 @@ public partial class Level
                 if (GetNonTileObject(x, y) is not null)
                     counter.Timer.Value++;
                 else
-                    GetTile(x, y).InteractWithDoor();
+                    InteractWithDoor(x, y);
             });
             _doorCounters.Add((x, y), doorCounter);
         }

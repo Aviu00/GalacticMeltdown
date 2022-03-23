@@ -162,7 +162,7 @@ public abstract class Actor : IObjectOnMap
         return true;
     }
 
-    public virtual void FinishTurn()
+    public void FinishTurn()
     {
         if (Hp == 0) return;
         _turnStopped = false;
