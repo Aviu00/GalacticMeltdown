@@ -20,6 +20,7 @@ public interface ISightedObject : IHasCoords
     int ViewRange { get; }
     bool Xray { get; }
     event EventHandler VisiblePointsChanged;
+    int GetViewRange();
 }
 
 public interface IMovable : IHasCoords

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -44,17 +45,6 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
 
-    [JsonIgnore]
-    public override int ViewRange
-    {
-        get => base.ViewRange;
-        set
-        {
-            base.ViewRange = value;
-            VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }
-
     [JsonProperty] public Dictionary<ItemCategory, List<Item>> Inventory;
     [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
@@ -63,6 +53,7 @@ public class Player : Actor, ISightedObject, IControllable
     [JsonConstructor]
     private Player()
     {
+        StatChanged += OnStatChanged;
     }
 
     public Player(int x, int y, Level level)
@@ -79,6 +70,8 @@ public class Player : Actor, ISightedObject, IControllable
         {
             Equipment[val] = null;
         }
+
+        StatChanged += OnStatChanged;
     }
 
     public bool TryMove(int deltaX, int deltaY)
@@ -214,5 +207,11 @@ public class Player : Actor, ISightedObject, IControllable
         Inventory[ItemCategory.Item].Remove(ammo);
         Energy -= gun.ShootEnergy;
         return true;
+    }
+
+    private void OnStatChanged(object sender, StatChangeEventArgs e)
+    {
+        if(e.Stat == Stat.ViewRange)
+            VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
     }
 }

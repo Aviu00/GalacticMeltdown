@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -12,14 +11,15 @@ namespace GalacticMeltdown.LevelRelated;
 public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
-    private const int DifficultyMultiplier = 30;
+    private const int DifficultyMultiplier = 25;
 
     [JsonProperty] private readonly Level _level;
     [JsonProperty] private double _currency;
-    [JsonProperty] private double _currencyGain = 1;
+    [JsonProperty] private double _currencyGain = 10;
     [JsonProperty] private double _nextCurrencyAmount;
 
     [JsonIgnore] public List<Chunk> TargetChunks;
+    [JsonProperty] private Counter _currencyCounter;
 
     [JsonConstructor]
     private EnemySpawner()
@@ -29,28 +29,13 @@ public class EnemySpawner
     {
         CalculateNextCurrencyAmount();
         _level = level;
-    }
-
-    [OnDeserialized]
-    private void OnDeserialized(StreamingContext _)
-    {
-        Init();
-    }
-
-    private void Init()
-    {
-        _level.TurnFinished += NextTurn;
-        new Counter(_level, 5, 5, counter =>
+        _currencyCounter = new Counter(_level, 20, 20, counter =>
         {
+            _currency += _currencyGain;
             _currencyGain += 1;
+            if (_currency > _nextCurrencyAmount) SpawnRandomEnemies();
             counter.ResetTimer();
         });
-    }
-    
-    private void NextTurn(object _, EventArgs __)
-    {
-        _currency += _currencyGain;
-        if (_currency > _nextCurrencyAmount) SpawnRandomEnemies();
     }
 
     public void SpawnEnemiesInChunk(Chunk chunk)
@@ -120,8 +105,8 @@ public class EnemySpawner
         while (enemies.Count > 0)
         {
             list.Add(enemies[rng.Next(0, enemies.Count)]);
-            curr -= list[^1].Cost;
-            currency = curr;
+            currency -= list[^1].Cost;
+            curr = currency;
             enemies = enemies.Where(enemy => enemy.Cost <= curr).ToList();
         }
         return list;

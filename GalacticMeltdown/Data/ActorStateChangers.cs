@@ -162,7 +162,7 @@ public static partial class DataHolder
             {
                 FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyMaxEnergy);
                 actor.AddEffect(effect);
-                FlatEffect effect1 = new FlatEffect(actor, 1, 7, ActorStateChangerType.PoisonEffect);
+                ContinuousEffect effect1 = new ContinuousEffect(actor, 1, 7, ActorStateChangerType.Damage);
                 actor.AddEffect(effect1);
             }
         },

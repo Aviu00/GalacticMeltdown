@@ -232,7 +232,7 @@
             <RangeAttack>
                 <Spread>4</Spread>
                 <MinDamage>7</MinDamage>
-                <MaxDamage>30</MaxDamage>
+                <MaxDamage>25</MaxDamage>
                 <RangeAttackCost>40</RangeAttackCost>
                 <AttackRange>30</AttackRange>
             </RangeAttack>

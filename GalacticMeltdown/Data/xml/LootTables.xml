@@ -93,7 +93,7 @@
         <ItemId>gasoline</ItemId>
         <Min>50</Min>
         <Max>50</Max>
-        <Gain>3</Gain>
+        <Gain>4</Gain>
         <Limit>1000</Limit>
     </ItemLoot>
     <CollectionTable>

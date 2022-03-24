@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -30,7 +29,7 @@ public abstract class Npc : Actor
 
     protected bool IsPointVisible(int x, int y)
     {
-        if (UtilityFunctions.GetDistance(x, y, X, Y) > ViewRange)
+        if (UtilityFunctions.GetDistance(x, y, X, Y) > GetViewRange())
         {
             return false;
         }

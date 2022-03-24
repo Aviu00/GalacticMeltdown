@@ -23,6 +23,8 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] private int _strength;
     [JsonProperty] private int _moveSpeed;
     [JsonProperty] private int _viewRange;
+    
+    [JsonIgnore]
     public int Strength
     {
         get => _strength;
@@ -33,6 +35,8 @@ public abstract class Actor : IObjectOnMap
             FireStatAffected(Stat.Strength);
         }
     }
+    
+    [JsonIgnore]
     public int MoveSpeed
     {
         get => _moveSpeed;
@@ -44,9 +48,10 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
-    public virtual int ViewRange
+    [JsonIgnore]
+    public int ViewRange
     {
-        get => _viewRange < 1 ? 1 : _viewRange;
+        get => _viewRange;
         set
         {
             if(value == _viewRange) return;
@@ -64,7 +69,7 @@ public abstract class Actor : IObjectOnMap
 
     [JsonProperty] private List<Effect> _effects;
 
-    [JsonProperty]
+    [JsonIgnore]
     public int Hp
     {
         get => HpLim.Value;
@@ -78,6 +83,7 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
+    [JsonIgnore]
     public int Energy
     {
         get => EnergyLim.Value;
@@ -93,7 +99,7 @@ public abstract class Actor : IObjectOnMap
     [JsonIgnore]
     public int Dexterity
     {
-        get => _dexterity < 0 ? 0 : _dexterity;
+        get => _dexterity;
         set
         {
             if (value == _dexterity) return;
@@ -105,7 +111,7 @@ public abstract class Actor : IObjectOnMap
     [JsonIgnore]
     public int Defence
     {
-        get => _defence < 0 ? 0 : _defence;
+        get => _defence;
         set
         {
             if (value == _defence) return;
@@ -152,9 +158,9 @@ public abstract class Actor : IObjectOnMap
 
     public virtual bool Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
     {
-        if (!ignoreDexterity && Dexterity != 0 && UtilityFunctions.ChanceRoll(5, _dexterity))
+        if (!ignoreDexterity && Dexterity > 0 && UtilityFunctions.ChanceRoll(5, _dexterity))
             return false;
-        if (!ignoreDefence && Defence != 0)
+        if (!ignoreDefence && Defence > 0)
         {
             damage -= Random.Shared.Next(0, Defence + 1);
             if (damage < 0) damage = 0;
@@ -209,4 +215,9 @@ public abstract class Actor : IObjectOnMap
     }
 
     public abstract void TakeAction();
+
+    public int GetViewRange()
+    {
+        return _viewRange < 1 ? 1 : _viewRange;
+    }
 }

@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
 using Newtonsoft.Json;
 
@@ -13,10 +10,6 @@ using ItemDictionary = Dictionary<(int x, int y), List<Item>>;
 
 public class Chunk
 {
-    public event EventHandler<MoveEventArgs> SomethingMoved;
-    public event EventHandler NpcDied;
-    public event EventHandler NpcInvolvedInTurn;
-
     [JsonProperty] public readonly List<(int x, int y)> NeighborCoords;
     [JsonProperty] public readonly int MapX;
     [JsonProperty] public readonly int MapY;
@@ -53,15 +46,6 @@ public class Chunk
         _items = items;
         Symbol = symbol;
         Enemies = new List<Enemy>();
-    }
-
-    [OnDeserialized]
-    private void OnDeserialized(StreamingContext _)
-    {
-        foreach (Npc npc in GetNpcs())
-        {
-            SubscribeNpc(npc);
-        }
     }
 
     public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
@@ -126,37 +110,10 @@ public class Chunk
     public void AddNpc(Npc npc)
     {
         if (npc is Enemy enemy) Enemies.Add(enemy);
-        SubscribeNpc(npc);
-    }
-
-    public void SubscribeNpc(Npc npc)
-    {
-        npc.Moved += MovedHandler;
-        npc.Died += DiedHandler;
-        npc.InvolvedInTurn += InvolvedInTurnHandler;
     }
 
     public void RemoveNpc(Npc npc)
     {
         if (npc is Enemy enemy) Enemies.Remove(enemy);
-        npc.Moved -= MovedHandler;
-        npc.Died -= DiedHandler;
-        npc.InvolvedInTurn -= InvolvedInTurnHandler;
-    }
-
-    private void MovedHandler(object sender, MoveEventArgs e)
-    {
-        SomethingMoved?.Invoke(sender, e);
-    }
-
-    private void DiedHandler(object sender, EventArgs _)
-    {
-        RemoveNpc((Npc) sender);
-        NpcDied?.Invoke(sender, EventArgs.Empty);
-    }
-
-    private void InvolvedInTurnHandler(object sender, EventArgs e)
-    {
-        NpcInvolvedInTurn?.Invoke(sender, e);
     }
 }

@@ -179,7 +179,7 @@
             .........=#..........#..
             .........1#..........+..
             .........1#..........+..
-            .........=#.....1....#..
+            .........=#.....5....#..
             #+##++################..
             ...#....................
             2=2#....................
@@ -199,7 +199,7 @@
             ..........#..#########ss
             ..........#..#..4....S..
             ..........#..d.......D..
-            .........1#..#.......S..
+            .........5#..#.......S..
         </Pattern>
         <Type>4</Type>
         <Terrain>
@@ -210,6 +210,7 @@
             <Tile char="2" tile_id="shelf" loot_id="weapon_distr_2" loot_chance="30" gain="1" limit="80"/>
             <Tile char="3" tile_id="floor" loot_id="weapon_distr_1" loot_chance="10" gain="1" limit="80"/>
             <Tile char="4" tile_id="floor" loot_id="weapon_distr_2" loot_chance="20" gain="2" limit="80"/>
+            <Tile char="5" tile_id="floor" loot_id="consumable_distr" loot_chance="10" gain="2" limit="80"/>
         </Terrain>
     </Room>
     <Room>
@@ -460,13 +461,13 @@
         <Terrain>
             <Tile char="1" tile_id="floor" loot_id="weapon_distr_2" loot_chance="20" gain="2" limit="80"/>
             <Tile char="2" tile_id="floor" loot_id="armor_distr" loot_chance="30" gain="2" limit="100"/>
-            <Tile char="3" tile_id="table" loot_id="ammo_distr" loot_chance="0" gain="2" limit="80"/>
+            <Tile char="3" tile_id="floor" loot_id="ammo_distr" loot_chance="0" gain="2" limit="80"/>
         </Terrain>
     </Room>
     <Room>
         <Pattern>
             ....x....^....^....x....
-            ....x....^....^....x....
+            .2..x....^....^....x....
             ....N....#....#....N....
             ....N....#....#....N....
             ....N....#....#....N....
@@ -476,7 +477,7 @@
             ....N....#....#....N....
             ....N....#....#....N....
             WLLW##uu###++###uu##ERRE
-            ....O.....2........O....
+            ....O..............O....
             ....O..............O....
             WLLW##dd###++###dd##ERRE
             ....S....#....#....S....
@@ -487,7 +488,7 @@
             ....S....#....#....S....
             ....S....#....#....S....
             ....S....#....#....S....
-            ....z....v....v....z....
+            ....z....v....v....z..3.
             ....z....v....v....z....
         </Pattern>
         <Type>4</Type>
@@ -503,6 +504,7 @@
             <Tile char="z" tile_id="door-closed_floor_south"/>
             <Tile char="1" tile_id="floor" loot_id="storage_1" loot_chance="25" gain="2.5" limit="50"/>
             <Tile char="2" tile_id="floor" loot_id="weapon_distr_2" loot_chance="20" gain="2" limit="80"/>
+            <Tile char="3" tile_id="floor" loot_id="weapon_distr_2" loot_chance="40" gain="2" limit="80"/>
         </Terrain>
     </Room>
     <Room>

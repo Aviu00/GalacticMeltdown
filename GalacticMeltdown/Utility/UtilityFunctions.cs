@@ -85,7 +85,10 @@ public static class UtilityFunctions
 
     public static int CalculateMeleeDamage(int min, int max, int strength)
     {
-        return Random.Shared.Next(min , max + 1) / (1 + (Actor.ActorStr - strength) / 10);
+        int damage = Random.Shared.Next(min, max + 1);
+        if(strength < Actor.ActorStr)
+            return damage / (1 + (Actor.ActorStr - strength) / 10);
+        return damage + 5 * (strength - Actor.ActorStr);
     }
 
     public static int CountDigits(int num) => num == 0 ? 1 : (int) Math.Floor(Math.Log10(Math.Abs(num))) + 1;

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
@@ -98,10 +99,30 @@ public partial class PlaySession
                 cursor.Start();
             }
         },
-        {MainControl.IncreaseViewRange, () => _player.ViewRange++},
-        {MainControl.ReduceViewRange, () => _player.ViewRange--},
-        {MainControl.ToggleNoClip, () => _player.NoClip = !_player.NoClip},
-        {MainControl.ToggleXRay, () => _player.Xray = !_player.Xray},
+        {MainControl.IncreaseViewRange, () =>
+            {
+                if(DataHolder.CheatsEnabled)
+                    _player.ViewRange++;
+            }
+        },
+        {MainControl.ReduceViewRange, () =>
+            {
+                if(DataHolder.CheatsEnabled)
+                    _player.ViewRange--;
+            }
+        },
+        {MainControl.ToggleNoClip, () =>
+            {
+                if(DataHolder.CheatsEnabled)
+                    _player.NoClip = !_player.NoClip;
+            }
+        },
+        {MainControl.ToggleXRay, () =>
+            {
+                if(DataHolder.CheatsEnabled)
+                    _player.Xray = !_player.Xray;
+            }
+        },
         {MainControl.OpenPauseMenu, OpenPauseMenu},
         {MainControl.OpenInventory, OpenInventory}
     };

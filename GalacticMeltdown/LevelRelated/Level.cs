@@ -14,27 +14,6 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
-internal class ChunkEventListener
-{
-    public event EventHandler NpcDied;
-    public event EventHandler<MoveEventArgs> SomethingMoved;
-    public event EventHandler NpcInvolvedInTurn;
-    private void SomethingMovedHandler(object sender, MoveEventArgs e) => SomethingMoved?.Invoke(sender, e);
-
-    private void NpcDeathHandler(object npc, EventArgs e) => NpcDied?.Invoke(npc, e);
-    private void NpcInvolvedHandler(object npc, EventArgs e) => NpcInvolvedInTurn?.Invoke(npc, e);
-
-    public ChunkEventListener(Chunk[,] chunks)
-    {
-        foreach (var chunk in chunks)
-        {
-            chunk.NpcDied += NpcDeathHandler;
-            chunk.SomethingMoved += SomethingMovedHandler;
-            chunk.NpcInvolvedInTurn += NpcInvolvedHandler;
-        }
-    }
-}
-
 public partial class Level
 {
     private const int ActiveChunkRadius = DataHolder.ActiveChunkRadius;
@@ -48,6 +27,7 @@ public partial class Level
     [JsonProperty] public readonly Player Player;
     [JsonProperty] private (int x, int y) _finishPos;
 
+    public event EventHandler InvolvedInTurn;
     public event EventHandler TurnFinished;
     public event EventHandler NpcDied;
     public event EventHandler<MoveEventArgs> SomethingMoved;
@@ -63,13 +43,12 @@ public partial class Level
     [JsonIgnore] public OverlayView OverlayView;
     [JsonIgnore] public MinimapView MinimapView;
 
-    [JsonIgnore] public List<Chunk> ActiveChunks { get; private set; }
+    [JsonIgnore] private List<Chunk> _activeChunks;
 
-    public ObservableCollection<IControllable> ControllableObjects;
-    public ObservableCollection<ISightedObject> SightedObjects;
-    public LevelView LevelView;
+    [JsonProperty] private readonly ObservableCollection<IControllable> _controllableObjects;
+    [JsonProperty] public readonly ObservableCollection<ISightedObject> SightedObjects;
+    [JsonProperty] public readonly LevelView LevelView;
 
-    private ChunkEventListener _listener;
     [JsonProperty] private Dictionary<(int x, int y), Counter> _doorCounters;
 
     [JsonProperty] private int _currentlyActiveIndex;
@@ -88,9 +67,6 @@ public partial class Level
         (int x, int y) finishPos)
     {
         _chunks = chunks;
-        _listener = new ChunkEventListener(_chunks);
-        _listener.NpcDied += NpcDeathHandler;
-        _listener.SomethingMoved += SomethingMovedHandler;
         _doorCounters = new();
 
         _southernWall = southernWall;
@@ -101,7 +77,7 @@ public partial class Level
         Player = new Player(startPos.x, startPos.y, this);
         _enemySpawner = new EnemySpawner(this);
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
-        ControllableObjects = new ObservableCollection<IControllable> {Player};
+        _controllableObjects = new ObservableCollection<IControllable> {Player};
         LevelView = new LevelView(this, Player);
         _currentlyActiveIndex = 0;
 
@@ -111,6 +87,13 @@ public partial class Level
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
+        for (int i = 0; i < _chunks.GetLength(0); i++)
+        {
+            for (int j = 0; j < _chunks.GetLength(1); j++)
+            {
+                _chunks[i, j].GetNpcs().ForEach(SubscribeNpc);
+            }
+        }
         foreach (var keyValuePair in _doorCounters)
         {
             (int x, int y) = keyValuePair.Key;
@@ -128,15 +111,12 @@ public partial class Level
     private void Init()
     {
         _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
-        _listener = new ChunkEventListener(_chunks);
         OverlayView = new OverlayView(this);
-        _listener.NpcDied += NpcDeathHandler;
-        _listener.SomethingMoved += SomethingMovedHandler;
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
-        ControllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
+        _controllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
         MinimapView = new MinimapView(_chunks, () => GetChunkCoords(Player.X, Player.Y));
-        ActiveChunks = new();
+        _activeChunks = new();
         UpdateActiveChunks();
     }
     
@@ -147,9 +127,8 @@ public partial class Level
         List<Actor> inActiveChunks = GetActorsInActiveChunks();
         HashSet<Actor> involved = new();
         foreach (Actor actor in inActiveChunks) WatchActor(actor);
+        InvolvedInTurn += NpcInvolvedInTurnHandler;
         
-        _listener.NpcInvolvedInTurn += NpcInvolvedInTurnHandler;
-
         List<Actor> currentlyActive;
         while ((currentlyActive = _savedActors ?? GetActive(inActiveChunks)).Any())
         {
@@ -185,7 +164,7 @@ public partial class Level
 
         bool FinishMapTurn()
         {
-            _listener.NpcInvolvedInTurn -= NpcInvolvedInTurnHandler;
+            InvolvedInTurn += NpcInvolvedInTurnHandler;
             foreach (var actor in involved) FinishActorTurn(actor);
             TurnFinished?.Invoke(this, EventArgs.Empty);
             return IsActive;
@@ -198,12 +177,12 @@ public partial class Level
 
         List<Actor> GetActorsInActiveChunks()
         {
-            return ControllableObjects.OfType<Actor>().Concat(GetActiveChunkNpcs()).ToList();
+            return _controllableObjects.OfType<Actor>().Concat(GetActiveChunkNpcs()).ToList();
         }
 
         IEnumerable<Npc> GetActiveChunkNpcs()
         {
-            return ActiveChunks.SelectMany(chunk => chunk.GetNpcs());
+            return _activeChunks.SelectMany(chunk => chunk.GetNpcs());
         }
         
         void WatchActor(Actor actor)
@@ -280,7 +259,7 @@ public partial class Level
     {
         _enemySpawner.TargetChunks = null;
         //remove out of range chunks from ActiveChunkRadius
-        ActiveChunks = ActiveChunks.Where(chunk => ControllableObjects.Any(controllable =>
+        _activeChunks = _activeChunks.Where(chunk => _controllableObjects.Any(controllable =>
         {
             var (x, y) = GetChunkCoords(controllable.X, controllable.Y);
             bool active = 
@@ -291,13 +270,13 @@ public partial class Level
         })).ToList();
         
         //add new chunks to list
-        foreach (var obj in ControllableObjects)
+        foreach (var obj in _controllableObjects)
         {
             var (x, y) = GetChunkCoords(obj.X, obj.Y);
             foreach (var chunk in GetChunksAround(x, y, ActiveChunkRadius))
             {
                 if (chunk.IsActive) continue;
-                ActiveChunks.Add(chunk);
+                _activeChunks.Add(chunk);
                 chunk.IsActive = true;
                 if (chunk.WasActiveBefore) continue;
                 chunk.WasActiveBefore = true;
@@ -345,8 +324,9 @@ public partial class Level
     public HashSet<Chunk> GetChunksAroundControllable(int amount = 1, bool includeBaseChunks = true)
     {
         HashSet<Chunk> hashSet = new();
+        if (amount <= 0) return hashSet;
         List<(int x, int y)> prevChunks = new();
-        foreach (var controllable in ControllableObjects)
+        foreach (var controllable in _controllableObjects)
         {
             (int x, int y) = GetChunkCoords(controllable.X, controllable.Y);
             if(prevChunks.Contains((x, y)) || !CoordsInRangeOfChunkArray(controllable.X, controllable.Y, x, y)) 
@@ -430,8 +410,16 @@ public partial class Level
 
     public void AddNpc(Npc npc)
     {
+        SubscribeNpc(npc);
         (int x, int y) = GetChunkCoords(npc.X, npc.Y);
         _chunks[x, y].AddNpc(npc);
+    }
+
+    public void SubscribeNpc(Npc npc)
+    {
+        npc.InvolvedInTurn += InvolvedInTurnHandler;
+        npc.Died += NpcDeathHandler;
+        npc.Moved += SomethingMovedHandler;
     }
 
     public void AddItem(Item item, int x, int y)
@@ -507,6 +495,14 @@ public partial class Level
         var (chunkX, chunkY) = GetChunkCoords(x, y);
         return x >= 0 && chunkX < _chunks.GetLength(0) && y >= 0 && chunkY < _chunks.GetLength(1);
     }
-    
-    private void NpcDeathHandler(object npc, EventArgs _) => NpcDied?.Invoke(npc, EventArgs.Empty);
+
+    private void NpcDeathHandler(object npc, EventArgs _)
+    {
+        Npc diedNpc = (Npc) npc;
+        (int x, int y) = GetChunkCoords(diedNpc.X, diedNpc.Y);
+        _chunks[x, y].RemoveNpc(diedNpc);
+        NpcDied?.Invoke(npc, EventArgs.Empty);
+    }
+
+    private void InvolvedInTurnHandler(object npc, EventArgs e) => InvolvedInTurn?.Invoke(npc, e);
 }

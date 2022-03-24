@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 
@@ -9,6 +10,10 @@ public static partial class DataHolder
 {
     public const int ChunkSize = 25;
     public const int ActiveChunkRadius = 2;
+    public const bool CheatsEnabled = true;
+    
+    public static readonly string ProjectDirectory = 
+        Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
 
     public static int CurrentSeed { get; set; }
 
