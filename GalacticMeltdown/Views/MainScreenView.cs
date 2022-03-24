@@ -33,8 +33,8 @@ public class MainScreenView : View
         {
             CellsChanged?.Invoke(this, new CellChangeEventArgs(args.Cells.Select(data =>
                 {
-                    var (x, y, viewCell) = data;
-                    return (x - _levelViewWidth, y, viewCell);
+                    var (x, y, viewCell, delay) = data;
+                    return (x - _levelViewWidth, y, viewCell, delay);
                 })
                 .ToList()));
         };

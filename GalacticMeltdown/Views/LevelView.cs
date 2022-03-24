@@ -144,7 +144,7 @@ public partial class LevelView : View
 
     private void MoveHandler(object sender, MoveEventArgs e)
     {
-        List<(int, int, ViewCellData)> updated = new(2);
+        List<(int, int, ViewCellData, int)> updated = new(2);
         if (CanPlayerSeePoint(e.X0, e.Y0))
         {
             IDrawable drawableObj = _level.GetDrawable(e.X0, e.Y0);
@@ -152,7 +152,8 @@ public partial class LevelView : View
             updated.Add((viewX, viewY,
                 drawableObj is null
                     ? new ViewCellData(null, null)
-                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
+                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor),
+                40));
         }
 
         if (CanPlayerSeePoint(e.X1, e.Y1))
@@ -162,7 +163,8 @@ public partial class LevelView : View
             updated.Add((viewX, viewY,
                 drawableObj is null
                     ? new ViewCellData(null, null)
-                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor)));
+                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor),
+                40));
         }
 
         if (updated.Any()) CellsChanged?.Invoke(this, new CellChangeEventArgs(updated));
@@ -232,13 +234,10 @@ public partial class LevelView : View
                 foreach ((int x, int y) in actionInfo.AffectedCells)
                 {
                     var t = _level.GetDrawable(x, y);
-                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new List<(int, int, ViewCellData)>
+                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new List<(int, int, ViewCellData, int)>
                     {
-                        (x, y, new ViewCellData(t.SymbolData, ConsoleColor.Red))
-                    }));
-                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new List<(int, int, ViewCellData)>
-                    {
-                        (x, y, new ViewCellData(t.SymbolData, t.BgColor))
+                        (x, y, new ViewCellData(t.SymbolData, ConsoleColor.Red), 15),
+                        (x, y, new ViewCellData(t.SymbolData, t.BgColor), 0)
                     }));
                 }
                 break;

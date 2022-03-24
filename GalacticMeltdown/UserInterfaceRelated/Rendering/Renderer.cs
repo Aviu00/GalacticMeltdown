@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using GalacticMeltdown.Collections;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -20,8 +21,8 @@ public class Renderer
     private OrderedSet<View> _views;
     private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
-    private LinkedList<(View, List<(int, int, ViewCellData)>)> _animations;
-    private LinkedList<(View, int, int, ViewCellData, int)> _animQueue;
+    private LinkedList<(View, List<(int x, int y, ViewCellData cellData, int delay)>)> _animations;
+    private LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)> _animQueue;
 
     private Dictionary<object, View> _objectViews = new();
 
@@ -63,7 +64,7 @@ public class Renderer
         Console.Clear();
         _views = new OrderedSet<View>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
-        _animations = new LinkedList<(View, List<(int, int, ViewCellData)>)>();
+        _animations = new LinkedList<(View, List<(int, int, ViewCellData, int)>)>();
         _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
     }
 
@@ -86,7 +87,7 @@ public class Renderer
             }
 
             var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
-            foreach (var (viewX, viewY, viewCellData) in updatedCells)
+            foreach (var (viewX, viewY, viewCellData, delay) in updatedCells)
             {
                 var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
                     viewBottomLeftScreenX, viewBottomLeftScreenY);
@@ -94,6 +95,7 @@ public class Renderer
                 Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
                 SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
                 Console.Write(screenCellData.Symbol);
+                if (delay != 0) Thread.Sleep(delay);
             }
         }
         
