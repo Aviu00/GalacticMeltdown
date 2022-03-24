@@ -18,7 +18,7 @@ public class Renderer
     private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
 
     private OrderedSet<ViewPositioner> _viewPositioners;
-    private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
+    private LinkedList<(View view, int viewX, int viewY)>[,] _pixelInfos;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)> _animQueue;
 
@@ -114,8 +114,8 @@ public class Renderer
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
-        if (_pixelFuncs is null
-            || !(windowWidth == _pixelFuncs.GetLength(0) && windowHeight == _pixelFuncs.GetLength(1)))
+        if (_pixelInfos is null
+            || !(windowWidth == _pixelInfos.GetLength(0) && windowHeight == _pixelInfos.GetLength(1)))
         {
             RecalcAndRedraw(windowWidth, windowHeight);
             return true;
@@ -138,8 +138,7 @@ public class Renderer
                 {
                     for (int y = minY; y < maxY; y++)
                     {
-                        int saveX = x, saveY = y; // x and y are modified outside this closure, so they need to be saved
-                        _pixelFuncs[x, y].AddFirst(() => view.GetSymbol(saveX - minX, saveY - minY));
+                        _pixelInfos[x, y].AddFirst((view, x - minX, y - minY));
                     }
                 }
             }
@@ -161,7 +160,7 @@ public class Renderer
         // However, in the console it means an object going down. This is why we go backwards here.  
         for (int y = ConvertToConsoleY(0); y >= 0; y--)
         {
-            for (; x < _pixelFuncs.GetLength(0); x++)
+            for (; x < _pixelInfos.GetLength(0); x++)
             {
                 screenCellData = GetCell(x, y);
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
@@ -186,23 +185,23 @@ public class Renderer
 
     private void InitPixelFuncArr(int windowWidth, int windowHeight)
     {
-        _pixelFuncs = new LinkedList<Func<ViewCellData>>[windowWidth, windowHeight];
-        for (int x = 0; x < _pixelFuncs.GetLength(0); x++)
+        _pixelInfos = new LinkedList<(View view, int viewX, int viewY)>[windowWidth, windowHeight];
+        for (int x = 0; x < _pixelInfos.GetLength(0); x++)
         {
-            for (int y = 0; y < _pixelFuncs.GetLength(1); y++)
+            for (int y = 0; y < _pixelInfos.GetLength(1); y++)
             {
-                _pixelFuncs[x, y] = new LinkedList<Func<ViewCellData>>();
+                _pixelInfos[x, y] = new LinkedList<(View view, int viewX, int viewY)>();
             }
         }
     }
 
-    private ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View view)
+    private ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View animView)
     {
         (char symbol, ConsoleColor color)? symbolData = null;
         ConsoleColor? backgroundColor = null;
-        foreach (var func in _pixelFuncs[x, y])
+        foreach (var (view, viewX, viewY) in _pixelInfos[x, y])
         {
-            ViewCellData viewCellData = ReferenceEquals(func.Target, view) ? cellData : func();
+            ViewCellData viewCellData = ReferenceEquals(view, animView) ? cellData : view.GetSymbol(viewX, viewY);
             symbolData ??= viewCellData.SymbolData;
             if ((backgroundColor = viewCellData.BackgroundColor) is not null)
             {
@@ -219,9 +218,9 @@ public class Renderer
     {
         (char symbol, ConsoleColor color)? symbolData = null;
         ConsoleColor? backgroundColor = null;
-        foreach (var func in _pixelFuncs[x, y])
+        foreach (var (view, viewX, viewY) in _pixelInfos[x, y])
         {
-            ViewCellData viewCellData = func();
+            ViewCellData viewCellData = view.GetSymbol(viewX, viewY);
             symbolData ??= viewCellData.SymbolData;
             if ((backgroundColor = viewCellData.BackgroundColor) is not null)
             {
@@ -242,7 +241,7 @@ public class Renderer
 
     private int ConvertToConsoleY(int y)
     {
-        return _pixelFuncs.GetLength(1) - 1 - y;
+        return _pixelInfos.GetLength(1) - 1 - y;
     }
 
     private void AddCellChange(object sender, CellChangedEventArgs e)
@@ -298,7 +297,7 @@ public class Renderer
 
             if (minX == 0)
             {
-                if (maxX != _pixelFuncs.GetLength(0)) currentSequence.Append('\n');
+                if (maxX != _pixelInfos.GetLength(0)) currentSequence.Append('\n');
             }
             else
             {
@@ -308,7 +307,7 @@ public class Renderer
 
         if (minX == 0)
         {
-            if (maxX != _pixelFuncs.GetLength(0)) currentSequence.Length--;
+            if (maxX != _pixelInfos.GetLength(0)) currentSequence.Length--;
             WriteSequenceOut();
         }
 
