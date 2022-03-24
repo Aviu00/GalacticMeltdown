@@ -234,7 +234,8 @@ public partial class LevelView : View
                 CellChanged?.Invoke(this,
                     new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, color), delay)));
                 CellChanged?.Invoke(this,
-                    new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 0)));
+                    new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor),
+                        0)));
             }
         }
     }
