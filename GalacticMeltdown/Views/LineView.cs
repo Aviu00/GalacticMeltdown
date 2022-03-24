@@ -11,8 +11,6 @@ namespace GalacticMeltdown.Views;
 public class LineView : View
 {
     private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
-
-    private (double, double, double, double)? _wantedPosition;
     
     private List<ListLine> _lines;
     private List<int> _pressableLineIndexes;
@@ -95,11 +93,6 @@ public class LineView : View
     {
         if (!_pressableLineIndexes.Any()) return null;
         return _lines[_pressableLineIndexes[_selectedIndex]];
-    }
-
-    public void SetPos((double, double, double, double)? pos)
-    {
-        _wantedPosition = pos;
     }
 
     private void OnInputLineUpdate(object sender, EventArgs e)
