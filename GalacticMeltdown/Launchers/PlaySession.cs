@@ -57,7 +57,8 @@ public partial class PlaySession
     {
         if (!_level.DoTurn())
         {
-            Thread.Sleep(800);
+            UserInterface.PlayAnimations();
+            Thread.Sleep(400);
             EndGameMessage endGameMessage = new(_level.PlayerWon ? "You won" : "You died");
             UserInterface.AddChild(this, endGameMessage);
             endGameMessage.Open();
