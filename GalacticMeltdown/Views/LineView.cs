@@ -19,7 +19,7 @@ public class LineView : View
     private int _selectedIndex;
     
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangeEventArgs> CellsChanged;
+    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public override (double, double, double, double)? WantedPosition => _wantedPosition;
 

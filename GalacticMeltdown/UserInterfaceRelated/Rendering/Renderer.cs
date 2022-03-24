@@ -241,7 +241,7 @@ public class Renderer
         return _pixelFuncs.GetLength(1) - 1 - y;
     }
 
-    private void AddAnimation(object sender, CellChangeEventArgs e)
+    private void AddAnimation(object sender, CellsChangedEventArgs e)
     {
         foreach (var cellInfo in e.Cells)
         {

@@ -10,7 +10,7 @@ public abstract class View
     protected int Height;
     
     public abstract event EventHandler NeedRedraw;
-    public abstract event EventHandler<CellChangeEventArgs> CellsChanged;
+    public abstract event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     [JsonIgnore]
     public abstract (double, double, double, double)? WantedPosition { get; }

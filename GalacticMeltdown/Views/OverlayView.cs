@@ -42,7 +42,7 @@ public class OverlayView : View
     private StatInfo _strInfo;
     
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangeEventArgs> CellsChanged;
+    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public OverlayView(Level level)
     {

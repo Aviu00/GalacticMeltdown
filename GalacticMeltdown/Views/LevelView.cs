@@ -55,7 +55,7 @@ public partial class LevelView : View
             _focusObject.X + (Width - 1) / 2, _focusObject.Y + (Height - 1) / 2);
 
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangeEventArgs> CellsChanged;
+    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
 
     [JsonConstructor]
@@ -167,7 +167,7 @@ public partial class LevelView : View
                 40));
         }
 
-        if (updated.Any()) CellsChanged?.Invoke(this, new CellChangeEventArgs(updated));
+        if (updated.Any()) CellsChanged?.Invoke(this, new CellsChangedEventArgs(updated));
     }
 
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
@@ -233,7 +233,7 @@ public partial class LevelView : View
                 foreach ((int x, int y) in actionInfo.AffectedCells)
                 {
                     var t = _level.GetDrawable(x, y);
-                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new List<(int, int, ViewCellData, int)>
+                    CellsChanged?.Invoke(this, new CellsChangedEventArgs(new List<(int, int, ViewCellData, int)>
                     {
                         (x, y, new ViewCellData(t.SymbolData, ConsoleColor.Red), 15),
                         (x, y, new ViewCellData(t.SymbolData, t.BgColor), 0)

@@ -17,7 +17,7 @@ public class MainScreenView : View
     private MinimapView _minimapView;
     
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangeEventArgs> CellsChanged;
+    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public override (double, double, double, double)? WantedPosition => null;
     
@@ -31,7 +31,7 @@ public class MainScreenView : View
         _overlayView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
         _overlayView.CellsChanged += (_, args) =>
         {
-            CellsChanged?.Invoke(this, new CellChangeEventArgs(args.Cells.Select(data =>
+            CellsChanged?.Invoke(this, new CellsChangedEventArgs(args.Cells.Select(data =>
                 {
                     var (x, y, viewCell, delay) = data;
                     return (x - _levelViewWidth, y, viewCell, delay);
