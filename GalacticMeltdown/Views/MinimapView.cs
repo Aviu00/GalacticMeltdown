@@ -10,8 +10,6 @@ public class MinimapView : View
     private Chunk[,] _chunks;
     private Func<(int, int)> _getPlayerChunk;
 
-    public override (double, double, double, double)? WantedPosition => (0.8, 0.8, 1, 1);
-    
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;

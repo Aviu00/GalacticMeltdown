@@ -20,8 +20,6 @@ public class MainScreenView : View
     public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
-    public override (double, double, double, double)? WantedPosition => null;
-
     public MainScreenView(LevelView levelView, OverlayView overlayView, MinimapView minimapView)
     {
         _levelView = levelView;

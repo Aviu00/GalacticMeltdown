@@ -22,8 +22,6 @@ public class LineView : View
     public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
-    public override (double, double, double, double)? WantedPosition => _wantedPosition;
-
     public override ViewCellData GetSymbol(int x, int y)
     {
         if (y < Height - _lines.Count) return new ViewCellData(null, DefaultBackgroundColor);

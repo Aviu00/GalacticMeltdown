@@ -39,9 +39,6 @@ public class SeenTilesArray
 
 public partial class LevelView : View
 {
-    [JsonIgnore]
-    public override (double, double, double, double)? WantedPosition => null;
-    
     [JsonProperty] private readonly Level _level;
 
     private IFocusable _focusObject;

@@ -13,9 +13,6 @@ public abstract class View
     public abstract event EventHandler<CellChangedEventArgs> CellChanged;
     public abstract event EventHandler<CellsChangedEventArgs> CellsChanged;
 
-    [JsonIgnore]
-    public abstract (double, double, double, double)? WantedPosition { get; }
-
     public virtual void Resize(int width, int height)
     {
         Width = width;
