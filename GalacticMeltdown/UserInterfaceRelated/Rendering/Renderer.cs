@@ -245,8 +245,7 @@ public class Renderer
 
     private void AddCellChange(object sender, CellChangedEventArgs e)
     {
-        _animQueue.AddLast(_animQueue.AddLast(((View) sender, e.CellInfo.x, e.CellInfo.y, e.CellInfo.cellData,
-            e.CellInfo.delay)));
+        _animQueue.AddLast(((View) sender, e.CellInfo.x, e.CellInfo.y, e.CellInfo.cellData, e.CellInfo.delay));
     }
 
     private void AddAnimation(object sender, CellsChangedEventArgs e)

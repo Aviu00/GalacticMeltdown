@@ -81,9 +81,8 @@ public partial class LevelView : View
 
     private void Init()
     {
-        _level.SomethingMoved += MoveHandler;
         _level.NpcDied += DeathHandler;
-        _level.DoorChanged += DoorUpdateHandler;
+        _level.ActorDidSomething += ActorDidSomethingHandler;
         _sightedObjects = _level.SightedObjects;
         _sightedObjects.CollectionChanged += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
@@ -143,34 +142,6 @@ public partial class LevelView : View
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void MoveHandler(object sender, MoveEventArgs e)
-    {
-        List<(int, int, ViewCellData, int)> updated = new(2);
-        if (CanPlayerSeePoint(e.X0, e.Y0))
-        {
-            IDrawable drawableObj = _level.GetDrawable(e.X0, e.Y0);
-            var (viewX, viewY) = ToViewCoords(e.X0, e.Y0);
-            updated.Add((viewX, viewY,
-                drawableObj is null
-                    ? new ViewCellData(null, null)
-                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor),
-                40));
-        }
-
-        if (CanPlayerSeePoint(e.X1, e.Y1))
-        {
-            IDrawable drawableObj = _level.GetDrawable(e.X1, e.Y1);
-            var (viewX, viewY) = ToViewCoords(e.X1, e.Y1);
-            updated.Add((viewX, viewY,
-                drawableObj is null
-                    ? new ViewCellData(null, null)
-                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor),
-                40));
-        }
-
-        if (updated.Any()) CellsChanged?.Invoke(this, new CellsChangedEventArgs(updated));
-    }
-
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is not null)
@@ -211,14 +182,6 @@ public partial class LevelView : View
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void DoorUpdateHandler(object sender, DoorChangeEventArgs e)
-    {
-        if (IsPointInsideView(e.Coords.x, e.Coords.y))
-        {
-            UpdateVisiblePoints();
-        }
-    }
-
     private void FocusObjectMoved(object sender, MoveEventArgs _)
     {
         // Redraw happens on visible tile calculation already
@@ -231,27 +194,48 @@ public partial class LevelView : View
         switch (actionInfo.Action)
         {
             case ActorAction.Shoot:
-                foreach ((int x, int y) in actionInfo.AffectedCells)
-                {
-                    var t = _level.GetDrawable(x, y);
-                    CellsChanged?.Invoke(this, new CellsChangedEventArgs(new List<(int, int, ViewCellData, int)>
-                    {
-                        (x, y, new ViewCellData(t.SymbolData, ConsoleColor.Red), 15),
-                        (x, y, new ViewCellData(t.SymbolData, t.BgColor), 0)
-                    }));
-                }
+                PaintCells(ConsoleColor.Magenta, 15);
                 break;
             case ActorAction.ApplyEffect:
+                PaintCells(ConsoleColor.Yellow, 100);
                 break;
             case ActorAction.MeleeAttack:
+                PaintCells(ConsoleColor.Red, 100);
                 break;
             case ActorAction.InteractWithDoor:
+                foreach ((int x, int y) in actionInfo.AffectedCells)
+                {
+                    if (CanPlayerSeePoint(x, y)) UpdateVisiblePoints();
+                }
+                UpdateVisiblePoints();
                 break;
             case ActorAction.Move:
+                foreach ((int x, int y) in actionInfo.AffectedCells)
+                {
+                    if (!CanPlayerSeePoint(x, y)) continue;
+                    IDrawable drawable = _level.GetDrawable(x, y);
+                    var (viewX, viewY) = ToViewCoords(x, y);
+                    CellChanged?.Invoke(this,
+                        new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 0)));
+                }
                 break;
             case ActorAction.StopTurn:
             default:
                 break;
+        }
+
+        void PaintCells(ConsoleColor color, int delay)
+        {
+            foreach ((int x, int y) in actionInfo.AffectedCells)
+            {
+                if (!CanPlayerSeePoint(x, y)) continue;
+                IDrawable drawable = _level.GetDrawable(x, y);
+                var (viewX, viewY) = ToViewCoords(x, y);
+                CellChanged?.Invoke(this,
+                    new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, color), delay)));
+                CellChanged?.Invoke(this,
+                    new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 0)));
+            }
         }
     }
 

@@ -27,8 +27,11 @@ public class MainScreenView : View
         _levelView = levelView;
         _overlayView = overlayView;
         _minimapView = minimapView;
+        
         _levelView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
         _levelView.CellsChanged += (_, args) => CellsChanged?.Invoke(this, args);
+        _levelView.CellChanged += (_, args) => CellChanged?.Invoke(this, args);
+        
         _overlayView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
         _overlayView.CellsChanged += (_, args) =>
         {
@@ -39,6 +42,9 @@ public class MainScreenView : View
                 })
                 .ToList()));
         };
+        _overlayView.CellChanged += (_, args) => CellChanged?.Invoke(this, new CellChangedEventArgs((
+            args.CellInfo.x - _levelViewWidth, args.CellInfo.y, args.CellInfo.cellData, args.CellInfo.delay)));
+        
         _minimapView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

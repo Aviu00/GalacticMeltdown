@@ -149,8 +149,9 @@ public partial class Level
                 if (actor.IsActive)
                 {
                     ActorActionInfo actionInfo = actor.TakeAction();
-                    ActorDidSomething?.Invoke(actor,
-                        new ActorActionEventArgs(actionInfo.Action, actionInfo.AffectedCells));
+                    if (actionInfo is not null)
+                        ActorDidSomething?.Invoke(actor,
+                            new ActorActionEventArgs(actionInfo.Action, actionInfo.AffectedCells));
                 }
                 if (IsSaving)
                 {
