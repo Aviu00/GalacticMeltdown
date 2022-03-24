@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -14,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
-public partial class Level
+public class Level
 {
     private const int ActiveChunkRadius = DataHolder.ActiveChunkRadius;
     private const int ChunkSize = DataHolder.ChunkSize;
@@ -30,8 +31,8 @@ public partial class Level
     public event EventHandler InvolvedInTurn;
     public event EventHandler TurnFinished;
     public event EventHandler NpcDied;
-    public event EventHandler<MoveEventArgs> SomethingMoved;
-    public event EventHandler<DoorChangeEventArgs> DoorChanged;
+    public event EventHandler<TileChangeEventArgs> TileChanged; 
+    public event EventHandler<ActorActionEventArgs> ActorDidSomething; 
 
     [JsonIgnore]
     public (int x, int y) Size => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
@@ -123,12 +124,12 @@ public partial class Level
     public bool DoTurn()
     {
         if (!IsActive) return false;
-        
+
         List<Actor> inActiveChunks = GetActorsInActiveChunks();
         HashSet<Actor> involved = new();
         foreach (Actor actor in inActiveChunks) WatchActor(actor);
         InvolvedInTurn += NpcInvolvedInTurnHandler;
-        
+
         List<Actor> currentlyActive;
         while ((currentlyActive = _savedActors ?? GetActive(inActiveChunks)).Any())
         {
@@ -136,14 +137,21 @@ public partial class Level
             for (; _currentlyActiveIndex < currentlyActive.Count; _currentlyActiveIndex++)
             {
                 Actor actor = currentlyActive[_currentlyActiveIndex];
-                // A player may have reached the finish or died
+                // The player may have reached the finish or died
                 if (!IsActive)
                 {
                     _currentlyActiveIndex = 0;
                     return FinishMapTurn();
                 }
+
                 // An actor could die due to actions of another actor
-                if (actor.IsActive) actor.TakeAction();
+                if (actor.IsActive)
+                {
+                    ActorActionInfo actionInfo = actor.TakeAction();
+                    if (actionInfo is not null)
+                        ActorDidSomething?.Invoke(actor,
+                            new ActorActionEventArgs(actionInfo.Action, actionInfo.AffectedCells));
+                }
                 if (IsSaving)
                 {
                     _savedActors = currentlyActive;
@@ -164,7 +172,7 @@ public partial class Level
 
         bool FinishMapTurn()
         {
-            InvolvedInTurn += NpcInvolvedInTurnHandler;
+            InvolvedInTurn -= NpcInvolvedInTurnHandler;
             foreach (var actor in involved) FinishActorTurn(actor);
             TurnFinished?.Invoke(this, EventArgs.Empty);
             return IsActive;
@@ -394,8 +402,6 @@ public partial class Level
                 _chunks[chunk1.chunkX, chunk1.chunkY].AddNpc(npc);
             }
         }
-
-        SomethingMoved?.Invoke(sender, e);
     }
     
     public static (int chunkX, int chunkY) GetChunkCoords(int x, int y)
@@ -486,7 +492,7 @@ public partial class Level
         else
             doorCounter.StopTimer();
         if (actor is not null) actor.Energy -= 100;
-        DoorChanged?.Invoke(this, new DoorChangeEventArgs((x, y)));
+        TileChanged?.Invoke(this, new TileChangeEventArgs((x, y)));
         return true;
     }
 

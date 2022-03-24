@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
@@ -24,7 +25,8 @@ public class Player : Actor, ISightedObject, IControllable
 
     [JsonProperty] protected override string ActorName => "Player";
     private Action _giveControlToUser;
-
+    private ActorActionInfo _actionInfo;
+    
     private bool _xray;
 
     public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
@@ -76,27 +78,37 @@ public class Player : Actor, ISightedObject, IControllable
 
     public bool TryMove(int deltaX, int deltaY)
     {
-        Tile tile = Level.GetTile(X + deltaX, Y + deltaY);
-        if (Level.GetNonTileObject(X + deltaX, Y + deltaY) is Enemy)
+        int newX = X + deltaX, newY = Y + deltaY;
+        Tile tile = Level.GetTile(newX, newY);
+        if (Level.GetNonTileObject(newX, newY) is Enemy enemy)
         {
-            Enemy enemy = (Enemy) Level.GetNonTileObject(X + deltaX, Y + deltaY);
-            HitTarget(enemy);
+            bool hit = HitTarget(enemy);
+            _actionInfo = new ActorActionInfo(hit ? ActorAction.MeleeAttackHit : ActorAction.MeleeAttackMissed,
+                new List<(int, int)> {(newX, newY)});
             return true;
         }
 
         if (!NoClip && (tile is null || !tile.IsWalkable))
         {
-            return Level.InteractWithDoor(X + deltaX, Y + deltaY, this);
+            if (Level.InteractWithDoor(newX, newY, this))
+            {
+                _actionInfo = new ActorActionInfo(ActorAction.InteractWithDoor, new List<(int, int)> {(newX, newY)});
+                return true;
+            }
+            _actionInfo = null;
+            return false;
         }
-
-        MoveTo(X + deltaX, Y + deltaY);
+        _actionInfo = new ActorActionInfo(ActorAction.Move, new List<(int, int)> {(X, Y), (newX, newY)});
+        MoveTo(newX, newY);
         VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
         return true;
     }
 
-    public override void TakeAction()
+    public override ActorActionInfo TakeAction()
     {
+        _actionInfo = null;
         _giveControlToUser?.Invoke();
+        return _actionInfo;
     }
 
     public void SetControlFunc(Action controlFunc)
@@ -136,13 +148,14 @@ public class Player : Actor, ISightedObject, IControllable
         item.Consume(this);
     }
 
-    private void HitTarget(Actor target)
+    private bool HitTarget(Actor target)
     {
+        bool hit;
         if (Equipment[BodyPart.Hands] is null)
         {
-            target.Hit(Random.Shared.Next(DefaultMinDamage, DefaultMaxDamage), false, false);
+            hit = target.Hit(Random.Shared.Next(DefaultMinDamage, DefaultMaxDamage), false, false);
             Energy -= DefaultAttackEnergy;
-            return;
+            return hit;
         }
 
         WeaponItem weaponItem = (WeaponItem) Equipment[BodyPart.Hands];
@@ -166,7 +179,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
 
         int damage = UtilityFunctions.CalculateMeleeDamage(minDamage, maxDamage, Strength);
-        target.Hit(damage, false, false);
+        hit = target.Hit(damage, false, false);
         var stateChanger = weaponItem.StateChanger;
         if (stateChanger is not null)
         {
@@ -175,6 +188,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
 
         Energy -= weaponItem.HitEnergy;
+        return hit;
     }
 
     public bool Shoot(int x, int y)
@@ -182,11 +196,14 @@ public class Player : Actor, ISightedObject, IControllable
         if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun) return false;
         Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => gun.AmmoTypes.ContainsKey(item.Id));
         if (ammo is null) return false;
-        foreach (var (xi, yi) in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
+        List<(int, int)> lineCells = new();
+        foreach (var point in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
         {
-            if(!Level.GetTile(xi, yi).IsWalkable) break;
+            lineCells.Add(point);
+            var (xi, yi) = point;
+            if (Level.GetTile(xi, yi) is {IsWalkable: false}) break;
             IObjectOnMap obj = Level.GetNonTileObject(xi, yi);
-            if(obj is null) continue;
+            if (obj is null) continue;
             if (obj is not Actor actor) break;
 
             double distance = UtilityFunctions.GetDistance(X, Y, xi, yi);
@@ -203,7 +220,8 @@ public class Player : Actor, ISightedObject, IControllable
 
             break;
         }
-
+        
+        _actionInfo = new ActorActionInfo(ActorAction.Shoot, lineCells);
         Inventory[ItemCategory.Item].Remove(ammo);
         Energy -= gun.ShootEnergy;
         return true;
@@ -211,7 +229,13 @@ public class Player : Actor, ISightedObject, IControllable
 
     private void OnStatChanged(object sender, StatChangeEventArgs e)
     {
-        if(e.Stat == Stat.ViewRange)
+        if (e.Stat == Stat.ViewRange)
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    public override void StopTurn()
+    {
+        base.StopTurn();
+        _actionInfo = new ActorActionInfo(ActorAction.StopTurn, new List<(int, int)>());
     }
 }

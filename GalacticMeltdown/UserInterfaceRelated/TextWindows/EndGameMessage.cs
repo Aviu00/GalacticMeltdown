@@ -17,11 +17,17 @@ public class EndGameMessage : TextWindow
             new TextLine(message),
             new Button("OK", "", Close)
         });
-        LineView.SetPos((0.3, 0.25, 0.6, 0.4));
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Select, LineView.PressCurrent}
             }));
+    }
+
+    public override void Open()
+    {
+        UserInterface.SetViewPositioner(this, new ExactViewPositioner(LineView, (0.3, 0.25, 0.6, 0.4)));
+        UserInterface.SetController(this, Controller);
+        UserInterface.TakeControl(this);
     }
 }

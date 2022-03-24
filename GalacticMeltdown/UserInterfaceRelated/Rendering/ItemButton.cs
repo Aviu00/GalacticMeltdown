@@ -9,7 +9,7 @@ public class ItemButton : Button
     public Item StoredItem { get; }
 
     public ItemButton(Item item, Action<Item> openItemScreen, int? count = null) : base(item.Name,
-        count is null ? "" : $"{count}", () => openItemScreen(item))
+        count is null ? "" : count.ToString(), () => openItemScreen(item))
     {
         StoredItem = item;
     }

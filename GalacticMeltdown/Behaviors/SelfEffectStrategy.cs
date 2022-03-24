@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -35,16 +37,15 @@ public class SelfEffectStrategy : Behavior
             ControlledNpc.Died += _selfEffectStrategyCounter.RemoveCounter;
     }
     
-    public override bool TryAct()
+    public override ActorActionInfo TryAct()
     {
         if (_stateChanger is null || _activateWhenTargetIsVisible && ControlledNpc.CurrentTarget is null ||
-            _selfEffectStrategyCounter is not null && !_selfEffectStrategyCounter.FinishedCounting) return false;
+            _selfEffectStrategyCounter is not null && !_selfEffectStrategyCounter.FinishedCounting) return null;
         
         DataHolder.ActorStateChangers[_stateChanger.Type](ControlledNpc, _stateChanger.Power,
             _stateChanger.Duration);
         _selfEffectStrategyCounter?.ResetTimer();
         ControlledNpc.Energy -= _energyCost;
-        return true;
-
+        return new ActorActionInfo(ActorAction.ApplyEffect, new List<(int, int)> {(ControlledNpc.X, ControlledNpc.Y)});
     }
 }

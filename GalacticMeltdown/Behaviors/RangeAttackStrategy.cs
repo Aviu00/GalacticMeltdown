@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
@@ -50,16 +53,17 @@ public class RangeAttackStrategy : Behavior
             ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
     }
 
-    public override bool TryAct()
+    public override ActorActionInfo TryAct()
     {
         if (ControlledNpc.CurrentTarget is null)
-            return false;
-        // if there is nothing what can stop projectile
-        if (!CanAttack()) return false;
+            return null;
+        
+        if (!CanAttack()) return null;
+        // Failed to shoot
         if (!UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance
             (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
                 ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y), _spread)))
-            return true;
+            return new ActorActionInfo(ActorAction.Shoot, new List<(int, int)>());
         
         int damage = RandomDamage(_minDamage, _maxDamage);
         ControlledNpc.CurrentTarget.Hit(damage, true, false);
@@ -70,7 +74,11 @@ public class RangeAttackStrategy : Behavior
         }
         ControlledNpc.Energy -= _rangeAttackCost;
         _rangeAttackCounter?.ResetTimer();
-        return true;
+        return new ActorActionInfo(ActorAction.Shoot,
+            Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X,
+                    ControlledNpc.CurrentTarget.Y)
+                .Skip(1)
+                .ToList());
     }
 
     private int RandomDamage(int minDamage, int maxDamage)
@@ -87,15 +95,17 @@ public class RangeAttackStrategy : Behavior
         if (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
                 ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y) > _attackRange)
             return false;
-        foreach (var (x, y) in Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y,
+        // Shouldn't happen, but just in case
+        if (ControlledNpc.X == ControlledNpc.CurrentTarget.X && ControlledNpc.Y == ControlledNpc.CurrentTarget.Y)
+            return false;
+        foreach ((int x, int y) in Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y,
                      ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y).Skip(1))
         {
-            // shoot to wall (or etc) or friendly fire
-            if (ControlledNpc.Level.GetNonTileObject(x, y) is Enemy ||
-                !ControlledNpc.Level.GetTile(x, y).IsWalkable)
-            {
+            // Prevent shooting at walls or non-targeted actors
+            if (ControlledNpc.Level.GetTile(x, y) is {IsWalkable: false}
+                || ControlledNpc.Level.GetNonTileObject(x, y) is Actor objectInTheWay
+                && !ControlledNpc.Targets.Contains(objectInTheWay))
                 return false;
-            }
         }
         return true;
     }

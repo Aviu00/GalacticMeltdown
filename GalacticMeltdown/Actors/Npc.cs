@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -10,7 +11,7 @@ namespace GalacticMeltdown.Actors;
 public abstract class Npc : Actor
 {
     [JsonProperty] protected override string ActorName => "Npc";
-    [JsonProperty] protected HashSet<Actor> Targets { get; set; }
+    [JsonProperty] public HashSet<Actor> Targets { get; protected set; }
     [JsonIgnore] public Actor CurrentTarget { get; set; }
 
     [JsonProperty] private readonly string _id;
@@ -44,9 +45,9 @@ public abstract class Npc : Actor
 
     public void MoveNpcTo(int x, int y) => MoveTo(x, y);
 
-    public override void TakeAction()
+    public override ActorActionInfo TakeAction()
     {
-        Behaviors?.Any(behavior => behavior.TryAct());
+        return Behaviors?.Select(behavior => behavior.TryAct()).FirstOrDefault(el => el is not null);
     }
 
     public override int GetHashCode()

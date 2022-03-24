@@ -28,9 +28,7 @@ public class OverlayView : View
     private const ConsoleColor DexColor = DataHolder.Colors.DexColor;
     private const ConsoleColor DefColor = DataHolder.Colors.DefColor;
     private const ConsoleColor OtherTextColor = ConsoleColor.Blue;
-    
-    public override (double, double, double, double)? WantedPosition => null;
-    
+
     private Level _level; // Minimap, Enemy-in-sight indicator, (?) Event log
     private Player _player; // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?
@@ -42,7 +40,8 @@ public class OverlayView : View
     private StatInfo _strInfo;
     
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangeEventArgs> CellsChanged;
+    public override event EventHandler<CellChangedEventArgs> CellChanged;
+    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public OverlayView(Level level)
     {

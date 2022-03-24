@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -42,26 +44,24 @@ public class MeleeAttackStrategy : Behavior
             ControlledNpc.Died += _meleeAttackCounter.RemoveCounter;
     }
 
-    public override bool TryAct()
+    public override ActorActionInfo TryAct()
     {
-        if (ControlledNpc.CurrentTarget is null)
-            return false;
-        if ( Math.Abs(ControlledNpc.X - ControlledNpc.CurrentTarget.X) < 2 && 
-             Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 2 &&
-            (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting))
+        if (ControlledNpc.CurrentTarget is null || !(Math.Abs(ControlledNpc.X - ControlledNpc.CurrentTarget.X) < 2
+                && Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 2
+                && (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting)))
+            return null;
+
+        bool hit = ControlledNpc.CurrentTarget.Hit
+            (UtilityFunctions.CalculateMeleeDamage(_minDamage, _maxDamage, ControlledNpc.Strength), false, false);
+        if (hit && _stateChanger is not null)
         {
-            bool hit = ControlledNpc.CurrentTarget.Hit
-                (UtilityFunctions.CalculateMeleeDamage(_minDamage, _maxDamage, ControlledNpc.Strength), false, false);
-            if (hit && _stateChanger is not null)
-            {
-                DataHolder.ActorStateChangers[_stateChanger.Type]
-                    (ControlledNpc.CurrentTarget, _stateChanger.Power, _stateChanger.Duration);
-            }
-            ControlledNpc.Energy -= _meleeAttackCost;
-            _meleeAttackCounter?.ResetTimer();
-            return true;
+            DataHolder.ActorStateChangers[_stateChanger.Type]
+                (ControlledNpc.CurrentTarget, _stateChanger.Power, _stateChanger.Duration);
         }
 
-        return false;
+        ControlledNpc.Energy -= _meleeAttackCost;
+        _meleeAttackCounter?.ResetTimer();
+        return new ActorActionInfo(hit ? ActorAction.MeleeAttackHit : ActorAction.MeleeAttackMissed,
+            new List<(int, int)> {(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)});
     }
 }
