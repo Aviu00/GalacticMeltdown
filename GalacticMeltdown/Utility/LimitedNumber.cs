@@ -5,10 +5,11 @@ namespace GalacticMeltdown.Utility;
 
 public class LimitedNumber
 {
-    private int? _maxValue;
-    private int? _minValue;
-    private int _value;
+    [JsonProperty] private int? _maxValue;
+    [JsonProperty] private int? _minValue;
+    [JsonProperty] private int _value;
 
+    [JsonIgnore]
     public int? MaxValue
     {
         get => _maxValue;
@@ -20,6 +21,7 @@ public class LimitedNumber
         }
     }
     
+    [JsonIgnore]
     public int? MinValue
     {
         get => _minValue;
@@ -31,6 +33,7 @@ public class LimitedNumber
         }
     }
     
+    [JsonIgnore]
     public int Value
     {
         get => _value;

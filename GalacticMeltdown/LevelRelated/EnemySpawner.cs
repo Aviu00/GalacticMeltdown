@@ -13,7 +13,7 @@ public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
     private const int DifficultyMultiplier = 25;
-    private const int CurrencyIncreaseTime = 60;
+    private const int CurrencyIncreaseTime = 50;
     private const int CurrencyGainIncreaseAmount = 5;
 
     [JsonProperty] private readonly Level _level;

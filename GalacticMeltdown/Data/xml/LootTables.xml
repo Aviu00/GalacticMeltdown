@@ -6,7 +6,7 @@
         <Min>5</Min>
         <Max>10</Max>
         <Gain>0.9</Gain>
-        <Limit>100</Limit>
+        <Limit>50</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>bandages</Id>
@@ -14,7 +14,7 @@
         <Min>2</Min>
         <Max>5</Max>
         <Gain>0.6</Gain>
-        <Limit>50</Limit>
+        <Limit>30</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>energy_drinks</Id>
@@ -22,7 +22,7 @@
         <Min>5</Min>
         <Max>10</Max>
         <Gain>0.9</Gain>
-        <Limit>100</Limit>
+        <Limit>50</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>painkillers_loot</Id>
@@ -30,7 +30,7 @@
         <Min>5</Min>
         <Max>10</Max>
         <Gain>0.9</Gain>
-        <Limit>100</Limit>
+        <Limit>50</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>assault_rifle_ammo_1</Id>
@@ -38,7 +38,7 @@
         <Min>10</Min>
         <Max>20</Max>
         <Gain>2</Gain>
-        <Limit>200</Limit>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>pistol_ammo_1</Id>
@@ -46,7 +46,7 @@
         <Min>5</Min>
         <Max>10</Max>
         <Gain>1.8</Gain>
-        <Limit>200</Limit>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>assault_rifle_ammo_2</Id>
@@ -54,7 +54,7 @@
         <Min>10</Min>
         <Max>20</Max>
         <Gain>1.9</Gain>
-        <Limit>200</Limit>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>pistol_ammo_2</Id>
@@ -62,7 +62,7 @@
         <Min>5</Min>
         <Max>10</Max>
         <Gain>1.7</Gain>
-        <Limit>200</Limit>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>arrows_1</Id>
@@ -70,7 +70,7 @@
         <Min>5</Min>
         <Max>10</Max>
         <Gain>1.8</Gain>
-        <Limit>200</Limit>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>arrows_2</Id>
@@ -78,22 +78,22 @@
         <Min>5</Min>
         <Max>10</Max>
         <Gain>1.8</Gain>
-        <Limit>200</Limit>
+        <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>energy_cells</Id>
         <ItemId>energy_cell</ItemId>
         <Min>8</Min>
         <Max>15</Max>
-        <Gain>2.2</Gain>
-        <Limit>200</Limit>
+        <Gain>2.1</Gain>
+        <Limit>150</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>gasoline_loot</Id>
         <ItemId>gasoline</ItemId>
         <Min>50</Min>
         <Max>50</Max>
-        <Gain>3.5</Gain>
+        <Gain>3.2</Gain>
         <Limit>1000</Limit>
     </ItemLoot>
     <CollectionTable>
