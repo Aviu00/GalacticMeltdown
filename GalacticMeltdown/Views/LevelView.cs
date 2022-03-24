@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -221,6 +222,38 @@ public partial class LevelView : View
         // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void ActorDidSomethingHandler(object actor, ActorActionEventArgs actionInfo)
+    {
+        switch (actionInfo.Action)
+        {
+            case ActorAction.Shoot:
+                foreach ((int x, int y) in actionInfo.AffectedCells)
+                {
+                    var t = _level.GetDrawable(x, y);
+                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)>
+                    {
+                        (x, y, new ViewCellData(t.SymbolData, ConsoleColor.Red))
+                    }));
+                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)>
+                    {
+                        (x, y, new ViewCellData(t.SymbolData, t.BgColor))
+                    }));
+                }
+                break;
+            case ActorAction.ApplyEffect:
+                break;
+            case ActorAction.MeleeAttack:
+                break;
+            case ActorAction.InteractWithDoor:
+                break;
+            case ActorAction.Move:
+                break;
+            case ActorAction.StopTurn:
+            default:
+                break;
+        }
     }
 
     private bool CanPlayerSeePoint(int x, int y)
