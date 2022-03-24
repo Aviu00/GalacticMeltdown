@@ -191,7 +191,7 @@ public partial class LevelView : View
         switch (actionInfo.Action)
         {
             case ActorAction.Shoot:
-                PaintCells(ConsoleColor.Magenta, 15);
+                PaintCells(ConsoleColor.Magenta, 10);
                 break;
             case ActorAction.ApplyEffect:
                 PaintCells(ConsoleColor.Yellow, 100);

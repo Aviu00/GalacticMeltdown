@@ -218,10 +218,10 @@ public class Player : Actor, ISightedObject, IControllable
                     stateChanger.Duration);
             }
 
-            _actionInfo = new ActorActionInfo(ActorAction.Shoot, lineCells);
             break;
         }
-
+        
+        _actionInfo = new ActorActionInfo(ActorAction.Shoot, lineCells);
         Inventory[ItemCategory.Item].Remove(ammo);
         Energy -= gun.ShootEnergy;
         return true;
