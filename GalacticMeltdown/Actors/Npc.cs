@@ -47,7 +47,7 @@ public abstract class Npc : Actor
 
     public override ActorActionInfo TakeAction()
     {
-        return Behaviors?.Select(behavior => behavior.TryAct()).First(el => el is not null);
+        return Behaviors?.Select(behavior => behavior.TryAct()).FirstOrDefault(el => el is not null);
     }
 
     public override int GetHashCode()
