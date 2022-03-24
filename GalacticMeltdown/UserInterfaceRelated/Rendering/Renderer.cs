@@ -21,7 +21,8 @@ public class Renderer
     private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private LinkedList<(View, List<(int, int, ViewCellData)>)> _animations;
-    
+    private LinkedList<(View, int, int, ViewCellData, int)> _animQueue;
+
     private Dictionary<object, View> _objectViews = new();
 
     public void SetView(object sender, View view)
@@ -63,12 +64,14 @@ public class Renderer
         _views = new OrderedSet<View>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
         _animations = new LinkedList<(View, List<(int, int, ViewCellData)>)>();
+        _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
     }
 
     public void Redraw()
     {
         if (RedrawOnScreenSizeChange()) return;
         _animations.Clear();
+        _animQueue.Clear();
         OutputAllCells();
     }
 
@@ -95,6 +98,7 @@ public class Renderer
         }
         
         _animations.Clear();
+        _animQueue.Clear();
     }
 
     public void CleanUp()
@@ -122,6 +126,7 @@ public class Renderer
     private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
         _animations.Clear();
+        _animQueue.Clear();
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
         foreach (View view in _views)
