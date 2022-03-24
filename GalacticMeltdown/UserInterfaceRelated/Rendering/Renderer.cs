@@ -21,7 +21,6 @@ public class Renderer
     private OrderedSet<View> _views;
     private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
-    private LinkedList<(View, List<(int x, int y, ViewCellData cellData, int delay)>)> _animations;
     private LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)> _animQueue;
 
     private Dictionary<object, View> _objectViews = new();
@@ -64,21 +63,19 @@ public class Renderer
         Console.Clear();
         _views = new OrderedSet<View>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
-        _animations = new LinkedList<(View, List<(int, int, ViewCellData, int)>)>();
         _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
     }
 
     public void Redraw()
     {
         if (RedrawOnScreenSizeChange()) return;
-        _animations.Clear();
         _animQueue.Clear();
         OutputAllCells();
     }
 
     public void PlayAnimations()
     {
-        foreach (var (view, updatedCells) in _animations)
+        foreach (var (view, viewX, viewY, viewCellData, delay) in _animQueue)
         {
             if (RedrawOnScreenSizeChange())
             {
@@ -87,19 +84,15 @@ public class Renderer
             }
 
             var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
-            foreach (var (viewX, viewY, viewCellData, delay) in updatedCells)
-            {
-                var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
-                    viewBottomLeftScreenX, viewBottomLeftScreenY);
-                ScreenCellData screenCellData = GetCellAnimation(screenX, screenY, viewCellData, view);
-                Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
-                SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
-                Console.Write(screenCellData.Symbol);
-                if (delay != 0) Thread.Sleep(delay);
-            }
+            var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
+                viewBottomLeftScreenX, viewBottomLeftScreenY);
+            ScreenCellData screenCellData = GetCellAnimation(screenX, screenY, viewCellData, view);
+            Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
+            SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
+            Console.Write(screenCellData.Symbol);
+            if (delay != 0) Thread.Sleep(delay);
         }
-        
-        _animations.Clear();
+
         _animQueue.Clear();
     }
 
@@ -127,7 +120,6 @@ public class Renderer
 
     private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
-        _animations.Clear();
         _animQueue.Clear();
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
@@ -251,7 +243,10 @@ public class Renderer
 
     private void AddAnimation(object sender, CellChangeEventArgs e)
     {
-        _animations.AddLast(((View) sender, e.Cells));
+        foreach (var cellInfo in e.Cells)
+        {
+            _animQueue.AddLast(((View) sender, cellInfo.x, cellInfo.y, cellInfo.cellData, cellInfo.delay));
+        }
     }
     
     private void NeedRedrawHandler(object sender, EventArgs _)

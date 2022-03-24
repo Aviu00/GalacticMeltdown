@@ -6,7 +6,7 @@ namespace GalacticMeltdown.Events;
 
 public class CellChangeEventArgs : EventArgs
 {
-    public List<(int, int, ViewCellData, int)> Cells { get; }
+    public List<(int x, int y, ViewCellData cellData, int delay)> Cells { get; }
 
     public CellChangeEventArgs(List<(int, int, ViewCellData, int)> cells)
     {
