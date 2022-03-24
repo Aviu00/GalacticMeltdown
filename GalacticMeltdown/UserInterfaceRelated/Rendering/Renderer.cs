@@ -13,8 +13,6 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, ConsoleColor BgColor);
 
-internal record struct ViewInfo(View View, (double, double, double, double) ScreenPart);
-
 public class Renderer
 {
     private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
@@ -156,16 +154,16 @@ public class Renderer
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
         ScreenCellData screenCellData = GetCell(0, ConvertToConsoleY(0));
-        StringBuilder currentSequence = new StringBuilder($"{screenCellData.Symbol}");
+        StringBuilder currentSequence = new($"{screenCellData.Symbol}");
         ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
         int x = 1;
         // We want Y coordinate increasing by 1 to mean an object going up.
         // However, in the console it means an object going down. This is why we go backwards here.  
-        for (int consoleY = _pixelFuncs.GetLength(1) - 1; consoleY >= 0; consoleY--)
+        for (int y = ConvertToConsoleY(0); y >= 0; y--)
         {
             for (; x < _pixelFuncs.GetLength(0); x++)
             {
-                screenCellData = GetCell(x, consoleY);
+                screenCellData = GetCell(x, y);
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
                     || screenCellData.BgColor != curBgColor)
                 {
@@ -268,6 +266,57 @@ public class Renderer
     
     private void NeedRedrawHandler(object sender, EventArgs _)
     {
-        Redraw(); // The renderer is fast enough
+        if (RedrawOnScreenSizeChange()) return;
+        
+        _animQueue =
+            new LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)>(
+                _animQueue.Where(info => info.view != sender));
+
+        var (minX, minY, maxX, maxY) = _viewBoundaries[(View) sender];
+        maxY -= 1;
+        Console.SetCursorPosition(minX, ConvertToConsoleY(maxY));
+        ScreenCellData screenCellData = GetCell(minX, ConvertToConsoleY(maxY));
+        StringBuilder currentSequence = new();
+        ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
+        for (int y = maxY; y >= minY; y--)
+        {
+            if (minX != 0) Console.SetCursorPosition(minX, ConvertToConsoleY(y));
+
+            for (int x = minX; x < maxX; x++)
+            {
+                screenCellData = GetCell(x, y);
+                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
+                    || screenCellData.BgColor != curBgColor)
+                {
+                    WriteSequenceOut();
+                    curFgColor = screenCellData.FgColor;
+                    curBgColor = screenCellData.BgColor;
+                }
+
+                currentSequence.Append(screenCellData.Symbol);
+            }
+
+            if (minX == 0)
+            {
+                if (maxX != _pixelFuncs.GetLength(0)) currentSequence.Append('\n');
+            }
+            else
+            {
+                WriteSequenceOut();
+            }
+        }
+
+        if (minX == 0)
+        {
+            if (maxX != _pixelFuncs.GetLength(0)) currentSequence.Length--;
+            WriteSequenceOut();
+        }
+
+        void WriteSequenceOut()
+        {
+            SetConsoleColor(curFgColor, curBgColor);
+            Console.Write(currentSequence);
+            currentSequence.Clear();
+        }
     }
 }
