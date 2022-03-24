@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -12,10 +13,12 @@ public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
     private const int DifficultyMultiplier = 25;
+    private const int CurrencyIncreaseTime = 50;
+    private const int CurrencyGainIncreaseAmount = 5;
 
     [JsonProperty] private readonly Level _level;
     [JsonProperty] private double _currency;
-    [JsonProperty] private double _currencyGain = 10;
+    [JsonProperty] private double _currencyGain = 20;
     [JsonProperty] private double _nextCurrencyAmount;
 
     [JsonIgnore] public List<Chunk> TargetChunks;
@@ -29,13 +32,24 @@ public class EnemySpawner
     {
         CalculateNextCurrencyAmount();
         _level = level;
-        _currencyCounter = new Counter(_level, 20, 20, counter =>
+        Init();
+    }
+
+    private void Init()
+    {
+        _currencyCounter = new Counter(_level, CurrencyIncreaseTime, CurrencyIncreaseTime, counter =>
         {
             _currency += _currencyGain;
-            _currencyGain += 1;
+            _currencyGain += CurrencyGainIncreaseAmount;
             if (_currency > _nextCurrencyAmount) SpawnRandomEnemies();
             counter.ResetTimer();
         });
+    }
+    
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        Init();
     }
 
     public void SpawnEnemiesInChunk(Chunk chunk)
@@ -69,30 +83,33 @@ public class EnemySpawner
     {
         TargetChunks ??= GetTargetChunks().ToList();
         if(TargetChunks.Count == 0) return;
+        List<(int, int)> points = TargetChunks[Random.Shared.Next(0, TargetChunks.Count)].GetFloorTileCoords();
+        if(points.Count == 0) return;
         var enemies= CalculateEnemies(ref _currency);
-        List<int> prevChunkIndices = new();
-        List<(int, int)> points = new();
-        for (int i = 0; i < enemies.Count; i++)
-        {
-            int index = Random.Shared.Next(0, TargetChunks.Count);
-            if(prevChunkIndices.Contains(index)) continue;
-            prevChunkIndices.Add(index);
-            points.AddRange(TargetChunks[index].GetFloorTileCoords(false));
-        }
-        if(points.Count == 0)
-            return;
         foreach (var enemy in enemies)
         {
-            (int x, int y) = points[Random.Shared.Next(0, points.Count)];
-            points.Remove((x, y));
-            SpawnEnemy(enemy, x, y);
+            (int x, int y)? point;
+            do
+            {
+                point = points[Random.Shared.Next(0, points.Count)];
+                points.Remove((point.Value.x, point.Value.y));
+                if (_level.GetNonTileObject(point.Value.x, point.Value.y) is not null)
+                    point = null;
+            } while (points.Count > 0 && point is null);
+
+            if (point is null)
+            {
+                _currency += enemy.Cost;
+                continue;
+            }
+            SpawnEnemy(enemy, point.Value.x, point.Value.y);
         }
         CalculateNextCurrencyAmount();
     }
 
     private void CalculateNextCurrencyAmount()
     {
-        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(5, 11) + _currency;
+        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(2, 10) + _currency;
     }
 
     private List<EnemyTypeData> CalculateEnemies(ref double currency, Random rng = null)

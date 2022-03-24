@@ -12,9 +12,13 @@ public class SelfEffectStrategy : Behavior
     private const int DefaultPriority = 5;
     [JsonProperty] private Counter _selfEffectStrategyCounter;
     [JsonProperty] private ActorStateChangerData _stateChanger;
+    [JsonProperty] private bool _activateWhenTargetIsVisible;
+    [JsonProperty] private int _energyCost;
 
     public SelfEffectStrategy(SelfEffectStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
+        _activateWhenTargetIsVisible = data.ActivateIfTargetIsVisible;
+        _energyCost = data.SelfEffectCost;
         ControlledNpc = controlledNpc;
         _stateChanger = data.ActorStateChangerData;
         if (data.Cooldown > 0)
@@ -33,12 +37,13 @@ public class SelfEffectStrategy : Behavior
     
     public override bool TryAct()
     {
-        if (_stateChanger is null ||
+        if (_stateChanger is null || _activateWhenTargetIsVisible && ControlledNpc.CurrentTarget is null ||
             _selfEffectStrategyCounter is not null && !_selfEffectStrategyCounter.FinishedCounting) return false;
         
         DataHolder.ActorStateChangers[_stateChanger.Type](ControlledNpc, _stateChanger.Power,
             _stateChanger.Duration);
         _selfEffectStrategyCounter?.ResetTimer();
+        ControlledNpc.Energy -= _energyCost;
         return true;
 
     }

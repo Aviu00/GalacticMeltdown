@@ -45,6 +45,7 @@ public class Enemy : Npc
                 MovementStrategyData movementStrategyData => new MovementStrategy(movementStrategyData, this),
                 MeleeAttackStrategyData meleeAttackStrategyData => new MeleeAttackStrategy(meleeAttackStrategyData, this),
                 RangeAttackStrategyData rangeAttackStrategyData => new RangeAttackStrategy(rangeAttackStrategyData, this), 
+                SelfEffectStrategyData selfEffectStrategyData => new SelfEffectStrategy(selfEffectStrategyData, this),
                 _ => null
             };
 

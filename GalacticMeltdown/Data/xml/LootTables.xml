@@ -4,87 +4,87 @@
         <Id>chicken_wings</Id>
         <ItemId>chicken_wing</ItemId>
         <Min>1</Min>
-        <Max>5</Max>
-        <Gain>1.5</Gain>
+        <Max>10</Max>
+        <Gain>0.9</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>bandages</Id>
         <ItemId>bandage</ItemId>
         <Min>1</Min>
-        <Max>2</Max>
-        <Gain>1</Gain>
+        <Max>5</Max>
+        <Gain>0.6</Gain>
         <Limit>50</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>energy_drinks</Id>
         <ItemId>energy_drink</ItemId>
         <Min>1</Min>
-        <Max>2</Max>
-        <Gain>1.5</Gain>
+        <Max>10</Max>
+        <Gain>0.9</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>painkillers_loot</Id>
         <ItemId>painkillers</ItemId>
         <Min>1</Min>
-        <Max>2</Max>
-        <Gain>1.5</Gain>
+        <Max>10</Max>
+        <Gain>0.9</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>assault_rifle_ammo_1</Id>
         <ItemId>assault_rifle_ammo</ItemId>
-        <Min>2</Min>
+        <Min>10</Min>
         <Max>20</Max>
-        <Gain>2.1</Gain>
+        <Gain>2</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>pistol_ammo_1</Id>
         <ItemId>pistol_ammo</ItemId>
-        <Min>1</Min>
+        <Min>5</Min>
         <Max>10</Max>
-        <Gain>2</Gain>
+        <Gain>1.8</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>assault_rifle_ammo_2</Id>
         <ItemId>advanced_assault_rifle_ammo</ItemId>
-        <Min>2</Min>
-        <Max>10</Max>
-        <Gain>2</Gain>
+        <Min>10</Min>
+        <Max>20</Max>
+        <Gain>1.9</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>pistol_ammo_2</Id>
         <ItemId>advanced_pistol_ammo</ItemId>
-        <Min>1</Min>
-        <Max>5</Max>
-        <Gain>1.9</Gain>
+        <Min>5</Min>
+        <Max>10</Max>
+        <Gain>1.7</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>arrows_1</Id>
         <ItemId>arrow</ItemId>
-        <Min>1</Min>
-        <Max>5</Max>
-        <Gain>2</Gain>
+        <Min>5</Min>
+        <Max>10</Max>
+        <Gain>1.8</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>arrows_2</Id>
         <ItemId>poisoned_arrow</ItemId>
-        <Min>1</Min>
-        <Max>3</Max>
-        <Gain>2</Gain>
+        <Min>5</Min>
+        <Max>10</Max>
+        <Gain>1.8</Gain>
         <Limit>200</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>energy_cells</Id>
         <ItemId>energy_cell</ItemId>
-        <Min>1</Min>
-        <Max>2</Max>
+        <Min>8</Min>
+        <Max>15</Max>
         <Gain>2.2</Gain>
         <Limit>200</Limit>
     </ItemLoot>
@@ -93,7 +93,7 @@
         <ItemId>gasoline</ItemId>
         <Min>50</Min>
         <Max>50</Max>
-        <Gain>4</Gain>
+        <Gain>3.5</Gain>
         <Limit>1000</Limit>
     </ItemLoot>
     <CollectionTable>
@@ -107,7 +107,7 @@
         <Id>arrows_distr</Id>
         <Items>
             <Item id="arrows_1" chance="80" limit="80"/>
-            <Item id="arrows_2" chance="20" limit="80"/>
+            <Item id="arrows_2" chance="20" limit="20"/>
         </Items>
     </DistributionTable>
     <DistributionTable>
@@ -246,7 +246,7 @@
         <Id>weapon_distr_2_3</Id>
         <Items>
             <Item id="chainsword" chance="60"/>
-            <Item id="lightsaber" chance="40"/>
+            <Item id="lightsaber_table" chance="40"/>
         </Items>
     </DistributionTable>
     <DistributionTable>

@@ -10,7 +10,7 @@ public static partial class DataHolder
 {
     public const int ChunkSize = 25;
     public const int ActiveChunkRadius = 2;
-    public const bool CheatsEnabled = true;
+    public const bool CheatsEnabled = false;
     
     public static readonly string ProjectDirectory = 
         Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));

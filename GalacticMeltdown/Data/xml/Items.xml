@@ -5,7 +5,7 @@
         <Name>metal bar</Name>
         <Symbol>/</Symbol>
         <MinHitDamage>10</MinHitDamage>
-        <MaxHitDamage>50</MaxHitDamage>
+        <MaxHitDamage>55</MaxHitDamage>
         <HitEnergy>150</HitEnergy>
     </WeaponItem>
     <WeaponItem>
@@ -44,12 +44,12 @@
         <Id>plunger</Id>
         <Name>plunger</Name>
         <Symbol>J</Symbol>
-        <MinHitDamage>20</MinHitDamage>
+        <MinHitDamage>10</MinHitDamage>
         <MaxHitDamage>60</MaxHitDamage>
         <HitEnergy>120</HitEnergy>
         <StateChanger>
             <Type>Stun</Type>
-            <Power>40</Power>
+            <Power>30</Power>
         </StateChanger>
     </WeaponItem>
     <WeaponItem>
@@ -57,11 +57,11 @@
         <Name>reinforced plunger</Name>
         <Symbol>I</Symbol>
         <MinHitDamage>30</MinHitDamage>
-        <MaxHitDamage>90</MaxHitDamage>
+        <MaxHitDamage>80</MaxHitDamage>
         <HitEnergy>120</HitEnergy>
         <StateChanger>
             <Type>Stun</Type>
-            <Power>50</Power>
+            <Power>40</Power>
         </StateChanger>
     </WeaponItem>
     <WeaponItem>
@@ -70,12 +70,12 @@
         <Symbol>P</Symbol>
         <MinHitDamage>0</MinHitDamage>
         <MaxHitDamage>5</MaxHitDamage>
-        <HitEnergy>10</HitEnergy>
+        <HitEnergy>20</HitEnergy>
         <AmmoTypes>
             <Ammo>
                 <Id>gasoline</Id>
                 <MinDamage>5</MinDamage>
-                <MaxDamage>20</MaxDamage>
+                <MaxDamage>40</MaxDamage>
             </Ammo>
         </AmmoTypes>
     </WeaponItem>
@@ -85,12 +85,12 @@
         <Symbol>R</Symbol>
         <MinHitDamage>0</MinHitDamage>
         <MaxHitDamage>15</MaxHitDamage>
-        <HitEnergy>10</HitEnergy>
+        <HitEnergy>20</HitEnergy>
         <AmmoTypes>
             <Ammo>
                 <Id>gasoline</Id>
                 <MinDamage>10</MinDamage>
-                <MaxDamage>40</MaxDamage>
+                <MaxDamage>65</MaxDamage>
             </Ammo>
         </AmmoTypes>
     </WeaponItem>
@@ -99,13 +99,13 @@
         <Name>lightsaber</Name>
         <Symbol>L</Symbol>
         <MinHitDamage>5</MinHitDamage>
-        <MaxHitDamage>30</MaxHitDamage>
+        <MaxHitDamage>40</MaxHitDamage>
         <HitEnergy>120</HitEnergy>
         <AmmoTypes>
             <Ammo>
                 <Id>energy_cell</Id>
-                <MinDamage>40</MinDamage>
-                <MaxDamage>200</MaxDamage>
+                <MinDamage>100</MinDamage>
+                <MaxDamage>220</MaxDamage>
                 <StateChanger>
                     <Type>Stun</Type>
                     <Power>50</Power>
@@ -142,7 +142,7 @@
     <RangedWeaponItem>
         <Id>r_crossbow</Id>
         <Name>reinforced crossbow</Name>
-        <Symbol>^</Symbol>
+        <Symbol>7</Symbol>
         <MinHitDamage>10</MinHitDamage>
         <MaxHitDamage>50</MaxHitDamage>
         <ShootEnergy>100</ShootEnergy>
@@ -335,7 +335,7 @@
         <Stackable>true</Stackable>
         <StateChanger>
             <Type>Heal</Type>
-            <Power>30</Power>
+            <Power>20</Power>
         </StateChanger>
     </ConsumableItem>
     <ConsumableItem>
@@ -422,7 +422,7 @@
         <BodyPart>Head</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>14</Power>
+            <Power>12</Power>
         </StateChanger>
     </EquippableItem>
     <EquippableItem>
@@ -433,7 +433,7 @@
         <BodyPart>Torso</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>20</Power>
+            <Power>18</Power>
         </StateChanger>
     </EquippableItem>
     <EquippableItem>
@@ -444,7 +444,7 @@
         <BodyPart>Legs</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>16</Power>
+            <Power>14</Power>
         </StateChanger>
     </EquippableItem>
     <EquippableItem>
@@ -455,7 +455,7 @@
         <BodyPart>Feet</BodyPart>
         <StateChanger>
             <Type>ModifyDefence</Type>
-            <Power>12</Power>
+            <Power>10</Power>
         </StateChanger>
     </EquippableItem>
 </ItemDatas>
