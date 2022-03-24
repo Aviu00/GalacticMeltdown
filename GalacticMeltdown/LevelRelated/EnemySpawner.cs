@@ -13,12 +13,12 @@ public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
     private const int DifficultyMultiplier = 25;
-    private const int CurrencyIncreaseTime = 50;
+    private const int CurrencyIncreaseTime = 60;
     private const int CurrencyGainIncreaseAmount = 5;
 
     [JsonProperty] private readonly Level _level;
     [JsonProperty] private double _currency;
-    [JsonProperty] private double _currencyGain = 20;
+    [JsonProperty] private double _currencyGain = 1;
     [JsonProperty] private double _nextCurrencyAmount;
 
     [JsonIgnore] public List<Chunk> TargetChunks;
@@ -109,7 +109,7 @@ public class EnemySpawner
 
     private void CalculateNextCurrencyAmount()
     {
-        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(2, 10) + _currency;
+        _nextCurrencyAmount = _currencyGain * Random.Shared.Next(3, 16) + _currency;
     }
 
     private List<EnemyTypeData> CalculateEnemies(ref double currency, Random rng = null)

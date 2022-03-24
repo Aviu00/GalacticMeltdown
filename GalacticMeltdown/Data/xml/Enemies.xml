@@ -122,7 +122,7 @@
         <Symbol>S</Symbol>
         <Color>cyan</Color>
         <MaxHp>100</MaxHp>
-        <MaxEnergy>80</MaxEnergy>
+        <MaxEnergy>95</MaxEnergy>
         <Dexterity>0</Dexterity>
         <Defence>20</Defence>
         <ViewRange>5</ViewRange>
@@ -132,10 +132,10 @@
             <Movement/>
             <SelfEffect>
                 <Cooldown>30</Cooldown>
-                <SelfEffectCost>480</SelfEffectCost>
+                <SelfEffectCost>570</SelfEffectCost>
                 <ActivateIfTargetIsVisible>True</ActivateIfTargetIsVisible>
                 <StateChanger>
-                    <Duration>8</Duration>
+                    <Duration>10</Duration>
                     <Power>60</Power>
                     <Type>ModifyDefenceEffect</Type>
                 </StateChanger>
@@ -409,14 +409,14 @@
             <Movement/>
             <RangeAttack>
                 <Spread>1</Spread>
-                <MinDamage>40</MinDamage>
+                <MinDamage>30</MinDamage>
                 <MaxDamage>60</MaxDamage>
-                <RangeAttackCost>70</RangeAttackCost>
+                <RangeAttackCost>160</RangeAttackCost>
                 <AttackRange>25</AttackRange>
                 <StateChanger>
                     <Type>ModifyMaxEnergyEffect</Type>
-                    <Power>-10</Power>
-                    <Duration>5</Duration>
+                    <Power>-20</Power>
+                    <Duration>6</Duration>
                 </StateChanger>
             </RangeAttack>
         </Behaviors>

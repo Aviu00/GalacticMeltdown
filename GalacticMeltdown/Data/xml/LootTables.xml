@@ -3,7 +3,7 @@
     <ItemLoot>
         <Id>chicken_wings</Id>
         <ItemId>chicken_wing</ItemId>
-        <Min>1</Min>
+        <Min>5</Min>
         <Max>10</Max>
         <Gain>0.9</Gain>
         <Limit>100</Limit>
@@ -11,7 +11,7 @@
     <ItemLoot>
         <Id>bandages</Id>
         <ItemId>bandage</ItemId>
-        <Min>1</Min>
+        <Min>2</Min>
         <Max>5</Max>
         <Gain>0.6</Gain>
         <Limit>50</Limit>
@@ -19,7 +19,7 @@
     <ItemLoot>
         <Id>energy_drinks</Id>
         <ItemId>energy_drink</ItemId>
-        <Min>1</Min>
+        <Min>5</Min>
         <Max>10</Max>
         <Gain>0.9</Gain>
         <Limit>100</Limit>
@@ -27,7 +27,7 @@
     <ItemLoot>
         <Id>painkillers_loot</Id>
         <ItemId>painkillers</ItemId>
-        <Min>1</Min>
+        <Min>5</Min>
         <Max>10</Max>
         <Gain>0.9</Gain>
         <Limit>100</Limit>

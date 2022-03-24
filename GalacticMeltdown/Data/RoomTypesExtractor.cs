@@ -138,6 +138,7 @@ public class RoomTypesExtractor : XmlExtractor
             }
             else
             {
+                Console.WriteLine(c);
                 data = _tileTypes.Values.First(tileType => tileType.Symbol == c);
             }
             roomInterior[i, 23 - j] = new TileInformation(data, lootTableId, lootTableChance, gain, limit);
