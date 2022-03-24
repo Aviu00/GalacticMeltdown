@@ -314,7 +314,7 @@
     </Item>
     <Item>
         <Id>poisoned_arrow</Id>
-        <Name>arrow</Name>
+        <Name>poisoned arrow</Name>
         <Symbol>|</Symbol>
         <Stackable>true</Stackable>
     </Item>
