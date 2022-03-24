@@ -17,6 +17,7 @@ public class MainScreenView : View
     private MinimapView _minimapView;
     
     public override event EventHandler NeedRedraw;
+    public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public override (double, double, double, double)? WantedPosition => null;

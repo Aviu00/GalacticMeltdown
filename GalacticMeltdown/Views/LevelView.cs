@@ -55,6 +55,7 @@ public partial class LevelView : View
             _focusObject.X + (Width - 1) / 2, _focusObject.Y + (Height - 1) / 2);
 
     public override event EventHandler NeedRedraw;
+    public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
 
