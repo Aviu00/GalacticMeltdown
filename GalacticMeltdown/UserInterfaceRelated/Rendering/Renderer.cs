@@ -39,13 +39,14 @@ public class Renderer
     private void AddViewPositioner(ViewPositioner viewPositioner)
     {
         _viewPositioners.Add(viewPositioner);
-        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
+        viewPositioner.SetScreenSize(_pixelInfos.GetLength(0), _pixelInfos.GetLength(1));
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
         {
             view.CellChanged += AddCellChange;
             view.CellsChanged += AddAnimation;
             view.NeedRedraw += NeedRedrawHandler;
         }
+        RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
     
     public void RemoveViewPositioner(object obj)
@@ -71,6 +72,7 @@ public class Renderer
         _viewPositioners = new OrderedSet<ViewPositioner>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
         _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
+        InitPixelFuncArr(Console.WindowWidth, Console.WindowHeight);
     }
 
     public void Redraw()
