@@ -18,12 +18,14 @@ public class ExactViewPositioner : ViewPositioner
     public override void SetScreenSize(int width, int height)
     {
         base.SetScreenSize(width, height);
-        _view.Resize(Convert.ToInt32(Width * (_position.maxX - _position.minX)),
-            Convert.ToInt32(Height * (_position.maxY - _position.minY)));
+        int minX = Convert.ToInt32(Width * _position.minX);
+        int minY = Convert.ToInt32(Height * _position.minY);
+        int maxX = Convert.ToInt32(Width * _position.maxX);
+        int maxY = Convert.ToInt32(Height * _position.maxY);
+        _view.Resize(maxX - minX, maxY - minY);
         ViewPositions = new List<(View, int minX, int minY, int maxX, int maxY)>
         {
-            (_view, Convert.ToInt32(Width * _position.minX), Convert.ToInt32(Height * _position.minY),
-                Convert.ToInt32(Width * _position.maxX), Convert.ToInt32(Height * _position.maxY))
+            (_view, minX, minY, maxX, maxY)
         };
     }
 }
