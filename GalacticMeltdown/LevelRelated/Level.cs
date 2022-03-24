@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
+using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -32,6 +33,7 @@ public partial class Level
     public event EventHandler NpcDied;
     public event EventHandler<MoveEventArgs> SomethingMoved;
     public event EventHandler<DoorChangeEventArgs> DoorChanged;
+    public event EventHandler<ActorActionEventArgs> ActorDidSomething; 
 
     [JsonIgnore]
     public (int x, int y) Size => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
@@ -123,12 +125,12 @@ public partial class Level
     public bool DoTurn()
     {
         if (!IsActive) return false;
-        
+
         List<Actor> inActiveChunks = GetActorsInActiveChunks();
         HashSet<Actor> involved = new();
         foreach (Actor actor in inActiveChunks) WatchActor(actor);
         InvolvedInTurn += NpcInvolvedInTurnHandler;
-        
+
         List<Actor> currentlyActive;
         while ((currentlyActive = _savedActors ?? GetActive(inActiveChunks)).Any())
         {
@@ -136,14 +138,20 @@ public partial class Level
             for (; _currentlyActiveIndex < currentlyActive.Count; _currentlyActiveIndex++)
             {
                 Actor actor = currentlyActive[_currentlyActiveIndex];
-                // A player may have reached the finish or died
+                // The player may have reached the finish or died
                 if (!IsActive)
                 {
                     _currentlyActiveIndex = 0;
                     return FinishMapTurn();
                 }
+
                 // An actor could die due to actions of another actor
-                if (actor.IsActive) actor.TakeAction();
+                if (actor.IsActive)
+                {
+                    ActorActionInfo actionInfo = actor.TakeAction();
+                    ActorDidSomething?.Invoke(actor,
+                        new ActorActionEventArgs(actionInfo.Action, actionInfo.AffectedCells));
+                }
                 if (IsSaving)
                 {
                     _savedActors = currentlyActive;
