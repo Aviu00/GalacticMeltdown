@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 
-namespace GalacticMeltdown.LevelRelated;
+namespace GalacticMeltdown.Views;
 
-public partial class Level
+public partial class LevelView 
 {
-    public HashSet<(int, int)> GetPointsVisibleAround(int x0, int y0, int radius, bool xray = false)
+    private HashSet<(int, int)> GetPointsVisibleAround(int x0, int y0, int radius, bool xray = false)
     {
         var visiblePoints = new HashSet<(int, int)> {(x0, y0)};
         foreach ((int x, int y) in Algorithms.GetPointsOnSquareBorder(x0, y0, radius))
@@ -17,7 +18,7 @@ public partial class Level
                 AddVisibleAdjacentPoints(prevTileCoords);
                 if (!visiblePoints.Contains(pointCoords)) visiblePoints.Add(pointCoords);
                 if (!(pointCoords.x == x0 && pointCoords.y == y0)) prevTileCoords = pointCoords;
-                Tile tile = GetTile(pointCoords.x, pointCoords.y);
+                Tile tile = _level.GetTile(pointCoords.x, pointCoords.y);
                 if (tile is null) continue;
                 if (!(tile.IsTransparent || xray)) break;
             }
