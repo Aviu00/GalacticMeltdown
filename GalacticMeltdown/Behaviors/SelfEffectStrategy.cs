@@ -17,6 +17,11 @@ public class SelfEffectStrategy : Behavior
     [JsonProperty] private bool _activateWhenTargetIsVisible;
     [JsonProperty] private int _energyCost;
 
+    [JsonConstructor]
+    private SelfEffectStrategy()
+    {
+    }
+    
     public SelfEffectStrategy(SelfEffectStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         _activateWhenTargetIsVisible = data.ActivateIfTargetIsVisible;
