@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using GalacticMeltdown.Collections;
@@ -90,9 +91,9 @@ public class Renderer
                 return;
             }
 
-            var (viewBottomLeftScreenX, viewBottomLeftScreenY, _, _) = _viewBoundaries[view];
+            var (viewMinScreenX, viewMinScreenY, _, _) = _viewBoundaries[view];
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
-                viewBottomLeftScreenX, viewBottomLeftScreenY);
+                viewMinScreenX, viewMinScreenY);
             ScreenCellData screenCellData = GetCellAnimation(screenX, screenY, viewCellData, view);
             Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
             SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
@@ -255,7 +256,13 @@ public class Renderer
     {
         foreach (var cellInfo in e.Cells)
         {
-            _animQueue.AddLast(((View) sender, cellInfo.x, cellInfo.y, cellInfo.cellData, cellInfo.delay));
+            _animQueue.AddLast(((View) sender, cellInfo.x, cellInfo.y, cellInfo.cellData, 0));
+        }
+
+        if (e.Cells.Any())
+        {
+            _animQueue.Last!.Value = ((View) sender, _animQueue.Last.Value.x, _animQueue.Last.Value.y,
+                _animQueue.Last.Value.cellData, e.Delay);
         }
     }
     
