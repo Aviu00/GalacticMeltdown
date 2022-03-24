@@ -208,13 +208,6 @@ public partial class LevelView : View
             case ActorAction.MeleeAttackMissed:
                 PaintCells(ConsoleColor.DarkGray, 100);
                 break;
-            case ActorAction.InteractWithDoor:
-                foreach ((int x, int y) in actionInfo.AffectedCells)
-                {
-                    if (CanPlayerSeePoint(x, y)) UpdateVisiblePoints();
-                }
-                UpdateVisiblePoints();
-                break;
             case ActorAction.Move:
                 foreach ((int x, int y) in actionInfo.AffectedCells)
                 {
@@ -225,6 +218,7 @@ public partial class LevelView : View
                         new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 0)));
                 }
                 break;
+            case ActorAction.InteractWithDoor:
             case ActorAction.StopTurn:
             default:
                 break;
