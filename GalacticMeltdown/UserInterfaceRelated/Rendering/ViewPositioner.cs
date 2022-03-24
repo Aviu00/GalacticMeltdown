@@ -10,7 +10,7 @@ public abstract class ViewPositioner
     protected List<View> _views;
     protected Dictionary<View, (int minX, int minY, int maxX, int maxY)> ViewPositions;
 
-    public virtual void Resize(int width, int height)
+    public virtual void SetScreenSize(int width, int height)
     {
         Width = width;
         Height = height;
