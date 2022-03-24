@@ -41,6 +41,7 @@ public class Renderer
     {
         view.NeedRedraw += NeedRedrawHandler;
         view.CellsChanged += AddAnimation;
+        view.CellChanged += AddCellChange;
         _views.Add(view);
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
@@ -51,6 +52,7 @@ public class Renderer
         View view = _objectViews[obj];
         view.NeedRedraw -= NeedRedrawHandler;
         view.CellsChanged -= AddAnimation;
+        view.CellChanged -= AddCellChange;
         _views.Remove(_objectViews[obj]);
         _objectViews.Remove(obj);
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -239,6 +241,12 @@ public class Renderer
     private int ConvertToConsoleY(int y)
     {
         return _pixelFuncs.GetLength(1) - 1 - y;
+    }
+
+    private void AddCellChange(object sender, CellChangedEventArgs e)
+    {
+        _animQueue.AddLast(_animQueue.AddLast(((View) sender, e.CellInfo.x, e.CellInfo.y, e.CellInfo.cellData,
+            e.CellInfo.delay)));
     }
 
     private void AddAnimation(object sender, CellsChangedEventArgs e)
