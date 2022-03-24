@@ -25,7 +25,7 @@ public static class FilesystemLevelManager
             {
                 seed = Convert.ToInt32(File.ReadAllText(Path.Combine(path, name, "seed.txt")));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 seed = -1;
             }
@@ -65,7 +65,7 @@ public static class FilesystemLevelManager
             File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
             File.WriteAllText(Path.Combine(path, "seed.txt"), seed.ToString());
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }
@@ -79,7 +79,7 @@ public static class FilesystemLevelManager
         {
             Directory.Delete(Path.Combine(GetSaveFolder(), name), true);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }
