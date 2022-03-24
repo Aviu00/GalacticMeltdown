@@ -171,7 +171,7 @@ public class Level
 
         bool FinishMapTurn()
         {
-            InvolvedInTurn += NpcInvolvedInTurnHandler;
+            InvolvedInTurn -= NpcInvolvedInTurnHandler;
             foreach (var actor in involved) FinishActorTurn(actor);
             TurnFinished?.Invoke(this, EventArgs.Empty);
             return IsActive;
