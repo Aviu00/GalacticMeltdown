@@ -7,6 +7,7 @@ using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
+using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.UserInterfaceRelated.TextWindows;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
@@ -47,7 +48,8 @@ public partial class PlaySession
 
     public void Start()
     {
-        UserInterface.SetView(this, new MainScreenView(_levelView, _level.OverlayView, _level.MinimapView));
+        UserInterface.SetViewPositioner(this,
+            new BasicViewPositioner(new MainScreenView(_levelView, _level.OverlayView, _level.MinimapView)));
         UserInterface.SetController(this,
             new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
         UserInterface.SetTask(this, MapTurn);

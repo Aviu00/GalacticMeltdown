@@ -51,10 +51,10 @@ public static class UserInterface
         _objectTasks.Add(obj, taskTuple);
     }
 
-    public static void SetView(object obj, View view)
+    public static void SetViewPositioner(object obj, ViewPositioner viewPositioner)
     {
         if (!_children.ContainsKey(obj)) return;
-        _renderer.SetView(obj, view);
+        _renderer.SetView(obj, viewPositioner);
     }
 
     public static void SetController(object obj, Controller controller)
@@ -95,7 +95,7 @@ public static class UserInterface
         if (parent is not null) _children[parent].children.Remove(obj);
         _children.Remove(obj);
         
-        _renderer.RemoveView(obj);
+        _renderer.RemoveViewPositioner(obj);
         _inputProcessor.RemoveController(obj);
         if (!_objectTasks.ContainsKey(obj)) return;
         _tasks.Remove(_objectTasks[obj]);

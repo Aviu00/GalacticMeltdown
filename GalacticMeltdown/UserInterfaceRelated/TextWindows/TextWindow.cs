@@ -1,4 +1,5 @@
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
+using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
@@ -10,7 +11,7 @@ public abstract class TextWindow
     
     public virtual void Open()
     {
-        UserInterface.SetView(this, LineView);
+        UserInterface.SetViewPositioner(this, new BasicViewPositioner(LineView));
         UserInterface.SetController(this, Controller);
         UserInterface.TakeControl(this);
     }

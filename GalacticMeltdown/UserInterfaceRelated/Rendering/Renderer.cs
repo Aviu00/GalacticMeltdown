@@ -17,44 +17,50 @@ internal record struct ViewInfo(View View, (double, double, double, double) Scre
 public class Renderer
 {
     private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
-    
-    private OrderedSet<View> _views;
+
+    private OrderedSet<ViewPositioner> _viewPositioners;
     private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)> _animQueue;
 
-    private Dictionary<object, View> _objectViews = new();
+    private Dictionary<object, ViewPositioner> _objectViewPositioners = new();
 
-    public void SetView(object sender, View view)
+    public void SetView(object obj, ViewPositioner viewPositioner)
     {
-        if (_objectViews.ContainsKey(sender))
+        if (_objectViewPositioners.ContainsKey(obj))
         {
-            View oldView = _objectViews[sender];
-            _views.Remove(oldView);
+            ViewPositioner oldView = _objectViewPositioners[obj];
+            _viewPositioners.Remove(oldView);
         }
         
-        _objectViews[sender] = view;
-        AddView(view);
+        _objectViewPositioners[obj] = viewPositioner;
+        AddViewPositioner(viewPositioner);
     }
 
-    private void AddView(View view)
+    private void AddViewPositioner(ViewPositioner viewPositioner)
     {
-        view.NeedRedraw += NeedRedrawHandler;
-        view.CellsChanged += AddAnimation;
-        view.CellChanged += AddCellChange;
-        _views.Add(view);
+        _viewPositioners.Add(viewPositioner);
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
+        foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
+        {
+            view.CellChanged += AddCellChange;
+            view.CellsChanged += AddAnimation;
+            view.NeedRedraw += NeedRedrawHandler;
+        }
     }
     
-    public void RemoveView(object obj)
+    public void RemoveViewPositioner(object obj)
     {
-        if (!_objectViews.ContainsKey(obj)) return;
-        View view = _objectViews[obj];
-        view.NeedRedraw -= NeedRedrawHandler;
-        view.CellsChanged -= AddAnimation;
-        view.CellChanged -= AddCellChange;
-        _views.Remove(_objectViews[obj]);
-        _objectViews.Remove(obj);
+        if (!_objectViewPositioners.ContainsKey(obj)) return;
+        ViewPositioner viewPositioner = _objectViewPositioners[obj];
+        foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
+        {
+            view.CellChanged -= AddCellChange;
+            view.CellsChanged -= AddAnimation;
+            view.NeedRedraw -= NeedRedrawHandler;
+        }
+        _viewPositioners.Remove(_objectViewPositioners[obj]);
+        _objectViewPositioners.Remove(obj);
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
 
@@ -63,7 +69,7 @@ public class Renderer
         Console.CursorVisible = false;
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
-        _views = new OrderedSet<View>();
+        _viewPositioners = new OrderedSet<ViewPositioner>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
         _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
     }
@@ -125,21 +131,19 @@ public class Renderer
         _animQueue.Clear();
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
-        foreach (View view in _views)
+        foreach (ViewPositioner viewPositioner in _viewPositioners)
         {
-            var (x0Portion, y0Portion, x1Portion, y1Portion) = view.WantedPosition ?? (0, 0, 1, 1);
-            int x0Screen = (int) Math.Round(windowWidth * x0Portion);
-            int y0Screen = (int) Math.Round(windowHeight * y0Portion);
-            int x1Screen = (int) Math.Round(windowWidth * x1Portion);
-            int y1Screen = (int) Math.Round(windowHeight * y1Portion);
-            view.Resize(x1Screen - x0Screen, y1Screen - y0Screen);
-            _viewBoundaries.Add(view, (x0Screen, y0Screen, x1Screen, y1Screen));
-            for (int x = x0Screen; x < x1Screen; x++)
+            viewPositioner.SetScreenSize(windowWidth, windowHeight);
+            foreach (var (view, minX, minY, maxX, maxY) in viewPositioner.ViewPositions)
             {
-                for (int y = y0Screen; y < y1Screen; y++)
+                _viewBoundaries.Add(view, (minX, minY, maxX, maxY));
+                for (int x = minX; x < maxX; x++)
                 {
-                    int saveX = x, saveY = y; // x and y are modified outside this closure, so they need to be saved
-                    _pixelFuncs[x, y].AddFirst(() => view.GetSymbol(saveX - x0Screen, saveY - y0Screen));
+                    for (int y = minY; y < maxY; y++)
+                    {
+                        int saveX = x, saveY = y; // x and y are modified outside this closure, so they need to be saved
+                        _pixelFuncs[x, y].AddFirst(() => view.GetSymbol(saveX - minX, saveY - minY));
+                    }
                 }
             }
         }
