@@ -7,7 +7,8 @@ public enum ActorAction
     Move,
     InteractWithDoor,
     Shoot,
-    MeleeAttack,
+    MeleeAttackHit,
+    MeleeAttackMissed,
     ApplyEffect,
     StopTurn,
 }

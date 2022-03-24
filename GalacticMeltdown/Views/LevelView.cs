@@ -196,8 +196,11 @@ public partial class LevelView : View
             case ActorAction.ApplyEffect:
                 PaintCells(ConsoleColor.Yellow, 100);
                 break;
-            case ActorAction.MeleeAttack:
+            case ActorAction.MeleeAttackHit:
                 PaintCells(ConsoleColor.Red, 100);
+                break;
+            case ActorAction.MeleeAttackMissed:
+                PaintCells(ConsoleColor.DarkGray, 100);
                 break;
             case ActorAction.InteractWithDoor:
                 foreach ((int x, int y) in actionInfo.AffectedCells)

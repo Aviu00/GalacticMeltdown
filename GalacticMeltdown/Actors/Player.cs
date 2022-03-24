@@ -82,8 +82,9 @@ public class Player : Actor, ISightedObject, IControllable
         Tile tile = Level.GetTile(newX, newY);
         if (Level.GetNonTileObject(newX, newY) is Enemy enemy)
         {
-            HitTarget(enemy);
-            _actionInfo = new ActorActionInfo(ActorAction.MeleeAttack, new List<(int, int)> {(newX, newY)});
+            bool hit = HitTarget(enemy);
+            _actionInfo = new ActorActionInfo(hit ? ActorAction.MeleeAttackHit : ActorAction.MeleeAttackMissed,
+                new List<(int, int)> {(newX, newY)});
             return true;
         }
 
@@ -147,13 +148,14 @@ public class Player : Actor, ISightedObject, IControllable
         item.Consume(this);
     }
 
-    private void HitTarget(Actor target)
+    private bool HitTarget(Actor target)
     {
+        bool hit;
         if (Equipment[BodyPart.Hands] is null)
         {
-            target.Hit(Random.Shared.Next(DefaultMinDamage, DefaultMaxDamage), false, false);
+            hit = target.Hit(Random.Shared.Next(DefaultMinDamage, DefaultMaxDamage), false, false);
             Energy -= DefaultAttackEnergy;
-            return;
+            return hit;
         }
 
         WeaponItem weaponItem = (WeaponItem) Equipment[BodyPart.Hands];
@@ -177,7 +179,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
 
         int damage = UtilityFunctions.CalculateMeleeDamage(minDamage, maxDamage, Strength);
-        target.Hit(damage, false, false);
+        hit = target.Hit(damage, false, false);
         var stateChanger = weaponItem.StateChanger;
         if (stateChanger is not null)
         {
@@ -186,6 +188,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
 
         Energy -= weaponItem.HitEnergy;
+        return hit;
     }
 
     public bool Shoot(int x, int y)

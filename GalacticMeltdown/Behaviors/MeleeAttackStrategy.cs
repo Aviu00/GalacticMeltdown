@@ -61,7 +61,7 @@ public class MeleeAttackStrategy : Behavior
 
         ControlledNpc.Energy -= _meleeAttackCost;
         _meleeAttackCounter?.ResetTimer();
-        return new ActorActionInfo(ActorAction.MeleeAttack,
+        return new ActorActionInfo(hit ? ActorAction.MeleeAttackHit : ActorAction.MeleeAttackMissed,
             new List<(int, int)> {(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)});
     }
 }
