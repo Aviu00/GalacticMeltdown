@@ -77,7 +77,6 @@ public class Renderer
     public void Redraw()
     {
         if (RedrawOnScreenSizeChange()) return;
-        _animQueue.Clear();
         OutputAllCells();
     }
 
@@ -101,7 +100,7 @@ public class Renderer
             if (delay != 0) Thread.Sleep(delay);
         }
 
-        _animQueue.Clear();
+        OutputAllCells();
     }
 
     public void CleanUp()
@@ -128,7 +127,6 @@ public class Renderer
 
     private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
-        _animQueue.Clear();
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
         foreach (ViewPositioner viewPositioner in _viewPositioners)
@@ -153,6 +151,7 @@ public class Renderer
 
     private void OutputAllCells()
     {
+        _animQueue.Clear();
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
         ScreenCellData screenCellData = GetCell(0, ConvertToConsoleY(0));
