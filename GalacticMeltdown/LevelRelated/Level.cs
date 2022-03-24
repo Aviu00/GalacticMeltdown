@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
-public partial class Level
+public class Level
 {
     private const int ActiveChunkRadius = DataHolder.ActiveChunkRadius;
     private const int ChunkSize = DataHolder.ChunkSize;
@@ -31,8 +31,6 @@ public partial class Level
     public event EventHandler InvolvedInTurn;
     public event EventHandler TurnFinished;
     public event EventHandler NpcDied;
-    public event EventHandler<MoveEventArgs> SomethingMoved;
-    public event EventHandler<DoorChangeEventArgs> DoorChanged;
     public event EventHandler<ActorActionEventArgs> ActorDidSomething; 
 
     [JsonIgnore]
@@ -403,8 +401,6 @@ public partial class Level
                 _chunks[chunk1.chunkX, chunk1.chunkY].AddNpc(npc);
             }
         }
-
-        SomethingMoved?.Invoke(sender, e);
     }
     
     public static (int chunkX, int chunkY) GetChunkCoords(int x, int y)
@@ -495,7 +491,6 @@ public partial class Level
         else
             doorCounter.StopTimer();
         if (actor is not null) actor.Energy -= 100;
-        DoorChanged?.Invoke(this, new DoorChangeEventArgs((x, y)));
         return true;
     }
 
