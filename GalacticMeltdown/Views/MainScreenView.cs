@@ -36,7 +36,7 @@ public class MainScreenView : View
                     var (x, y, viewCell) = data;
                     return (x - _levelViewWidth, y, viewCell);
                 })
-                .ToHashSet()));
+                .ToList()));
         };
         _minimapView.NeedRedraw += (_, _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
     }

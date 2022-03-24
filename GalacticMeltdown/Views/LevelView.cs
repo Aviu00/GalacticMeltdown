@@ -144,7 +144,7 @@ public partial class LevelView : View
 
     private void MoveHandler(object sender, MoveEventArgs e)
     {
-        HashSet<(int, int, ViewCellData)> updated = new(2);
+        List<(int, int, ViewCellData)> updated = new(2);
         if (CanPlayerSeePoint(e.X0, e.Y0))
         {
             IDrawable drawableObj = _level.GetDrawable(e.X0, e.Y0);
@@ -232,11 +232,11 @@ public partial class LevelView : View
                 foreach ((int x, int y) in actionInfo.AffectedCells)
                 {
                     var t = _level.GetDrawable(x, y);
-                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)>
+                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new List<(int, int, ViewCellData)>
                     {
                         (x, y, new ViewCellData(t.SymbolData, ConsoleColor.Red))
                     }));
-                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new HashSet<(int, int, ViewCellData)>
+                    CellsChanged?.Invoke(this, new CellChangeEventArgs(new List<(int, int, ViewCellData)>
                     {
                         (x, y, new ViewCellData(t.SymbolData, t.BgColor))
                     }));

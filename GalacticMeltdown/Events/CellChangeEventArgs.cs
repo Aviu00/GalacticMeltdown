@@ -6,9 +6,9 @@ namespace GalacticMeltdown.Events;
 
 public class CellChangeEventArgs : EventArgs
 {
-    public HashSet<(int, int, ViewCellData)> Cells { get; }
+    public List<(int, int, ViewCellData)> Cells { get; }
 
-    public CellChangeEventArgs(HashSet<(int, int, ViewCellData)> cells)
+    public CellChangeEventArgs(List<(int, int, ViewCellData)> cells)
     {
         Cells = cells;
     }

@@ -20,7 +20,7 @@ public class Renderer
     private OrderedSet<View> _views;
     private LinkedList<Func<ViewCellData>>[,] _pixelFuncs;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
-    private LinkedList<(View, HashSet<(int, int, ViewCellData)>)> _animations;
+    private LinkedList<(View, List<(int, int, ViewCellData)>)> _animations;
     
     private Dictionary<object, View> _objectViews = new();
 
@@ -62,7 +62,7 @@ public class Renderer
         Console.Clear();
         _views = new OrderedSet<View>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
-        _animations = new LinkedList<(View, HashSet<(int, int, ViewCellData)>)>();
+        _animations = new LinkedList<(View, List<(int, int, ViewCellData)>)>();
     }
 
     public void Redraw()
