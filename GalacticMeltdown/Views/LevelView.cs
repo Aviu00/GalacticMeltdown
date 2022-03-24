@@ -206,7 +206,6 @@ public partial class LevelView : View
     {
         if (sender is not Actor actor) return;
 
-        Enemy enemy = actor as Enemy;
         if (!IsPointInsideView(actor.X, actor.Y)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
