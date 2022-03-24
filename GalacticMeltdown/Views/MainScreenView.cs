@@ -7,21 +7,21 @@ namespace GalacticMeltdown.Views;
 public class MainScreenView : View
 {
     private const double LevelViewWidth = 0.8;
-    private const double MinimapHeight = 0.2; 
-    
+    private const double MinimapHeight = 0.2;
+
     private int _levelViewWidth;
     private int _minimapHeight;
-    
+
     private LevelView _levelView;
     private OverlayView _overlayView;
     private MinimapView _minimapView;
-    
+
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public override (double, double, double, double)? WantedPosition => null;
-    
+
     public MainScreenView(LevelView levelView, OverlayView overlayView, MinimapView minimapView)
     {
         _levelView = levelView;
