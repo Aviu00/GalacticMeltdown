@@ -80,6 +80,7 @@ public partial class LevelView : View
     {
         _level.NpcDied += DeathHandler;
         _level.ActorDidSomething += ActorDidSomethingHandler;
+        _level.TileChanged += TileChangedHandler;
         _sightedObjects = _level.SightedObjects;
         _sightedObjects.CollectionChanged += SightedObjectUpdateHandler;
         foreach (var sightedObject in _sightedObjects)
@@ -184,6 +185,11 @@ public partial class LevelView : View
         // Redraw happens on visible tile calculation already
         if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void TileChangedHandler(object sender, TileChangeEventArgs e)
+    {
+        if (_visiblePoints.Contains(e.Coords)) UpdateVisiblePoints();
     }
 
     private void ActorDidSomethingHandler(object actor, ActorActionEventArgs actionInfo)

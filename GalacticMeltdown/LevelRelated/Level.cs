@@ -31,6 +31,7 @@ public class Level
     public event EventHandler InvolvedInTurn;
     public event EventHandler TurnFinished;
     public event EventHandler NpcDied;
+    public event EventHandler<TileChangeEventArgs> TileChanged; 
     public event EventHandler<ActorActionEventArgs> ActorDidSomething; 
 
     [JsonIgnore]
@@ -491,6 +492,7 @@ public class Level
         else
             doorCounter.StopTimer();
         if (actor is not null) actor.Energy -= 100;
+        TileChanged?.Invoke(this, new TileChangeEventArgs((x, y)));
         return true;
     }
 
