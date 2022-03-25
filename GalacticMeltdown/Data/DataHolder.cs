@@ -96,6 +96,7 @@ public static partial class DataHolder
             {ConsoleKey.D, MainControl.DoNothing},
             {ConsoleKey.P, MainControl.PickUpItem},
             {ConsoleKey.E, MainControl.OpenInventory},
+            {ConsoleKey.A, MainControl.OpenAmmoSelection},
             {ConsoleKey.O, MainControl.InteractWithDoors},
             {ConsoleKey.C, MainControl.UseCursor},
             {ConsoleKey.U, MainControl.Shoot},

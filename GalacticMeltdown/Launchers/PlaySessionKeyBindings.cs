@@ -77,7 +77,7 @@ public partial class PlaySession
                 cursor.Action = (_, _, x, y) =>
                 {
                     cursor.Close();
-                    if(_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
+                    if (_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
                 };
                 UserInterface.AddChild(this, cursor);
                 cursor.Start();
@@ -86,13 +86,13 @@ public partial class PlaySession
         {
             MainControl.Shoot, () =>
             {
-                if (_player.Equipment[BodyPart.Hands] is not RangedWeaponItem) return;
+                if (_player.Equipment[BodyPart.Hands] is not RangedWeaponItem || _player.ChosenAmmoId is null) return;
                 Cursor cursor = _levelView.Cursor;
                 _levelView.ToggleCursorLine();
                 cursor.Action = (_, _, x, y) =>
                 {
                     cursor.Close();
-                    if(_player.Shoot(x, y))
+                    if (_player.Shoot(x, y))
                         UserInterface.YieldControl(this);
                 };
                 UserInterface.AddChild(this, cursor);
@@ -101,30 +101,31 @@ public partial class PlaySession
         },
         {MainControl.IncreaseViewRange, () =>
             {
-                if(DataHolder.CheatsEnabled)
+                if (DataHolder.CheatsEnabled)
                     _player.ViewRange++;
             }
         },
         {MainControl.ReduceViewRange, () =>
             {
-                if(DataHolder.CheatsEnabled)
+                if (DataHolder.CheatsEnabled)
                     _player.ViewRange--;
             }
         },
         {MainControl.ToggleNoClip, () =>
             {
-                if(DataHolder.CheatsEnabled)
+                if (DataHolder.CheatsEnabled)
                     _player.NoClip = !_player.NoClip;
             }
         },
         {MainControl.ToggleXRay, () =>
             {
-                if(DataHolder.CheatsEnabled)
+                if (DataHolder.CheatsEnabled)
                     _player.Xray = !_player.Xray;
             }
         },
         {MainControl.OpenPauseMenu, OpenPauseMenu},
-        {MainControl.OpenInventory, OpenInventory}
-    };
+        {MainControl.OpenInventory, OpenInventory},
+        {MainControl.OpenAmmoSelection, OpenAmmoSelectionDialog},
+        };
     }
 }

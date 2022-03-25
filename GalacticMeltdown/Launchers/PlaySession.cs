@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
@@ -99,5 +100,13 @@ public partial class PlaySession
         InventoryMenu inventoryMenu = new(_player);
         UserInterface.AddChild(this, inventoryMenu);
         inventoryMenu.Open();
+    }
+    
+    private void OpenAmmoSelectionDialog()
+    {
+        if (!(_player.Equipment[BodyPart.Hands] is WeaponItem weapon && weapon.AmmoTypes is not null)) return;
+        AmmoDialog dialog = new(_player, id => _player.ChosenAmmoId = id);
+        UserInterface.AddChild(this, dialog);
+        dialog.Open();
     }
 }
