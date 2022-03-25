@@ -37,7 +37,7 @@ public class EquippableItem : Item
         DataHolder.ActorStateChangers[StateChanger.Type](actor, StateChanger.Power, 0);
     }
 
-    public virtual void UnEquip(Actor actor)
+    public virtual void Unequip(Actor actor)
     {
         DataHolder.ActorStateChangers[StateChanger.Type](actor, -StateChanger.Power, 0);
     }

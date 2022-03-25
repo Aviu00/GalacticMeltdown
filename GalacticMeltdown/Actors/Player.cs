@@ -121,15 +121,18 @@ public class Player : Actor, ISightedObject, IControllable
         Inventory[item.Category].Add(item);
     }
 
+    public void Unequip(BodyPart bodyPart)
+    {
+        Item item = Equipment[bodyPart];
+        if (item is null) return;
+        ((EquippableItem) item).Unequip(this);
+        Equipment[bodyPart] = null;
+        AddToInventory(item);
+    }
+
     public void Equip(EquippableItem item)
     {
-        Item prevItem = Equipment[item.BodyPart];
-        if (prevItem == item) return;
-        if (prevItem is not null)
-        {
-            ((EquippableItem) prevItem).UnEquip(this);
-            AddToInventory(prevItem);
-        }
+        Unequip(item.BodyPart);
 
         Inventory[item.Category].Remove(item);
         Equipment[item.BodyPart] = item;

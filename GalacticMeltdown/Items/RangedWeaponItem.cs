@@ -35,7 +35,7 @@ public class RangedWeaponItem : WeaponItem
     {
     }
 
-    public override void UnEquip(Actor actor)
+    public override void Unequip(Actor actor)
     {
     }
 }
