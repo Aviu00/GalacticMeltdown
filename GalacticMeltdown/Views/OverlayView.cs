@@ -1,8 +1,11 @@
 using System;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
+using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
+using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Views;
 
@@ -29,7 +32,7 @@ public class OverlayView : View
     private const ConsoleColor DefColor = DataHolder.Colors.DefColor;
     private const ConsoleColor OtherTextColor = ConsoleColor.Blue;
 
-    private Level _level; // Minimap, Enemy-in-sight indicator, (?) Event log
+    private Level _level; // Enemy-in-sight indicator, (?) Event log
     private Player _player; // State, Effects, (?) Event log, Enemy-in-sight indicator
     // Performance monitor? Coordinates of controlled object, player?
 
@@ -84,22 +87,29 @@ public class OverlayView : View
             string s = $"Held: {_player.Equipment[BodyPart.Hands].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
-        else if (y == Height - 7 && _player.Equipment[BodyPart.Head] is not null)
+        else if (y == Height - 7 && _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null)
+        {
+            int count = _player.Inventory[ItemCategory.Item].Count(item => item.Id == _player.ChosenAmmoId);
+            string name = _player.Inventory[ItemCategory.Item].First(item => item.Id == _player.ChosenAmmoId).Name;
+            string s = $"Ammo: {count} ({name})";
+            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
+        }
+        else if (y == Height - 8 && _player.Equipment[BodyPart.Head] is not null)
         {
             string s = $"Head: {_player.Equipment[BodyPart.Head].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
-        else if (y == Height - 8 && _player.Equipment[BodyPart.Torso] is not null)
+        else if (y == Height - 9 && _player.Equipment[BodyPart.Torso] is not null)
         {
             string s = $"Torso: {_player.Equipment[BodyPart.Torso].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
-        else if (y == Height - 9 && _player.Equipment[BodyPart.Legs] is not null)
+        else if (y == Height - 10 && _player.Equipment[BodyPart.Legs] is not null)
         {
             string s = $"Legs: {_player.Equipment[BodyPart.Legs].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
-        else if (y == Height - 10 && _player.Equipment[BodyPart.Feet] is not null)
+        else if (y == Height - 11 && _player.Equipment[BodyPart.Feet] is not null)
         {
             string s = $"Feet: {_player.Equipment[BodyPart.Feet].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
