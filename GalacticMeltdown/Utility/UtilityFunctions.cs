@@ -9,6 +9,49 @@ using ItemDictionary = Dictionary<(int x, int y), List<Item>>;
 
 public static class UtilityFunctions
 {
+    public static string RenderText(int width, string textLeft, string textRight)
+    {
+        const string ellipsis = "...";
+        const string separator = "  ";
+        const string noSpaceForRightText = $"{separator}{ellipsis}";
+        int maxLeftStringLength = width - noSpaceForRightText.Length;
+        string text;
+        
+        if (width < ellipsis.Length)
+        {
+            return new string(' ', width);
+        }
+        
+        if (textRight.Length == 0)
+        {
+            text = textLeft.Length > width
+                ? textLeft.Substring(0, width - ellipsis.Length) + ellipsis
+                : textLeft.PadRight(width);
+        }
+        else if (textLeft.Length == 0)
+        {
+            text = textRight.Length > width
+                ? ellipsis + textRight.Substring(textRight.Length - (width - ellipsis.Length))
+                : textRight.PadLeft(width);
+        }
+        else if (textLeft.Length >= maxLeftStringLength)
+        {
+            if (maxLeftStringLength < 0) text = new string(' ', width);
+            else text = textLeft.Substring(0, maxLeftStringLength) + noSpaceForRightText;
+        }
+        else
+        {
+            text = textLeft;
+            text += separator;
+            int spaceLeft = width - text.Length;
+            text += textRight.Length > spaceLeft
+                ? textRight.Substring(0, spaceLeft - ellipsis.Length) + ellipsis
+                : textRight.PadLeft(spaceLeft);
+        }
+
+        return text;
+    }
+
     public static (int x, int y) ConvertAbsoluteToRelativeCoords(int x, int y, int relObjX, int relObjY)
     {
         return (x - relObjX, y - relObjY);

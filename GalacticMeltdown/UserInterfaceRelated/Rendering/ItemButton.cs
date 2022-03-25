@@ -1,5 +1,6 @@
 using System;
 using GalacticMeltdown.Items;
+using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
@@ -30,6 +31,6 @@ public class ItemButton : Button
     public override void SetWidth(int width)
     {
         base.SetWidth(width);
-        RenderedText = RenderText(width - 2);
+        RenderedText = UtilityFunctions.RenderText(width - 2, TextLeft, TextRight);
     }
 }
