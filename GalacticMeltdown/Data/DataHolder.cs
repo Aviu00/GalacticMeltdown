@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 
@@ -49,6 +50,15 @@ public static partial class DataHolder
         {ItemCategory.WeaponItem, "Weapons"},
         {ItemCategory.EquippableItem, "Armor"},
         {ItemCategory.RangedWeaponItem, "Guns"}
+    };
+
+    public static readonly Dictionary<BodyPart, string> BodyPartName = new()
+    {
+        {BodyPart.Head, "Head"},
+        {BodyPart.Torso, "Torso"},
+        {BodyPart.Legs, "Legs"},
+        {BodyPart.Feet, "Feet"},
+        {BodyPart.Hands, "Hands"},
     };
 
     public readonly struct Colors
