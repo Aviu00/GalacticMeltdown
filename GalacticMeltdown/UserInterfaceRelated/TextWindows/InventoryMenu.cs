@@ -87,18 +87,7 @@ public class InventoryMenu : TextWindow
         switch (choice)
         {
             case ItemAction.Drop:
-                if (item.Stackable)
-                {
-                    foreach (Item listItem in _inventory[item.Category].FindAll(listItem => listItem.Id == item.Id).ToList())
-                    {
-                        _player.Drop(listItem);
-                    }
-                }
-                else
-                {
-                    _player.Drop(item);
-                }
-
+                _player.Drop(item);
                 break;
             case ItemAction.Equip:
                 _player.Equip((EquippableItem) item);

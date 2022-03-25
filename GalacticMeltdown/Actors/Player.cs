@@ -141,8 +141,25 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Drop(Item item)
     {
-        Inventory[item.Category].Remove(item);
-        Level.AddItem(item, X, Y);
+        if (item.Stackable)
+        {
+            List<Item> items = Inventory[item.Category].Where(match => match.Id == item.Id).ToList();
+            Inventory[item.Category].RemoveAll(match => match.Id == item.Id);
+            foreach (Item droppedItem in items)
+            {
+                Level.AddItem(droppedItem, X, Y);
+            }
+        }
+        else
+        {
+            Inventory[item.Category].Remove(item);
+            Level.AddItem(item, X, Y);
+        }
+    }
+
+    private void DropById()
+    {
+        
     }
 
     public void Consume(ConsumableItem item)
