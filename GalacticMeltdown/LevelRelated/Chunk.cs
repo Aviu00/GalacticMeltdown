@@ -18,6 +18,7 @@ public class Chunk
     [JsonProperty] public readonly int Seed;
 
     public bool WasActiveBefore;
+    public bool WasVisitedByPlayer;
 
 
     [JsonIgnore] public bool IsActive;

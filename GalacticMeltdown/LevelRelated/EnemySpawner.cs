@@ -12,8 +12,7 @@ namespace GalacticMeltdown.LevelRelated;
 public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
-    private const int DifficultyMultiplier = 25;
-    private const int CurrencyIncreaseTime = 50;
+    private const int CurrencyIncreaseTime = 70;
     private const int CurrencyGainIncreaseAmount = 5;
 
     [JsonProperty] private readonly Level _level;
@@ -55,7 +54,7 @@ public class EnemySpawner
     public void SpawnEnemiesInChunk(Chunk chunk)
     {
         Random rng = new Random(chunk.Seed);
-        double currency = chunk.Difficulty * DifficultyMultiplier;
+        double currency = GetChunkCost(chunk.Difficulty);
         currency *= rng.NextDouble() + 0.5;
         var points = chunk.GetFloorTileCoords();
         if(points is null || points.Count == 0)
@@ -76,7 +75,10 @@ public class EnemySpawner
         {
             chunks.Remove(chunk);
         }
-        return chunks;
+
+        var newChunks = chunks.Where(chunk => !chunk.WasVisitedByPlayer).ToHashSet();
+        if (newChunks.Count == 0) newChunks = chunks;
+        return newChunks;
     }
     
     private void SpawnRandomEnemies()
@@ -133,5 +135,10 @@ public class EnemySpawner
     {
         Enemy enemy = new Enemy(enemyData, x, y, _level);
         _level.AddNpc(enemy);
+    }
+
+    private int GetChunkCost(int difficulty)
+    {
+        return 25 * difficulty + (int)(difficulty * difficulty / 1.5);
     }
 }

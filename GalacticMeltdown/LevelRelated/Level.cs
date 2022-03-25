@@ -76,6 +76,8 @@ public class Level
         IsActive = true;
         PlayerWon = false;
         Player = new Player(startPos.x, startPos.y, this);
+        (int x, int y) = GetChunkCoords(startPos.x, startPos.y);
+        _chunks[x, y].WasVisitedByPlayer = true;
         _enemySpawner = new EnemySpawner(this);
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
         _controllableObjects = new ObservableCollection<IControllable> {Player};
@@ -253,12 +255,19 @@ public class Level
 
     private void ControllableMoved(object sender, MoveEventArgs e)
     {
+        bool isPlayer = ReferenceEquals(sender, Player);
         if (GetChunkCoords(e.X0, e.Y0) != GetChunkCoords(e.X1, e.Y1))
         {
             UpdateActiveChunks();
+            if (isPlayer)
+            {
+                (int x, int y) = GetChunkCoords(e.X1, e.Y1);
+                if(CoordsInRangeOfChunkArray(e.X1, e.Y1, x, y))
+                    _chunks[x, y].WasVisitedByPlayer = true;
+            }
         }
 
-        if (!ReferenceEquals(sender, Player) || Player.X != _finishPos.x || Player.Y != _finishPos.y) return;
+        if (!isPlayer || Player.X != _finishPos.x || Player.Y != _finishPos.y) return;
         IsActive = false;
         PlayerWon = true;
     }

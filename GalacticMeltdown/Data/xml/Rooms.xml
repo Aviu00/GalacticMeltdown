@@ -209,7 +209,7 @@
             <Tile char="1" tile_id="shelf" loot_id="consumable_distr" loot_chance="30" gain="1.6" limit="60"/>
             <Tile char="2" tile_id="shelf" loot_id="weapon_distr_2" loot_chance="30" gain="1.4" limit="60"/>
             <Tile char="3" tile_id="floor" loot_id="weapon_distr_1" loot_chance="10" gain="1.2" limit="50"/>
-            <Tile char="4" tile_id="floor" loot_id="weapon_distr_2" loot_chance="20" gain="1.4" limit="60"/>
+            <Tile char="4" tile_id="floor" loot_id="weapon_distr_2" loot_chance="30" gain="1.4" limit="60"/>
             <Tile char="5" tile_id="floor" loot_id="consumable_distr" loot_chance="30" gain="1.5" limit="60"/>
             <Tile char="6" tile_id="floor" loot_id="storage_1" loot_chance="15" gain="2.5" limit="40"/>
         </Terrain>
@@ -324,7 +324,7 @@
             <Tile char="2" tile_id="shelf" loot_id="consumable_distr" loot_chance="10" gain="1.5" limit="60"/>
             <Tile char="3" tile_id="shelf" loot_id="ammo_distr" loot_chance="0" gain="1.5" limit="60"/>
             <Tile char="4" tile_id="table" loot_id="weapon_distr_1" loot_chance="10" gain="1.3" limit="50"/>
-            <Tile char="5" tile_id="floor" loot_id="weapon_distr_2" loot_chance="20" gain="1.5" limit="70"/>
+            <Tile char="5" tile_id="floor" loot_id="weapon_distr_2" loot_chance="30" gain="1.5" limit="70"/>
         </Terrain>
     </Room>
     <Room>
@@ -426,8 +426,8 @@
             <Tile char="`" tile_id="void"/>
             <Tile char="D" tile_id="door-closed_floor_south"/>
             <Tile char="1" tile_id="water" loot_id="consumable_distr" loot_chance="10" gain="1.8" limit="80"/>
-            <Tile char="3" tile_id="water" loot_id="weapon_distr_1" loot_chance="10" gain="1.4" limit="60"/>
-            <Tile char="4" tile_id="floor" loot_id="weapon_distr_2" loot_chance="10" gain="1.5" limit="70"/>
+            <Tile char="3" tile_id="water" loot_id="weapon_distr_1" loot_chance="25" gain="1.5" limit="60"/>
+            <Tile char="4" tile_id="floor" loot_id="weapon_distr_2" loot_chance="40" gain="1.7" limit="80"/>
             <Tile char="6" tile_id="water" loot_id="armor_distr" loot_chance="5" gain="2" limit="70"/>
         </Terrain>
     </Room>
@@ -575,7 +575,7 @@
             <Tile char="1" tile_id="shelf" loot_id="storage_1" loot_chance="20" gain="2.5" limit="80"/>
             <Tile char="2" tile_id="shelf" loot_id="consumable_distr" loot_chance="40" gain="1.5" limit="80"/>
             <Tile char="3" tile_id="table" loot_id="consumable_distr" loot_chance="40" gain="1.5" limit="80"/>
-            <Tile char="5" tile_id="shelf" loot_id="weapon_distr_2" loot_chance="40" gain="1.5" limit="80"/>
+            <Tile char="5" tile_id="shelf" loot_id="weapon_distr_2" loot_chance="35" gain="1.7" limit="80"/>
             <Tile char="6" tile_id="shelf" loot_id="armor_distr" loot_chance="25" gain="1.5" limit="80"/>
             <Tile char="7" tile_id="floor" loot_id="weapon_distr_1" loot_chance="20" gain="1.4" limit="60"/>
         </Terrain>
@@ -721,7 +721,7 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="1" tile_id="floor" loot_id="weapon_distr_2" loot_chance="25" gain="1.8" limit="70"/>
+            <Tile char="1" tile_id="floor" loot_id="weapon_distr_2" loot_chance="35" gain="1.7" limit="70"/>
             <Tile char="2" tile_id="floor" loot_id="armor_distr" loot_chance="25" gain="1.5" limit="80"/>
             <Tile char="3" tile_id="floor" loot_id="storage_1" loot_chance="25" gain="2.5" limit="50"/>
             <Tile char="4" tile_id="floor" loot_id="gasoline_jerrycan" loot_chance="10" gain="2" limit="70"/>
@@ -756,7 +756,7 @@
         </Pattern>
         <Type>4</Type>
         <Terrain>
-            <Tile char="1" tile_id="shelf" loot_id="weapon_distr_1" loot_chance="20" gain="1.7" limit="70"/>
+            <Tile char="1" tile_id="shelf" loot_id="weapon_distr_1" loot_chance="20" gain="1.6" limit="70"/>
             <Tile char="2" tile_id="shelf" loot_id="storage_1" loot_chance="25" gain="2.5" limit="50"/>
             <Tile char="3" tile_id="table" loot_id="ammo_distr" loot_chance="0" gain="2" limit="80"/>
             <Tile char="4" tile_id="floor" loot_id="storage_1" loot_chance="15" gain="2.5" limit="40"/>
