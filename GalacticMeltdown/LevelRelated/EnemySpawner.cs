@@ -31,18 +31,19 @@ public class EnemySpawner
     {
         CalculateNextCurrencyAmount();
         _level = level;
+        _currencyCounter = new Counter(_level, CurrencyIncreaseTime, CurrencyIncreaseTime);
         Init();
     }
 
     private void Init()
     {
-        _currencyCounter = new Counter(_level, CurrencyIncreaseTime, CurrencyIncreaseTime, counter =>
+        _currencyCounter.Action = counter =>
         {
             _currency += _currencyGain;
             _currencyGain += CurrencyGainIncreaseAmount;
             if (_currency > _nextCurrencyAmount) SpawnRandomEnemies();
             counter.ResetTimer();
-        });
+        };
     }
     
     [OnDeserialized]
