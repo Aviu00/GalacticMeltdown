@@ -90,10 +90,17 @@ public class OverlayView : View
         }
         else if (y == Height - 7 && _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null)
         {
-            int count = _player.Inventory[ItemCategory.Item].Count(item => item.Id == _player.ChosenAmmoId);
-            string name = _player.Inventory[ItemCategory.Item].First(item => item.Id == _player.ChosenAmmoId).Name;
-            string s = $"Ammo: {count} ({name})";
-            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
+            int count;
+            string name;
+            foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
+            {
+                count = _player.Inventory[category].Count(item => item.Id == _player.ChosenAmmoId);
+                if (count != 0) name = _player.Inventory[category].First(item => item.Id == _player.ChosenAmmoId).Name;
+                else continue;
+                string s = $"Ammo: {count} ({name})";
+                if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
+                break;
+            }
         }
         else if (y == Height - 8 && _player.Equipment[BodyPart.Head] is not null)
         {
