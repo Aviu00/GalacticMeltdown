@@ -47,10 +47,23 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
 
+    private string _chosenAmmoId;
+
     [JsonProperty] public Dictionary<ItemCategory, List<Item>> Inventory;
     [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
-    [JsonProperty] public string ChosenAmmoId;
 
+    [JsonProperty]
+    public string ChosenAmmoId
+    {
+        get => _chosenAmmoId;
+        set
+        {
+            _chosenAmmoId = value;
+            EquipmentChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    public event EventHandler EquipmentChanged;
     public event EventHandler VisiblePointsChanged;
 
     [JsonConstructor]
@@ -144,6 +157,7 @@ public class Player : Actor, ISightedObject, IControllable
         {
             SetFirstAvailableAmmoId(weapon);
         }
+        EquipmentChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void SetFirstAvailableAmmoId(WeaponItem weapon)
@@ -172,6 +186,7 @@ public class Player : Actor, ISightedObject, IControllable
         if (item.Id == ChosenAmmoId)
         {
             ChosenAmmoId = null;
+            EquipmentChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -202,6 +217,7 @@ public class Player : Actor, ISightedObject, IControllable
                 minDamage += weaponItem.AmmoTypes[ammo.Id].minDamage;
                 maxDamage += weaponItem.AmmoTypes[ammo.Id].maxDamage;
                 RemoveAmmo(ammo);
+                EquipmentChanged?.Invoke(this, EventArgs.Empty);
                 var actorStateChangerData = weaponItem.AmmoTypes[ammo.Id].actorStateChangerData;
                 if (actorStateChangerData is not null)
                 {
@@ -256,6 +272,7 @@ public class Player : Actor, ISightedObject, IControllable
         _actionInfo = new ActorActionInfo(ActorAction.Shoot, lineCells);
         RemoveAmmo(ammo);
         Energy -= gun.ShootEnergy;
+        EquipmentChanged?.Invoke(this, EventArgs.Empty);
         return true;
     }
 

@@ -51,6 +51,7 @@ public class OverlayView : View
         _level = level;
         _player = level.Player;
         _player.StatChanged += OnStatChange;
+        _player.EquipmentChanged += OnEquipmentChange;
         RenderStats();
         // TODO: subscribe to events
     }
@@ -127,6 +128,12 @@ public class OverlayView : View
     }
 
     private void OnStatChange(object sender, StatChangeEventArgs e)
+    {
+        RenderStats();
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
+    
+    private void OnEquipmentChange(object sender, EventArgs _)
     {
         RenderStats();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
