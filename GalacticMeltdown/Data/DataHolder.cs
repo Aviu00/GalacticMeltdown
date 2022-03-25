@@ -163,6 +163,17 @@ public static partial class DataHolder
             {ConsoleKey.C, LevelMenuControl.Create},
             {ConsoleKey.D, LevelMenuControl.Delete},
         };
+        
+        public static Dictionary<ConsoleKey, InventoryControl> InventoryMenu = new()
+        {
+            {ConsoleKey.UpArrow, InventoryControl.Up},
+            {ConsoleKey.DownArrow, InventoryControl.Down},
+            {ConsoleKey.LeftArrow, InventoryControl.Left},
+            {ConsoleKey.RightArrow, InventoryControl.Right},
+            {ConsoleKey.Enter, InventoryControl.Select},
+            {ConsoleKey.Escape, InventoryControl.Back},
+            {ConsoleKey.Q, InventoryControl.OpenEquipmentMenu},
+        };
     }
     
     static DataHolder()

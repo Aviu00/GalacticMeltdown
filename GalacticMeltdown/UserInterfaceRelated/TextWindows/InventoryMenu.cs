@@ -24,15 +24,17 @@ public class InventoryMenu : TextWindow
         _inventory = _player.Inventory;
         _currentCategory = 0;
         LoadCategoryScreen(Enum.GetValues<ItemCategory>()[_currentCategory]);
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
-        {
-            {SelectionControl.Back, Close},
-            {SelectionControl.Select, LineView.PressCurrent},
-            {SelectionControl.Down, LineView.SelectNext},
-            {SelectionControl.Up, LineView.SelectPrev},
-            {SelectionControl.Left, OpenPreviousCategory},
-            {SelectionControl.Right, OpenNextCategory},
-        }));
+        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.InventoryMenu,
+            new Dictionary<InventoryControl, Action>
+            {
+                {InventoryControl.Back, Close},
+                {InventoryControl.Select, LineView.PressCurrent},
+                {InventoryControl.Down, LineView.SelectNext},
+                {InventoryControl.Up, LineView.SelectPrev},
+                {InventoryControl.Left, OpenPreviousCategory},
+                {InventoryControl.Right, OpenNextCategory},
+                {InventoryControl.OpenEquipmentMenu, OpenEquipmentMenu}
+            }));
     }
 
     private void LoadCategoryScreen(ItemCategory category)
@@ -73,6 +75,11 @@ public class InventoryMenu : TextWindow
             .Cast<ListLine>()
             .ToList());
         LineView.SetLines(lines);
+    }
+
+    private void OpenEquipmentMenu()
+    {
+        
     }
 
     private void OpenItemDialog(Item item)
