@@ -163,7 +163,13 @@ public class Player : Actor, ISightedObject, IControllable
     private void SetFirstAvailableAmmoId(WeaponItem weapon)
     {
         if (weapon.AmmoTypes is null) return;
-        ChosenAmmoId = Inventory[ItemCategory.Item].FirstOrDefault(item => weapon.AmmoTypes.Keys.Contains(item.Id))?.Id;
+        foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
+        {
+            ChosenAmmoId = Inventory[category]
+                .FirstOrDefault(item => weapon.AmmoTypes.ContainsKey(item.Id))
+                ?.Id;
+            if (ChosenAmmoId is not null) break;
+        }
     }
 
     public void Drop(Item item)
@@ -209,21 +215,18 @@ public class Player : Actor, ISightedObject, IControllable
         WeaponItem weaponItem = (WeaponItem) Equipment[BodyPart.Hands];
         int minDamage = weaponItem.MinHitDamage;
         int maxDamage = weaponItem.MaxHitDamage;
-        if (weaponItem.AmmoTypes is not null && weaponItem is not RangedWeaponItem)
+        if (weaponItem.AmmoTypes is not null && weaponItem is not RangedWeaponItem && _chosenAmmoId is not null)
         {
-            Item ammo = Inventory[ItemCategory.Item].FirstOrDefault(item => weaponItem.AmmoTypes.ContainsKey(item.Id));
-            if (ammo is not null)
+            Item ammo = GetAmmo();
+            minDamage += weaponItem.AmmoTypes[ammo.Id].minDamage;
+            maxDamage += weaponItem.AmmoTypes[ammo.Id].maxDamage;
+            RemoveAmmo(ammo);
+            EquipmentChanged?.Invoke(this, EventArgs.Empty);
+            var actorStateChangerData = weaponItem.AmmoTypes[ammo.Id].actorStateChangerData;
+            if (actorStateChangerData is not null)
             {
-                minDamage += weaponItem.AmmoTypes[ammo.Id].minDamage;
-                maxDamage += weaponItem.AmmoTypes[ammo.Id].maxDamage;
-                RemoveAmmo(ammo);
-                EquipmentChanged?.Invoke(this, EventArgs.Empty);
-                var actorStateChangerData = weaponItem.AmmoTypes[ammo.Id].actorStateChangerData;
-                if (actorStateChangerData is not null)
-                {
-                    DataHolder.ActorStateChangers[actorStateChangerData.Type](target, actorStateChangerData.Power,
-                        actorStateChangerData.Duration);
-                }
+                DataHolder.ActorStateChangers[actorStateChangerData.Type](target, actorStateChangerData.Power,
+                    actorStateChangerData.Duration);
             }
         }
 
@@ -243,7 +246,7 @@ public class Player : Actor, ISightedObject, IControllable
     public bool Shoot(int x, int y)
     {
         if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun || ChosenAmmoId is null) return false;
-        Item ammo = Inventory[ItemCategory.Item].First(item => item.Id == ChosenAmmoId);
+        Item ammo = GetAmmo();
         List<(int, int)> lineCells = new();
         foreach (var point in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
         {
@@ -276,10 +279,17 @@ public class Player : Actor, ISightedObject, IControllable
         return true;
     }
 
+    private Item GetAmmo()
+    {
+        return Enum.GetValues<ItemCategory>()
+            .Select(category => Inventory[category].FirstOrDefault(itemInv => itemInv.Id == ChosenAmmoId))
+            .FirstOrDefault(item => item is not null);
+    }
+
     private void RemoveAmmo(Item ammo)
     {
-        Inventory[ItemCategory.Item].Remove(ammo);
-        if (!Inventory[ItemCategory.Item].Any(match => ammo.Id == match.Id))
+        Inventory[ammo.Category].Remove(ammo);
+        if (!Inventory[ammo.Category].Any(match => ammo.Id == match.Id))
             SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
     }
 
