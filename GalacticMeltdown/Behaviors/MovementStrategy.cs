@@ -17,8 +17,8 @@ public class MovementStrategy : Behavior
     private const int DefaultPriority = 20;
     private Level Level => ControlledNpc.Level;
     [JsonProperty] private (int x, int y)? _wantsToGoTo;
-    [JsonIgnore] private LinkedListNode<(int x, int y)> _nextPathCellNode;
-    [JsonIgnore] private LinkedList<(int x, int y)> _chunkPath;
+    private LinkedListNode<(int x, int y)> _nextPathCellNode;
+    private LinkedList<(int x, int y)> _chunkPath;
     [JsonProperty] private readonly Counter _previousTargetCounter;
     [JsonProperty] private Actor _previousTarget;
     [JsonProperty] private bool _idleMovement;
@@ -63,16 +63,9 @@ public class MovementStrategy : Behavior
             if (tile is null || !tile.IsWalkable && !tile.IsDoor || !_chunkPath.Contains(chunkCoords) ||
                 x == ControlledNpc.X && y == ControlledNpc.Y && Level.GetNonTileObject(xi, yi) is not null)
                 continue;
-            int cost;
+            
             // if door is closed
-            if (tile.IsDoor && !tile.IsWalkable)
-            {
-                cost = 200;
-            }
-            else
-            {
-                cost = tile.MoveCost;
-            }
+            int cost = tile.IsDoor && !tile.IsWalkable ? 200 : tile.MoveCost;
             yield return (xi, yi, cost);
         }
     }
@@ -103,12 +96,12 @@ public class MovementStrategy : Behavior
 
     public override ActorActionInfo TryAct()
     {
+        if (ControlledNpc.CurrentTarget is not null) PreviousTarget = ControlledNpc.CurrentTarget;
         Tile previousTargetTile = null;
         if (PreviousTarget is not null)
         {
             previousTargetTile = Level.GetTile(PreviousTarget.X, PreviousTarget.Y);
         }
-        if (ControlledNpc.CurrentTarget is not null) PreviousTarget = ControlledNpc.CurrentTarget;
         if (previousTargetTile is not null && previousTargetTile.IsWalkable)
         {
             _idleMovement = false;
@@ -132,7 +125,7 @@ public class MovementStrategy : Behavior
             else
                 SetPathTo(_wantsToGoTo.Value.x, _wantsToGoTo.Value.y);
         }
-        if (_idleMovement && UtilityFunctions.Chance(60))
+        if (_idleMovement && UtilityFunctions.Chance(50))
         {
             ControlledNpc.StopTurn();
             return new ActorActionInfo(ActorAction.StopTurn, new List<(int, int)>());
