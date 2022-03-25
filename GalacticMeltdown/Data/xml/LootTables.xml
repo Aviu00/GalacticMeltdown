@@ -19,17 +19,17 @@
     <ItemLoot>
         <Id>energy_drinks</Id>
         <ItemId>energy_drink</ItemId>
-        <Min>5</Min>
-        <Max>10</Max>
-        <Gain>0.9</Gain>
+        <Min>4</Min>
+        <Max>8</Max>
+        <Gain>0.8</Gain>
         <Limit>50</Limit>
     </ItemLoot>
     <ItemLoot>
         <Id>painkillers_loot</Id>
         <ItemId>painkillers</ItemId>
-        <Min>5</Min>
-        <Max>10</Max>
-        <Gain>0.9</Gain>
+        <Min>4</Min>
+        <Max>8</Max>
+        <Gain>0.8</Gain>
         <Limit>50</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -89,18 +89,26 @@
         <Limit>150</Limit>
     </ItemLoot>
     <ItemLoot>
-        <Id>gasoline_loot</Id>
+        <Id>gasoline_loot_1</Id>
         <ItemId>gasoline</ItemId>
         <Min>50</Min>
         <Max>50</Max>
         <Gain>3.2</Gain>
         <Limit>1000</Limit>
     </ItemLoot>
+    <ItemLoot>
+        <Id>gasoline_loot_2</Id>
+        <ItemId>gasoline</ItemId>
+        <Min>10</Min>
+        <Max>40</Max>
+        <Gain>3</Gain>
+        <Limit>1000</Limit>
+    </ItemLoot>
     <CollectionTable>
         <Id>gasoline_jerrycan</Id>
         <Items>
             <Item id="jerrycan"/>
-            <Item id="gasoline_loot"/>
+            <Item id="gasoline_loot_1"/>
         </Items>
     </CollectionTable>
     <DistributionTable>
@@ -180,6 +188,20 @@
             <Item id="energy_cells"/>
         </Items>
     </CollectionTable>
+    <CollectionTable>
+        <Id>chainsaw_table</Id>
+        <Items>
+            <Item id="chainsaw"/>
+            <Item id="gasoline_loot_2"/>
+        </Items>
+    </CollectionTable>
+    <CollectionTable>
+        <Id>chainsword_table</Id>
+        <Items>
+            <Item id="chainsword"/>
+            <Item id="gasoline_loot_2"/>
+        </Items>
+    </CollectionTable>
     <DistributionTable>
         <Id>ammo_distr</Id>
         <Items>
@@ -192,9 +214,9 @@
     <DistributionTable>
         <Id>weapon_distr_1</Id>
         <Items>
-            <Item id="weapon_distr_1_1" chance="10" gain="2" limit="35"/>
+            <Item id="weapon_distr_1_1" chance="10" gain="2" limit="37"/>
             <Item id="weapon_distr_1_2" chance="2" gain="1.7" limit="33"/>
-            <Item id="weapon_distr_1_3" chance="0" gain="1.4" limit="32"/>
+            <Item id="weapon_distr_1_3" chance="0" gain="1.4" limit="30"/>
         </Items>
     </DistributionTable>
     <DistributionTable>
@@ -221,9 +243,9 @@
     <DistributionTable>
         <Id>weapon_distr_2</Id>
         <Items>
-            <Item id="weapon_distr_2_1" chance="20" gain="2.5" limit="35"/>
-            <Item id="weapon_distr_2_2" chance="7" gain="2.2" limit="33"/>
-            <Item id="weapon_distr_2_3" chance="0" gain="1.5" limit="32"/>
+            <Item id="weapon_distr_2_1" chance="20" gain="2.2" limit="37"/>
+            <Item id="weapon_distr_2_2" chance="7" gain="2" limit="33"/>
+            <Item id="weapon_distr_2_3" chance="0" gain="1.5" limit="30"/>
         </Items>
     </DistributionTable>
     <DistributionTable>
@@ -239,13 +261,13 @@
         <Items>
             <Item id="g_knife" chance="37"/>
             <Item id="r_plunger" chance="30"/>
-            <Item id="chainsaw" chance="33"/>
+            <Item id="chainsaw_table" chance="33"/>
         </Items>
     </DistributionTable>
     <DistributionTable>
         <Id>weapon_distr_2_3</Id>
         <Items>
-            <Item id="chainsword" chance="60"/>
+            <Item id="chainsword_table" chance="60"/>
             <Item id="lightsaber_table" chance="40"/>
         </Items>
     </DistributionTable>

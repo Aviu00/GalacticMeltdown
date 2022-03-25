@@ -405,7 +405,7 @@
     </ConsumableItem>
     <ConsumableItem>
         <Id>cough_syrup</Id>
-        <Name>cough_syrup</Name>
+        <Name>cough syrup</Name>
         <Symbol>6</Symbol>
         <Stackable>true</Stackable>
         <StateChanger>

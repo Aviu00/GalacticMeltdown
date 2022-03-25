@@ -131,7 +131,8 @@
         <Behaviors>
             <Movement/>
             <SelfEffect>
-                <Cooldown>30</Cooldown>
+                <Priority>4</Priority>
+                <Cooldown>20</Cooldown>
                 <SelfEffectCost>570</SelfEffectCost>
                 <ActivateIfTargetIsVisible>True</ActivateIfTargetIsVisible>
                 <StateChanger>
@@ -140,8 +141,18 @@
                     <Type>ModifyDefenceEffect</Type>
                 </StateChanger>
             </SelfEffect>
+            <SelfEffect>
+                <Cooldown>20</Cooldown>
+                <SelfEffectCost>1</SelfEffectCost>
+                <ActivateIfTargetIsVisible>True</ActivateIfTargetIsVisible>
+                <StateChanger>
+                    <Type>ModifyViewRangeEffect</Type>
+                    <Power>10</Power>
+                    <Duration>5</Duration>
+                </StateChanger>
+            </SelfEffect>
             <MeleeAttack>
-                <MinDamage>0</MinDamage>
+                <MinDamage>10</MinDamage>
                 <MaxDamage>40</MaxDamage>
                 <MeleeAttackCost>60</MeleeAttackCost>
                 <StateChanger>
@@ -349,7 +360,7 @@
                 <AttackRange>20</AttackRange>
                 <StateChanger>
                     <Type>ModifySpeedEffect</Type>
-                    <Power>-7</Power>
+                    <Power>-10</Power>
                     <Duration>5</Duration>
                 </StateChanger>
             </RangeAttack>
@@ -363,7 +374,7 @@
         <BgColor>red</BgColor>
         <MaxHp>300</MaxHp>
         <MaxEnergy>100</MaxEnergy>
-        <Dexterity>10</Dexterity>
+        <Dexterity>5</Dexterity>
         <Defence>25</Defence>
         <ViewRange>10</ViewRange>
         <Cost>500</Cost>
@@ -371,6 +382,7 @@
         <Behaviors>
             <Movement/>
             <SelfEffect>
+                <Priority>11</Priority>
                 <Cooldown>15</Cooldown>
                 <SelfEffectCost>100</SelfEffectCost>
                 <ActivateIfTargetIsVisible>True</ActivateIfTargetIsVisible>
