@@ -12,7 +12,7 @@ namespace GalacticMeltdown.LevelRelated;
 public class EnemySpawner
 {
     private const int NoSpawnRadius = 1;
-    private const int CurrencyIncreaseTime = 70;
+    private const int CurrencyIncreaseTime = 60;
     private const int CurrencyGainIncreaseAmount = 5;
 
     [JsonProperty] private readonly Level _level;
@@ -68,7 +68,7 @@ public class EnemySpawner
         }
     }
 
-    private HashSet<Chunk> GetTargetChunks()
+    private List<Chunk> GetTargetChunks()
     {
         HashSet<Chunk> chunks = _level.GetChunksAroundControllable(DataHolder.ActiveChunkRadius, false);
         foreach (var chunk in _level.GetChunksAroundControllable(NoSpawnRadius, false))
@@ -76,14 +76,14 @@ public class EnemySpawner
             chunks.Remove(chunk);
         }
 
-        var newChunks = chunks.Where(chunk => !chunk.WasVisitedByPlayer).ToHashSet();
-        if (newChunks.Count == 0) newChunks = chunks;
+        var newChunks = chunks.Where(chunk => !chunk.WasVisitedByPlayer).ToList();
+        if (newChunks.Count == 0) newChunks = chunks.ToList();
         return newChunks;
     }
     
     private void SpawnRandomEnemies()
     {
-        TargetChunks ??= GetTargetChunks().ToList();
+        TargetChunks ??= GetTargetChunks();
         if(TargetChunks.Count == 0) return;
         List<(int, int)> points = TargetChunks[Random.Shared.Next(0, TargetChunks.Count)].GetFloorTileCoords();
         if(points.Count == 0) return;
@@ -139,6 +139,6 @@ public class EnemySpawner
 
     private int GetChunkCost(int difficulty)
     {
-        return 25 * difficulty + (int)(difficulty * difficulty / 1.5);
+        return 25 * difficulty + difficulty * difficulty;
     }
 }

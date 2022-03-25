@@ -37,7 +37,7 @@
         <ItemId>assault_rifle_ammo</ItemId>
         <Min>10</Min>
         <Max>20</Max>
-        <Gain>2</Gain>
+        <Gain>1.7</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -45,7 +45,7 @@
         <ItemId>pistol_ammo</ItemId>
         <Min>5</Min>
         <Max>10</Max>
-        <Gain>1.8</Gain>
+        <Gain>1.7</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -53,7 +53,7 @@
         <ItemId>advanced_assault_rifle_ammo</ItemId>
         <Min>10</Min>
         <Max>20</Max>
-        <Gain>1.9</Gain>
+        <Gain>1.6</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -61,7 +61,7 @@
         <ItemId>advanced_pistol_ammo</ItemId>
         <Min>5</Min>
         <Max>10</Max>
-        <Gain>1.7</Gain>
+        <Gain>1.6</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -69,7 +69,7 @@
         <ItemId>arrow</ItemId>
         <Min>5</Min>
         <Max>10</Max>
-        <Gain>1.8</Gain>
+        <Gain>1.7</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -77,7 +77,7 @@
         <ItemId>poisoned_arrow</ItemId>
         <Min>5</Min>
         <Max>10</Max>
-        <Gain>1.8</Gain>
+        <Gain>1.6</Gain>
         <Limit>100</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -85,7 +85,7 @@
         <ItemId>energy_cell</ItemId>
         <Min>8</Min>
         <Max>15</Max>
-        <Gain>2.1</Gain>
+        <Gain>2</Gain>
         <Limit>150</Limit>
     </ItemLoot>
     <ItemLoot>
@@ -214,9 +214,9 @@
     <DistributionTable>
         <Id>weapon_distr_1</Id>
         <Items>
-            <Item id="weapon_distr_1_1" chance="10" gain="2" limit="37"/>
-            <Item id="weapon_distr_1_2" chance="2" gain="1.7" limit="33"/>
-            <Item id="weapon_distr_1_3" chance="0" gain="1.4" limit="30"/>
+            <Item id="weapon_distr_1_1" chance="10" gain="1.8" limit="37"/>
+            <Item id="weapon_distr_1_2" chance="2" gain="1.5" limit="33"/>
+            <Item id="weapon_distr_1_3" chance="0" gain="1.2" limit="30"/>
         </Items>
     </DistributionTable>
     <DistributionTable>
@@ -244,7 +244,7 @@
         <Id>weapon_distr_2</Id>
         <Items>
             <Item id="weapon_distr_2_1" chance="20" gain="2.2" limit="37"/>
-            <Item id="weapon_distr_2_2" chance="7" gain="2" limit="33"/>
+            <Item id="weapon_distr_2_2" chance="7" gain="1.8" limit="33"/>
             <Item id="weapon_distr_2_3" chance="0" gain="1.5" limit="30"/>
         </Items>
     </DistributionTable>
