@@ -79,31 +79,33 @@ public class InventoryMenu : TextWindow
 
     private void OpenEquipmentMenu()
     {
-        
+        EquipmentMenu equipmentMenu = new(_player);
+        UserInterface.AddChild(this, equipmentMenu);
+        equipmentMenu.Open();
     }
 
     private void OpenItemDialog(Item item)
     {
-        ItemDialog itemDialog = new(item, choice => ProcessChoice(item, choice));
+        ItemDialog itemDialog = new(item, choice => ProcessChoice(choice));
         UserInterface.AddChild(this, itemDialog);
         itemDialog.Open();
-    }
-
-    private void ProcessChoice(Item item, ItemAction choice)
-    {
-        switch (choice)
+        
+        void ProcessChoice(ItemAction choice)
         {
-            case ItemAction.Drop:
-                _player.Drop(item);
-                break;
-            case ItemAction.Equip:
-                _player.Equip((EquippableItem) item);
-                break;
-            case ItemAction.Consume:
-                _player.Consume((ConsumableItem) item);
-                break;
+            switch (choice)
+            {
+                case ItemAction.Drop:
+                    _player.Drop(item);
+                    break;
+                case ItemAction.Equip:
+                    _player.Equip((EquippableItem) item);
+                    break;
+                case ItemAction.Consume:
+                    _player.Consume((ConsumableItem) item);
+                    break;
+            }
+            UpdateCurrentScreen();
         }
-        UpdateCurrentScreen();
     }
 
     private void OpenPreviousCategory()
