@@ -134,5 +134,10 @@ public static class UtilityFunctions
         return damage + 5 * (strength - Actor.ActorStr);
     }
 
+    public static bool ObjectInSquareArea(int x0, int y0, int x1, int y1, int radius)
+    {
+        return Math.Abs(x0 - x1) <= radius && Math.Abs(y0 - y1) <= radius;
+    }
+
     public static int CountDigits(int num) => num == 0 ? 1 : (int) Math.Floor(Math.Log10(Math.Abs(num))) + 1;
 }

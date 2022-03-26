@@ -47,12 +47,11 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
 
-    private string _chosenAmmoId;
+    [JsonProperty] private string _chosenAmmoId;
 
     [JsonProperty] public Dictionary<ItemCategory, List<Item>> Inventory;
     [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
-    [JsonProperty]
     public string ChosenAmmoId
     {
         get => _chosenAmmoId;

@@ -99,13 +99,12 @@ public class MovementStrategy : Behavior
         if (ControlledNpc.CurrentTarget is not null) PreviousTarget = ControlledNpc.CurrentTarget;
         Tile previousTargetTile = null;
         if (PreviousTarget is not null)
-        {
             previousTargetTile = Level.GetTile(PreviousTarget.X, PreviousTarget.Y);
-        }
         if (previousTargetTile is not null && previousTargetTile.IsWalkable)
         {
             _idleMovement = false;
-            if (_wantsToGoTo != (PreviousTarget.X, PreviousTarget.Y))
+            if (_wantsToGoTo != (PreviousTarget.X, PreviousTarget.Y) || _nextPathCellNode is not null
+                && Level.GetNonTileObject(_nextPathCellNode.Value.x, _nextPathCellNode.Value.y) is not null)
             {
                 _wantsToGoTo = (PreviousTarget.X, PreviousTarget.Y);
                 SetPathTo(PreviousTarget.X, PreviousTarget.Y);

@@ -46,9 +46,10 @@ public class MeleeAttackStrategy : Behavior
 
     public override ActorActionInfo TryAct()
     {
-        if (ControlledNpc.CurrentTarget is null || !(Math.Abs(ControlledNpc.X - ControlledNpc.CurrentTarget.X) < 2
-                && Math.Abs(ControlledNpc.Y - ControlledNpc.CurrentTarget.Y) < 2
-                && (_meleeAttackCounter is null || _meleeAttackCounter.FinishedCounting)))
+        if (ControlledNpc.CurrentTarget is null || _meleeAttackCounter is not null
+            && !_meleeAttackCounter.FinishedCounting ||
+            !UtilityFunctions.ObjectInSquareArea
+                (ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y, 1))
             return null;
 
         bool hit = ControlledNpc.CurrentTarget.Hit
