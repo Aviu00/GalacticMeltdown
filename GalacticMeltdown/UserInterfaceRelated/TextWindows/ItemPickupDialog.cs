@@ -51,9 +51,11 @@ public class ItemPickupDialog : TextWindow
             }
         }
 
-        List<ListLine> lines = itemLines.Select(itemLine => itemLine.Stackable
-                ? new ItemButton(itemLine, PickUp, stackableItemCounts[itemLine.Id])
-                : new ItemButton(itemLine, PickUp))
+        List<ListLine> lines = itemLines.OrderBy(item => item.Name)
+            .Select(itemLine =>
+                itemLine.Stackable
+                    ? new ItemButton(itemLine, PickUp, stackableItemCounts[itemLine.Id])
+                    : new ItemButton(itemLine, PickUp))
             .Cast<ListLine>()
             .ToList();
         if (!lines.Any())
@@ -61,7 +63,7 @@ public class ItemPickupDialog : TextWindow
             Close();
             return;
         }
-        LineView.SetLines(lines);
+        LineView.SetLines(lines, true);
     }
 
     private void PickUp(Item item)

@@ -28,10 +28,14 @@ public class LineView : View
             : _lines[_pressableLineIndexes[_selectedIndex] - y][x];
     }
 
-    public void SetLines(List<ListLine> lines)
+    public void SetLines(List<ListLine> lines, bool keepSelected = false)
     {
         if (_lines is not null)
         {
+            if (_pressableLineIndexes.Any())
+            {
+                ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Deselect();
+            }
             foreach (var line in _lines.OfType<PressableListLine>())
             {
                 UserInterface.Forget(line);
@@ -52,7 +56,7 @@ public class LineView : View
 
         if (_pressableLineIndexes.Any())
         {
-            _selectedIndex = 0;
+            _selectedIndex = keepSelected ? Math.Min(_selectedIndex, _pressableLineIndexes.Count - 1) : 0;
             ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
         }
         

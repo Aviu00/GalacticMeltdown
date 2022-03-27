@@ -57,7 +57,7 @@ public class LevelMenu : TextWindow
         _noLevels = false;
         List<Button> buttons = new(levelInfos.OrderBy(info => info.Name)
             .Select(levelInfo => new LevelButton(levelInfo, TryStartLevel)));
-        LineView.SetLines(buttons.Cast<ListLine>().ToList());
+        LineView.SetLines(buttons.Cast<ListLine>().ToList(), true);
     }
 
     private void OpenLevelCreationMenu()

@@ -75,7 +75,7 @@ public class InventoryMenu : TextWindow
                     : new ItemButton(itemLine, OpenItemDialog))
             .Cast<ListLine>()
             .ToList());
-        LineView.SetLines(lines);
+        LineView.SetLines(lines, true);
     }
 
     private void OpenEquipmentMenu()
