@@ -30,17 +30,24 @@ public class LineView : View
 
     public void SetLines(List<ListLine> lines)
     {
+        if (_lines is not null)
+        {
+            foreach (var line in _lines.OfType<PressableListLine>())
+            {
+                UserInterface.Forget(line);
+                if (line is InputLine inputLine) inputLine.Updated -= OnInputLineUpdate;
+            }
+        }
+        
         _lines = lines;
         
         _pressableLineIndexes = new List<int>(_lines.Count);
         for (var i = 0; i < _lines.Count; i++)
         {
-            if (_lines[i] is PressableListLine)
-            {
-                _pressableLineIndexes.Add(i);
-                UserInterface.AddChild(this, _lines[i]);
-                if (lines[i] is InputLine inputLine) inputLine.Updated += OnInputLineUpdate;
-            }
+            if (_lines[i] is not PressableListLine) continue;
+            _pressableLineIndexes.Add(i);
+            UserInterface.AddChild(this, _lines[i]);
+            if (lines[i] is InputLine inputLine) inputLine.Updated += OnInputLineUpdate;
         }
 
         if (_pressableLineIndexes.Any())
