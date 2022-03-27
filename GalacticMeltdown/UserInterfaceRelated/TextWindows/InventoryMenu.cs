@@ -39,8 +39,7 @@ public class InventoryMenu : TextWindow
 
     private void LoadCategoryScreen(ItemCategory category)
     {
-        List<ListLine> lines = new List<ListLine>();
-        lines.Add(new TextLine($"<--- {DataHolder.CategoryName[category]} --->"));
+        var lines = new List<ListLine> {new TextLine($"<--- {DataHolder.CategoryName[category]} --->")};
         List<Item> items = _inventory[category];
         if (!items.Any())
         {
@@ -49,7 +48,7 @@ public class InventoryMenu : TextWindow
             return;
         }
 
-        List<Item> itemLines = new List<Item>();
+        List<Item> itemLines = new();
         Dictionary<string, int> stackableItemCounts = new();
         foreach (var item in items)
         {
@@ -69,9 +68,11 @@ public class InventoryMenu : TextWindow
             }
         }
 
-        lines.AddRange(itemLines.Select(itemLine => itemLine.Stackable
-                ? new ItemButton(itemLine, OpenItemDialog, stackableItemCounts[itemLine.Id])
-                : new ItemButton(itemLine, OpenItemDialog))
+        lines.AddRange(itemLines.OrderBy(item => item.Name)
+            .Select(itemLine =>
+                itemLine.Stackable
+                    ? new ItemButton(itemLine, OpenItemDialog, stackableItemCounts[itemLine.Id])
+                    : new ItemButton(itemLine, OpenItemDialog))
             .Cast<ListLine>()
             .ToList());
         LineView.SetLines(lines);
@@ -86,7 +87,7 @@ public class InventoryMenu : TextWindow
 
     private void OpenItemDialog(Item item)
     {
-        ItemDialog itemDialog = new(item, choice => ProcessChoice(choice));
+        ItemDialog itemDialog = new(item, ProcessChoice);
         UserInterface.AddChild(this, itemDialog);
         itemDialog.Open();
         
