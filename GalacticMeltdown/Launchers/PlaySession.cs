@@ -155,6 +155,10 @@ public partial class PlaySession
                 if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int viewRange))
                     _player.ViewRange = viewRange;
                 break;
+            case "godmode":
+                if (_cheatsEnabled && words.Length == 2) _player.GodMode = words[1] == "1";
+                else _player.GodMode = false;
+                break;
         }
     }
 }

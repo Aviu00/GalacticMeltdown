@@ -24,7 +24,7 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] private int _strength;
     [JsonProperty] private int _moveSpeed;
     [JsonProperty] private int _viewRange;
-    
+
     [JsonIgnore]
     public int Strength
     {
@@ -55,7 +55,7 @@ public abstract class Actor : IObjectOnMap
         get => _viewRange;
         set
         {
-            if(value == _viewRange) return;
+            if (value == _viewRange) return;
             _viewRange = value;
             FireStatAffected(Stat.ViewRange);
         }
@@ -71,14 +71,14 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] private List<Effect> _effects;
 
     [JsonIgnore]
-    public int Hp
+    public virtual int Hp
     {
         get => HpLim.Value;
         set
         {
             if (value == HpLim.Value) return;
             HpLim.Value = value;
-            if (HpLim.Value > HpLim.MaxValue.Value) HpLim.Value = HpLim.MaxValue.Value;
+            if (HpLim.Value > HpLim.MaxValue!.Value) HpLim.Value = HpLim.MaxValue.Value;
             if (HpLim.Value == 0) Died?.Invoke(this, EventArgs.Empty);
             FireStatAffected(Stat.Hp);
         }
@@ -127,8 +127,8 @@ public abstract class Actor : IObjectOnMap
     [JsonProperty] public int X { get; private set; }
     [JsonProperty] public int Y { get; private set; }
 
-    public virtual (char symbol, ConsoleColor color) SymbolData { get; protected init; }
-    public virtual ConsoleColor? BgColor { get; protected init; }
+    public abstract (char symbol, ConsoleColor color) SymbolData { get; }
+    public abstract ConsoleColor? BgColor { get; }
 
 
     public event EventHandler Died;
@@ -174,7 +174,7 @@ public abstract class Actor : IObjectOnMap
     {
         if (Hp == 0) return;
         _turnStopped = false;
-        Energy += EnergyLim.MaxValue.Value;
+        Energy += EnergyLim.MaxValue!.Value;
     }
 
     public virtual void StopTurn() => _turnStopped = true;

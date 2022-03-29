@@ -28,6 +28,7 @@ public class Player : Actor, ISightedObject, IControllable
     private ActorActionInfo _actionInfo;
     
     private bool _xray;
+    public bool GodMode { get; set; }
 
     public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
     [JsonIgnore] public override ConsoleColor? BgColor => null;
@@ -44,6 +45,16 @@ public class Player : Actor, ISightedObject, IControllable
         {
             _xray = value;
             VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+    
+    public override int Hp
+    {
+        get => base.Hp;
+        set
+        {
+            if (GodMode) return;
+            base.Hp = value;
         }
     }
 
