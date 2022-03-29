@@ -55,7 +55,7 @@ public class Level
     [JsonProperty] private int _currentlyActiveIndex;
     [JsonProperty] private bool _energySpent;
     [JsonIgnore] private bool _turnAborted;
-    [JsonProperty] private List<Actor> _savedActors;
+    [JsonProperty] private List<Actor> _activeActors;
 
 
     [JsonConstructor]
@@ -131,16 +131,15 @@ public class Level
         foreach (Actor actor in inActiveChunks) WatchActor(actor);
         InvolvedInTurn += NpcInvolvedInTurnHandler;
 
-        List<Actor> currentlyActive;
-        while ((currentlyActive = _savedActors ?? GetActive(inActiveChunks)).Any())
+        while ((_activeActors ??= GetActive(inActiveChunks)).Any())
         {
-            for (; _currentlyActiveIndex < currentlyActive.Count; _currentlyActiveIndex++)
+            for (; _currentlyActiveIndex < _activeActors.Count; _currentlyActiveIndex++)
             {
-                Actor actor = currentlyActive[_currentlyActiveIndex];
+                Actor actor = _activeActors[_currentlyActiveIndex];
                 // The player may have reached the finish or died
                 if (!IsActive)
                 {
-                    return FinishMapTurn();
+                    return FinishLevelTurn();
                 }
 
                 // An actor could die due to actions of another actor
@@ -155,26 +154,25 @@ public class Level
                 if (_turnAborted)
                 {
                     _turnAborted = false;
-                    _savedActors = currentlyActive;
-                    return false;
+                    return IsActive;
                 }
             }
 
-            if (!_energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
+            if (!_energySpent) return FinishLevelTurn(); // avoid infinite loop when no actor does anything
 
             _energySpent = false;
 
             inActiveChunks = GetActorsInActiveChunks();
             foreach (Actor actor in inActiveChunks.Where(actor => !involved.Contains(actor))) WatchActor(actor);
             
-            ResetSavedActors();
+            ResetActiveActors();
         }
 
-        return FinishMapTurn();
+        return FinishLevelTurn();
 
-        bool FinishMapTurn()
+        bool FinishLevelTurn()
         {
-            ResetSavedActors();
+            ResetActiveActors();
             InvolvedInTurn -= NpcInvolvedInTurnHandler;
             foreach (var actor in involved) FinishActorTurn(actor);
             TurnFinished?.Invoke(this, EventArgs.Empty);
@@ -215,9 +213,9 @@ public class Level
         
         void SpentEnergyHandler(object sender, EventArgs _) => _energySpent = true;
 
-        void ResetSavedActors()
+        void ResetActiveActors()
         {
-            _savedActors = null;
+            _activeActors = null;
             _currentlyActiveIndex = 0;
         }
     }
