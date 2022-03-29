@@ -110,4 +110,19 @@ public partial class PlaySession
         UserInterface.AddChild(this, dialog);
         dialog.Open();
     }
+
+    private void ProcessCommand(string command)
+    {
+        command = command.TrimStart();
+        string[] words = command.Split(' ', 1);
+        if (words.Length == 0) return;
+        switch (words[0])
+        {
+            case "exit":
+                Game.SaveAndQuit();
+                break;
+            default:
+                break;
+        }
+    }
 }
