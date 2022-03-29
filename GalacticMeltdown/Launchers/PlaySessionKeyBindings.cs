@@ -123,6 +123,7 @@ public partial class PlaySession
         {MainControl.OpenPauseMenu, OpenPauseMenu},
         {MainControl.OpenInventory, OpenInventory},
         {MainControl.OpenAmmoSelection, OpenAmmoSelectionDialog},
+        {MainControl.OpenConsole, OpenConsole},
         };
     }
 }

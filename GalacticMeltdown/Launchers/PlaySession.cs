@@ -123,10 +123,17 @@ public partial class PlaySession
         dialog.Open();
     }
 
+    private void OpenConsole()
+    {
+        InputBox console = new(ProcessCommand);
+        UserInterface.AddChild(this, console);
+        console.Open();
+    }
+
     private void ProcessCommand(string command)
     {
         command = command.TrimStart();
-        string[] words = command.Split(' ', 1);
+        string[] words = command.Split(' ');
         if (words.Length == 0) return;
         switch (words[0])
         {

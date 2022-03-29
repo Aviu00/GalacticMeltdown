@@ -113,7 +113,8 @@ public static partial class DataHolder
             {ConsoleKey.Subtract, MainControl.ReduceViewRange},
             {ConsoleKey.Z, MainControl.ToggleNoClip},
             {ConsoleKey.X, MainControl.ToggleXRay},
-            {ConsoleKey.Escape, MainControl.OpenPauseMenu}
+            {ConsoleKey.Escape, MainControl.OpenPauseMenu},
+            {ConsoleKey.Divide, MainControl.OpenConsole},
         };
 
         public static Dictionary<ConsoleKey, SelectionControl> Selection = new()

@@ -23,4 +23,5 @@ public enum MainControl
     ToggleXRay, //temporary cheat codes
     OpenPauseMenu,
     OpenAmmoSelection,
+    OpenConsole,
 }
