@@ -54,7 +54,7 @@ public class Level
 
     [JsonProperty] private int _currentlyActiveIndex;
     [JsonProperty] private bool _energySpent;
-    [JsonIgnore] public bool IsSaving;
+    [JsonIgnore] private bool _turnAborted;
     [JsonProperty] private List<Actor> _savedActors;
 
 
@@ -151,8 +151,10 @@ public class Level
                         ActorDidSomething?.Invoke(actor,
                             new ActorActionEventArgs(actionInfo.Action, actionInfo.AffectedCells));
                 }
-                if (IsSaving)
+
+                if (_turnAborted)
                 {
+                    _turnAborted = false;
                     _savedActors = currentlyActive;
                     return false;
                 }
@@ -219,7 +221,7 @@ public class Level
             _currentlyActiveIndex = 0;
         }
     }
-    
+
     public IDrawable GetDrawable(int x, int y)
     {
         if (x == Player.X && y == Player.Y) return Player;
@@ -523,6 +525,8 @@ public class Level
         _chunks[x, y].RemoveNpc(diedNpc);
         NpcDied?.Invoke(npc, EventArgs.Empty);
     }
+    
+    public void AbortTurn() => _turnAborted = true;
 
     private void InvolvedInTurnHandler(object npc, EventArgs e) => InvolvedInTurn?.Invoke(npc, e);
 }

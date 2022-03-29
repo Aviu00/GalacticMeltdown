@@ -98,7 +98,7 @@ public partial class PlaySession
     
     private void SaveAndQuit()
     {
-        _level.IsSaving = true;
+        _level.AbortTurn();
         SaveLevel();
         Game.OpenMainMenu();
     }
