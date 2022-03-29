@@ -14,7 +14,6 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 public class InventoryMenu : TextWindow
 {
     private List<Item> _inventory;
-    private int _currentCategory;
 
     private readonly Player _player;
 
@@ -22,8 +21,7 @@ public class InventoryMenu : TextWindow
     {
         _player = player;
         _inventory = _player.Inventory;
-        _currentCategory = 0;
-        LoadCategoryScreen(Enum.GetValues<ItemCategory>()[_currentCategory]);
+        LoadCategoryScreen();
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.InventoryMenu,
             new Dictionary<InventoryControl, Action>
             {
@@ -37,9 +35,9 @@ public class InventoryMenu : TextWindow
             }));
     }
 
-    private void LoadCategoryScreen(ItemCategory category)
+    private void LoadCategoryScreen()
     {
-        var lines = new List<ListLine> {new TextLine($"<--- {DataHolder.CategoryName[category]} --->")};
+        List<ListLine> lines = new();
         List<Item> items = _inventory;
         if (!items.Any())
         {
@@ -111,19 +109,16 @@ public class InventoryMenu : TextWindow
 
     private void OpenPreviousCategory()
     {
-        _currentCategory -= 1;
-        if (_currentCategory == -1) _currentCategory = Enum.GetValues<ItemCategory>().Length - 1;
         UpdateCurrentScreen();
     }
     
     private void OpenNextCategory()
     {
-        _currentCategory = (_currentCategory + 1) % Enum.GetValues<ItemCategory>().Length;
         UpdateCurrentScreen();
     }
 
     private void UpdateCurrentScreen()
     {
-        LoadCategoryScreen(Enum.GetValues<ItemCategory>()[_currentCategory]);
+        LoadCategoryScreen();
     }
 }

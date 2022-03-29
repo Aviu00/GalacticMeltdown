@@ -85,41 +85,34 @@ public class OverlayView : View
         }
         else if (y == Height - 6 && _player.Equipment[BodyPart.Hands] is not null)
         {
-            string s = $"Held: {_player.Equipment[BodyPart.Hands].Name}";
+            var s = $"Held: {_player.Equipment[BodyPart.Hands].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
         else if (y == Height - 7 && _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null)
         {
-            int count;
-            string name;
-            foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
-            {
-                count = _player.Inventory.Count(item => item.Id == _player.ChosenAmmoId);
-                if (count != 0) name = _player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name;
-                else continue;
-                string s = $"Ammo: {count} ({name})";
-                if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
-                break;
-            }
+            int count = _player.Inventory.Count(item => item.Id == _player.ChosenAmmoId);
+            string name = _player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name;
+            string s = $"Ammo: {count} ({name})";
+            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
         else if (y == Height - 8 && _player.Equipment[BodyPart.Head] is not null)
         {
-            string s = $"Head: {_player.Equipment[BodyPart.Head].Name}";
+            var s = $"Head: {_player.Equipment[BodyPart.Head].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
         else if (y == Height - 9 && _player.Equipment[BodyPart.Torso] is not null)
         {
-            string s = $"Torso: {_player.Equipment[BodyPart.Torso].Name}";
+            var s = $"Torso: {_player.Equipment[BodyPart.Torso].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
         else if (y == Height - 10 && _player.Equipment[BodyPart.Legs] is not null)
         {
-            string s = $"Legs: {_player.Equipment[BodyPart.Legs].Name}";
+            var s = $"Legs: {_player.Equipment[BodyPart.Legs].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
         else if (y == Height - 11 && _player.Equipment[BodyPart.Feet] is not null)
         {
-            string s = $"Feet: {_player.Equipment[BodyPart.Feet].Name}";
+            var s = $"Feet: {_player.Equipment[BodyPart.Feet].Name}";
             if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
         }
         return new ViewCellData(null, null);

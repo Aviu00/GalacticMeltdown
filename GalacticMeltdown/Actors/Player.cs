@@ -158,13 +158,7 @@ public class Player : Actor, ISightedObject, IControllable
     private void SetFirstAvailableAmmoId(WeaponItem weapon)
     {
         if (weapon.AmmoTypes is null) return;
-        foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
-        {
-            ChosenAmmoId = Inventory
-                .FirstOrDefault(item => weapon.AmmoTypes.ContainsKey(item.Id))
-                ?.Id;
-            if (ChosenAmmoId is not null) break;
-        }
+        ChosenAmmoId = Inventory.FirstOrDefault(item => weapon.AmmoTypes.ContainsKey(item.Id))?.Id;
     }
 
     public void Drop(Item item)
