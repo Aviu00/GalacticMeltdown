@@ -13,7 +13,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 public class InventoryMenu : TextWindow
 {
-    private Dictionary<ItemCategory, List<Item>> _inventory;
+    private List<Item> _inventory;
     private int _currentCategory;
 
     private readonly Player _player;
@@ -40,10 +40,10 @@ public class InventoryMenu : TextWindow
     private void LoadCategoryScreen(ItemCategory category)
     {
         var lines = new List<ListLine> {new TextLine($"<--- {DataHolder.CategoryName[category]} --->")};
-        List<Item> items = _inventory[category];
+        List<Item> items = _inventory;
         if (!items.Any())
         {
-            lines.Add(new TextLine("Nothing here yet"));
+            lines.Add(new TextLine("No items"));
             LineView.SetLines(lines);
             return;
         }

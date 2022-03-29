@@ -49,7 +49,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     [JsonProperty] private string _chosenAmmoId;
 
-    [JsonProperty] public Dictionary<ItemCategory, List<Item>> Inventory;
+    [JsonProperty] public List<Item> Inventory;
     [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
     public string ChosenAmmoId
@@ -74,11 +74,7 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        Inventory = new Dictionary<ItemCategory, List<Item>>();
-        foreach (ItemCategory val in Enum.GetValues<ItemCategory>())
-        {
-            Inventory[val] = new List<Item>();
-        }
+        Inventory = new List<Item>();
 
         Equipment = new Dictionary<BodyPart, EquippableItem>();
         foreach (BodyPart val in Enum.GetValues<BodyPart>())
@@ -131,7 +127,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void AddToInventory(Item item)
     {
-        Inventory[item.Category].Add(item);
+        Inventory.Add(item);
     }
 
     public void Unequip(BodyPart bodyPart)
@@ -148,7 +144,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Unequip(item.BodyPart);
 
-        Inventory[item.Category].Remove(item);
+        Inventory.Remove(item);
         Equipment[item.BodyPart] = item;
         item.Equip(this);
 
@@ -164,7 +160,7 @@ public class Player : Actor, ISightedObject, IControllable
         if (weapon.AmmoTypes is null) return;
         foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
         {
-            ChosenAmmoId = Inventory[category]
+            ChosenAmmoId = Inventory
                 .FirstOrDefault(item => weapon.AmmoTypes.ContainsKey(item.Id))
                 ?.Id;
             if (ChosenAmmoId is not null) break;
@@ -175,8 +171,8 @@ public class Player : Actor, ISightedObject, IControllable
     {
         if (item.Stackable)
         {
-            List<Item> items = Inventory[item.Category].Where(match => match.Id == item.Id).ToList();
-            Inventory[item.Category].RemoveAll(match => match.Id == item.Id);
+            List<Item> items = Inventory.Where(match => match.Id == item.Id).ToList();
+            Inventory.RemoveAll(match => match.Id == item.Id);
             foreach (Item droppedItem in items)
             {
                 Level.AddItem(droppedItem, X, Y);
@@ -184,7 +180,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
         else
         {
-            Inventory[item.Category].Remove(item);
+            Inventory.Remove(item);
             Level.AddItem(item, X, Y);
         }
 
@@ -197,7 +193,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Consume(ConsumableItem item)
     {
-        Inventory[item.Category].Remove(item);
+        Inventory.Remove(item);
         item.Consume(this);
     }
 
@@ -286,15 +282,13 @@ public class Player : Actor, ISightedObject, IControllable
 
     private Item GetAmmo()
     {
-        return Enum.GetValues<ItemCategory>()
-            .Select(category => Inventory[category].FirstOrDefault(itemInv => itemInv.Id == ChosenAmmoId))
-            .FirstOrDefault(item => item is not null);
+        return Inventory.FirstOrDefault(item => item.Id == ChosenAmmoId);
     }
 
     private void RemoveAmmo(Item ammo)
     {
-        Inventory[ammo.Category].Remove(ammo);
-        if (!Inventory[ammo.Category].Any(match => ammo.Id == match.Id))
+        Inventory.Remove(ammo);
+        if (!Inventory.Any(match => ammo.Id == match.Id))
             SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
     }
 

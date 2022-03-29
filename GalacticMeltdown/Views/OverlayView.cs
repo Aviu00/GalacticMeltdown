@@ -94,8 +94,8 @@ public class OverlayView : View
             string name;
             foreach (ItemCategory category in Enum.GetValues<ItemCategory>())
             {
-                count = _player.Inventory[category].Count(item => item.Id == _player.ChosenAmmoId);
-                if (count != 0) name = _player.Inventory[category].First(item => item.Id == _player.ChosenAmmoId).Name;
+                count = _player.Inventory.Count(item => item.Id == _player.ChosenAmmoId);
+                if (count != 0) name = _player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name;
                 else continue;
                 string s = $"Ammo: {count} ({name})";
                 if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
