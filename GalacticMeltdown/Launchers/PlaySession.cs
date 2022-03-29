@@ -59,23 +59,25 @@ public partial class PlaySession
 
     private void MapTurn()
     {
-        if (!_level.DoTurn())
+        _level.DoTurn();
+        if (_level.PlayerWon is null)
+        {
+            if (_saveCounter.FinishedCounting)
+            {
+                SaveLevel();
+                _saveCounter.ResetTimer();
+            }
+            UserInterface.SetTask(this, MapTurn);
+        }
+        else
         {
             UserInterface.PlayAnimations();
             Thread.Sleep(400);
-            EndGameMessage endGameMessage = new(_level.PlayerWon ? "You won" : "You died");
+            EndGameMessage endGameMessage = new(_level.PlayerWon.Value ? "You won" : "You died");
             UserInterface.AddChild(this, endGameMessage);
             endGameMessage.Open();
             UserInterface.SetTask(this, Game.OpenMainMenu);
-            return;
         }
-
-        if (_saveCounter.FinishedCounting)
-        {
-            SaveLevel();
-            _saveCounter.ResetTimer();
-        }
-        UserInterface.SetTask(this, MapTurn);
     }
 
     private void SaveLevel()

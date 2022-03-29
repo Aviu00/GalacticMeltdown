@@ -36,9 +36,7 @@ public class Level
 
     [JsonIgnore]
     public (int x, int y) Size => (_chunks.GetLength(0) * ChunkSize + 1, _chunks.GetLength(1) * ChunkSize + 1);
-
-    [JsonProperty] public bool IsActive { get; private set; }
-    [JsonProperty] public bool PlayerWon { get; private set; }
+    [JsonProperty] public bool? PlayerWon { get; private set; }
 
     [JsonProperty] private readonly EnemySpawner _enemySpawner;
     [JsonIgnore] public OverlayView OverlayView;
@@ -73,8 +71,7 @@ public class Level
         _southernWall = southernWall;
         _westernWall = westernWall;
         _finishPos = finishPos;
-        IsActive = true;
-        PlayerWon = false;
+        PlayerWon = null;
         Player = new Player(startPos.x, startPos.y, this);
         (int x, int y) = GetChunkCoords(startPos.x, startPos.y);
         _chunks[x, y].WasVisitedByPlayer = true;
@@ -122,9 +119,9 @@ public class Level
         UpdateActiveChunks();
     }
     
-    public bool DoTurn()
+    public void DoTurn()
     {
-        if (!IsActive) return false;
+        if (PlayerWon is not null) return;
 
         List<Actor> inActiveChunks = GetActorsInActiveChunks();
         HashSet<Actor> involved = new();
@@ -137,9 +134,10 @@ public class Level
             {
                 Actor actor = _activeActors[_currentlyActiveIndex];
                 // The player may have reached the finish or died
-                if (!IsActive)
+                if (PlayerWon is not null)
                 {
-                    return FinishLevelTurn();
+                    FinishLevelTurn();
+                    return;
                 }
 
                 // An actor could die due to actions of another actor
@@ -154,11 +152,15 @@ public class Level
                 if (_turnAborted)
                 {
                     _turnAborted = false;
-                    return IsActive;
+                    return;
                 }
             }
 
-            if (!_energySpent) return FinishLevelTurn(); // avoid infinite loop when no actor does anything
+            if (!_energySpent)
+            {
+                FinishLevelTurn();
+                return;
+            }
 
             _energySpent = false;
 
@@ -168,15 +170,15 @@ public class Level
             ResetActiveActors();
         }
 
-        return FinishLevelTurn();
+        FinishLevelTurn();
+        return;
 
-        bool FinishLevelTurn()
+        void FinishLevelTurn()
         {
             ResetActiveActors();
             InvolvedInTurn -= NpcInvolvedInTurnHandler;
             foreach (var actor in involved) FinishActorTurn(actor);
             TurnFinished?.Invoke(this, EventArgs.Empty);
-            return IsActive;
         }
 
         List<Actor> GetActive(IEnumerable<Actor> possiblyActive)
@@ -272,9 +274,7 @@ public class Level
             }
         }
 
-        if (!isPlayer || Player.X != _finishPos.x || Player.Y != _finishPos.y) return;
-        IsActive = false;
-        PlayerWon = true;
+        if (isPlayer && Player.X == _finishPos.x && Player.Y == _finishPos.y) PlayerWon = true;
     }
 
     private void UpdateActiveChunks()
@@ -401,7 +401,6 @@ public class Level
     private void PlayerDiedHandler(object _, EventArgs __)
     {
         PlayerWon = false;
-        IsActive = false;
     }
     
     private void SomethingMovedHandler(object sender, MoveEventArgs e)
