@@ -41,6 +41,7 @@ public static class FilesystemLevelManager
         Level level = new MapGenerator(seed).Generate();
         // Save seed and name
         string path = Path.Combine(GetSaveFolder(), name);
+        Directory.CreateDirectory(path);
         File.WriteAllText(Path.Combine(path, "seed.txt"), seed.ToString());
         SaveLevel(level, name);
         return level;
@@ -60,8 +61,7 @@ public static class FilesystemLevelManager
             PreserveReferencesHandling = PreserveReferencesHandling.Objects,
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
         });
-
-        Directory.CreateDirectory(path);
+        
         File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
     }
 

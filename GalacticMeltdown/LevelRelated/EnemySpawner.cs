@@ -121,13 +121,13 @@ public class EnemySpawner
         List<EnemyTypeData> list = new();
         List<EnemyTypeData> enemies = DataHolder.EnemyTypes.Values.ToList();
         var curr = currency;
-        enemies = enemies.Where(enemy => enemy.Cost <= curr).ToList();
+        enemies.RemoveAll(enemy => enemy.Cost > curr);
         while (enemies.Count > 0)
         {
             list.Add(enemies[rng.Next(0, enemies.Count)]);
             currency -= list[^1].Cost;
             curr = currency;
-            enemies = enemies.Where(enemy => enemy.Cost <= curr).ToList();
+            enemies.RemoveAll(enemy => enemy.Cost > curr);
         }
         return list;
     }
