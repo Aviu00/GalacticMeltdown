@@ -49,6 +49,7 @@ public partial class LevelView : View
     private HashSet<(int, int)> _visiblePoints;
     [JsonProperty] private SeenTilesArray _seenCells;
 
+    [JsonIgnore]
     public bool ShowCoordinates
     {
         get => _showCoordinates;
