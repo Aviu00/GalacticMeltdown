@@ -32,9 +32,9 @@ public class OverlayView : View
     private const ConsoleColor DefColor = DataHolder.Colors.DefColor;
     private const ConsoleColor OtherTextColor = ConsoleColor.Blue;
 
-    private Level _level; // Enemy-in-sight indicator, (?) Event log
-    private Player _player; // State, Effects, (?) Event log, Enemy-in-sight indicator
-    // Performance monitor? Coordinates of controlled object, player?
+    private Level _level; // Maybe later
+    private Player _player; // State, equipment
+    // Performance monitor?
 
     private StatInfo _hpInfo;
     private StatInfo _energyInfo;

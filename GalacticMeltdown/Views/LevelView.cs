@@ -43,9 +43,23 @@ public partial class LevelView : View
 
     private IFocusable _focusObject;
 
+    private bool _showCoordinates;
+
     private ObservableCollection<ISightedObject> _sightedObjects;
     private HashSet<(int, int)> _visiblePoints;
     [JsonProperty] private SeenTilesArray _seenCells;
+
+    public bool ShowCoordinates
+    {
+        get => _showCoordinates;
+        set
+        {
+            _showCoordinates = value;
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private string CoordinateString => $"X: {_focusObject.X} Y: {_focusObject.Y}";
 
     private (int minX, int minY, int maxX, int maxY) ViewBounds => 
         (_focusObject.X - Width / 2, _focusObject.Y - Height / 2,
@@ -94,24 +108,31 @@ public partial class LevelView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
+        ConsoleColor? backgroundColor = null;
+        
+        if (ShowCoordinates && y == Height - 1 && x < CoordinateString.Length && CoordinateString[x] != ' ')
+        {
+            return new ViewCellData((CoordinateString[x], ConsoleColor.Black), ConsoleColor.White);
+        }
+        
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
         coords = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
+
+
         var (levelX, levelY) = coords;
-        
-        ConsoleColor? backgroundColor = null;
-        if (DrawCursorLine && _cursorLinePoints.Contains(coords)) 
-            backgroundColor = GetCursorLineColor(levelX, levelY);
-        
+
+        if (DrawCursorLine && _cursorLinePoints.Contains(coords)) backgroundColor = GetCursorLineColor(levelX, levelY);
+
         if (_cursor is not null && _cursor.X == levelX && _cursor.Y == levelY) backgroundColor = _cursor.Color;
-        
+
         if (x == centerScreenX && y == centerScreenY)
         {
             // Draw object in focus on top of everything else
             if (_focusObject is IDrawable drawable)
                 return new ViewCellData(drawable.SymbolData, backgroundColor ?? drawable.BgColor);
         }
-        
+
         if (_visiblePoints.Contains(coords))
         {
             IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
@@ -121,9 +142,10 @@ public partial class LevelView : View
         }
 
         if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-            return new ViewCellData((_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
+            return new ViewCellData(
+                (_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
                 backgroundColor);
-        
+
         return new ViewCellData(null, backgroundColor);
     }
 
