@@ -22,15 +22,19 @@ public class InputBox
     {
         InputView view = new();
         UserInterface.SetViewPositioner(this, new ExactViewPositioner(view));
-        UserInterface.SetController(this,
-            new TextInputHandler(view.AddCharacter,
-                UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.TextInput,
-                    new Dictionary<TextInputControl, Action>
+        UserInterface.SetController(this, new TextInputHandler(view.AddCharacter, UtilityFunctions.JoinDictionaries(
+            DataHolder.CurrentBindings.TextInput, new Dictionary<TextInputControl, Action>
+            {
+                {TextInputControl.DeleteCharacter, view.DeleteCharacter},
+                {TextInputControl.Back, () => UserInterface.Forget(this)},
+                {
+                    TextInputControl.FinishInput, () =>
                     {
-                        {TextInputControl.DeleteCharacter, view.DeleteCharacter},
-                        {TextInputControl.Back, () => UserInterface.Forget(this)},
-                        {TextInputControl.FinishInput, () => _send(view.Text)},
-                    })));
+                        UserInterface.Forget(this);
+                        _send(view.Text);
+                    }
+                },
+            })));
         UserInterface.TakeControl(this);
     }
 }

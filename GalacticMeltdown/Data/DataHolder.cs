@@ -152,6 +152,7 @@ public static partial class DataHolder
         {
             {ConsoleKey.Backspace, TextInputControl.DeleteCharacter},
             {ConsoleKey.Escape, TextInputControl.Back},
+            {ConsoleKey.Enter, TextInputControl.FinishInput},
         };
 
         public static Dictionary<ConsoleKey, LevelMenuControl> LevelMenu = new()
@@ -174,7 +175,7 @@ public static partial class DataHolder
             {ConsoleKey.Escape, InventoryControl.Back},
             {ConsoleKey.Q, InventoryControl.OpenEquipmentMenu},
             {ConsoleKey.C, InventoryControl.OpenCategorySelection},
-            {ConsoleKey.Divide, InventoryControl.EnterSearchMode},
+            {ConsoleKey.Divide, InventoryControl.OpenSearchBox},
         };
     }
     

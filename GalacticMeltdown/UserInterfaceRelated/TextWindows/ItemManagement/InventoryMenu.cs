@@ -33,6 +33,7 @@ public class InventoryMenu : TextWindow
                 {InventoryControl.Up, LineView.SelectPrev},
                 {InventoryControl.OpenEquipmentMenu, OpenEquipmentMenu},
                 {InventoryControl.OpenCategorySelection, OpenCategoryDialog},
+                {InventoryControl.OpenSearchBox, OpenSearchBox}
             }));
     }
 
@@ -115,6 +116,23 @@ public class InventoryMenu : TextWindow
         {
             if (category is null) _inventoryFilters.Remove(InventoryFilterType.Category);
             else _inventoryFilters[InventoryFilterType.Category] = item => item.Category == category;
+            UpdateLines();
+        }
+    }
+
+    private void OpenSearchBox()
+    {
+        InputBox searchBox = new(SetTextFilter);
+        UserInterface.AddChild(this, searchBox);
+        searchBox.Open();
+
+        void SetTextFilter(string query)
+        {
+            if (query == "")
+                _inventoryFilters.Remove(InventoryFilterType.Search);
+            else
+                _inventoryFilters[InventoryFilterType.Search] = item =>
+                    item.Name.ToLower().Contains(query.ToLower());
             UpdateLines();
         }
     }

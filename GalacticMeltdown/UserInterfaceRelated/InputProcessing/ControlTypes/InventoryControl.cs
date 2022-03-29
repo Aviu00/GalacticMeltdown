@@ -10,5 +10,5 @@ public enum InventoryControl
     Back,
     OpenEquipmentMenu,
     OpenCategorySelection,
-    EnterSearchMode,
+    OpenSearchBox,
 }
