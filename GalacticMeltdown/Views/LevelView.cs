@@ -75,12 +75,12 @@ public partial class LevelView : View
     private LevelView()
     {
     }
-    public LevelView(Level level, IFocusable initialFocusObj)
+    public LevelView(Level level)
     {
         _level = level;
         var (width, height) = _level.Size;
         _seenCells = new SeenTilesArray(width, height);
-        _focusObject = initialFocusObj;
+        _focusObject = _level.Player;
         Init();
     }
 

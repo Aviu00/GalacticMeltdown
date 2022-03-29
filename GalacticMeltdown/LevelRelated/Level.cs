@@ -66,7 +66,7 @@ public class Level
         (int x, int y) finishPos)
     {
         _chunks = chunks;
-        _doorCounters = new();
+        _doorCounters = new Dictionary<(int x, int y), Counter>();
 
         _southernWall = southernWall;
         _westernWall = westernWall;
@@ -78,7 +78,7 @@ public class Level
         _enemySpawner = new EnemySpawner(this);
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
         _controllableObjects = new ObservableCollection<IControllable> {Player};
-        LevelView = new LevelView(this, Player);
+        LevelView = new LevelView(this);
 
         Init();
     }
