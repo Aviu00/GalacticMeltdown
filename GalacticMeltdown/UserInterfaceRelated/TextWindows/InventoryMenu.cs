@@ -14,7 +14,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 public class InventoryMenu : TextWindow
 {
     private List<Item> _inventory;
-    private List<Func<Item, bool>> _conditions;
+    private Dictionary<InventoryFilterType, Func<Item, bool>> _inventoryFilters;
 
     private readonly Player _player;
 
@@ -22,6 +22,7 @@ public class InventoryMenu : TextWindow
     {
         _player = player;
         _inventory = _player.Inventory;
+        _inventoryFilters = new Dictionary<InventoryFilterType, Func<Item, bool>>();
         UpdateLines();
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.InventoryMenu,
             new Dictionary<InventoryControl, Action>
@@ -30,25 +31,16 @@ public class InventoryMenu : TextWindow
                 {InventoryControl.Select, LineView.PressCurrent},
                 {InventoryControl.Down, LineView.SelectNext},
                 {InventoryControl.Up, LineView.SelectPrev},
-                {InventoryControl.Left, OpenPreviousCategory},
-                {InventoryControl.Right, OpenNextCategory},
-                {InventoryControl.OpenEquipmentMenu, OpenEquipmentMenu}
+                {InventoryControl.OpenEquipmentMenu, OpenEquipmentMenu},
+                {InventoryControl.OpenCategorySelection, OpenCategoryDialog},
             }));
     }
 
     private void UpdateLines()
     {
-        List<ListLine> lines = new();
-        if (!_inventory.Any())
-        {
-            lines.Add(new TextLine("No items"));
-            LineView.SetLines(lines);
-            return;
-        }
-
         List<Item> itemLines = new();
         Dictionary<string, int> stackableItemCounts = new();
-        foreach (Item item in _inventory.Where(item => _conditions.All(cond => cond(item))))
+        foreach (Item item in _inventory.Where(item => _inventoryFilters.Values.All(cond => cond(item))))
         {
             if (item.Stackable)
             {
@@ -66,14 +58,20 @@ public class InventoryMenu : TextWindow
             }
         }
 
-        lines.AddRange(itemLines.OrderBy(item => item.Name)
-            .Select(itemLine =>
-                itemLine.Stackable
-                    ? new ItemButton(itemLine, OpenItemDialog, stackableItemCounts[itemLine.Id])
-                    : new ItemButton(itemLine, OpenItemDialog))
-            .Cast<ListLine>()
-            .ToList());
-        LineView.SetLines(lines, true);
+        if (!itemLines.Any())
+        {
+            LineView.SetLines(new List<ListLine> {new TextLine("No items")});
+            return;
+        }
+
+        LineView.SetLines(
+            itemLines.OrderBy(item => item.Name)
+                .Select(itemLine =>
+                    itemLine.Stackable
+                        ? new ItemButton(itemLine, OpenItemDialog, stackableItemCounts[itemLine.Id])
+                        : new ItemButton(itemLine, OpenItemDialog))
+                .Cast<ListLine>()
+                .ToList(), true);
     }
 
     private void OpenEquipmentMenu()
@@ -107,13 +105,17 @@ public class InventoryMenu : TextWindow
         }
     }
 
-    private void OpenPreviousCategory()
+    private void OpenCategoryDialog()
     {
-        UpdateLines();
-    }
-    
-    private void OpenNextCategory()
-    {
-        UpdateLines();
+        CategoryDialog dialog = new(SetCategory);
+        UserInterface.AddChild(this, dialog);
+        dialog.Open();
+
+        void SetCategory(ItemCategory? category)
+        {
+            if (category is null) _inventoryFilters.Remove(InventoryFilterType.Category);
+            else _inventoryFilters[InventoryFilterType.Category] = item => item.Category == category;
+            UpdateLines();
+        }
     }
 }

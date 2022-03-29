@@ -8,14 +8,14 @@ public abstract class TextWindow
 {
     protected LineView LineView = new();
     protected Controller Controller;
-    
+
     public virtual void Open()
     {
         UserInterface.SetViewPositioner(this, new BasicViewPositioner(LineView));
         UserInterface.SetController(this, Controller);
         UserInterface.TakeControl(this);
     }
-    
+
     public void Close()
     {
         UserInterface.Forget(this);

@@ -9,14 +9,14 @@ using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
-public class ChoiceDialog<T> : TextWindow
+public abstract class ChoiceDialog<T> : TextWindow
 {
     private Action<T> _send;
     protected List<(string text, T choice)> Options;
     private string _message;
     private bool _closeOnChoice;
 
-    public ChoiceDialog(List<(string text, T choice)> options, Action<T> send, string message = null,
+    protected ChoiceDialog(List<(string text, T choice)> options, Action<T> send, string message = null,
         bool closeOnChoice = true)
     {
         _send = send;
@@ -34,15 +34,15 @@ public class ChoiceDialog<T> : TextWindow
         UpdateLines();
     }
 
-    protected void UpdateLines()
+    private void UpdateLines()
     {
-        List<ListLine> lines = new List<ListLine>();
+        List<ListLine> lines = new();
         if (_message is not null) lines.Add(new TextLine(_message));
         lines.AddRange(Options.Select(info => new Button(info.text, "", () => SendChoice(info.choice))));
         LineView.SetLines(lines);
     }
 
-    protected virtual void SendChoice(T choice)
+    private void SendChoice(T choice)
     {
         if (_closeOnChoice) Close();
         _send(choice);
