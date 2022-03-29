@@ -11,14 +11,14 @@ public class RoomTypesExtractor : XmlExtractor
 {
     private const int ChunkSize = DataHolder.ChunkSize;
 
-    public readonly List<RoomTypes> Rooms;
+    public readonly List<RoomType> Rooms;
 
     private readonly Dictionary<string, TileTypeData> _tileTypes;
 
     public RoomTypesExtractor(Dictionary<string, TileTypeData> tileTypes)
     {
         _tileTypes = tileTypes;
-        Rooms = new List<RoomTypes>();
+        Rooms = new List<RoomType>();
         ParseDocument("Rooms.xml");
     }
 
@@ -59,7 +59,7 @@ public class RoomTypesExtractor : XmlExtractor
             }
 
             TileInformation[,] interior = ConvertPattern(stringPattern, terrainInfo);
-            Rooms.Add(new RoomTypes(interior, type, chance, rotationalSymmetry, centralSymmetry));
+            Rooms.Add(new RoomType(interior, type, chance, rotationalSymmetry, centralSymmetry));
         }
     }
     
@@ -149,7 +149,7 @@ public class RoomTypesExtractor : XmlExtractor
     }
 }
 
-public record RoomTypes(TileInformation[,] RoomInterior, int Type, int Chance, bool RotationalSymmetry,
+public record RoomType(TileInformation[,] RoomInterior, int Type, int Chance, bool RotationalSymmetry,
     bool CentralSymmetry);
 
 public struct TileInformation

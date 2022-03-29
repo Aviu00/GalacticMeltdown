@@ -15,7 +15,7 @@ public class MapGenerator
     private const int MapWidth = 10; //width is specified; height is random
     private const int ConnectionChance = 60; //room connection chance(this probably shouldn't be touched)
     private const int ChunkSize = DataHolder.ChunkSize;
-    private readonly List<RoomTypes> _roomTypes;
+    private readonly List<RoomType> _roomTypes;
 
     private readonly Random _rng;
     
@@ -77,8 +77,7 @@ public class MapGenerator
             }
             else
             {
-                newSize = Math.Min(sizeRestriction, newSize + dif);
-                newSize = Math.Max(newSize, minSize);
+                newSize = Math.Max(Math.Min(sizeRestriction, newSize + dif), minSize);
             }
 
             int newMin;
@@ -253,7 +252,7 @@ public class MapGenerator
 
     private void FinalizeRoom(int x, int y)
     {
-        RoomTypes room;
+        RoomType room;
         if (_tempMap[x, y].IsEndPoint)
         {
             room = _roomTypes[0];
@@ -304,12 +303,12 @@ public class MapGenerator
         return roomType >= validator && (roomType, validator) is not (1, 2) and not (2, 1);
     }
 
-    private void RotateRoomPattern(int x, int y, TileInformation[,] roomData, RoomTypes room)
+    private void RotateRoomPattern(int x, int y, TileInformation[,] roomData, RoomType roomType)
     {
-        if (room.RotationalSymmetry) return;
+        if (roomType.RotationalSymmetry) return;
         List<int> possibleRotations = new() {0, 90, 180, 270};
         var mapRoom = _tempMap[x, y];
-        switch (room.Type)
+        switch (roomType.Type)
         {
             case 0:
                 if (mapRoom.SouthConnection is null) possibleRotations.Remove(0);
@@ -364,7 +363,7 @@ public class MapGenerator
                 break;
         }
 
-        if (room.CentralSymmetry)
+        if (roomType.CentralSymmetry)
         {
             if (possibleRotations.Contains(0)) possibleRotations.Remove(180);
             if (possibleRotations.Contains(90)) possibleRotations.Remove(270);

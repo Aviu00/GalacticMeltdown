@@ -185,7 +185,7 @@ public static partial class DataHolder
         LootTables = new LootTableDataExtractor().LootTables;
     }
 
-    public static List<RoomTypes> GetRooms()
+    public static List<RoomType> GetRooms()
     {
         return new RoomTypesExtractor(TileTypes).Rooms;
     }
