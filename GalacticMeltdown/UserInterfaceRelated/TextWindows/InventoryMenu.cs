@@ -14,6 +14,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 public class InventoryMenu : TextWindow
 {
     private List<Item> _inventory;
+    private List<Func<Item, bool>> _conditions;
 
     private readonly Player _player;
 
@@ -21,7 +22,7 @@ public class InventoryMenu : TextWindow
     {
         _player = player;
         _inventory = _player.Inventory;
-        LoadCategoryScreen();
+        UpdateLines();
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.InventoryMenu,
             new Dictionary<InventoryControl, Action>
             {
@@ -35,11 +36,10 @@ public class InventoryMenu : TextWindow
             }));
     }
 
-    private void LoadCategoryScreen()
+    private void UpdateLines()
     {
         List<ListLine> lines = new();
-        List<Item> items = _inventory;
-        if (!items.Any())
+        if (!_inventory.Any())
         {
             lines.Add(new TextLine("No items"));
             LineView.SetLines(lines);
@@ -48,7 +48,7 @@ public class InventoryMenu : TextWindow
 
         List<Item> itemLines = new();
         Dictionary<string, int> stackableItemCounts = new();
-        foreach (var item in items)
+        foreach (Item item in _inventory.Where(item => _conditions.All(cond => cond(item))))
         {
             if (item.Stackable)
             {
@@ -119,6 +119,6 @@ public class InventoryMenu : TextWindow
 
     private void UpdateCurrentScreen()
     {
-        LoadCategoryScreen();
+        UpdateLines();
     }
 }
