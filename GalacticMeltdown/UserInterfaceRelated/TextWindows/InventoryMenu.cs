@@ -103,21 +103,16 @@ public class InventoryMenu : TextWindow
                     _player.Consume((ConsumableItem) item);
                     break;
             }
-            UpdateCurrentScreen();
+            UpdateLines();
         }
     }
 
     private void OpenPreviousCategory()
     {
-        UpdateCurrentScreen();
+        UpdateLines();
     }
     
     private void OpenNextCategory()
-    {
-        UpdateCurrentScreen();
-    }
-
-    private void UpdateCurrentScreen()
     {
         UpdateLines();
     }

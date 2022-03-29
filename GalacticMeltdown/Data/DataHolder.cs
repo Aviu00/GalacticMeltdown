@@ -173,6 +173,8 @@ public static partial class DataHolder
             {ConsoleKey.Enter, InventoryControl.Select},
             {ConsoleKey.Escape, InventoryControl.Back},
             {ConsoleKey.Q, InventoryControl.OpenEquipmentMenu},
+            {ConsoleKey.C, InventoryControl.OpenCategorySelection},
+            {ConsoleKey.Divide, InventoryControl.EnterSearchMode},
         };
     }
     

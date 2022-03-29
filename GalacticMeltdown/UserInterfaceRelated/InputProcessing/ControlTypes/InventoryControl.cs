@@ -9,4 +9,6 @@ public enum InventoryControl
     Select,
     Back,
     OpenEquipmentMenu,
+    OpenCategorySelection,
+    EnterSearchMode,
 }
