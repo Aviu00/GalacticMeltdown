@@ -144,10 +144,12 @@ public partial class PlaySession
                 if (words.Length == 2) _cheatsEnabled = words[1] == "1";
                 break;
             case "xray":
-                if (_cheatsEnabled) _player.Xray = !_player.Xray;
+                if (_cheatsEnabled && words.Length == 2) _player.Xray = words[1] == "1";
+                else _player.Xray = false;
                 break;
             case "noclip":
-                if (_cheatsEnabled) _player.NoClip = !_player.NoClip;
+                if (_cheatsEnabled && words.Length == 2) _player.NoClip = words[1] == "1";
+                else _player.NoClip = false;
                 break;
             case "viewrange":
                 if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int viewRange))
