@@ -82,7 +82,6 @@ public class Level
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
         _controllableObjects = new ObservableCollection<IControllable> {Player};
         LevelView = new LevelView(this, Player);
-        _currentlyActiveIndex = 0;
 
         Init();
     }
@@ -135,14 +134,12 @@ public class Level
         List<Actor> currentlyActive;
         while ((currentlyActive = _savedActors ?? GetActive(inActiveChunks)).Any())
         {
-            _savedActors = null;
             for (; _currentlyActiveIndex < currentlyActive.Count; _currentlyActiveIndex++)
             {
                 Actor actor = currentlyActive[_currentlyActiveIndex];
                 // The player may have reached the finish or died
                 if (!IsActive)
                 {
-                    _currentlyActiveIndex = 0;
                     return FinishMapTurn();
                 }
 
@@ -160,7 +157,6 @@ public class Level
                     return false;
                 }
             }
-            _currentlyActiveIndex = 0;
 
             if (!_energySpent) return FinishMapTurn(); // avoid infinite loop when no actor does anything
 
@@ -168,12 +164,15 @@ public class Level
 
             inActiveChunks = GetActorsInActiveChunks();
             foreach (Actor actor in inActiveChunks.Where(actor => !involved.Contains(actor))) WatchActor(actor);
+            
+            ResetSavedActors();
         }
 
         return FinishMapTurn();
 
         bool FinishMapTurn()
         {
+            ResetSavedActors();
             InvolvedInTurn -= NpcInvolvedInTurnHandler;
             foreach (var actor in involved) FinishActorTurn(actor);
             TurnFinished?.Invoke(this, EventArgs.Empty);
@@ -213,6 +212,12 @@ public class Level
         }
         
         void SpentEnergyHandler(object sender, EventArgs _) => _energySpent = true;
+
+        void ResetSavedActors()
+        {
+            _savedActors = null;
+            _currentlyActiveIndex = 0;
+        }
     }
     
     public IDrawable GetDrawable(int x, int y)
