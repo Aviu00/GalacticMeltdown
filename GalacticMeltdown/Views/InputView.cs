@@ -19,8 +19,10 @@ public class InputView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        ConsoleColor? bgColor = null;
-        return new ViewCellData(null, bgColor);
+        ConsoleColor? bgColor = y > _currentText.Length / Width ? null : BgColor;
+        (char, ConsoleColor TextColor)? symbolData =
+            y * Width + x < _currentText.Length ? (_currentText[y * Width + x], TextColor) : null;
+        return new ViewCellData(symbolData, bgColor);
     }
     
     private void DeleteCharacter()
