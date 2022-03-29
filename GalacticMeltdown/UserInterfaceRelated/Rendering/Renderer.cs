@@ -75,21 +75,11 @@ public class Renderer
         InitPixelFuncArr(Console.WindowWidth, Console.WindowHeight);
     }
 
-    public void Redraw()
-    {
-        if (RedrawOnScreenSizeChange()) return;
-        OutputAllCells();
-    }
-
     public void PlayAnimations()
     {
         foreach (var (view, viewX, viewY, viewCellData, delay) in _animQueue)
         {
-            if (RedrawOnScreenSizeChange())
-            {
-                Redraw();
-                return;
-            }
+            if (RedrawOnScreenSizeChange()) return;
 
             var (viewMinScreenX, viewMinScreenY, _, _) = _viewBoundaries[view];
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
