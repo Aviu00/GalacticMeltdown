@@ -34,7 +34,7 @@ public class InputBox
                         _send(view.Text);
                     }
                 },
-            })));
+            }), chr => chr == ' ' || !(char.IsControl(chr) || char.IsSeparator(chr) || char.IsSurrogate(chr))));
         UserInterface.TakeControl(this);
     }
 }
