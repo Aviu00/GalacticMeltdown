@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Utility;
@@ -137,6 +138,15 @@ public static class UtilityFunctions
     public static bool ObjectInSquareArea(int x0, int y0, int x1, int y1, int radius)
     {
         return Math.Abs(x0 - x1) <= radius && Math.Abs(y0 - y1) <= radius;
+    }
+
+    public static void ApplyStateChangers(IEnumerable<ActorStateChangerData> stateChangers, Actor target)
+    {
+        if (stateChangers is null) return;
+        foreach (var changer in stateChangers)
+        {
+            DataHolder.ActorStateChangers[changer.Type](target, changer.Power, changer.Duration);
+        }
     }
 
     public static int CountDigits(int num) => num == 0 ? 1 : (int) Math.Floor(Math.Log10(Math.Abs(num))) + 1;

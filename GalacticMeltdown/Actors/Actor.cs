@@ -63,8 +63,8 @@ public abstract class Actor : IObjectOnMap
 
     [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
-    [JsonProperty] public readonly LimitedNumber HpLim;
-    [JsonProperty] public readonly LimitedNumber EnergyLim;
+    [JsonProperty] private readonly LimitedNumber _hpLim;
+    [JsonProperty] private readonly LimitedNumber _energyLim;
     [JsonProperty] private int _dexterity;
     [JsonProperty] private int _defence;
 
@@ -73,13 +73,13 @@ public abstract class Actor : IObjectOnMap
     [JsonIgnore]
     public virtual int Hp
     {
-        get => HpLim.Value;
+        get => _hpLim.Value;
         set
         {
-            if (value == HpLim.Value) return;
-            HpLim.Value = value;
-            if (HpLim.Value > HpLim.MaxValue!.Value) HpLim.Value = HpLim.MaxValue.Value;
-            if (HpLim.Value == 0) Died?.Invoke(this, EventArgs.Empty);
+            if (value == _hpLim.Value) return;
+            _hpLim.Value = value;
+            if (_hpLim.Value > _hpLim.MaxValue!.Value) _hpLim.Value = _hpLim.MaxValue.Value;
+            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
             FireStatAffected(Stat.Hp);
         }
     }
@@ -87,12 +87,12 @@ public abstract class Actor : IObjectOnMap
     [JsonIgnore]
     public int Energy
     {
-        get => EnergyLim.Value;
+        get => _energyLim.Value;
         set
         {
-            if (value == EnergyLim.Value) return;
-            if (value < EnergyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
-            EnergyLim.Value = value;
+            if (value == _energyLim.Value) return;
+            if (value < _energyLim.Value) SpentEnergy?.Invoke(this, EventArgs.Empty);
+            _energyLim.Value = value;
             FireStatAffected(Stat.Energy);
         }
     }
@@ -121,8 +121,29 @@ public abstract class Actor : IObjectOnMap
         }
     }
 
-    [JsonIgnore] public int MaxHp => (int) HpLim.MaxValue!;
-    [JsonIgnore] public int MaxEnergy => (int) EnergyLim.MaxValue!;
+    [JsonIgnore] public int MaxHp
+    {
+        get => (int) _hpLim.MaxValue!;
+        set
+        {
+            if (value == _hpLim.MaxValue) return;
+            _hpLim.MaxValue = value;
+            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
+            FireStatAffected(Stat.Hp);
+        }
+    }
+
+    [JsonIgnore] public int MaxEnergy
+    {
+        get => (int) _energyLim.MaxValue!;
+        set
+        {
+            if (value == _energyLim.MaxValue) return;
+            _energyLim.MaxValue = value;
+            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
+            FireStatAffected(Stat.Energy);
+        }
+    }
 
     [JsonProperty] public int X { get; private set; }
     [JsonProperty] public int Y { get; private set; }
@@ -145,8 +166,8 @@ public abstract class Actor : IObjectOnMap
     {
         _effects = new();
         Level = level;
-        HpLim = new LimitedNumber(maxHp, maxHp, 0);
-        EnergyLim = new LimitedNumber(maxEnergy, maxEnergy);
+        _hpLim = new LimitedNumber(maxHp, maxHp, 0);
+        _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
         Dexterity = dexterity;
         Defence = defence;
         ViewRange = viewRange;
@@ -174,7 +195,7 @@ public abstract class Actor : IObjectOnMap
     {
         if (Hp == 0) return;
         _turnStopped = false;
-        Energy += EnergyLim.MaxValue!.Value;
+        Energy += _energyLim.MaxValue!.Value;
     }
 
     public virtual void StopTurn() => _turnStopped = true;

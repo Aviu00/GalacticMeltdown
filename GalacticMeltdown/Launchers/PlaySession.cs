@@ -163,6 +163,30 @@ public partial class PlaySession
                 if (words.Length == 2) _levelView.ShowCoordinates = words[1] == "1";
                 else _levelView.ShowCoordinates = false;
                 break;
+            case "str":
+                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int str))
+                    _player.Strength = str;
+                break;
+            case "def":
+                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int def))
+                    _player.Defence = def;
+                break;
+            case "dex":
+                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int dex))
+                    _player.Dexterity = dex;
+                break;
+            case "heal":
+                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int heal))
+                    _player.Hp += heal;
+                break;
+            case "maxhp":
+                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int maxHp))
+                    _player.MaxHp = maxHp;
+                break;
+            case "maxenergy":
+                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int maxEnergy))
+                    _player.MaxEnergy = maxEnergy;
+                break;
         }
     }
 }

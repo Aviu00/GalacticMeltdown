@@ -204,7 +204,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int cooldown = 0;
         int selfEffectCost = 10;
         bool activateWhenTargetIsVisible = false;
-        ActorStateChangerData actorStateChangerData = null;
+        LinkedList<ActorStateChangerData> actorStateChangerData = null;
         foreach (XmlNode locNode in node)
         {
             switch (locNode.Name)
@@ -222,7 +222,8 @@ public class EnemyTypesExtractor : XmlExtractor
                     activateWhenTargetIsVisible = Convert.ToBoolean(locNode.InnerText);
                     break;
                 case "StateChanger":
-                    actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                    actorStateChangerData ??= new();
+                    actorStateChangerData.AddLast(ActorStateChangerDataExtractor.ParseStateChanger(locNode));
                     break;
             }
         }
@@ -250,4 +251,4 @@ public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamag
     : BehaviorData(Priority);
 
 public record SelfEffectStrategyData(int? Priority, int Cooldown, int SelfEffectCost, bool ActivateIfTargetIsVisible,
-    ActorStateChangerData ActorStateChangerData) : BehaviorData(Priority);
+    IEnumerable<ActorStateChangerData> ActorStateChangerData) : BehaviorData(Priority);

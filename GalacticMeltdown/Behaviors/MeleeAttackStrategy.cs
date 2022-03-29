@@ -30,11 +30,9 @@ public class MeleeAttackStrategy : Behavior
         _meleeAttackCost = data.MeleeAttackCost;
         ControlledNpc = controlledNpc;
         _stateChangers = data.ActorStateChangerData;
-        if (data.Cooldown > 0)
-        {
-            _meleeAttackCounter = new Counter(ControlledNpc.Level, data.Cooldown, 0);
-            ControlledNpc.Died += _meleeAttackCounter.RemoveCounter;
-        }
+        if (data.Cooldown <= 0) return;
+        _meleeAttackCounter = new Counter(ControlledNpc.Level, data.Cooldown, 0);
+        ControlledNpc.Died += _meleeAttackCounter.RemoveCounter;
     }
     
     [OnDeserialized]
@@ -54,14 +52,8 @@ public class MeleeAttackStrategy : Behavior
 
         bool hit = ControlledNpc.CurrentTarget.Hit
             (UtilityFunctions.CalculateMeleeDamage(_minDamage, _maxDamage, ControlledNpc.Strength), false, false);
-        if (hit && _stateChangers is not null)
-        {
-            foreach (var stateChanger in _stateChangers)
-            {
-                DataHolder.ActorStateChangers[stateChanger.Type]
-                    (ControlledNpc.CurrentTarget, stateChanger.Power, stateChanger.Duration);
-            }
-        }
+        if (hit)
+            UtilityFunctions.ApplyStateChangers(_stateChangers, ControlledNpc.CurrentTarget);
 
         ControlledNpc.Energy -= _meleeAttackCost;
         _meleeAttackCounter?.ResetTimer();

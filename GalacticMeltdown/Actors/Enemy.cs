@@ -35,17 +35,19 @@ public class Enemy : Npc
         Targets = new() {Level.Player}; //temp
         _alertCounter = new Counter(Level, 1, 30);
         Died += _alertCounter.RemoveCounter;
-        
+
         if (_typeData.Behaviors == null) return;
-        
+
         Behaviors = new SortedSet<Behavior>();
         foreach (BehaviorData behaviorData in _typeData.Behaviors)
         {
             Behavior behavior = behaviorData switch
             {
                 MovementStrategyData movementStrategyData => new MovementStrategy(movementStrategyData, this),
-                MeleeAttackStrategyData meleeAttackStrategyData => new MeleeAttackStrategy(meleeAttackStrategyData, this),
-                RangeAttackStrategyData rangeAttackStrategyData => new RangeAttackStrategy(rangeAttackStrategyData, this), 
+                MeleeAttackStrategyData meleeAttackStrategyData => new MeleeAttackStrategy(meleeAttackStrategyData,
+                    this),
+                RangeAttackStrategyData rangeAttackStrategyData => new RangeAttackStrategy(rangeAttackStrategyData,
+                    this),
                 SelfEffectStrategyData selfEffectStrategyData => new SelfEffectStrategy(selfEffectStrategyData, this),
                 _ => null
             };
@@ -67,15 +69,13 @@ public class Enemy : Npc
         if (!IsActive) return null;
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
             .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
-        if (CurrentTarget is not null && _alertCounter.FinishedCounting)
-        {
-            AlertEnemiesAboutTarget(X, Y);
-            _alertCounter.ResetTimer();
-        }
+        if (CurrentTarget is null || !_alertCounter.FinishedCounting) return base.TakeAction();
+        AlertEnemiesAboutTarget(X, Y);
+        _alertCounter.ResetTimer();
 
         return base.TakeAction();
     }
-    
+
     private void AlertEnemiesAboutTarget(int x, int y)
     {
         (int chunkCoordX, int chunkCoordY) = Level.GetChunkCoords(x, y);

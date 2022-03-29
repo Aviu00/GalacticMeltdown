@@ -41,7 +41,7 @@ public class EquippableItem : Item
         }
     }
 
-    public virtual void UnEquip(Actor actor)
+    public virtual void Unequip(Actor actor)
     {
         foreach (var stateChanger in StateChangers)
         {

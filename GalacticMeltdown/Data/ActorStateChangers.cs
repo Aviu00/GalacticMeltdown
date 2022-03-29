@@ -50,10 +50,10 @@ public static partial class DataHolder
             ActorStateChangerType.ModifyDexterity, (actor, power, _) => { actor.Dexterity += power; }
         },
         {
-            ActorStateChangerType.ModifyMaxHealth, (actor, power, _) => { actor.HpLim.MaxValue += power; }
+            ActorStateChangerType.ModifyMaxHealth, (actor, power, _) => { actor.MaxHp += power; }
         },
         {
-            ActorStateChangerType.ModifyMaxEnergy, (actor, power, _) => { actor.EnergyLim.MaxValue += power; }
+            ActorStateChangerType.ModifyMaxEnergy, (actor, power, _) => { actor.MaxEnergy += power; }
         },
         {
             ActorStateChangerType.ModifyViewRange, (actor, power, _) => { actor.ViewRange += power; }

@@ -28,9 +28,9 @@ public class Player : Actor, ISightedObject, IControllable
     private ActorActionInfo _actionInfo;
     
     private bool _xray;
-    public bool GodMode { get; set; }
+    [JsonIgnore] public bool GodMode { get; set; }
 
-    public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
+    [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
     [JsonIgnore] public override ConsoleColor? BgColor => null;
 
     [JsonIgnore] public bool NoClip;
@@ -48,6 +48,7 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
     
+    [JsonIgnore]
     public override int Hp
     {
         get => base.Hp;
@@ -145,7 +146,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Item item = Equipment[bodyPart];
         if (item is null) return;
-        ((EquippableItem) item).UnEquip(this);
+        ((EquippableItem) item).Unequip(this);
         Equipment[bodyPart] = null;
         AddToInventory(item);
         ChosenAmmoId = null;
@@ -189,11 +190,9 @@ public class Player : Actor, ISightedObject, IControllable
             Level.AddItem(item, X, Y);
         }
 
-        if (item.Id == ChosenAmmoId)
-        {
-            ChosenAmmoId = null;
-            EquipmentChanged?.Invoke(this, EventArgs.Empty);
-        }
+        if (item.Id != ChosenAmmoId) return;
+        ChosenAmmoId = null;
+        EquipmentChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void Consume(ConsumableItem item)
@@ -207,7 +206,8 @@ public class Player : Actor, ISightedObject, IControllable
         bool hit;
         if (Equipment[BodyPart.Hands] is null)
         {
-            hit = target.Hit(Random.Shared.Next(DefaultMinDamage, DefaultMaxDamage), false, false);
+            hit = target.Hit(UtilityFunctions.CalculateMeleeDamage(DefaultMinDamage, DefaultMaxDamage, Strength),
+                false, false);
             Energy -= DefaultAttackEnergy;
             return hit;
         }
@@ -222,27 +222,12 @@ public class Player : Actor, ISightedObject, IControllable
             maxDamage += weaponItem.AmmoTypes[ammo.Id].maxDamage;
             RemoveAmmo(ammo);
             EquipmentChanged?.Invoke(this, EventArgs.Empty);
-            var actorStateChangerData = weaponItem.AmmoTypes[ammo.Id].actorStateChangerData;
-            if (actorStateChangerData is not null)
-            {
-                foreach (var changer in actorStateChangerData)
-                {
-                    DataHolder.ActorStateChangers[changer.Type](target, changer.Power, changer.Duration);
-                }
-            }
+            UtilityFunctions.ApplyStateChangers(weaponItem.AmmoTypes[ammo.Id].actorStateChangerData, target);
         }
 
         int damage = UtilityFunctions.CalculateMeleeDamage(minDamage, maxDamage, Strength);
         hit = target.Hit(damage, false, false);
-        var stateChangers = weaponItem.StateChangers;
-        if (stateChangers is not null)
-        {
-            foreach (var changer in stateChangers)
-            {
-                DataHolder.ActorStateChangers[changer.Type](target, changer.Power, changer.Duration);
-            }
-        }
-
+        UtilityFunctions.ApplyStateChangers(weaponItem.StateChangers, target);
         Energy -= weaponItem.HitEnergy;
         return hit;
     }
@@ -266,15 +251,7 @@ public class Player : Actor, ISightedObject, IControllable
             actor.Hit(
                 Random.Shared.Next(gun.MinHitDamage + gun.AmmoTypes[ammo.Id].minDamage,
                     gun.MaxHitDamage + gun.AmmoTypes[ammo.Id].maxDamage + 1), true, false);
-            var stateChangers = gun.AmmoTypes[ammo.Id].actorStateChangerData;
-            if (stateChangers is not null)
-            {
-                foreach (var changer in stateChangers)
-                {
-                    DataHolder.ActorStateChangers[changer.Type](actor, changer.Power, changer.Duration);
-                }
-            }
-
+            UtilityFunctions.ApplyStateChangers(gun.AmmoTypes[ammo.Id].actorStateChangerData, actor);
             break;
         }
         
@@ -293,7 +270,7 @@ public class Player : Actor, ISightedObject, IControllable
     private void RemoveAmmo(Item ammo)
     {
         Inventory.Remove(ammo);
-        if (!Inventory.Any(match => ammo.Id == match.Id))
+        if (Inventory.All(match => ammo.Id != match.Id))
             SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
     }
 

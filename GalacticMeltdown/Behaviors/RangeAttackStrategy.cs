@@ -39,11 +39,9 @@ public class RangeAttackStrategy : Behavior
         _spread = data.Spread;
         ControlledNpc = controlledNpc;
         _stateChangers = data.ActorStateChangerData;
-        if (_cooldown > 0)
-        {
-            _rangeAttackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
-            ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
-        }
+        if (_cooldown <= 0) return;
+        _rangeAttackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
+        ControlledNpc.Died += _rangeAttackCounter.RemoveCounter;
     }
 
     [OnDeserialized]
@@ -67,14 +65,7 @@ public class RangeAttackStrategy : Behavior
         
         int damage = RandomDamage(_minDamage, _maxDamage);
         ControlledNpc.CurrentTarget.Hit(damage, true, false);
-        if (_stateChangers is not null)
-        {
-            foreach (var stateChanger in _stateChangers)
-            {
-                DataHolder.ActorStateChangers[stateChanger.Type]
-                    (ControlledNpc.CurrentTarget, stateChanger.Power, stateChanger.Duration);
-            }
-        }
+        UtilityFunctions.ApplyStateChangers(_stateChangers, ControlledNpc.CurrentTarget);
         ControlledNpc.Energy -= _rangeAttackCost;
         _rangeAttackCounter?.ResetTimer();
         return new ActorActionInfo(ActorAction.Shoot,

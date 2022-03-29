@@ -37,7 +37,7 @@ public class WeaponItem : EquippableItem
     {
     }
 
-    public override void UnEquip(Actor actor)
+    public override void Unequip(Actor actor)
     {
     }
 }
