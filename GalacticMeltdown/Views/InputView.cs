@@ -25,14 +25,14 @@ public class InputView : View
         return new ViewCellData(symbolData, bgColor);
     }
     
-    private void DeleteCharacter()
+    public void DeleteCharacter()
     {
         if (_currentText.Length == 0) return;
         _currentText.Length--;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void AddCharacter(char character)
+    public void AddCharacter(char character)
     {
         _currentText.Append(character);
         NeedRedraw?.Invoke(this, EventArgs.Empty);
