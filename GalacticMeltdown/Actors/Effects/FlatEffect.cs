@@ -14,7 +14,7 @@ public class FlatEffect : Effect
     }
 
     [OnDeserialized]
-    private void OnDeserialize()
+    private void OnDeserialized(StreamingContext _)
     {
         EffectInit();
     }

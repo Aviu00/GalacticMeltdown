@@ -22,7 +22,7 @@ public class RangeAttackStrategy : Behavior
     [JsonProperty] private readonly int _attackRange;
     [JsonProperty] private readonly int _spread;
     [JsonProperty] private Counter _rangeAttackCounter;
-    [JsonProperty] private ActorStateChangerData _stateChanger;
+    [JsonProperty] private IEnumerable<ActorStateChangerData> _stateChangers;
 
     [JsonConstructor]
     private RangeAttackStrategy()
@@ -38,7 +38,7 @@ public class RangeAttackStrategy : Behavior
         _attackRange = data.AttackRange;
         _spread = data.Spread;
         ControlledNpc = controlledNpc;
-        _stateChanger = data.ActorStateChangerData;
+        _stateChangers = data.ActorStateChangerData;
         if (_cooldown > 0)
         {
             _rangeAttackCounter = new Counter(ControlledNpc.Level, _cooldown, 0);
@@ -67,10 +67,13 @@ public class RangeAttackStrategy : Behavior
         
         int damage = RandomDamage(_minDamage, _maxDamage);
         ControlledNpc.CurrentTarget.Hit(damage, true, false);
-        if (_stateChanger is not null)
+        if (_stateChangers is not null)
         {
-            DataHolder.ActorStateChangers[_stateChanger.Type]
-                (ControlledNpc.CurrentTarget, _stateChanger.Power, _stateChanger.Duration);
+            foreach (var stateChanger in _stateChangers)
+            {
+                DataHolder.ActorStateChangers[stateChanger.Type]
+                    (ControlledNpc.CurrentTarget, stateChanger.Power, stateChanger.Duration);
+            }
         }
         ControlledNpc.Energy -= _rangeAttackCost;
         _rangeAttackCounter?.ResetTimer();

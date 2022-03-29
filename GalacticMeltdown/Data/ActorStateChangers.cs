@@ -35,64 +35,34 @@ public static partial class DataHolder
     public static readonly Dictionary<ActorStateChangerType, Action<Actor, int, int>> ActorStateChangers = new()
     {
         {
-            ActorStateChangerType.Heal, (actor, power, _) =>
-            {
-                actor.Hp += power;
-            }
+            ActorStateChangerType.Heal, (actor, power, _) => { actor.Hp += power; }
         },
         {
-            ActorStateChangerType.Damage, (actor, power, _) =>
-            {
-                actor.Hit(power, true, true);
-            }
+            ActorStateChangerType.Damage, (actor, power, _) => { actor.Hit(power, true, true); }
         },
         {
-            ActorStateChangerType.Stun, (actor, power, _) =>
-            {
-                actor.Energy -= power;
-            }
+            ActorStateChangerType.Stun, (actor, power, _) => { actor.Energy -= power; }
         },
         {
-            ActorStateChangerType.ModifyDefence, (actor, power, _) =>
-            {
-                actor.Defence += power;
-            }
+            ActorStateChangerType.ModifyDefence, (actor, power, _) => { actor.Defence += power; }
         },
         {
-            ActorStateChangerType.ModifyDexterity, (actor, power, _) =>
-            {
-                actor.Dexterity += power;
-            }
+            ActorStateChangerType.ModifyDexterity, (actor, power, _) => { actor.Dexterity += power; }
         },
         {
-            ActorStateChangerType.ModifyMaxHealth, (actor, power, _) =>
-            {
-                actor.HpLim.MaxValue += power;
-            }
+            ActorStateChangerType.ModifyMaxHealth, (actor, power, _) => { actor.HpLim.MaxValue += power; }
         },
         {
-            ActorStateChangerType.ModifyMaxEnergy, (actor, power, _) =>
-            {
-                actor.EnergyLim.MaxValue += power;
-            }
+            ActorStateChangerType.ModifyMaxEnergy, (actor, power, _) => { actor.EnergyLim.MaxValue += power; }
         },
         {
-            ActorStateChangerType.ModifyViewRange, (actor, power, _) =>
-            {
-                actor.ViewRange += power;
-            }
+            ActorStateChangerType.ModifyViewRange, (actor, power, _) => { actor.ViewRange += power; }
         },
         {
-            ActorStateChangerType.ModifyStrength, (actor, power, _) =>
-            {
-                actor.Strength += power;
-            }
+            ActorStateChangerType.ModifyStrength, (actor, power, _) => { actor.Strength += power; }
         },
         {
-            ActorStateChangerType.ModifySpeed, (actor, power, _) =>
-            {
-                actor.MoveSpeed += power;
-            }
+            ActorStateChangerType.ModifySpeed, (actor, power, _) => { actor.MoveSpeed += power; }
         },
         {
             ActorStateChangerType.RegenerationEffect, (actor, power, duration) =>
@@ -156,23 +126,6 @@ public static partial class DataHolder
                 FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyViewRange);
                 actor.AddEffect(effect);
             }
-        },
-        {
-            ActorStateChangerType.AdrenalineEffect, (actor, power, duration) =>
-            {
-                FlatEffect effect = new FlatEffect(actor, power, duration, ActorStateChangerType.ModifyMaxEnergy);
-                actor.AddEffect(effect);
-                ContinuousEffect effect1 = new ContinuousEffect(actor, 1, 7, ActorStateChangerType.Damage);
-                actor.AddEffect(effect1);
-            }
-        },
-        {
-            ActorStateChangerType.MassiveHealEffect, (actor, power, duration) =>
-            {
-                actor.Hp += power;
-                ContinuousEffect effect = new ContinuousEffect(actor, 1, duration, ActorStateChangerType.Heal);
-                actor.AddEffect(effect);
-            }
-        },
+        }
     };
 }

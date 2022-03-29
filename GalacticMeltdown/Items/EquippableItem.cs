@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using JsonSubTypes;
@@ -13,7 +14,7 @@ public class EquippableItem : Item
 {
     [JsonIgnore] public BodyPart BodyPart => _itemData.BodyPart;
 
-    [JsonIgnore] public ActorStateChangerData StateChanger => _itemData.ActorStateChangerData;
+    [JsonIgnore] public IEnumerable<ActorStateChangerData> StateChangers => _itemData.ActorStateChangerData;
     
     private readonly WearableItemData _itemData;
     [JsonProperty] protected override string ItemType => "Equippable";
@@ -34,11 +35,17 @@ public class EquippableItem : Item
 
     public virtual void Equip(Actor actor)
     {
-        DataHolder.ActorStateChangers[StateChanger.Type](actor, StateChanger.Power, 0);
+        foreach (var stateChanger in StateChangers)
+        {
+            DataHolder.ActorStateChangers[stateChanger.Type](actor, stateChanger.Power, 0);
+        }
     }
 
-    public virtual void Unequip(Actor actor)
+    public virtual void UnEquip(Actor actor)
     {
-        DataHolder.ActorStateChangers[StateChanger.Type](actor, -StateChanger.Power, 0);
+        foreach (var stateChanger in StateChangers)
+        {
+            DataHolder.ActorStateChangers[stateChanger.Type](actor, -stateChanger.Power, 0);
+        }
     }
 }

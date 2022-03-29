@@ -30,7 +30,7 @@ public class EnemyTypesExtractor : XmlExtractor
             int viewRange = 1;
             int cost = 10;
             int alertRadius = 10;
-            LinkedList<BehaviorData> behaviors = null;
+            IEnumerable<BehaviorData> behaviors = null;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)
@@ -83,7 +83,7 @@ public class EnemyTypesExtractor : XmlExtractor
         }
     }
 
-    private LinkedList<BehaviorData> ParseBehaviors(XmlNode node)
+    private IEnumerable<BehaviorData> ParseBehaviors(XmlNode node)
     {
         LinkedList<BehaviorData> behaviors = new();
         foreach (XmlNode locNode in node)
@@ -100,7 +100,7 @@ public class EnemyTypesExtractor : XmlExtractor
                     behaviors.AddLast(ParseRangeAttackStrategyData(locNode));
                     break;
                 case "SelfEffect":
-                    behaviors.AddFirst(SelfEffectStrategyData(locNode));
+                    behaviors.AddLast(SelfEffectStrategyData(locNode));
                     break;
             }
         }
@@ -122,7 +122,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int minDamage = 0;
         int maxDamage = 0;
         int cooldown = 0;
-        ActorStateChangerData actorStateChangerData = null;
+        LinkedList<ActorStateChangerData> actorStateChangerData = null;
         int meleeAttackCost = 10;
         foreach (XmlNode locNode in node)
         {
@@ -141,7 +141,8 @@ public class EnemyTypesExtractor : XmlExtractor
                     cooldown = Convert.ToInt32(locNode.InnerText);
                     break;
                 case "StateChanger":
-                    actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                    actorStateChangerData ??= new();
+                    actorStateChangerData.AddLast(ActorStateChangerDataExtractor.ParseStateChanger(locNode));
                     break;
                 case "MeleeAttackCost":
                     meleeAttackCost = Convert.ToInt32(locNode.InnerText);
@@ -161,7 +162,7 @@ public class EnemyTypesExtractor : XmlExtractor
         int rangeAttackCost = 10;
         int attackRange = 1;
         int spread = 1;
-        ActorStateChangerData actorStateChangerData = null;
+        LinkedList<ActorStateChangerData> actorStateChangerData = null;
         foreach (XmlNode locNode in node)
         {
             switch (locNode.Name)
@@ -188,7 +189,8 @@ public class EnemyTypesExtractor : XmlExtractor
                     spread = Convert.ToInt32(locNode.InnerText);
                     break;
                 case "StateChanger":
-                    actorStateChangerData = ActorStateChangerDataExtractor.ParseStateChanger(locNode);
+                    actorStateChangerData ??= new();
+                    actorStateChangerData.AddLast(ActorStateChangerDataExtractor.ParseStateChanger(locNode));
                     break;
             }
         }
@@ -233,18 +235,18 @@ public class EnemyTypesExtractor : XmlExtractor
 }
 public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
     ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost, 
-    int AlertRadius, LinkedList<BehaviorData> Behaviors);
+    int AlertRadius, IEnumerable<BehaviorData> Behaviors);
 
 public record BehaviorData(int? Priority);
 
 public record MovementStrategyData(int? Priority) : BehaviorData(Priority);
 
 public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int MeleeAttackCost, 
-        ActorStateChangerData ActorStateChangerData)
+        IEnumerable<ActorStateChangerData> ActorStateChangerData)
     : BehaviorData(Priority);
 
 public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int RangeAttackCost,
-        int AttackRange, int Spread, ActorStateChangerData ActorStateChangerData)
+        int AttackRange, int Spread, IEnumerable<ActorStateChangerData> ActorStateChangerData)
     : BehaviorData(Priority);
 
 public record SelfEffectStrategyData(int? Priority, int Cooldown, int SelfEffectCost, bool ActivateIfTargetIsVisible,

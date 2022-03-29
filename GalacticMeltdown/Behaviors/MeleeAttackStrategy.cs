@@ -17,7 +17,7 @@ public class MeleeAttackStrategy : Behavior
     [JsonProperty] private readonly int _maxDamage;
     [JsonProperty] private readonly int _meleeAttackCost;
     [JsonProperty] private Counter _meleeAttackCounter;
-    [JsonProperty] private ActorStateChangerData _stateChanger;
+    [JsonProperty] private IEnumerable<ActorStateChangerData> _stateChangers;
 
     [JsonConstructor]
     private MeleeAttackStrategy()
@@ -29,7 +29,7 @@ public class MeleeAttackStrategy : Behavior
         _maxDamage = data.MaxDamage;
         _meleeAttackCost = data.MeleeAttackCost;
         ControlledNpc = controlledNpc;
-        _stateChanger = data.ActorStateChangerData;
+        _stateChangers = data.ActorStateChangerData;
         if (data.Cooldown > 0)
         {
             _meleeAttackCounter = new Counter(ControlledNpc.Level, data.Cooldown, 0);
@@ -54,10 +54,13 @@ public class MeleeAttackStrategy : Behavior
 
         bool hit = ControlledNpc.CurrentTarget.Hit
             (UtilityFunctions.CalculateMeleeDamage(_minDamage, _maxDamage, ControlledNpc.Strength), false, false);
-        if (hit && _stateChanger is not null)
+        if (hit && _stateChangers is not null)
         {
-            DataHolder.ActorStateChangers[_stateChanger.Type]
-                (ControlledNpc.CurrentTarget, _stateChanger.Power, _stateChanger.Duration);
+            foreach (var stateChanger in _stateChangers)
+            {
+                DataHolder.ActorStateChangers[stateChanger.Type]
+                    (ControlledNpc.CurrentTarget, stateChanger.Power, stateChanger.Duration);
+            }
         }
 
         ControlledNpc.Energy -= _meleeAttackCost;

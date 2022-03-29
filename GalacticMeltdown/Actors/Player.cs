@@ -138,7 +138,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Item item = Equipment[bodyPart];
         if (item is null) return;
-        ((EquippableItem) item).Unequip(this);
+        ((EquippableItem) item).UnEquip(this);
         Equipment[bodyPart] = null;
         AddToInventory(item);
         ChosenAmmoId = null;
@@ -224,18 +224,22 @@ public class Player : Actor, ISightedObject, IControllable
             var actorStateChangerData = weaponItem.AmmoTypes[ammo.Id].actorStateChangerData;
             if (actorStateChangerData is not null)
             {
-                DataHolder.ActorStateChangers[actorStateChangerData.Type](target, actorStateChangerData.Power,
-                    actorStateChangerData.Duration);
+                foreach (var changer in actorStateChangerData)
+                {
+                    DataHolder.ActorStateChangers[changer.Type](target, changer.Power, changer.Duration);
+                }
             }
         }
 
         int damage = UtilityFunctions.CalculateMeleeDamage(minDamage, maxDamage, Strength);
         hit = target.Hit(damage, false, false);
-        var stateChanger = weaponItem.StateChanger;
-        if (stateChanger is not null)
+        var stateChangers = weaponItem.StateChangers;
+        if (stateChangers is not null)
         {
-            DataHolder.ActorStateChangers[stateChanger.Type](target, stateChanger.Power,
-                stateChanger.Duration);
+            foreach (var changer in stateChangers)
+            {
+                DataHolder.ActorStateChangers[changer.Type](target, changer.Power, changer.Duration);
+            }
         }
 
         Energy -= weaponItem.HitEnergy;
@@ -261,11 +265,13 @@ public class Player : Actor, ISightedObject, IControllable
             actor.Hit(
                 Random.Shared.Next(gun.MinHitDamage + gun.AmmoTypes[ammo.Id].minDamage,
                     gun.MaxHitDamage + gun.AmmoTypes[ammo.Id].maxDamage + 1), true, false);
-            ActorStateChangerData stateChanger = gun.AmmoTypes[ammo.Id].actorStateChangerData;
-            if (stateChanger is not null)
+            var stateChangers = gun.AmmoTypes[ammo.Id].actorStateChangerData;
+            if (stateChangers is not null)
             {
-                DataHolder.ActorStateChangers[stateChanger.Type](actor, stateChanger.Power,
-                    stateChanger.Duration);
+                foreach (var changer in stateChangers)
+                {
+                    DataHolder.ActorStateChangers[changer.Type](actor, changer.Power, changer.Duration);
+                }
             }
 
             break;

@@ -50,41 +50,23 @@ public static class FilesystemLevelManager
         return JsonConvert.DeserializeObject<Level>(File.ReadAllText(path));
     }
 
-    public static bool SaveLevel(Level level, string name, int seed)
+    public static void SaveLevel(Level level, string name, int seed)
     {
-        try
+        string path = Path.Combine(GetSaveFolder(), name);
+        string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
         {
-            string path = Path.Combine(GetSaveFolder(), name);
-            string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
-            {
-                PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
-            });
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+        });
 
-            Directory.CreateDirectory(path);
-            File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
-            File.WriteAllText(Path.Combine(path, "seed.txt"), seed.ToString());
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-
-        return true;
+        Directory.CreateDirectory(path);
+        File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
+        File.WriteAllText(Path.Combine(path, "seed.txt"), seed.ToString());
     }
 
-    public static bool RemoveLevel(string name)
+    public static void RemoveLevel(string name)
     {
-        try
-        {
-            Directory.Delete(Path.Combine(GetSaveFolder(), name), true);
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-
-        return true;
+        Directory.Delete(Path.Combine(GetSaveFolder(), name), true);
     }
 
     private static string GetSaveFolder()

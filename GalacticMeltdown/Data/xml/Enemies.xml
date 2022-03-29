@@ -297,7 +297,7 @@
         <BgColor>white</BgColor>
         <MaxHp>120</MaxHp>
         <MaxEnergy>120</MaxEnergy>
-        <Dexterity>12</Dexterity>
+        <Dexterity>10</Dexterity>
         <Defence>3</Defence>
         <ViewRange>18</ViewRange>
         <Cost>250</Cost>
@@ -322,7 +322,7 @@
                 <StateChanger>
                     <Type>ModifySpeedEffect</Type>
                     <Duration>2</Duration>
-                    <Power>-100</Power>
+                    <Power>-50</Power>
                 </StateChanger>
             </MeleeAttack>
         </Behaviors>
@@ -422,7 +422,7 @@
             <RangeAttack>
                 <Spread>1</Spread>
                 <MinDamage>30</MinDamage>
-                <MaxDamage>60</MaxDamage>
+                <MaxDamage>70</MaxDamage>
                 <RangeAttackCost>160</RangeAttackCost>
                 <AttackRange>25</AttackRange>
                 <StateChanger>

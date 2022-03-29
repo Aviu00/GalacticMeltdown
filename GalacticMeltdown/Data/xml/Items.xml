@@ -344,8 +344,12 @@
         <Name>medkit</Name>
         <Symbol>B</Symbol>
         <StateChanger>
-            <Type>MassiveHealEffect</Type>
+            <Type>Heal</Type>
             <Power>50</Power>
+        </StateChanger>
+        <StateChanger>
+            <Type>RegenerationEffect</Type>
+            <Power>1</Power>
             <Duration>20</Duration>
         </StateChanger>
     </ConsumableItem>
@@ -366,9 +370,14 @@
         <Symbol>!</Symbol>
         <Stackable>true</Stackable>
         <StateChanger>
-            <Type>AdrenalineEffect</Type>
+            <Type>ModifyMaxEnergyEffect</Type>
             <Power>100</Power>
             <Duration>30</Duration>
+        </StateChanger>
+        <StateChanger>
+            <Type>PoisonEffect</Type>
+            <Power>1</Power>
+            <Duration>7</Duration>
         </StateChanger>
     </ConsumableItem>
     <ConsumableItem>

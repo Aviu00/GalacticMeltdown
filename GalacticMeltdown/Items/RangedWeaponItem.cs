@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Utility;
@@ -9,8 +10,6 @@ public class RangedWeaponItem : WeaponItem
 {
     [JsonIgnore] public int Spread => _itemData.Spread;
     [JsonIgnore] public int ShootEnergy => _itemData.ShootEnergy;
-
-    [JsonIgnore] public ActorStateChangerData StateChangerData => _itemData.ActorStateChangerData;
 
     private readonly RangedWeaponItemData _itemData;
     [JsonProperty] protected override string ItemType => "RangedWeapon";
@@ -26,7 +25,7 @@ public class RangedWeaponItem : WeaponItem
     }
 
     [JsonConstructor]
-    private RangedWeaponItem(string id, LimitedNumber ammoAmount) : base(id, ammoAmount)
+    private RangedWeaponItem(string id) : base(id)
     {
         _itemData = (RangedWeaponItemData) DataHolder.ItemTypes[id];
     }
@@ -35,7 +34,7 @@ public class RangedWeaponItem : WeaponItem
     {
     }
 
-    public override void Unequip(Actor actor)
+    public override void UnEquip(Actor actor)
     {
     }
 }

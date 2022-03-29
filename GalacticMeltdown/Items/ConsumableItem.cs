@@ -25,7 +25,9 @@ public class ConsumableItem : Item
 
     public void Consume(Actor actor)
     {
-        ActorStateChangerData data = _itemData.ActorStateChangerData;
-        DataHolder.ActorStateChangers[data.Type](actor, data.Power, data.Duration);
+        foreach (var stateChanger in _itemData.ActorStateChangerData)
+        {
+            DataHolder.ActorStateChangers[stateChanger.Type](actor, stateChanger.Power, stateChanger.Duration);
+        }
     }
 }
