@@ -22,11 +22,11 @@ public partial class PlaySession
     
     private readonly string _levelName;
     private readonly int _levelSeed;
-    private static Player _player;
-    private static IControllable _controlledObject;
-    private static Level _level;
-    private static LevelView _levelView;
-    private static Counter _saveCounter;
+    private Player _player;
+    private IControllable _controlledObject;
+    private Level _level;
+    private LevelView _levelView;
+    private Counter _saveCounter;
 
     private Dictionary<MainControl, Action> _mainActions;
 
