@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
-public class TextInputHandler : Controller
+public class TextInputController : Controller
 {
     private readonly Action<char> _inputAction;
     private readonly Dictionary<ConsoleKey, Action> _reservedKeyActions;
     private readonly Func<char, bool> _isCharacterAllowed;
 
-    public TextInputHandler(Action<char> inputAction,
+    public TextInputController(Action<char> inputAction,
         Dictionary<ConsoleKey, Action> reservedKeyActions,
         Func<char, bool> isCharacterAllowed = null) : base(false)
     {

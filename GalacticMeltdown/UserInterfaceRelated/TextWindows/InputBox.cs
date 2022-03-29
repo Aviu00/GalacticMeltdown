@@ -22,7 +22,7 @@ public class InputBox
     {
         InputView view = new();
         UserInterface.SetViewPositioner(this, new ExactViewPositioner(view));
-        UserInterface.SetController(this, new TextInputHandler(view.AddCharacter, UtilityFunctions.JoinDictionaries(
+        UserInterface.SetController(this, new TextInputController(view.AddCharacter, UtilityFunctions.JoinDictionaries(
             DataHolder.CurrentBindings.TextInput, new Dictionary<TextInputControl, Action>
             {
                 {TextInputControl.DeleteCharacter, view.DeleteCharacter},

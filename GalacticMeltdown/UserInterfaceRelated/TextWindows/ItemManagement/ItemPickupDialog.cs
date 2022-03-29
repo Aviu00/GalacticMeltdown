@@ -19,7 +19,7 @@ public class ItemPickupDialog : TextWindow
     {
         _pickUp = pickUp;
         _items = items;
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>
         {
             {SelectionControl.Back, Close},
             {SelectionControl.Select, LineView.PressCurrent},

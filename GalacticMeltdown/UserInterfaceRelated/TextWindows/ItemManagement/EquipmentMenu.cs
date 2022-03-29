@@ -17,7 +17,7 @@ public class EquipmentMenu : TextWindow
     {
         _player = player;
         SetEquipmentLines();
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Back, Close},

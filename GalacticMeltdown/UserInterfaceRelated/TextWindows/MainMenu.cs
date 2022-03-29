@@ -18,7 +18,7 @@ public class MainMenu : TextWindow
             new Button("Select level", "", OpenLevelMenu),
             new Button("Quit", "", Game.Quit)
         });
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Down, LineView.SelectNext},

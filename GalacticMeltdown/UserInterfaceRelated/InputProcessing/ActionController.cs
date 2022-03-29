@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 
-public class ActionHandler : Controller
+public class ActionController : Controller
 {
     private Dictionary<ConsoleKey, Action> _actionMapping;
 
-    public ActionHandler(Dictionary<ConsoleKey, Action> actionMapping) : base(true)
+    public ActionController(Dictionary<ConsoleKey, Action> actionMapping) : base(true)
     {
         _actionMapping = actionMapping;
     }

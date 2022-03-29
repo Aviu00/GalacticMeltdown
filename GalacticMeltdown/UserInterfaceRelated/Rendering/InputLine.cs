@@ -51,7 +51,7 @@ public class InputLine : PressableListLine
     public override void Press()
     {
         UserInterface.SetController(this,
-            new TextInputHandler(AddCharacter,
+            new TextInputController(AddCharacter,
                 UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.TextInput,
                     new Dictionary<TextInputControl, Action>
                     {

@@ -18,7 +18,7 @@ public class PauseMenu : TextWindow
             new Button("Back", "", Close),
             new Button("To main menu", "", saveAndQuit)
         });
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>()
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>()
         {
             {SelectionControl.Back, Close},
             {SelectionControl.Down, LineView.SelectNext},

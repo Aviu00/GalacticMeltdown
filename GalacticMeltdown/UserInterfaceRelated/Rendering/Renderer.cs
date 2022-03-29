@@ -247,9 +247,9 @@ public class Renderer
             _animQueue.AddLast(((View) sender, cellInfo.x, cellInfo.y, cellInfo.cellData, 0));
         }
 
-        if (e.Cells.Any())
+        if (_animQueue.Last is not null)
         {
-            _animQueue.Last!.Value = ((View) sender, _animQueue.Last.Value.x, _animQueue.Last.Value.y,
+            _animQueue.Last.Value = ((View) sender, _animQueue.Last.Value.x, _animQueue.Last.Value.y,
                 _animQueue.Last.Value.cellData, e.Delay);
         }
     }

@@ -50,7 +50,7 @@ public class Cursor : IControllable
         _levelView = levelView;
         _getStartCoords = getStartCoords;
         _getViewBounds = getViewBounds;
-        Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor,
             new Dictionary<CursorControl, Action>
             {
                 {CursorControl.MoveUp, () => TryMove(0, 1)},
