@@ -41,16 +41,16 @@ public class InputProcessor
         if (_dormantControllers.Contains(controller))
         {
             _dormantControllers.Remove(controller);
-            SetControllingHandler(controller);
+            SetCurrentController(controller);
         }
         else if (_activeControllers.Contains(controller))
         {
             _activeControllers.Remove(controller);
-            SetControllingHandler(controller);
+            SetCurrentController(controller);
         }
     }
 
-    private void SetControllingHandler(Controller controller)
+    private void SetCurrentController(Controller controller)
     {
         if (_currentController is not null)
         {
