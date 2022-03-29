@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Items;
 
-namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows.ItemManagement;
 
 public class ItemDialog : ChoiceDialog<ItemAction>
 {

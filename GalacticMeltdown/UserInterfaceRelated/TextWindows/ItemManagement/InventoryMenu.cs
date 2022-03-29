@@ -9,7 +9,7 @@ using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.Utility;
 
-namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows.ItemManagement;
 
 public class InventoryMenu : TextWindow
 {

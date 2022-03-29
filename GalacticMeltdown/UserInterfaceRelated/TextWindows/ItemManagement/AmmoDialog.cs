@@ -4,7 +4,7 @@ using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 
-namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
+namespace GalacticMeltdown.UserInterfaceRelated.TextWindows.ItemManagement;
 
 public class AmmoDialog : ChoiceDialog<string>
 {

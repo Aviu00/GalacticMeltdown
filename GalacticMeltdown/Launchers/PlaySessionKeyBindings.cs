@@ -8,6 +8,7 @@ using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.UserInterfaceRelated.TextWindows;
+using GalacticMeltdown.UserInterfaceRelated.TextWindows.ItemManagement;
 
 namespace GalacticMeltdown.Launchers;
 

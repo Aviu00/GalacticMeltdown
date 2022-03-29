@@ -10,6 +10,7 @@ using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;
 using GalacticMeltdown.UserInterfaceRelated.TextWindows;
+using GalacticMeltdown.UserInterfaceRelated.TextWindows.ItemManagement;
 using GalacticMeltdown.Utility;
 using GalacticMeltdown.Views;
 
