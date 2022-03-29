@@ -21,10 +21,10 @@ public static class Game
         UserInterface.Start();
     }
 
-    public static void StartLevel(Level level, string name, int seed)
+    public static void StartLevel(Level level, string name)
     {
         UserInterface.Forget(_menu);
-        _session = new PlaySession(level, name, seed);
+        _session = new PlaySession(level, name);
         UserInterface.AddChild(Root, _session);
         UserInterface.SetTask(Root, _session.Start);
     }

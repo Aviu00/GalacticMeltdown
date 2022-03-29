@@ -85,9 +85,9 @@ public class LevelMenu : TextWindow
     private void CreateLevel(string name, int? seed)
     {
         seed ??= Random.Shared.Next();
-        Level level= FilesystemLevelManager.CreateLevel(seed.Value, name);
+        Level level = FilesystemLevelManager.CreateLevel(seed.Value, name);
         DataHolder.CurrentSeed = seed.Value;
-        Game.StartLevel(level, name, seed.Value);
+        Game.StartLevel(level, name);
     }
 
     private void TryStartLevel(LevelInfo levelInfo)
@@ -100,6 +100,6 @@ public class LevelMenu : TextWindow
         }
 
         DataHolder.CurrentSeed = levelInfo.Seed;
-        Game.StartLevel(level, levelInfo.Name, levelInfo.Seed);
+        Game.StartLevel(level, levelInfo.Name);
     }
 }
