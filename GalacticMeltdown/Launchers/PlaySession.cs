@@ -144,6 +144,12 @@ public partial class PlaySession
                 if (words.Length != 2) return;
                 _cheatsEnabled = words[1] == "1";
                 break;
+            case "xray":
+                if (_cheatsEnabled) _player.Xray = !_player.Xray;
+                break;
+            case "noclip":
+                if (_cheatsEnabled) _player.NoClip = !_player.NoClip;
+                break;
         }
     }
 }

@@ -110,16 +110,6 @@ public partial class PlaySession
                 if (_cheatsEnabled) _player.ViewRange--;
             }
         },
-        {MainControl.ToggleNoClip, () =>
-            {
-                if (_cheatsEnabled) _player.NoClip = !_player.NoClip;
-            }
-        },
-        {MainControl.ToggleXRay, () =>
-            {
-                if (_cheatsEnabled) _player.Xray = !_player.Xray;
-            }
-        },
         {MainControl.OpenPauseMenu, OpenPauseMenu},
         {MainControl.OpenInventory, OpenInventory},
         {MainControl.OpenAmmoSelection, OpenAmmoSelectionDialog},

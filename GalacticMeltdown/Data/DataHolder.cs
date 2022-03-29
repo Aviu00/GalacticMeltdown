@@ -111,8 +111,6 @@ public static partial class DataHolder
             {ConsoleKey.U, MainControl.Shoot},
             {ConsoleKey.Multiply, MainControl.IncreaseViewRange},
             {ConsoleKey.Subtract, MainControl.ReduceViewRange},
-            {ConsoleKey.Z, MainControl.ToggleNoClip},
-            {ConsoleKey.X, MainControl.ToggleXRay},
             {ConsoleKey.Escape, MainControl.OpenPauseMenu},
             {ConsoleKey.Divide, MainControl.OpenConsole},
         };

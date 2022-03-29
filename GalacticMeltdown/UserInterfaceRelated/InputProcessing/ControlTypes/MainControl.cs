@@ -19,8 +19,6 @@ public enum MainControl
     Shoot,
     IncreaseViewRange, //for fov testing
     ReduceViewRange, //for fov testing
-    ToggleNoClip, //temporary cheat codes
-    ToggleXRay, //temporary cheat codes
     OpenPauseMenu,
     OpenAmmoSelection,
     OpenConsole,
