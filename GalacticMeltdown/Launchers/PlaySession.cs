@@ -78,7 +78,7 @@ public partial class PlaySession
         UserInterface.SetTask(this, MapTurn);
     }
 
-    public void SaveLevel()
+    private void SaveLevel()
     {
         FilesystemLevelManager.SaveLevel(_level, _levelName, _levelSeed);
     }
@@ -91,9 +91,16 @@ public partial class PlaySession
 
     private void OpenPauseMenu()
     {
-        PauseMenu pauseMenu = new();
+        PauseMenu pauseMenu = new(SaveAndQuit);
         UserInterface.AddChild(this, pauseMenu);
         pauseMenu.Open();
+    }
+    
+    private void SaveAndQuit()
+    {
+        _level.IsSaving = true;
+        SaveLevel();
+        Game.OpenMainMenu();
     }
 
     private void OpenInventory()
@@ -119,7 +126,7 @@ public partial class PlaySession
         switch (words[0])
         {
             case "exit":
-                Game.SaveAndQuit();
+                SaveAndQuit();
                 break;
             default:
                 break;

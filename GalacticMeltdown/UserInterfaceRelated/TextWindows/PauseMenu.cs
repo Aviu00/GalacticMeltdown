@@ -11,12 +11,12 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 public class PauseMenu : TextWindow
 {
-    public PauseMenu()
+    public PauseMenu(Action saveAndQuit)
     {
         LineView.SetLines(new List<ListLine>
         {
             new Button("Back", "", Close),
-            new Button("To main menu", "", Game.SaveAndQuit)
+            new Button("To main menu", "", saveAndQuit)
         });
         Controller = new ActionHandler(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>()
         {

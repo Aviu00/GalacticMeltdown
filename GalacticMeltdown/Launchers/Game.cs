@@ -31,12 +31,6 @@ public static class Game
         UserInterface.SetTask(Root, _session.Start);
     }
 
-    public static void SaveAndQuit()
-    {
-        _level.IsSaving = true;
-        _session.SaveLevel();
-        OpenMainMenu();
-    }
     public static void OpenMainMenu()
     {
         UserInterface.Forget(_session);
