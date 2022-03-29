@@ -200,7 +200,7 @@ public abstract class Actor : IObjectOnMap
 
     protected void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);
 
-    protected void FireStatAffected(Stat stat)
+    private void FireStatAffected(Stat stat)
     {
         StatChanged?.Invoke(this, new StatChangeEventArgs(stat));
     }
