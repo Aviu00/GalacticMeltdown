@@ -54,11 +54,11 @@ public class EnemySpawner
 
     public void SpawnEnemiesInChunk(Chunk chunk)
     {
-        Random rng = new Random(chunk.Seed);
+        Random rng = new(DataHolder.CurrentSeed);
         double currency = GetChunkCost(chunk.Difficulty);
         currency *= rng.NextDouble() + 0.5;
         var points = chunk.GetFloorTileCoords();
-        if(points is null || points.Count == 0)
+        if (points is null || points.Count == 0)
             return;
         foreach (var enemy in CalculateEnemies(ref currency, rng))
         {
@@ -121,13 +121,13 @@ public class EnemySpawner
         List<EnemyTypeData> list = new();
         List<EnemyTypeData> enemies = DataHolder.EnemyTypes.Values.ToList();
         var curr = currency;
-        enemies = enemies.Where(enemy => enemy.Cost <= curr).ToList();
+        enemies.RemoveAll(enemy => enemy.Cost > curr);
         while (enemies.Count > 0)
         {
             list.Add(enemies[rng.Next(0, enemies.Count)]);
             currency -= list[^1].Cost;
             curr = currency;
-            enemies = enemies.Where(enemy => enemy.Cost <= curr).ToList();
+            enemies.RemoveAll(enemy => enemy.Cost > curr);
         }
         return list;
     }
