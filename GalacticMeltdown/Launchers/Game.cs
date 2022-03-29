@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.TextWindows;
@@ -21,9 +22,10 @@ public static class Game
         UserInterface.Start();
     }
 
-    public static void StartLevel(Level level, string name)
+    public static void StartLevel(Level level, string name, int seed)
     {
         UserInterface.Forget(_menu);
+        DataHolder.CurrentSeed = seed;
         _session = new PlaySession(level, name);
         UserInterface.AddChild(Root, _session);
         UserInterface.SetTask(Root, _session.Start);
