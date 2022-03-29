@@ -12,8 +12,8 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 public class InputLine : PressableListLine
 {
     private const ConsoleColor Selected = DataHolder.Colors.InputLineBgColorSelected;
-    private const ConsoleColor Unselected = DataHolder.Colors.InputLineBgColorUnselected;
-    private const ConsoleColor TextColor = DataHolder.Colors.InputLineTextColor;
+    private const ConsoleColor Unselected = DataHolder.Colors.TextBoxDefaultBgColor;
+    private const ConsoleColor TextColor = DataHolder.Colors.TextBoxTextColor;
 
     private StringBuilder _currentText;
 

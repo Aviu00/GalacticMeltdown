@@ -68,8 +68,8 @@ public static partial class DataHolder
         public const ConsoleColor BackgroundColorUnselected = ConsoleColor.Black;
         public const ConsoleColor BackgroundColorSelected = ConsoleColor.DarkGray;
         public const ConsoleColor InputLineBgColorSelected = ConsoleColor.DarkGreen;
-        public const ConsoleColor InputLineBgColorUnselected = ConsoleColor.DarkGray;
-        public const ConsoleColor InputLineTextColor = ConsoleColor.White;
+        public const ConsoleColor TextBoxDefaultBgColor = ConsoleColor.DarkGray;
+        public const ConsoleColor TextBoxTextColor = ConsoleColor.White;
         public const ConsoleColor MenuBorderColor = ConsoleColor.Yellow;
         public const ConsoleColor CursorColor = ConsoleColor.White;
         public const ConsoleColor HighlightedNothingColor = ConsoleColor.Red;
