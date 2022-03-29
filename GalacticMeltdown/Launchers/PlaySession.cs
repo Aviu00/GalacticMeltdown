@@ -22,6 +22,9 @@ public partial class PlaySession
     
     private readonly string _levelName;
     private readonly int _levelSeed;
+
+    private bool _cheatsEnabled;
+    
     private Player _player;
     private IControllable _controlledObject;
     private Level _level;
@@ -130,7 +133,9 @@ public partial class PlaySession
             case "exit":
                 SaveAndQuit();
                 break;
-            default:
+            case "cheats":
+                if (words.Length != 2) return;
+                _cheatsEnabled = words[1] == "1";
                 break;
         }
     }

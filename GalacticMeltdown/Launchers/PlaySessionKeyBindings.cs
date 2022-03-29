@@ -102,26 +102,22 @@ public partial class PlaySession
         },
         {MainControl.IncreaseViewRange, () =>
             {
-                if (DataHolder.CheatsEnabled)
-                    _player.ViewRange++;
+                if (_cheatsEnabled) _player.ViewRange++;
             }
         },
         {MainControl.ReduceViewRange, () =>
             {
-                if (DataHolder.CheatsEnabled)
-                    _player.ViewRange--;
+                if (_cheatsEnabled) _player.ViewRange--;
             }
         },
         {MainControl.ToggleNoClip, () =>
             {
-                if (DataHolder.CheatsEnabled)
-                    _player.NoClip = !_player.NoClip;
+                if (_cheatsEnabled) _player.NoClip = !_player.NoClip;
             }
         },
         {MainControl.ToggleXRay, () =>
             {
-                if (DataHolder.CheatsEnabled)
-                    _player.Xray = !_player.Xray;
+                if (_cheatsEnabled) _player.Xray = !_player.Xray;
             }
         },
         {MainControl.OpenPauseMenu, OpenPauseMenu},
