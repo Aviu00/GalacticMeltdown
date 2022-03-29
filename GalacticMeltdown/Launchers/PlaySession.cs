@@ -159,6 +159,10 @@ public partial class PlaySession
                 if (_cheatsEnabled && words.Length == 2) _player.GodMode = words[1] == "1";
                 else _player.GodMode = false;
                 break;
+            case "coords":
+                if (words.Length == 2) _levelView.ShowCoordinates = words[1] == "1";
+                else _levelView.ShowCoordinates = false;
+                break;
         }
     }
 }

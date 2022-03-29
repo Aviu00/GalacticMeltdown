@@ -59,7 +59,7 @@ public partial class LevelView : View
         }
     }
 
-    private string CoordinateString => $"X: {_focusObject.X} Y: {_focusObject.Y}";
+    private string CoordinateString => $"X:{_focusObject.X} Y:{_focusObject.Y}";
 
     private (int minX, int minY, int maxX, int maxY) ViewBounds => 
         (_focusObject.X - Width / 2, _focusObject.Y - Height / 2,
