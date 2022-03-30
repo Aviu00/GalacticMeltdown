@@ -54,11 +54,11 @@ public class EnemySpawner
 
     public void SpawnEnemiesInChunk(Chunk chunk)
     {
-        Random rng = new(DataHolder.CurrentSeed);
+        Random rng = new Random(chunk.Seed);
         double currency = GetChunkCost(chunk.Difficulty);
         currency *= rng.NextDouble() + 0.5;
         var points = chunk.GetFloorTileCoords();
-        if (points is null || points.Count == 0)
+        if(points is null || points.Count == 0)
             return;
         foreach (var enemy in CalculateEnemies(ref currency, rng))
         {

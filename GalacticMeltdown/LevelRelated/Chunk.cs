@@ -15,6 +15,7 @@ public class Chunk
     [JsonProperty] public readonly int MapY;
 
     [JsonProperty] public readonly int Difficulty;
+    [JsonProperty] public readonly int Seed;
 
     public bool WasActiveBefore;
     public bool WasVisitedByPlayer;
@@ -42,6 +43,7 @@ public class Chunk
         MapX = x;
         MapY = y;
         NeighborCoords = neighborCoords;
+        Seed = seed;
         _items = items;
         Symbol = symbol;
         Enemies = new List<Enemy>();
