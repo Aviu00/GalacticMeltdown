@@ -15,8 +15,26 @@ public class Renderer
 {
     private const ConsoleColor DefaultColor = DataHolder.Colors.DefaultBackgroundColor;
 
-    private record struct ScreenCellData(char Symbol = ' ', ConsoleColor FgColor = DefaultColor,
-        ConsoleColor BgColor = DefaultColor);
+    private struct ScreenCellData
+    {
+        public char Symbol;
+        public ConsoleColor FgColor;
+        public ConsoleColor BgColor;
+
+        public ScreenCellData()
+        {
+            Symbol = ' ';
+            FgColor = DefaultColor;
+            BgColor = DefaultColor;
+        }
+        
+        public ScreenCellData(char symbol, ConsoleColor fgColor, ConsoleColor bgColor)
+        {
+            Symbol = symbol;
+            FgColor = fgColor;
+            BgColor = bgColor;
+        }
+    }
 
     private OrderedSet<ViewPositioner> _viewPositioners;
     private LinkedList<View> _views;
@@ -167,14 +185,8 @@ public class Renderer
                         screenCells[screenX, screenY].BgColor = viewCells[viewX, viewY].BackgroundColor.Value;
                         screenCells[screenX, screenY].Symbol =  ' ';
                         screenCells[screenX, screenY].FgColor = DefaultColor;
-                        if (viewCells[viewX, viewY].SymbolData is not null)
-                        {
-                            (char symbol, ConsoleColor textColor) = viewCells[viewX, viewY].SymbolData.Value;
-                            screenCells[screenX, screenY].Symbol = symbol;
-                            screenCells[screenX, screenY].FgColor = textColor;
-                        }
                     }
-                    else if (viewCells[viewX, viewY].SymbolData is not null)
+                    if (viewCells[viewX, viewY].SymbolData is not null)
                     {
                         (char symbol, ConsoleColor textColor) = viewCells[viewX, viewY].SymbolData.Value;
                         screenCells[screenX, screenY].Symbol = symbol;
