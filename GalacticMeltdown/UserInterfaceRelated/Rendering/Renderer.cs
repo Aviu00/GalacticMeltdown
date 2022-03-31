@@ -109,7 +109,7 @@ public class Renderer
             var (viewMinScreenX, viewMinScreenY, _, _) = _viewBoundaries[view];
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
                 viewMinScreenX, viewMinScreenY);
-            ScreenCellData screenCellData = GetCellAnimation(screenX, screenY, viewCellData, view);
+            ScreenCellData screenCellData = GetCellWithSwap(screenX, screenY, viewCellData, view);
             Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
             SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
             Console.Write(screenCellData.Symbol);
@@ -240,13 +240,13 @@ public class Renderer
         }
     }
 
-    private ScreenCellData GetCellAnimation(int x, int y, ViewCellData cellData, View animView)
+    private ScreenCellData GetCellWithSwap(int x, int y, ViewCellData cellData, View swapView)
     {
         (char symbol, ConsoleColor color)? symbolData = null;
         ConsoleColor? backgroundColor = null;
         foreach (var (view, viewX, viewY) in _pixelInfos[x, y])
         {
-            ViewCellData viewCellData = ReferenceEquals(view, animView) ? cellData : view.GetSymbol(viewX, viewY);
+            ViewCellData viewCellData = ReferenceEquals(view, swapView) ? cellData : view.GetSymbol(viewX, viewY);
             symbolData ??= viewCellData.SymbolData;
             if ((backgroundColor = viewCellData.BackgroundColor) is not null)
             {
@@ -256,25 +256,6 @@ public class Renderer
 
         symbolData ??= (' ', ConsoleColor.Black);
         backgroundColor ??= ConsoleColor.Black;
-        return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
-    }
-
-    private ScreenCellData GetCell(int x, int y)
-    {
-        (char symbol, ConsoleColor color)? symbolData = null;
-        ConsoleColor? backgroundColor = null;
-        foreach (var (view, viewX, viewY) in _pixelInfos[x, y])
-        {
-            ViewCellData viewCellData = view.GetSymbol(viewX, viewY);
-            symbolData ??= viewCellData.SymbolData;
-            if ((backgroundColor = viewCellData.BackgroundColor) is not null)
-            {
-                break;
-            }
-        }
-
-        symbolData ??= (' ', DefaultColor);
-        backgroundColor ??= DefaultColor;
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
@@ -311,15 +292,17 @@ public class Renderer
     private void NeedRedrawHandler(object sender, EventArgs _)
     {
         if (RedrawOnScreenSizeChange()) return;
-        
+
         _animQueue =
             new LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)>(
                 _animQueue.Where(info => info.view != sender));
 
-        var (minX, minY, maxX, maxY) = _viewBoundaries[(View) sender];
+        var view = (View) sender;
+        var (minX, minY, maxX, maxY) = _viewBoundaries[view];
+        var viewCells = view.GetAllCells();
         maxY -= 1;
         Console.SetCursorPosition(minX, ConvertToConsoleY(maxY));
-        ScreenCellData screenCellData = GetCell(minX, ConvertToConsoleY(maxY));
+        ScreenCellData screenCellData = GetCellWithSwap(minX, maxY, viewCells[0, maxY - minY], view);
         StringBuilder currentSequence = new();
         ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
         for (int y = maxY; y >= minY; y--)
@@ -328,7 +311,7 @@ public class Renderer
 
             for (int x = minX; x < maxX; x++)
             {
-                screenCellData = GetCell(x, y);
+                screenCellData = GetCellWithSwap(x, y, viewCells[x - minX, y - minY], view);
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
                     || screenCellData.BgColor != curBgColor)
                 {
