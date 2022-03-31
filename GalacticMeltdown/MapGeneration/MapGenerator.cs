@@ -19,10 +19,10 @@ public class MapGenerator
 
     private readonly Random _rng;
     
-    private ChunkGenerator[,] _tempMap;
+    private ChunkGenerator[,] _chunkGenerators;
     private Chunk[,] _chunks;
     
-    private List<(int min, int max)> _bars;
+    private List<(int min, int max)> _columns;
     
     private int _maxPoint;
     private int _minPoint;
@@ -41,7 +41,7 @@ public class MapGenerator
 
     public Level Generate()
     {
-        GenerateBars();
+        GenerateColumns();
         BuildMainRoute();
         FillMap();
         FinalizeRooms();
@@ -49,7 +49,7 @@ public class MapGenerator
         return new Level(_chunks, _playerStartPoint, _southernWall, _westernWall, _endPoint);
     }
 
-    private void GenerateBars()
+    private void GenerateColumns()
     {
         //These 4 integers don't make much sense and probably should be left untouched
         const int minSize = 6;
@@ -58,7 +58,7 @@ public class MapGenerator
         const int posMultiplierCeiling = 8;
 
         int newSize = _rng.Next(minSize, firstMaxValue);
-        _bars = new List<(int min, int max)> {(0, newSize)};
+        _columns = new List<(int min, int max)> {(0, newSize)};
         _maxPoint = newSize;
         int lastMinVector = -1;
         int lastMaxVector = 1;
@@ -85,26 +85,26 @@ public class MapGenerator
             {
                 if (lastMaxVector <= 0)
                 {
-                    newMin = _bars[^1].min + _rng.Next(-1, 2) * posMultiplier;
+                    newMin = _columns[^1].min + _rng.Next(-1, 2) * posMultiplier;
                 }
                 else
                 {
-                    int newMax = _bars[^1].max + _rng.Next(0, 2) * posMultiplier;
+                    int newMax = _columns[^1].max + _rng.Next(0, 2) * posMultiplier;
                     newMin = newMax - newSize;
                 }
             }
             else if (lastMaxVector <= 0)
             {
-                newMin = _bars[^1].min + _rng.Next(-1, 0) * posMultiplier;
+                newMin = _columns[^1].min + _rng.Next(-1, 0) * posMultiplier;
             }
             else
             {
-                newMin = _bars[^1].min;
+                newMin = _columns[^1].min;
             }
 
-            lastMinVector = newMin - _bars[^1].min;
-            lastMaxVector = newMin + newSize - _bars[^1].max;
-            _bars.Add((newMin, newMin + newSize));
+            lastMinVector = newMin - _columns[^1].min;
+            lastMaxVector = newMin + newSize - _columns[^1].max;
+            _columns.Add((newMin, newMin + newSize));
             _maxPoint = Math.Max(_maxPoint, newSize + newMin);
             _minPoint = Math.Min(_minPoint, newMin);
         }
@@ -112,65 +112,65 @@ public class MapGenerator
 
     private void BuildMainRoute()
     {
-        _tempMap = new ChunkGenerator[MapWidth + 1 + MapOffset * 2, _maxPoint - _minPoint + 1 + MapOffset * 2];
+        _chunkGenerators = new ChunkGenerator[MapWidth + 1 + MapOffset * 2, _maxPoint - _minPoint + 1 + MapOffset * 2];
         int lastMin = 0;
         int lastMax = 0;
-        int startRoomPos = _rng.Next(0, _bars.Count);
+        int startRoomPos = _rng.Next(0, _columns.Count);
         bool topStartRoom = Chance(50, _rng);
         int mainRouteRoomCount = 0;
 
         ChunkGenerator startPoint = null;
-        for (int i = 0; i < _tempMap.GetLength(0); i++)
+        for (int i = 0; i < _chunkGenerators.GetLength(0); i++)
         {
             int x = i - MapOffset;
-            if (x < 0 || x >= _bars.Count)
+            if (x < 0 || x >= _columns.Count)
             {
-                for (int y = 0; y < _tempMap.GetLength(1); y++)
+                for (int y = 0; y < _chunkGenerators.GetLength(1); y++)
                 {
-                    _tempMap[i, y] = new ChunkGenerator(i, y);
+                    _chunkGenerators[i, y] = new ChunkGenerator(i, y);
                 }
 
                 continue;
             }
 
-            if (x == _bars.Count - 1)
+            if (x == _columns.Count - 1)
             {
-                lastMin = _bars[x].max - 1;
-                lastMax = _bars[x].max;
+                lastMin = _columns[x].max - 1;
+                lastMax = _columns[x].max;
             }
 
-            int min1 = Math.Min(_bars[x].min, lastMin);
-            int min2 = _bars[x].min + lastMin - min1;
-            int max1 = Math.Min(_bars[x].max, lastMax);
-            int max2 = _bars[x].max + lastMax - max1;
+            int min1 = Math.Min(_columns[x].min, lastMin);
+            int min2 = _columns[x].min + lastMin - min1;
+            int max1 = Math.Min(_columns[x].max, lastMax);
+            int max2 = _columns[x].max + lastMax - max1;
             for (int y = _minPoint - MapOffset, j = 0; y <= _maxPoint + MapOffset; j++, y++)
             {
-                _tempMap[i, j] = new ChunkGenerator(i, j);
+                _chunkGenerators[i, j] = new ChunkGenerator(i, j);
                 if ((y < min1 || y > min2) && (y < max1 || y > max2)) continue;
 
-                if (topStartRoom && x == startRoomPos && y == _bars[x].max
-                    || !topStartRoom && x == _bars.Count - startRoomPos - 1 && y == _bars[x].min)
+                if (topStartRoom && x == startRoomPos && y == _columns[x].max
+                    || !topStartRoom && x == _columns.Count - startRoomPos - 1 && y == _columns[x].min)
                 {
-                    _tempMap[i, j].IsStartPoint = true;
-                    startPoint = _tempMap[i, j];
+                    _chunkGenerators[i, j].IsStartPoint = true;
+                    startPoint = _chunkGenerators[i, j];
                 }
 
                 mainRouteRoomCount++;
-                _tempMap[i, j].MainRoute = true;
-                _tempMap[i, j].HasAccessToMainRoute = true;
-                if (x > 0 && (_bars[x - 1].min == y || _bars[x - 1].max == y))
+                _chunkGenerators[i, j].MainRoute = true;
+                _chunkGenerators[i, j].HasAccessToMainRoute = true;
+                if (x > 0 && (_columns[x - 1].min == y || _columns[x - 1].max == y))
                 {
-                    ConnectRooms(_tempMap[i, j], _tempMap[i - 1, j]);
+                    ConnectRooms(_chunkGenerators[i, j], _chunkGenerators[i - 1, j]);
                 }
 
-                if (j > 0 && _tempMap[i, j - 1].MainRoute)
+                if (j > 0 && _chunkGenerators[i, j - 1].MainRoute)
                 {
-                    ConnectRooms(_tempMap[i, j], _tempMap[i, j - 1]);
+                    ConnectRooms(_chunkGenerators[i, j], _chunkGenerators[i, j - 1]);
                 }
             }
 
-            lastMax = _bars[x].max;
-            lastMin = _bars[x].min;
+            lastMax = _columns[x].max;
+            lastMin = _columns[x].min;
         }
 
         int endRoomIndex = mainRouteRoomCount / 2;
@@ -196,8 +196,8 @@ public class MapGenerator
 
     private void FillMap()
     {
-        int width = _tempMap.GetLength(0);
-        int height = _tempMap.GetLength(1);
+        int width = _chunkGenerators.GetLength(0);
+        int height = _chunkGenerators.GetLength(1);
         int yStep = Chance(50, _rng) ? 1 : -1;
         int lastX = width / 2 + 1;
         for (int x = 0; x < lastX; x++)
@@ -217,7 +217,7 @@ public class MapGenerator
         {
             for (int y = 0; y < height; y++)
             {
-                if (_tempMap[x, y].HasAccessToMainRoute) continue;
+                if (_chunkGenerators[x, y].HasAccessToMainRoute) continue;
 
                 List<ChunkGenerator> adjAccessRooms = new();
                 List<ChunkGenerator> adjNoAccessRooms = new();
@@ -227,13 +227,13 @@ public class MapGenerator
                 AddRoomToList(x, y - 1, adjAccessRooms, adjNoAccessRooms);
                 if (adjAccessRooms.Count != 0)
                 {
-                    ConnectRooms(_tempMap[x, y], adjAccessRooms[_rng.Next(0, adjAccessRooms.Count)]);
+                    ConnectRooms(_chunkGenerators[x, y], adjAccessRooms[_rng.Next(0, adjAccessRooms.Count)]);
                     continue;
                 }
 
                 foreach (var room in adjNoAccessRooms)
                 {
-                    ConnectRooms(_tempMap[x, y], room);
+                    ConnectRooms(_chunkGenerators[x, y], room);
                 }
             }
         }
@@ -253,11 +253,11 @@ public class MapGenerator
     private void FinalizeRoom(int x, int y)
     {
         RoomType room;
-        if (_tempMap[x, y].IsEndPoint)
+        if (_chunkGenerators[x, y].IsEndPoint)
         {
             room = _roomTypes[0];
         }
-        else if (_tempMap[x, y].IsStartPoint)
+        else if (_chunkGenerators[x, y].IsStartPoint)
         {
             room = _roomTypes[1];
         }
@@ -271,23 +271,23 @@ public class MapGenerator
 
         var roomData = (TileInformation[,]) room.RoomInterior.Clone();
         RotateRoomPattern(x, y, roomData, room);
-        Tile[,] northernTileMap = y == _tempMap.GetLength(1) - 1 ? null : _tempMap[x, y + 1].Tiles;
-        Tile[,] easternTileMap = x == _tempMap.GetLength(0) - 1 ? null : _tempMap[x + 1, y].Tiles;
-        _chunks[x, y] = _tempMap[x, y].GenerateChunk(roomData, _rng.Next(0, 1000000), northernTileMap, easternTileMap);
-        if (_tempMap[x, y].IsStartPoint)
+        Tile[,] northernTileMap = y == _chunkGenerators.GetLength(1) - 1 ? null : _chunkGenerators[x, y + 1].Tiles;
+        Tile[,] easternTileMap = x == _chunkGenerators.GetLength(0) - 1 ? null : _chunkGenerators[x + 1, y].Tiles;
+        _chunks[x, y] = _chunkGenerators[x, y].GenerateChunk(roomData, _rng.Next(0, 1000000), northernTileMap, easternTileMap);
+        if (_chunkGenerators[x, y].IsStartPoint)
             _playerStartPoint = (x * ChunkSize + ChunkSize / 2, y * ChunkSize + ChunkSize / 2);
     }
 
     private int CalculateRoomType(int x, int y)
     {
-        int connections = _tempMap[x, y].ConnectionCount;
+        int connections = _chunkGenerators[x, y].ConnectionCount;
         switch (connections)
         {
             case 1:
                 return 0;
             case 2:
-                if ((_tempMap[x, y].NorthConnection is null || _tempMap[x, y].SouthConnection is null)
-                    && (_tempMap[x, y].WestConnection is null || _tempMap[x, y].EastConnection is null))
+                if ((_chunkGenerators[x, y].NorthConnection is null || _chunkGenerators[x, y].SouthConnection is null)
+                    && (_chunkGenerators[x, y].WestConnection is null || _chunkGenerators[x, y].EastConnection is null))
                 {
                     return 2;
                 }
@@ -307,7 +307,7 @@ public class MapGenerator
     {
         if (roomType.RotationalSymmetry) return;
         List<int> possibleRotations = new() {0, 90, 180, 270};
-        var mapRoom = _tempMap[x, y];
+        var mapRoom = _chunkGenerators[x, y];
         switch (roomType.Type)
         {
             case 0:
@@ -438,29 +438,29 @@ public class MapGenerator
 
     private void AddRoomToList(int x, int y, List<ChunkGenerator> accessList, List<ChunkGenerator> noAccessList)
     {
-        if (x < 0 || x >= _tempMap.GetLength(0) || y < 0 || y >= _tempMap.GetLength(1)) return;
+        if (x < 0 || x >= _chunkGenerators.GetLength(0) || y < 0 || y >= _chunkGenerators.GetLength(1)) return;
 
-        if (_tempMap[x, y].HasAccessToMainRoute) accessList.Add(_tempMap[x, y]);
-        else noAccessList.Add(_tempMap[x, y]);
+        if (_chunkGenerators[x, y].HasAccessToMainRoute) accessList.Add(_chunkGenerators[x, y]);
+        else noAccessList.Add(_chunkGenerators[x, y]);
     }
 
     private void FillColumn(int x, int xStep, int yStep)
     {
-        int startY = yStep == 1 ? 0 : _tempMap.GetLength(1) - 1;
-        for (int i = 0, y = startY; i < _tempMap.GetLength(1); y += yStep, i++)
+        int startY = yStep == 1 ? 0 : _chunkGenerators.GetLength(1) - 1;
+        for (int i = 0, y = startY; i < _chunkGenerators.GetLength(1); y += yStep, i++)
         {
-            ChunkGenerator chunk = _tempMap[x, y];
+            ChunkGenerator chunk = _chunkGenerators[x, y];
             if (chunk.HasAccessToMainRoute)
             {
                 continue;
             }
 
             ChunkGenerator yConnection = null;
-            ChunkGenerator xConnection = _tempMap[x + xStep, y];
+            ChunkGenerator xConnection = _chunkGenerators[x + xStep, y];
             int difY = y + yStep;
-            if (difY >= 0 && difY < _tempMap.GetLength(1))
+            if (difY >= 0 && difY < _chunkGenerators.GetLength(1))
             {
-                yConnection = _tempMap[x, difY];
+                yConnection = _chunkGenerators[x, difY];
             }
 
             if (chunk.IsStartPoint || chunk.IsEndPoint)
@@ -529,20 +529,20 @@ public class MapGenerator
     /// </summary>
     private string CalculateMapString()
     {
-        int width = _tempMap.GetLength(0);
-        int height = _tempMap.GetLength(1);
-        StringBuilder sb = new StringBuilder((_tempMap.GetLength(0) + 1) * _tempMap.GetLength(1));
+        int width = _chunkGenerators.GetLength(0);
+        int height = _chunkGenerators.GetLength(1);
+        StringBuilder sb = new StringBuilder((_chunkGenerators.GetLength(0) + 1) * _chunkGenerators.GetLength(1));
         for (int y = height - 1; y >= 0; y--)
         {
             for (int x = 0; x < width; x++)
             {
-                if (_tempMap[x, y].IsStartPoint)
+                if (_chunkGenerators[x, y].IsStartPoint)
                 {
                     sb.Append('S');
                     continue;
                 }
 
-                sb.Append(_tempMap[x, y].CalculateSymbol());
+                sb.Append(_chunkGenerators[x, y].CalculateSymbol());
             }
 
             sb.Append('\n');
