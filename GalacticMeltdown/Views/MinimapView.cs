@@ -54,8 +54,12 @@ public class MinimapView : View
             }
         }
 
-        cells[Width / 2, Height / 2] = new ViewCellData((_chunks[xPlayer, yPlayer].Symbol, ConsoleColor.DarkYellow), ConsoleColor.Green);
-        return cells;
+        cells[Width / 2, Height / 2] =
+            new ViewCellData(
+                Inbounds(xPlayer, yPlayer) ? (_chunks[xPlayer, yPlayer].Symbol, ConsoleColor.DarkYellow) : null,
+                ConsoleColor.Green);
+
+            return cells;
     }
 
     private void PlayerMoveHandler(object sender, MoveEventArgs e)

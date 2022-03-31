@@ -291,9 +291,9 @@ public class Renderer
 
         PlayAnimations();
         var view = (View) sender;
-        var (minX, minY, maxX, maxY) = _viewBoundaries[view];
+        var (minX, minY, _, _) = _viewBoundaries[view];
         var viewCells = view.GetAllCells();
-        maxY -= 1;
+        int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
         Console.SetCursorPosition(minX, ConvertToConsoleY(maxY));
         ScreenCellData screenCellData = GetCellWithSwap(minX, maxY, viewCells[0, maxY - minY], view);
         StringBuilder currentSequence = new();
@@ -302,7 +302,7 @@ public class Renderer
         {
             if (minX != 0) Console.SetCursorPosition(minX, ConvertToConsoleY(y));
 
-            for (int x = minX; x < maxX; x++)
+            for (int x = minX; x < minX + viewCells.GetLength(0); x++)
             {
                 screenCellData = GetCellWithSwap(x, y, viewCells[x - minX, y - minY], view);
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
