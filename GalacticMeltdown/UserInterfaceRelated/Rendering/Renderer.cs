@@ -127,8 +127,7 @@ public class Renderer
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
-        if (_pixelInfos is null
-            || !(windowWidth == _pixelInfos.GetLength(0) && windowHeight == _pixelInfos.GetLength(1)))
+        if (!(windowWidth == _pixelInfos.GetLength(0) && windowHeight == _pixelInfos.GetLength(1)))
         {
             RecalcAndRedraw(windowWidth, windowHeight);
             return true;
