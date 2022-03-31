@@ -156,7 +156,7 @@ public class OverlayView : View
             var (text, color) = lines[line].Value;
             for (int col = 0; col < Math.Min(text.Length, Width); col++)
             {
-                cells[col, line] = new ViewCellData((text[col], color), null);
+                cells[col, Height - line - 1] = new ViewCellData((text[col], color), null);
             }
         }
         return cells;
