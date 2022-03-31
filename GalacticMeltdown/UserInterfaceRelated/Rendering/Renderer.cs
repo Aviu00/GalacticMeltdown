@@ -153,7 +153,7 @@ public class Renderer
         _animQueue.Clear();
         var screenCells = new ScreenCellData[_pixelInfos.GetLength(0), _pixelInfos.GetLength(1)];
         screenCells.Initialize();
-        foreach (var view in _views)
+        foreach (View view in _views)
         {
             ViewCellData[,] viewCells = view.GetAllCells();
             var (minViewX, minViewY, _, _) = _viewBoundaries[view];
@@ -185,7 +185,7 @@ public class Renderer
         // However, in the console it means an object going down. This is why we go backwards here.  
         for (int y = ConvertToConsoleY(0); y >= 0; y--)
         {
-            for (; x < _pixelInfos.GetLength(0); x++)
+            for (; x < screenCells.GetLength(0); x++)
             {
                 screenCellData = screenCells[x, y];
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
