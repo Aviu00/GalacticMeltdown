@@ -43,7 +43,7 @@ public class InputView : View
         
         for (var i = 0; i < _currentText.Length && i / Width < Height; i++)
         {
-            cells[i / Width, i % Width] = new ViewCellData((_currentText[i], TextColor), BgColor);
+            cells[i % Width, i / Width] = new ViewCellData((_currentText[i], TextColor), BgColor);
         }
         return cells;
     }
