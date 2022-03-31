@@ -121,6 +121,44 @@ public class OverlayView : View
     public override ViewCellData[,] GetAllCells()
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
+        cells.Initialize();
+        (string text, ConsoleColor color)?[] lines =
+        {
+            ($"HP: {_player.Hp}/{_player.MaxHp}", HpColor),
+            ($"Energy: {_player.Energy}/{_player.MaxEnergy}", EnergyColor),
+            ($"STR: {_player.Strength}", StrColor),
+            ($"DEF: {_player.Defence}", DefColor),
+            ($"DEX: {_player.Dexterity}", DexColor),
+            _player.Equipment[BodyPart.Hands] is not null
+                ? ($"Held: {_player.Equipment[BodyPart.Hands].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null
+                ? (
+                    $"Ammo: {_player.Inventory.Count(item => item.Id == _player.ChosenAmmoId)} "
+                    + $"({_player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name})", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Head] is not null
+                ? ($"Head: {_player.Equipment[BodyPart.Head].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Torso] is not null
+                ? ($"Torso: {_player.Equipment[BodyPart.Torso].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Legs] is not null
+                ? ($"Legs: {_player.Equipment[BodyPart.Legs].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Feet] is not null
+                ? ($"Feet: {_player.Equipment[BodyPart.Feet].Name}", OtherTextColor)
+                : null,
+        };
+        for (int i = 0; i < Math.Min(lines.Length, Height); i++)
+        {
+            if (lines[i] is null) continue;
+            var (text, color) = lines[i].Value;
+            for (int j = 0; j < Math.Min(text.Length, Width); j++)
+            {
+                cells[i, j] = new ViewCellData((text[j], color), null);
+            }
+        }
         return cells;
     }
 
