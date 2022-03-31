@@ -100,11 +100,7 @@ public class Renderer
     {
         foreach (var (view, viewX, viewY, viewCellData, delay) in _animQueue)
         {
-            if (RedrawOnScreenSizeChange())
-            {
-                OutputAllCells();
-                return;
-            }
+            if (RedrawOnScreenSizeChange()) return;
 
             var (viewMinScreenX, viewMinScreenY, _, _) = _viewBoundaries[view];
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
@@ -116,7 +112,7 @@ public class Renderer
             if (delay != 0) Thread.Sleep(delay);
         }
 
-        OutputAllCells();
+        _animQueue.Clear();
     }
 
     public void CleanUp()
@@ -282,9 +278,9 @@ public class Renderer
             _animQueue.AddLast(((View) sender, cellInfo.x, cellInfo.y, cellInfo.cellData, 0));
         }
 
-        if (e.Cells.Any())
+        if (_animQueue.Last is not null)
         {
-            _animQueue.Last!.Value = ((View) sender, _animQueue.Last.Value.x, _animQueue.Last.Value.y,
+            _animQueue.Last.Value = ((View) sender, _animQueue.Last.Value.x, _animQueue.Last.Value.y,
                 _animQueue.Last.Value.cellData, e.Delay);
         }
     }
@@ -293,10 +289,7 @@ public class Renderer
     {
         if (RedrawOnScreenSizeChange()) return;
 
-        _animQueue =
-            new LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)>(
-                _animQueue.Where(info => info.view != sender));
-
+        PlayAnimations();
         var view = (View) sender;
         var (minX, minY, maxX, maxY) = _viewBoundaries[view];
         var viewCells = view.GetAllCells();
