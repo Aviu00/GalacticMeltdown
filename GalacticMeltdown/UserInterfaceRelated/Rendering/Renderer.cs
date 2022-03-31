@@ -171,9 +171,11 @@ public class Renderer
         {
             ViewCellData[,] viewCells = view.GetAllCells();
             var (minViewX, minViewY) = _viewCornerCoords[view];
-            for (int viewY = 0; viewY < viewCells.GetLength(1); viewY++)
+            for (int viewY = 0; viewY < Math.Min(viewCells.GetLength(1), screenCells.GetLength(1) - minViewY); viewY++)
             {
-                for (int viewX = 0; viewX < viewCells.GetLength(0); viewX++)
+                for (int viewX = 0;
+                     viewX < Math.Min(viewCells.GetLength(0), screenCells.GetLength(0) - minViewX);
+                     viewX++)
                 {
                     int screenX = viewX + minViewX, screenY = viewY + minViewY;
                     if (viewCells[viewX, viewY].BackgroundColor is not null)
@@ -293,7 +295,8 @@ public class Renderer
         var view = (View) sender;
         var (minX, minY) = _viewCornerCoords[view];
         var viewCells = view.GetAllCells();
-        int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
+        int maxX = Math.Min(_pixelInfos.GetLength(0), minX + viewCells.GetLength(0)), 
+            maxY = Math.Min(_pixelInfos.GetLength(1), minY + viewCells.GetLength(1)) - 1;
         Console.SetCursorPosition(minX, ConvertToConsoleY(maxY));
         ScreenCellData screenCellData = GetCellWithSwap(minX, maxY, viewCells[0, maxY - minY], view);
         StringBuilder currentSequence = new();
@@ -302,7 +305,7 @@ public class Renderer
         {
             if (minX != 0) Console.SetCursorPosition(minX, ConvertToConsoleY(y));
 
-            for (int x = minX; x < minX + viewCells.GetLength(0); x++)
+            for (int x = minX; x < maxX; x++)
             {
                 screenCellData = GetCellWithSwap(x, y, viewCells[x - minX, y - minY], view);
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
