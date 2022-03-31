@@ -157,20 +157,28 @@ public class Renderer
         {
             ViewCellData[,] viewCells = view.GetAllCells();
             var (minViewX, minViewY, _, _) = _viewBoundaries[view];
-            for (int viewY = 0; viewY < Math.Min(viewCells.GetLength(1), screenCells.GetLength(1) - minViewY); viewY++)
+            for (int viewY = 0; viewY < viewCells.GetLength(1); viewY++)
             {
-                for (int viewX = 0; viewX < Math.Min(viewCells.GetLength(0), screenCells.GetLength(0) - minViewX); viewX++)
+                for (int viewX = 0; viewX < viewCells.GetLength(0); viewX++)
                 {
                     int screenX = viewX + minViewX, screenY = viewY + minViewY;
-                    if (viewCells[viewX, viewY].SymbolData is not null)
+                    if (viewCells[viewX, viewY].BackgroundColor is not null)
+                    {
+                        screenCells[screenX, screenY].BgColor = viewCells[viewX, viewY].BackgroundColor.Value;
+                        screenCells[screenX, screenY].Symbol =  ' ';
+                        screenCells[screenX, screenY].FgColor = DefaultColor;
+                        if (viewCells[viewX, viewY].SymbolData is not null)
+                        {
+                            (char symbol, ConsoleColor textColor) = viewCells[viewX, viewY].SymbolData.Value;
+                            screenCells[screenX, screenY].Symbol = symbol;
+                            screenCells[screenX, screenY].FgColor = textColor;
+                        }
+                    }
+                    else if (viewCells[viewX, viewY].SymbolData is not null)
                     {
                         (char symbol, ConsoleColor textColor) = viewCells[viewX, viewY].SymbolData.Value;
                         screenCells[screenX, screenY].Symbol = symbol;
                         screenCells[screenX, screenY].FgColor = textColor;
-                    }
-                    if (viewCells[viewX, viewY].BackgroundColor is not null)
-                    {
-                        screenCells[screenX, screenY].BgColor = viewCells[viewX, viewY].BackgroundColor.Value;
                     }
                 }
             }
