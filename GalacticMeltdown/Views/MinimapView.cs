@@ -47,6 +47,8 @@ public class MinimapView : View
                 cells[viewX, viewY] = new ViewCellData((_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow), null);
             }
         }
+
+        cells[Width / 2, Height / 2] = new ViewCellData((_chunks[xPlayer, yPlayer].Symbol, ConsoleColor.DarkYellow), ConsoleColor.Green);
         return cells;
     }
 
