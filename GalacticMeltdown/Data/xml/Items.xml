@@ -223,7 +223,7 @@
     </RangedWeaponItem>
     <RangedWeaponItem>
         <Id>laser_pistol</Id>
-        <Name>laser_pistol</Name>
+        <Name>laser pistol</Name>
         <Symbol>r</Symbol>
         <MinHitDamage>5</MinHitDamage>
         <MaxHitDamage>25</MaxHitDamage>

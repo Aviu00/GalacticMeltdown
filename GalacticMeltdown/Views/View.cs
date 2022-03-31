@@ -20,4 +20,6 @@ public abstract class View
     }
     
     public abstract ViewCellData GetSymbol(int x, int y);
+
+    public abstract ViewCellData[,] GetAllCells();
 }

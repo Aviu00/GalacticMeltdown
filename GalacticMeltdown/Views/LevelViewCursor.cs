@@ -13,7 +13,7 @@ namespace GalacticMeltdown.Views;
 
 public partial class LevelView
 {
-    private HashSet<(int, int)> _cursorLinePoints = new();
+    private HashSet<(int x, int y)> _cursorLinePoints = new();
     private Cursor _cursor;
 
     private IFocusable _prevFocus;

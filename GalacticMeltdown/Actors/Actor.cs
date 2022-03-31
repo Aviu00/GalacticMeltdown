@@ -216,7 +216,7 @@ public abstract class Actor : IObjectOnMap
             }
                
         }
-        Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
+        Moved?.Invoke(this, new MoveEventArgs(oldX, oldY));
     }
 
     protected void SendAffected() => InvolvedInTurn?.Invoke(this, EventArgs.Empty);

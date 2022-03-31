@@ -28,6 +28,29 @@ public class LineView : View
             : _lines[_pressableLineIndexes[_selectedIndex] - y][x];
     }
 
+    public override ViewCellData[,] GetAllCells()
+    {
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        cells.Initialize();
+        for (int viewX = 0; viewX < Width; viewX++)
+        {
+            for (int viewY = 0; viewY < Height - _lines.Count; viewY++)
+            {
+                cells[viewX, viewY] = new ViewCellData(null, DefaultBackgroundColor);
+            }
+        }
+        for (int viewX = 0; viewX < Width; viewX++)
+        {
+            for (int viewY = Math.Max(0, Height - _lines.Count); viewY < Height; viewY++)
+            {
+                cells[viewX, viewY] = !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height
+                    ? _lines[Height - viewY - 1][viewX]
+                    : _lines[_pressableLineIndexes[_selectedIndex] - viewY][viewX];
+            }
+        }
+        return cells;
+    }
+
     public void SetLines(List<ListLine> lines, bool keepSelected = false)
     {
         if (_lines is not null)

@@ -5,23 +5,8 @@ using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
-using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Views;
-
-internal struct StatInfo
-{
-    public string Text;
-    public int Val;
-    public int? MaxVal;
-
-    public StatInfo(string text, int val, int? maxVal = null)
-    {
-        Text = text;
-        Val = val;
-        MaxVal = maxVal;
-    }
-}
 
 public class OverlayView : View
 {
@@ -36,12 +21,34 @@ public class OverlayView : View
     private Player _player; // State, equipment
     // Performance monitor?
 
-    private StatInfo _hpInfo;
-    private StatInfo _energyInfo;
-    private StatInfo _dexInfo;
-    private StatInfo _defInfo;
-    private StatInfo _strInfo;
-    
+    private (string text, ConsoleColor color)?[] Lines =>
+        new (string text, ConsoleColor color)?[]
+        {
+            ($"HP: {_player.Hp}/{_player.MaxHp}", HpColor),
+            ($"Energy: {_player.Energy}/{_player.MaxEnergy}", EnergyColor), ($"STR: {_player.Strength}", StrColor),
+            ($"DEF: {_player.Defence}", DefColor), ($"DEX: {_player.Dexterity}", DexColor),
+            _player.Equipment[BodyPart.Hands] is not null
+                ? ($"Held: {_player.Equipment[BodyPart.Hands].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null
+                ? (
+                    $"Ammo: {_player.Inventory.Count(item => item.Id == _player.ChosenAmmoId)} "
+                    + $"({_player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name})", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Head] is not null
+                ? ($"Head: {_player.Equipment[BodyPart.Head].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Torso] is not null
+                ? ($"Torso: {_player.Equipment[BodyPart.Torso].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Legs] is not null
+                ? ($"Legs: {_player.Equipment[BodyPart.Legs].Name}", OtherTextColor)
+                : null,
+            _player.Equipment[BodyPart.Feet] is not null
+                ? ($"Feet: {_player.Equipment[BodyPart.Feet].Name}", OtherTextColor)
+                : null,
+        };
+
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;
@@ -52,90 +59,45 @@ public class OverlayView : View
         _player = level.Player;
         _player.StatChanged += OnStatChange;
         _player.EquipmentChanged += OnEquipmentChange;
-        RenderStats();
-        // TODO: subscribe to events
     }
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y == Height - 1)
+        (string text, ConsoleColor color)?[] lines = Lines;
+
+        if (Height - y - 1 < lines.Length && lines[Height - y - 1] is not null)
         {
-            if (!(_hpInfo.Val == _player.Hp && _hpInfo.MaxVal == _player.MaxHp)) RenderStats();
-            if (x < _hpInfo.Text.Length) return new ViewCellData((_hpInfo.Text[x], HpColor), null);
+            var (text, color) = lines[Height - y - 1]!.Value;
+            return new ViewCellData(x < text.Length ? (text[x], color) : null, null);
         }
-        else if (y == Height - 2)
-        {
-            if (!(_energyInfo.Val == _player.Energy && _energyInfo.MaxVal == _player.MaxEnergy)) RenderStats();
-            if (x < _energyInfo.Text.Length) return new ViewCellData((_energyInfo.Text[x], EnergyColor), null);
-        }
-        else if (y == Height - 3)
-        {
-            if (_strInfo.Val != _player.Strength) RenderStats();
-            if (x < _strInfo.Text.Length) return new ViewCellData((_strInfo.Text[x], StrColor), null);
-        }
-        else if (y == Height - 4)
-        {
-            if (_defInfo.Val != _player.Defence) RenderStats();
-            if (x < _defInfo.Text.Length) return new ViewCellData((_defInfo.Text[x], DefColor), null);
-        }
-        else if (y == Height - 5)
-        {
-            if (_dexInfo.Val != _player.Dexterity) RenderStats();
-            if (x < _dexInfo.Text.Length) return new ViewCellData((_dexInfo.Text[x], DexColor), null);
-        }
-        else if (y == Height - 6 && _player.Equipment[BodyPart.Hands] is not null)
-        {
-            var s = $"Held: {_player.Equipment[BodyPart.Hands].Name}";
-            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
-        }
-        else if (y == Height - 7 && _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null)
-        {
-            int count = _player.Inventory.Count(item => item.Id == _player.ChosenAmmoId);
-            string name = _player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name;
-            string s = $"Ammo: {count} ({name})";
-            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
-        }
-        else if (y == Height - 8 && _player.Equipment[BodyPart.Head] is not null)
-        {
-            var s = $"Head: {_player.Equipment[BodyPart.Head].Name}";
-            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
-        }
-        else if (y == Height - 9 && _player.Equipment[BodyPart.Torso] is not null)
-        {
-            var s = $"Torso: {_player.Equipment[BodyPart.Torso].Name}";
-            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
-        }
-        else if (y == Height - 10 && _player.Equipment[BodyPart.Legs] is not null)
-        {
-            var s = $"Legs: {_player.Equipment[BodyPart.Legs].Name}";
-            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
-        }
-        else if (y == Height - 11 && _player.Equipment[BodyPart.Feet] is not null)
-        {
-            var s = $"Feet: {_player.Equipment[BodyPart.Feet].Name}";
-            if (x < s.Length) return new ViewCellData((s[x], OtherTextColor), null);
-        }
+        
         return new ViewCellData(null, null);
     }
-    
-    private void RenderStats()
+
+    public override ViewCellData[,] GetAllCells()
     {
-        _hpInfo = new StatInfo($"HP: {_player.Hp}/{_player.MaxHp}", _player.Hp, _player.MaxHp);
-        _energyInfo = new StatInfo($"Energy: {_player.Energy}/{_player.MaxEnergy}", _player.Energy, _player.MaxEnergy);
-        _strInfo = new StatInfo($"STR: {_player.Strength}", _player.Strength);
-        _defInfo = new StatInfo($"DEF: {_player.Defence}", _player.Defence);
-        _dexInfo = new StatInfo($"DEX: {_player.Dexterity}", _player.Dexterity);
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        cells.Initialize();
+        (string text, ConsoleColor color)?[] lines = Lines;
+        for (int line = 0; line < Math.Min(lines.Length, Height); line++)
+        {
+            if (lines[line] is null) continue;
+            var (text, color) = lines[line].Value;
+            for (int col = 0; col < Math.Min(text.Length, Width); col++)
+            {
+                cells[col, Height - line - 1] = new ViewCellData((text[col], color), null);
+            }
+        }
+        return cells;
     }
 
     private void OnStatChange(object sender, StatChangeEventArgs e)
     {
-        RenderStats();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
     
     private void OnEquipmentChange(object sender, EventArgs _)
     {
-        RenderStats();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 }

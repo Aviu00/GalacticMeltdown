@@ -150,6 +150,67 @@ public partial class LevelView : View
         return new ViewCellData(null, backgroundColor);
     }
 
+    public override ViewCellData[,] GetAllCells()
+    {
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        cells.Initialize();
+        int minX = _focusObject.X - Width / 2, minY = _focusObject.Y - Height / 2;
+        for (int viewY = 0; viewY < Height; viewY++)
+        {
+            for (int viewX = 0; viewX < Width; viewX++)
+            {
+                int levelX = minX + viewX, levelY = minY + viewY;
+                cells[viewX, viewY] = GetLevelCell(levelX, levelY);
+            }
+        }
+
+        if (_focusObject is IDrawable drawable)
+            cells[Width / 2, Height / 2] = new ViewCellData(drawable.SymbolData, drawable.BgColor);
+
+        if (DrawCursorLine)
+        {
+            foreach ((int x, int y) in _cursorLinePoints.Where(point => IsPointInsideView(point.x, point.y)))
+            {
+                var (viewX, viewY) = ToViewCoords(x, y);
+                cells[viewX, viewY] = new ViewCellData(cells[viewX, viewY].SymbolData, GetCursorLineColor(x, y));
+            }
+        }
+
+        if (_cursor is not null)
+        {
+            var (viewX, viewY) = ToViewCoords(_cursor.X, _cursor.Y);
+            cells[viewX, viewY] = new ViewCellData(cells[viewX, viewY].SymbolData, _cursor.Color);
+        }
+
+        if (ShowCoordinates)
+        {
+            string coordinateString = CoordinateString;
+            for (int i = 0; i < Math.Min(coordinateString.Length, Width); i++)
+            {
+                cells[i, Height - 1] = new ViewCellData((coordinateString[i], ConsoleColor.Black), ConsoleColor.White);
+            }
+        }
+        
+        return cells;
+
+        ViewCellData GetLevelCell(int levelX, int levelY)
+        {
+            if (_visiblePoints.Contains((levelX, levelY)))
+            {
+                IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
+                return drawableObj is null
+                    ? new ViewCellData(null, null)
+                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
+            }
+
+            if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
+                return new ViewCellData(
+                    (_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
+                    null);
+            return new ViewCellData(null, null);
+        }
+    }
+
     public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject) || focusObj is null) return;
