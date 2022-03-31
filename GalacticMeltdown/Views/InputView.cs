@@ -32,11 +32,11 @@ public class InputView : View
         if (Width == 0) return cells;
         if (_currentText.Length / Width < Height)
         {
-            for (int row = 0; row < _currentText.Length / Width; row++)
+            for (int row = 0; row < _currentText.Length / Width + 1; row++)
             {
                 for (int col = 0; col < Width; col++)
                 {
-                    cells[row, col] = new ViewCellData(null, BgColor);
+                    cells[col, row] = new ViewCellData(null, BgColor);
                 }
             }
         }
