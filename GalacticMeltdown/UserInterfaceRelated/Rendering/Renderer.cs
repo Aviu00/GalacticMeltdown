@@ -11,13 +11,15 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
-internal record struct ScreenCellData(char Symbol, ConsoleColor FgColor, ConsoleColor BgColor);
-
 public class Renderer
 {
-    private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
+    private const ConsoleColor DefaultColor = DataHolder.Colors.DefaultBackgroundColor;
+
+    private record struct ScreenCellData(char Symbol = ' ', ConsoleColor FgColor = DefaultColor,
+        ConsoleColor BgColor = DefaultColor);
 
     private OrderedSet<ViewPositioner> _viewPositioners;
+    private LinkedList<View> _views;
     private LinkedList<(View view, int viewX, int viewY)>[,] _pixelInfos;
     private Dictionary<View, (int, int, int, int)> _viewBoundaries;
     private LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)> _animQueue;
@@ -28,8 +30,8 @@ public class Renderer
     {
         if (_objectViewPositioners.ContainsKey(obj))
         {
-            ViewPositioner oldView = _objectViewPositioners[obj];
-            _viewPositioners.Remove(oldView);
+            ViewPositioner oldPositioner = _objectViewPositioners[obj];
+            _viewPositioners.Remove(oldPositioner);
         }
         
         _objectViewPositioners[obj] = viewPositioner;
@@ -72,13 +74,8 @@ public class Renderer
         _viewPositioners = new OrderedSet<ViewPositioner>();
         _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
         _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
+        _views = new LinkedList<View>();
         InitPixelFuncArr(Console.WindowWidth, Console.WindowHeight);
-    }
-
-    public void Redraw()
-    {
-        if (RedrawOnScreenSizeChange()) return;
-        OutputAllCells();
     }
 
     public void PlayAnimations()
@@ -87,7 +84,7 @@ public class Renderer
         {
             if (RedrawOnScreenSizeChange())
             {
-                Redraw();
+                OutputAllCells();
                 return;
             }
 
@@ -130,11 +127,13 @@ public class Renderer
     {
         InitPixelFuncArr(windowWidth, windowHeight);
         _viewBoundaries.Clear();
+        _views.Clear();
         foreach (ViewPositioner viewPositioner in _viewPositioners)
         {
             viewPositioner.SetScreenSize(windowWidth, windowHeight);
             foreach (var (view, minX, minY, maxX, maxY) in viewPositioner.ViewPositions)
             {
+                _views.AddLast(view);
                 _viewBoundaries.Add(view, (minX, minY, maxX, maxY));
                 for (int x = minX; x < maxX; x++)
                 {
@@ -152,9 +151,33 @@ public class Renderer
     private void OutputAllCells()
     {
         _animQueue.Clear();
+        var screenCells = new ScreenCellData[_pixelInfos.GetLength(0), _pixelInfos.GetLength(1)];
+        screenCells.Initialize();
+        foreach (var view in _views)
+        {
+            ViewCellData[,] viewCells = view.GetAllCells();
+            var (minViewX, minViewY, _, _) = _viewBoundaries[view];
+            for (int viewY = 0; viewY < Math.Min(viewCells.GetLength(1), screenCells.GetLength(1) - minViewY); viewY++)
+            {
+                for (int viewX = 0; viewX < Math.Min(viewCells.GetLength(0), screenCells.GetLength(0) - minViewX); viewX++)
+                {
+                    int screenX = viewX + minViewX, screenY = viewY + minViewY;
+                    if (viewCells[viewX, viewY].SymbolData is not null)
+                    {
+                        (char symbol, ConsoleColor textColor) = viewCells[viewX, viewY].SymbolData.Value;
+                        screenCells[screenX, screenY].Symbol = symbol;
+                        screenCells[screenX, screenY].FgColor = textColor;
+                    }
+                    if (viewCells[viewX, viewY].BackgroundColor is not null)
+                    {
+                        screenCells[screenX, screenY].BgColor = viewCells[viewX, viewY].BackgroundColor.Value;
+                    }
+                }
+            }
+        }
         Console.SetCursorPosition(0, 0);
         // do first step outside the loop to avoid working with nulls
-        ScreenCellData screenCellData = GetCell(0, ConvertToConsoleY(0));
+        ScreenCellData screenCellData = screenCells[0, ConvertToConsoleY(0)];
         StringBuilder currentSequence = new($"{screenCellData.Symbol}");
         ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
         int x = 1;
@@ -164,7 +187,7 @@ public class Renderer
         {
             for (; x < _pixelInfos.GetLength(0); x++)
             {
-                screenCellData = GetCell(x, y);
+                screenCellData = screenCells[x, y];
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
                     || screenCellData.BgColor != curBgColor)
                 {
@@ -230,8 +253,8 @@ public class Renderer
             }
         }
 
-        symbolData ??= (' ', DefaultBackgroundColor);
-        backgroundColor ??= DefaultBackgroundColor;
+        symbolData ??= (' ', DefaultColor);
+        backgroundColor ??= DefaultColor;
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
