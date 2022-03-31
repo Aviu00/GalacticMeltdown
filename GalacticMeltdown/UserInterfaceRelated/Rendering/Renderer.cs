@@ -39,8 +39,8 @@ public class Renderer
     private OrderedSet<ViewPositioner> _viewPositioners;
     private LinkedList<View> _views;
     private LinkedList<(View view, int viewX, int viewY)>[,] _pixelInfos;
-    private Dictionary<View, (int, int, int, int)> _viewBoundaries;
-    private LinkedList<(View view, int x, int y, ViewCellData cellData, int delay)> _animQueue;
+    private Dictionary<View, (int minX, int minY)> _viewCornerCoords;
+    private LinkedList<(View view, int viewX, int viewY, ViewCellData cellData, int delay)> _animQueue;
 
     private Dictionary<object, ViewPositioner> _objectViewPositioners = new();
 
@@ -90,7 +90,7 @@ public class Renderer
         Console.BackgroundColor = ConsoleColor.Black;
         Console.Clear();
         _viewPositioners = new OrderedSet<ViewPositioner>();
-        _viewBoundaries = new Dictionary<View, (int, int, int, int)>();
+        _viewCornerCoords = new Dictionary<View, (int, int)>();
         _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
         _views = new LinkedList<View>();
         InitPixelFuncArr(Console.WindowWidth, Console.WindowHeight);
@@ -102,7 +102,7 @@ public class Renderer
         {
             if (RedrawOnScreenSizeChange()) return;
 
-            var (viewMinScreenX, viewMinScreenY, _, _) = _viewBoundaries[view];
+            var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
                 viewMinScreenX, viewMinScreenY);
             ScreenCellData screenCellData = GetCellWithSwap(screenX, screenY, viewCellData, view);
@@ -140,7 +140,7 @@ public class Renderer
     private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
         InitPixelFuncArr(windowWidth, windowHeight);
-        _viewBoundaries.Clear();
+        _viewCornerCoords.Clear();
         _views.Clear();
         foreach (ViewPositioner viewPositioner in _viewPositioners)
         {
@@ -148,7 +148,7 @@ public class Renderer
             foreach (var (view, minX, minY, maxX, maxY) in viewPositioner.ViewPositions)
             {
                 _views.AddLast(view);
-                _viewBoundaries.Add(view, (minX, minY, maxX, maxY));
+                _viewCornerCoords.Add(view, (minX, minY));
                 for (int x = minX; x < maxX; x++)
                 {
                     for (int y = minY; y < maxY; y++)
@@ -170,7 +170,7 @@ public class Renderer
         foreach (View view in _views)
         {
             ViewCellData[,] viewCells = view.GetAllCells();
-            var (minViewX, minViewY, _, _) = _viewBoundaries[view];
+            var (minViewX, minViewY) = _viewCornerCoords[view];
             for (int viewY = 0; viewY < viewCells.GetLength(1); viewY++)
             {
                 for (int viewX = 0; viewX < viewCells.GetLength(0); viewX++)
@@ -280,7 +280,7 @@ public class Renderer
 
         if (_animQueue.Last is not null)
         {
-            _animQueue.Last.Value = ((View) sender, _animQueue.Last.Value.x, _animQueue.Last.Value.y,
+            _animQueue.Last.Value = ((View) sender, x: _animQueue.Last.Value.viewX, y: _animQueue.Last.Value.viewY,
                 _animQueue.Last.Value.cellData, e.Delay);
         }
     }
@@ -291,7 +291,7 @@ public class Renderer
 
         PlayAnimations();
         var view = (View) sender;
-        var (minX, minY, _, _) = _viewBoundaries[view];
+        var (minX, minY) = _viewCornerCoords[view];
         var viewCells = view.GetAllCells();
         int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
         Console.SetCursorPosition(minX, ConvertToConsoleY(maxY));
