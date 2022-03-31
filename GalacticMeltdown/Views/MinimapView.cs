@@ -57,7 +57,7 @@ public class MinimapView : View
     private void PlayerMoveHandler(object sender, MoveEventArgs e)
     {
         var player = (Player) sender;
-        if (Level.GetChunkCoords(e.X0, e.Y0) != Level.GetChunkCoords(player.X, player.Y))
+        if (Level.GetChunkCoords(e.OldX, e.OldY) != Level.GetChunkCoords(player.X, player.Y))
             NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

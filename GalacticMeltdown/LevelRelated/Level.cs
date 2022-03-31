@@ -263,13 +263,14 @@ public class Level
     private void ControllableMoved(object sender, MoveEventArgs e)
     {
         bool isPlayer = ReferenceEquals(sender, Player);
-        if (GetChunkCoords(e.X0, e.Y0) != GetChunkCoords(e.X1, e.Y1))
+        var controllable = (IControllable) sender;
+        if (GetChunkCoords(e.OldX, e.OldY) != GetChunkCoords(controllable.X, controllable.Y))
         {
             UpdateActiveChunks();
             if (isPlayer)
             {
-                (int x, int y) = GetChunkCoords(e.X1, e.Y1);
-                if(CoordsInRangeOfChunkArray(e.X1, e.Y1, x, y))
+                (int x, int y) = GetChunkCoords(controllable.X, controllable.Y);
+                if (CoordsInRangeOfChunkArray(controllable.X, controllable.Y, x, y))
                     _chunks[x, y].WasVisitedByPlayer = true;
             }
         }
@@ -407,8 +408,8 @@ public class Level
     {
         if (sender is Npc npc)
         {
-            var chunk0 = GetChunkCoords(e.X0, e.Y0);
-            var chunk1 = GetChunkCoords(e.X1, e.Y1);
+            var chunk0 = GetChunkCoords(e.OldX, e.OldY);
+            var chunk1 = GetChunkCoords(npc.X, npc.Y);
             if (chunk0 != chunk1)
             {
                 _chunks[chunk0.chunkX, chunk0.chunkY].RemoveNpc(npc);

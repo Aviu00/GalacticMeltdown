@@ -94,7 +94,7 @@ public class Cursor : IControllable
         int oldX = X, oldY = Y;
         X = x;
         Y = y;
-        Moved?.Invoke(this, new MoveEventArgs(oldX, oldY, X, Y));
+        Moved?.Invoke(this, new MoveEventArgs(oldX, oldY));
     }
 
     private bool IsPositionInbounds(int x, int y)
