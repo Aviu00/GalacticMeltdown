@@ -32,6 +32,12 @@ public class MinimapView : View
             x == centerViewX && y == centerViewY ? ConsoleColor.Green : null);
     }
 
+    public override ViewCellData[,] GetAllCells()
+    {
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        return cells;
+    }
+
     private bool Inbounds(int x, int y)
     {
         return x >= 0 && x < _chunks.GetLength(0) && y >= 0 && y < _chunks.GetLength(1);

@@ -150,6 +150,12 @@ public partial class LevelView : View
         return new ViewCellData(null, backgroundColor);
     }
 
+    public override ViewCellData[,] GetAllCells()
+    {
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        return cells;
+    }
+
     public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject) || focusObj is null) return;

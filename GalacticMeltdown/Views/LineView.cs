@@ -28,6 +28,12 @@ public class LineView : View
             : _lines[_pressableLineIndexes[_selectedIndex] - y][x];
     }
 
+    public override ViewCellData[,] GetAllCells()
+    {
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        return cells;
+    }
+
     public void SetLines(List<ListLine> lines, bool keepSelected = false)
     {
         if (_lines is not null)

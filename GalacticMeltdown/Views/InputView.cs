@@ -24,7 +24,13 @@ public class InputView : View
             y * Width + x < _currentText.Length ? (_currentText[y * Width + x], TextColor) : null;
         return new ViewCellData(symbolData, bgColor);
     }
-    
+
+    public override ViewCellData[,] GetAllCells()
+    {
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        return cells;
+    }
+
     public void DeleteCharacter()
     {
         if (_currentText.Length == 0) return;

@@ -117,7 +117,13 @@ public class OverlayView : View
         }
         return new ViewCellData(null, null);
     }
-    
+
+    public override ViewCellData[,] GetAllCells()
+    {
+        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        return cells;
+    }
+
     private void RenderStats()
     {
         _hpInfo = new StatInfo($"HP: {_player.Hp}/{_player.MaxHp}", _player.Hp, _player.MaxHp);
