@@ -35,6 +35,18 @@ public class MinimapView : View
     public override ViewCellData[,] GetAllCells()
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
+        cells.Initialize();
+        var (xPlayer, yPlayer) = _getPlayerChunk();
+        int minX = xPlayer - Width / 2, minY = yPlayer - Height / 2;
+        for (int viewY = 0; viewY < Height; viewY++)
+        {
+            for (int viewX = 0; viewX < Width; viewX++)
+            {
+                int chunkX = minX + viewX, chunkY = minY + viewY;
+                if (!Inbounds(chunkX, chunkY)) continue;
+                cells[viewY, viewX] = new ViewCellData((_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow), null);
+            }
+        }
         return cells;
     }
 

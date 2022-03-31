@@ -27,7 +27,8 @@ public class InputView : View
 
     public override ViewCellData[,] GetAllCells()
     {
-        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        var cells = new ViewCellData[Width, Height];
+        cells.Initialize();
         if (Width == 0) return cells;
         if (_currentText.Length / Width < Height)
         {
