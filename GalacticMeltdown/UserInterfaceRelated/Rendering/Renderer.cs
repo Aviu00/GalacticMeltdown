@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using GalacticMeltdown.Collections;
@@ -38,11 +37,11 @@ public class Renderer
 
     private OrderedSet<ViewPositioner> _viewPositioners;
     private LinkedList<View> _views;
-    private LinkedList<(View view, int viewX, int viewY)>[,] _pixelInfos;
+    private LinkedList<(View view, int viewX, int viewY)>[,] _cellInfos;
     private Dictionary<View, (int minX, int minY)> _viewCornerCoords;
     private LinkedList<(View view, int viewX, int viewY, ViewCellData cellData, int delay)> _animQueue;
 
-    private Dictionary<object, ViewPositioner> _objectViewPositioners = new();
+    private Dictionary<object, ViewPositioner> _objectViewPositioners;
 
     public void SetView(object obj, ViewPositioner viewPositioner)
     {
@@ -59,7 +58,7 @@ public class Renderer
     private void AddViewPositioner(ViewPositioner viewPositioner)
     {
         _viewPositioners.Add(viewPositioner);
-        viewPositioner.SetScreenSize(_pixelInfos.GetLength(0), _pixelInfos.GetLength(1));
+        viewPositioner.SetScreenSize(_cellInfos.GetLength(0), _cellInfos.GetLength(1));
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
         {
             view.CellChanged += AddCellChange;
@@ -93,6 +92,7 @@ public class Renderer
         _viewCornerCoords = new Dictionary<View, (int, int)>();
         _animQueue = new LinkedList<(View, int, int, ViewCellData, int)>();
         _views = new LinkedList<View>();
+        _objectViewPositioners = new Dictionary<object, ViewPositioner>();
         InitPixelFuncArr(Console.WindowWidth, Console.WindowHeight);
     }
 
@@ -127,7 +127,7 @@ public class Renderer
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;
-        if (!(windowWidth == _pixelInfos.GetLength(0) && windowHeight == _pixelInfos.GetLength(1)))
+        if (!(windowWidth == _cellInfos.GetLength(0) && windowHeight == _cellInfos.GetLength(1)))
         {
             RecalcAndRedraw(windowWidth, windowHeight);
             return true;
@@ -152,7 +152,7 @@ public class Renderer
                 {
                     for (int y = minY; y < maxY; y++)
                     {
-                        _pixelInfos[x, y].AddFirst((view, x - minX, y - minY));
+                        _cellInfos[x, y].AddFirst((view, x - minX, y - minY));
                     }
                 }
             }
@@ -164,7 +164,7 @@ public class Renderer
     private void OutputAllCells()
     {
         _animQueue.Clear();
-        var screenCells = new ScreenCellData[_pixelInfos.GetLength(0), _pixelInfos.GetLength(1)];
+        var screenCells = new ScreenCellData[_cellInfos.GetLength(0), _cellInfos.GetLength(1)];
         screenCells.Initialize();
         foreach (View view in _views)
         {
@@ -227,12 +227,12 @@ public class Renderer
 
     private void InitPixelFuncArr(int windowWidth, int windowHeight)
     {
-        _pixelInfos = new LinkedList<(View view, int viewX, int viewY)>[windowWidth, windowHeight];
-        for (int x = 0; x < _pixelInfos.GetLength(0); x++)
+        _cellInfos = new LinkedList<(View view, int viewX, int viewY)>[windowWidth, windowHeight];
+        for (int x = 0; x < _cellInfos.GetLength(0); x++)
         {
-            for (int y = 0; y < _pixelInfos.GetLength(1); y++)
+            for (int y = 0; y < _cellInfos.GetLength(1); y++)
             {
-                _pixelInfos[x, y] = new LinkedList<(View view, int viewX, int viewY)>();
+                _cellInfos[x, y] = new LinkedList<(View view, int viewX, int viewY)>();
             }
         }
     }
@@ -241,7 +241,7 @@ public class Renderer
     {
         (char symbol, ConsoleColor color)? symbolData = null;
         ConsoleColor? backgroundColor = null;
-        foreach (var (view, viewX, viewY) in _pixelInfos[x, y])
+        foreach (var (view, viewX, viewY) in _cellInfos[x, y])
         {
             ViewCellData viewCellData = ReferenceEquals(view, swapView) ? cellData : view.GetSymbol(viewX, viewY);
             symbolData ??= viewCellData.SymbolData;
@@ -264,7 +264,7 @@ public class Renderer
 
     private int ConvertToConsoleY(int y)
     {
-        return _pixelInfos.GetLength(1) - 1 - y;
+        return _cellInfos.GetLength(1) - 1 - y;
     }
 
     private void AddCellChange(object sender, CellChangedEventArgs e)
@@ -281,7 +281,7 @@ public class Renderer
 
         if (_animQueue.Last is not null)
         {
-            _animQueue.Last.Value = ((View) sender, x: _animQueue.Last.Value.viewX, y: _animQueue.Last.Value.viewY,
+            _animQueue.Last.Value = ((View) sender, _animQueue.Last.Value.viewX, _animQueue.Last.Value.viewY,
                 _animQueue.Last.Value.cellData, e.Delay);
         }
     }
@@ -294,8 +294,8 @@ public class Renderer
         var view = (View) sender;
         var (minX, minY) = _viewCornerCoords[view];
         var viewCells = view.GetAllCells();
-        int maxX = Math.Min(_pixelInfos.GetLength(0), minX + viewCells.GetLength(0)), 
-            maxY = Math.Min(_pixelInfos.GetLength(1), minY + viewCells.GetLength(1)) - 1;
+        int maxX = Math.Min(_cellInfos.GetLength(0), minX + viewCells.GetLength(0)), 
+            maxY = Math.Min(_cellInfos.GetLength(1), minY + viewCells.GetLength(1)) - 1;
         Console.SetCursorPosition(minX, ConvertToConsoleY(maxY));
         ScreenCellData screenCellData = GetCellWithSwap(minX, maxY, viewCells[0, maxY - minY], view);
         StringBuilder currentSequence = new();
@@ -320,7 +320,7 @@ public class Renderer
 
             if (minX == 0)
             {
-                if (maxX != _pixelInfos.GetLength(0)) currentSequence.Append('\n');
+                if (maxX != _cellInfos.GetLength(0)) currentSequence.Append('\n');
             }
             else
             {
@@ -330,7 +330,7 @@ public class Renderer
 
         if (minX == 0)
         {
-            if (maxX != _pixelInfos.GetLength(0)) currentSequence.Length--;
+            if (maxX != _cellInfos.GetLength(0)) currentSequence.Length--;
             WriteSequenceOut();
         }
 
