@@ -46,7 +46,11 @@ public class MinimapView : View
             {
                 int chunkX = minX + viewX, chunkY = minY + viewY;
                 if (!Inbounds(chunkX, chunkY)) continue;
-                cells[viewX, viewY] = new ViewCellData((_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow), null);
+                cells[viewX, viewY] =
+                    new ViewCellData(
+                        _chunks[chunkX, chunkY].WasVisitedByPlayer
+                            ? (_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow)
+                            : ('◻', ConsoleColor.DarkGray), null);
             }
         }
 
