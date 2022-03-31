@@ -28,6 +28,22 @@ public class InputView : View
     public override ViewCellData[,] GetAllCells()
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
+        if (Width == 0) return cells;
+        if (_currentText.Length / Width < Height)
+        {
+            for (int row = 0; row < _currentText.Length / Width; row++)
+            {
+                for (int col = 0; col < Width; col++)
+                {
+                    cells[row, col] = new ViewCellData(null, BgColor);
+                }
+            }
+        }
+        
+        for (var i = 0; i < _currentText.Length && i / Width < Height; i++)
+        {
+            cells[i / Width, i % Width] = new ViewCellData((_currentText[i], TextColor), BgColor);
+        }
         return cells;
     }
 
