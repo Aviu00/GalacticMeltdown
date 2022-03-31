@@ -31,6 +31,16 @@ public class LineView : View
     public override ViewCellData[,] GetAllCells()
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
+        cells.Initialize();
+        for (int i = 0; i < Height; i++)
+        {
+            for (int j = 0; j < Width; j++)
+            {
+                cells[i, j] = !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height
+                    ? _lines[Height - i - 1][j]
+                    : _lines[_pressableLineIndexes[_selectedIndex] - i][j];
+            }
+        }
         return cells;
     }
 
