@@ -114,7 +114,7 @@ public class Level
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
         _controllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
-        MinimapView = new MinimapView(_chunks, () => GetChunkCoords(Player.X, Player.Y));
+        MinimapView = new MinimapView(_chunks, Player);
         _activeChunks = new();
         UpdateActiveChunks();
     }

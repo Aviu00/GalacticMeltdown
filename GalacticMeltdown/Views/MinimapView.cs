@@ -1,4 +1,5 @@
 using System;
+using GalacticMeltdown.Actors;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -8,22 +9,23 @@ namespace GalacticMeltdown.Views;
 public class MinimapView : View
 {
     private Chunk[,] _chunks;
-    private Func<(int, int)> _getPlayerChunk;
+    private Player _player;
 
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangedEventArgs> CellChanged;
     public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
-    public MinimapView(Chunk[,] chunks, Func<(int, int)> getPlayerChunk)
+    public MinimapView(Chunk[,] chunks, Player player)
     {
         _chunks = chunks;
-        _getPlayerChunk = getPlayerChunk;
+        _player = player;
+        _player.Moved += PlayerMoveHandler;
     }
 
     public override ViewCellData GetSymbol(int x, int y)
     {
         int centerViewX = Width / 2, centerViewY = Height / 2;
-        var (xPlayer, yPlayer) = _getPlayerChunk();
+        var (xPlayer, yPlayer) = Level.GetChunkCoords(_player.X, _player.Y);
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerViewX, centerViewY);
         var (xAbs, yAbs) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, xPlayer, yPlayer);
         if (!Inbounds(xAbs, yAbs)) return new ViewCellData(null, null);
@@ -36,7 +38,7 @@ public class MinimapView : View
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
         cells.Initialize();
-        var (xPlayer, yPlayer) = _getPlayerChunk();
+        var (xPlayer, yPlayer) = Level.GetChunkCoords(_player.X, _player.Y);
         int minX = xPlayer - Width / 2, minY = yPlayer - Height / 2;
         for (int viewY = 0; viewY < Height; viewY++)
         {
@@ -50,6 +52,13 @@ public class MinimapView : View
 
         cells[Width / 2, Height / 2] = new ViewCellData((_chunks[xPlayer, yPlayer].Symbol, ConsoleColor.DarkYellow), ConsoleColor.Green);
         return cells;
+    }
+
+    private void PlayerMoveHandler(object sender, MoveEventArgs e)
+    {
+        var player = (Player) sender;
+        if (Level.GetChunkCoords(e.X0, e.Y0) != Level.GetChunkCoords(player.X, player.Y))
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private bool Inbounds(int x, int y)
