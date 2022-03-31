@@ -32,13 +32,13 @@ public class LineView : View
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
         cells.Initialize();
-        for (int i = 0; i < Height; i++)
+        for (int viewY = 0; viewY < Height; viewY++)
         {
-            for (int j = 0; j < Width; j++)
+            for (int viewX = 0; viewX < Width; viewX++)
             {
-                cells[i, j] = !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height
-                    ? _lines[Height - i - 1][j]
-                    : _lines[_pressableLineIndexes[_selectedIndex] - i][j];
+                cells[viewY, viewX] = !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height
+                    ? _lines[Height - viewY - 1][viewX]
+                    : _lines[_pressableLineIndexes[_selectedIndex] - viewY][viewX];
             }
         }
         return cells;

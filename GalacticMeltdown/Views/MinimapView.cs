@@ -44,7 +44,7 @@ public class MinimapView : View
             {
                 int chunkX = minX + viewX, chunkY = minY + viewY;
                 if (!Inbounds(chunkX, chunkY)) continue;
-                cells[viewY, viewX] = new ViewCellData((_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow), null);
+                cells[viewX, viewY] = new ViewCellData((_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow), null);
             }
         }
         return cells;

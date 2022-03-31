@@ -150,13 +150,13 @@ public class OverlayView : View
                 ? ($"Feet: {_player.Equipment[BodyPart.Feet].Name}", OtherTextColor)
                 : null,
         };
-        for (int i = 0; i < Math.Min(lines.Length, Height); i++)
+        for (int line = 0; line < Math.Min(lines.Length, Height); line++)
         {
-            if (lines[i] is null) continue;
-            var (text, color) = lines[i].Value;
-            for (int j = 0; j < Math.Min(text.Length, Width); j++)
+            if (lines[line] is null) continue;
+            var (text, color) = lines[line].Value;
+            for (int col = 0; col < Math.Min(text.Length, Width); col++)
             {
-                cells[i, j] = new ViewCellData((text[j], color), null);
+                cells[line, col] = new ViewCellData((text[col], color), null);
             }
         }
         return cells;

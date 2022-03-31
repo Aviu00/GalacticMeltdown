@@ -160,7 +160,7 @@ public partial class LevelView : View
             for (int viewX = 0; viewX < Width; viewX++)
             {
                 int levelX = minX + viewX, levelY = minY + viewY;
-                cells[viewY, viewX] = GetLevelCell(levelX, levelY);
+                cells[viewX, viewY] = GetLevelCell(levelX, levelY);
             }
         }
 
