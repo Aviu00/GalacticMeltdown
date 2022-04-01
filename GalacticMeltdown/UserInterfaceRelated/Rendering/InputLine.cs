@@ -9,15 +9,24 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
+internal enum InputLineState
+{
+    Selected,
+    Unselected,
+    Pressed
+}
+
 public class InputLine : PressableListLine
 {
     private const ConsoleColor Selected = DataHolder.Colors.InputLineBgColorSelected;
     private const ConsoleColor Unselected = DataHolder.Colors.TextBoxDefaultBgColor;
+    private const ConsoleColor Pressed = ConsoleColor.Magenta;
     private const ConsoleColor TextColor = DataHolder.Colors.TextBoxTextColor;
 
     private StringBuilder _currentText;
 
     private bool _selected;
+    private InputLineState _state;
 
     private Func<char, bool> _characterValidationFunction;
 
@@ -29,6 +38,7 @@ public class InputLine : PressableListLine
     {
         _currentText = new StringBuilder();
         _characterValidationFunction = characterValidationFunction;
+        _state = InputLineState.Unselected;
     }
 
     public override ViewCellData this[int x]
@@ -44,18 +54,26 @@ public class InputLine : PressableListLine
             {
                 symbol = _currentText[_currentText.Length - Width + x];
             }
-            return new ViewCellData((symbol, TextColor), _selected ? Selected : Unselected);
+            return new ViewCellData((symbol, TextColor), _state switch
+            {
+                InputLineState.Pressed => Pressed,
+                InputLineState.Selected => Selected,
+                InputLineState.Unselected => Unselected,
+                _ => Unselected
+            });
         }
     }
 
     public override void Press()
     {
+        _state = InputLineState.Pressed;
+        Updated?.Invoke(this, EventArgs.Empty);
         UserInterface.SetController(this,
             new TextInputController(AddCharacter,
                 UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.TextInput,
                     new Dictionary<TextInputControl, Action>
                     {
-                        {TextInputControl.Back, () => UserInterface.Forget(this)},
+                        {TextInputControl.Back, Back},
                         {TextInputControl.DeleteCharacter, DeleteCharacter}
                     }),
                 _characterValidationFunction ?? (chr =>
@@ -76,7 +94,22 @@ public class InputLine : PressableListLine
         Updated?.Invoke(this, EventArgs.Empty);
     }
 
-    public override void Select() => _selected = true;
-    
-    public override void Deselect() => _selected = false;
+    public override void Select()
+    {
+        _state = InputLineState.Selected;
+        Updated?.Invoke(this, EventArgs.Empty);
+    }
+
+    public override void Deselect()
+    {
+        _state = InputLineState.Unselected;
+        Updated?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void Back()
+    {
+        _state = InputLineState.Selected;
+        Updated?.Invoke(this, EventArgs.Empty);
+        UserInterface.YieldControl(this);
+    }
 }
