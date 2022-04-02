@@ -111,9 +111,10 @@ public partial class LevelView : View
     {
         ConsoleColor? backgroundColor = null;
         
-        if (ShowCoordinates && y == Height - 1 && x < CoordinateString.Length && CoordinateString[x] != ' ')
+        if (ShowCoordinates && y == Height - 1 && x < CoordinateString.Length)
         {
-            return new ViewCellData((CoordinateString[x], ConsoleColor.Black), ConsoleColor.White);
+            char sym = CoordinateString[x];
+            return new ViewCellData(sym == ' ' ? null : (sym, ConsoleColor.Black), ConsoleColor.White);
         }
         
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
@@ -187,7 +188,9 @@ public partial class LevelView : View
             string coordinateString = CoordinateString;
             for (int i = 0; i < Math.Min(coordinateString.Length, Width); i++)
             {
-                cells[i, Height - 1] = new ViewCellData((coordinateString[i], ConsoleColor.Black), ConsoleColor.White);
+                char sym = coordinateString[i];
+                cells[i, Height - 1] =
+                    new ViewCellData(sym == ' ' ? null : (sym, ConsoleColor.Black), ConsoleColor.White);
             }
         }
         
