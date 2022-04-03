@@ -206,16 +206,7 @@ public abstract class Actor : IObjectOnMap
         X = x;
         Y = y;
         Tile tile = Level.GetTile(x, y);
-        if (tile is not null)
-        {
-            if (tile.MoveCost - MoveSpeed <= 0)
-                Energy -= 1;
-            else
-            {
-                Energy -= tile.MoveCost - MoveSpeed;
-            }
-               
-        }
+        if (tile is not null) Energy -= Math.Max(tile.MoveCost - MoveSpeed, 1);
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY));
     }
 
