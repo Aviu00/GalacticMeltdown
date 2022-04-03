@@ -36,6 +36,7 @@ public class ContinuousEffect : Effect
     public ContinuousEffect (Actor actor, int power, int duration, DataHolder.ActorStateChangerType effectTypeId)
         : base(actor, power, duration, effectTypeId)
     {
+        if(duration <= 0) return;
         Level.TurnFinished += NextTurn;
         EffectAction(actor, power, duration);
     }

@@ -22,6 +22,7 @@ public class FlatEffect : Effect
     public FlatEffect(Actor actor, int power, int duration, DataHolder.ActorStateChangerType effectTypeId)
         : base(actor, power, duration, effectTypeId)
     {
+        if(duration <= 0) return;
         EffectAction(actor, power, duration);
     }
 

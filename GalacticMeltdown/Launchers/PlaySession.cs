@@ -19,11 +19,11 @@ namespace GalacticMeltdown.Launchers;
 public partial class PlaySession
 {
     private const int SaveInterval = 100;
-    
+
     private readonly string _levelName;
 
     private bool _cheatsEnabled;
-    
+
     private Player _player;
     private IControllable _controlledObject;
     private Level _level;
@@ -68,6 +68,7 @@ public partial class PlaySession
                 SaveLevel();
                 _saveCounter.ResetTimer();
             }
+
             UserInterface.SetTask(this, MapTurn);
         }
         else
@@ -98,7 +99,7 @@ public partial class PlaySession
         UserInterface.AddChild(this, pauseMenu);
         pauseMenu.Open();
     }
-    
+
     private void SaveAndQuit()
     {
         _level.AbortTurn();
@@ -112,7 +113,7 @@ public partial class PlaySession
         UserInterface.AddChild(this, inventoryMenu);
         inventoryMenu.Open();
     }
-    
+
     private void OpenAmmoSelectionDialog()
     {
         if (!(_player.Equipment[BodyPart.Hands] is WeaponItem weapon && weapon.AmmoTypes is not null)) return;
@@ -184,6 +185,14 @@ public partial class PlaySession
             case "maxenergy":
                 if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int maxEnergy))
                     _player.MaxEnergy = maxEnergy;
+                break;
+            case "statechanger":
+                if (!_cheatsEnabled || words.Length is not (3 or 4) ||
+                    !Enum.TryParse(words[1], out DataHolder.ActorStateChangerType stateChangerId) ||
+                    !int.TryParse(words[2], out int power)) break;
+                int duration = 0;
+                if(words.Length == 4 && !int.TryParse(words[3], out duration) || duration <= 0) break;
+                DataHolder.ActorStateChangers[stateChangerId](_player, power, duration);
                 break;
         }
     }
