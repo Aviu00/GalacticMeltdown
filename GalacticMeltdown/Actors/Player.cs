@@ -270,7 +270,7 @@ public class Player : Actor, ISightedObject, IControllable
     private void RemoveAmmo(Item ammo)
     {
         Inventory.Remove(ammo);
-        if (Inventory.All(match => ammo.Id != match.Id))
+        if (!Inventory.Any(match => ammo.Id == match.Id))
             SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
     }
 

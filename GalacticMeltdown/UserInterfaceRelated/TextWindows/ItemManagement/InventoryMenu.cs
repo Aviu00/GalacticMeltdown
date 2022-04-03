@@ -21,6 +21,7 @@ public class InventoryMenu : TextWindow
     public InventoryMenu(Player player)
     {
         _player = player;
+        _player.EquipmentChanged += OnEquipmentChange;
         _inventory = _player.Inventory;
         _inventoryFilters = new Dictionary<InventoryFilterType, Func<Item, bool>>();
         UpdateLines();
@@ -35,6 +36,12 @@ public class InventoryMenu : TextWindow
                 {InventoryControl.OpenCategorySelection, OpenCategoryDialog},
                 {InventoryControl.OpenSearchBox, OpenSearchBox}
             }));
+    }
+
+    public override void Close()
+    {
+        _player.EquipmentChanged -= OnEquipmentChange;
+        base.Close();
     }
 
     private void UpdateLines()
@@ -136,4 +143,6 @@ public class InventoryMenu : TextWindow
             UpdateLines();
         }
     }
+
+    private void OnEquipmentChange(object sender, EventArgs e) => UpdateLines();
 }

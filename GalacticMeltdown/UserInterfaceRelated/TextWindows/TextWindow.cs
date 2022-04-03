@@ -17,7 +17,7 @@ public abstract class TextWindow
         UserInterface.TakeControl(this);
     }
 
-    public void Close()
+    public virtual void Close()
     {
         UserInterface.Forget(this);
     }
