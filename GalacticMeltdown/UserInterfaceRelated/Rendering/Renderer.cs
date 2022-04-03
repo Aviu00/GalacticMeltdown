@@ -112,6 +112,7 @@ public class Renderer
 
     public void PlayAnimations()
     {
+        if (!_animQueue.Any()) return;
         int totalDelay = _animQueue.Sum(data => data.delay);
         double factor = totalDelay <= AnimationTime ? 1 : AnimationTime / (double) totalDelay;
         foreach (var (view, viewX, viewY, viewCellData, delay) in _animQueue)
