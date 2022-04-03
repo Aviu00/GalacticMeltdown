@@ -57,6 +57,7 @@ public class Renderer
 
     private void AddViewPositioner(ViewPositioner viewPositioner)
     {
+        if (!RedrawOnScreenSizeChange()) PlayAnimations();
         _viewPositioners.Add(viewPositioner);
         viewPositioner.SetScreenSize(_cellInfos.GetLength(0), _cellInfos.GetLength(1));
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
@@ -71,6 +72,7 @@ public class Renderer
     public void RemoveViewPositioner(object obj)
     {
         if (!_objectViewPositioners.ContainsKey(obj)) return;
+        if (!RedrawOnScreenSizeChange()) PlayAnimations();
         ViewPositioner viewPositioner = _objectViewPositioners[obj];
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
         {
