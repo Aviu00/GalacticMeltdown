@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using GalacticMeltdown.Collections;
@@ -13,6 +14,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 public class Renderer
 {
     private const ConsoleColor DefaultColor = DataHolder.Colors.DefaultBackgroundColor;
+    private const int MaxAnimationTime = 1000;
 
     private struct ScreenCellData
     {
@@ -100,6 +102,8 @@ public class Renderer
 
     public void PlayAnimations()
     {
+        int totalDelay = _animQueue.Sum(data => data.delay);
+        double factor = totalDelay <= MaxAnimationTime ? 1 : MaxAnimationTime / (double) totalDelay;
         foreach (var (view, viewX, viewY, viewCellData, delay) in _animQueue)
         {
             if (RedrawOnScreenSizeChange()) return;
@@ -111,7 +115,7 @@ public class Renderer
             Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
             SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
             Console.Write(screenCellData.Symbol);
-            if (delay != 0) Thread.Sleep(delay);
+            if (delay != 0) Thread.Sleep((int) (delay * factor));
         }
 
         _animQueue.Clear();
