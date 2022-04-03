@@ -261,9 +261,9 @@ public partial class LevelView : View
 
     private void DeathHandler(object sender, EventArgs _)
     {
-        if (sender is not Actor actor) return;
+        if (sender is not IHasCoords hasCoords) return;
 
-        if (!IsPointInsideView(actor.X, actor.Y)) return;
+        if (!IsPointInsideView(hasCoords.X, hasCoords.Y)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
@@ -287,13 +287,13 @@ public partial class LevelView : View
                 PaintCells(ConsoleColor.Magenta, 10);
                 break;
             case ActorAction.ApplyEffect:
-                PaintCells(ConsoleColor.Yellow, 100);
+                PaintCells(ConsoleColor.Yellow, 70);
                 break;
             case ActorAction.MeleeAttackHit:
-                PaintCells(ConsoleColor.Red, 100);
+                PaintCells(ConsoleColor.Red, 70);
                 break;
             case ActorAction.MeleeAttackMissed:
-                PaintCells(ConsoleColor.DarkGray, 100);
+                PaintCells(ConsoleColor.DarkGray, 70);
                 break;
             case ActorAction.Move:
                 foreach ((int x, int y) in actionInfo.AffectedCells)

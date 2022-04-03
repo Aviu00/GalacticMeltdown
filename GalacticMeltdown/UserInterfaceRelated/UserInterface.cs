@@ -113,4 +113,9 @@ public static class UserInterface
     {
         _renderer.PlayAnimations();
     }
+
+    public static void SetAnimationTime(int animationTime)
+    {
+        _renderer.AnimationTime = animationTime;
+    }
 }

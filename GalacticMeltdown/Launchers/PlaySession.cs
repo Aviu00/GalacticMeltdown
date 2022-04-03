@@ -194,6 +194,10 @@ public partial class PlaySession
                 if(words.Length == 4 && !int.TryParse(words[3], out duration) || duration <= 0) break;
                 DataHolder.ActorStateChangers[stateChangerId](_player, power, duration);
                 break;
+            case "animtime":
+                if (words.Length == 2 && int.TryParse(words[1], out int animTime))
+                    UserInterface.SetAnimationTime(animTime);
+                break;
         }
     }
 }

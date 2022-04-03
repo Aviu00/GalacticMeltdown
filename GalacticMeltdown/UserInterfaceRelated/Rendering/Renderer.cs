@@ -14,7 +14,6 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 public class Renderer
 {
     private const ConsoleColor DefaultColor = DataHolder.Colors.DefaultBackgroundColor;
-    private const int MaxAnimationTime = 1000;
 
     private struct ScreenCellData
     {
@@ -43,7 +42,18 @@ public class Renderer
     private Dictionary<View, (int minX, int minY)> _viewCornerCoords;
     private LinkedList<(View view, int viewX, int viewY, ViewCellData cellData, int delay)> _animQueue;
 
+    private int _animationTime = 200;
+
     private Dictionary<object, ViewPositioner> _objectViewPositioners;
+
+    public int AnimationTime
+    {
+        get => _animationTime;
+        set
+        {
+            if (value >= 0) _animationTime = value;
+        }
+    }
 
     public void SetView(object obj, ViewPositioner viewPositioner)
     {
@@ -103,7 +113,7 @@ public class Renderer
     public void PlayAnimations()
     {
         int totalDelay = _animQueue.Sum(data => data.delay);
-        double factor = totalDelay <= MaxAnimationTime ? 1 : MaxAnimationTime / (double) totalDelay;
+        double factor = totalDelay <= AnimationTime ? 1 : AnimationTime / (double) totalDelay;
         foreach (var (view, viewX, viewY, viewCellData, delay) in _animQueue)
         {
             if (RedrawOnScreenSizeChange()) return;
@@ -115,7 +125,8 @@ public class Renderer
             Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
             SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
             Console.Write(screenCellData.Symbol);
-            if (delay != 0) Thread.Sleep((int) (delay * factor));
+            int actualDelay = (int) (delay * factor);
+            if (actualDelay != 0) Thread.Sleep(actualDelay);
         }
 
         _animQueue.Clear();
