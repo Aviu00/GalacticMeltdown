@@ -107,6 +107,5 @@ public partial class LevelView
             _prevFocus = null;
             _cursor.MoveInbounds();
         }
-        
     }
 }

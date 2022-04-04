@@ -177,7 +177,7 @@ public partial class LevelView : View
             }
         }
 
-        if (_cursor is not null)
+        if (_cursor is not null && IsPointInsideView(_cursor.X, _cursor.Y))
         {
             var (viewX, viewY) = ToViewCoords(_cursor.X, _cursor.Y);
             cells[viewX, viewY] = new ViewCellData(cells[viewX, viewY].SymbolData, _cursor.Color);
