@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
@@ -17,6 +18,11 @@ public class Cursor : IControllable
     private (int minX, int minY, int maxX, int maxY)? _levelBounds;
 
     private LevelView _levelView;
+
+    private int _initialX;
+    private int _initialY;
+
+    public HashSet<(int x, int y)> LinePoints { get; private set; }
 
     public (int minX, int minY, int maxX, int maxY)? LevelBounds
     {
@@ -37,10 +43,12 @@ public class Cursor : IControllable
     
     public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int x, int y, LevelView levelView)
+    public Cursor(int initialX, int initialY, LevelView levelView)
     {
-        X = x;
-        Y = y;
+        _initialX = initialX;
+        _initialY = initialY;
+        X = _initialX;
+        Y = _initialY;
         _levelView = levelView;
         Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor,
             new Dictionary<CursorControl, Action>
@@ -80,11 +88,20 @@ public class Cursor : IControllable
         MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY));
     }
 
+    public void ToggleLine()
+    {
+        LinePoints = LinePoints is null
+            ? Algorithms.BresenhamGetPointsOnLine(_initialX, _initialY, X, Y).ToHashSet()
+            : null;
+    }
+
     private void MoveTo(int x, int y)
     {
         int oldX = X, oldY = Y;
         X = x;
         Y = y;
+        if (LinePoints is not null)
+            LinePoints = Algorithms.BresenhamGetPointsOnLine(_initialX, _initialY, X, Y).ToHashSet();
         Moved?.Invoke(this, new MoveEventArgs(oldX, oldY));
     }
 

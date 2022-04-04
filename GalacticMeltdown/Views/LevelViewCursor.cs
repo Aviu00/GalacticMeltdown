@@ -13,7 +13,6 @@ namespace GalacticMeltdown.Views;
 
 public partial class LevelView
 {
-    [JsonIgnore] private HashSet<(int x, int y)> _cursorLinePoints;
     [JsonIgnore] private Cursor _cursor;
 
     [JsonIgnore] private bool _focusOnCursor;
@@ -34,22 +33,14 @@ public partial class LevelView
     public void RemoveCursor()
     {
         if (ReferenceEquals(_cursor, FocusObject)) ToggleCursorFocus();
-        _cursorLinePoints = null;
         _focusOnCursor = false;
         _cursor.Moved -= CursorMoveHandler;
         _cursor = null;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void CalculateCursorLinePoints()
-    {
-        var (x0, y0) = (_focusedOn.X, _focusedOn.Y);
-        _cursorLinePoints = Algorithms.BresenhamGetPointsOnLine(x0, y0, Cursor.X, Cursor.Y).ToHashSet();
-    }
-
     private void CursorMoveHandler(object sender, MoveEventArgs _)
     {
-        if (_cursorLinePoints is not null) CalculateCursorLinePoints();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
@@ -66,8 +57,7 @@ public partial class LevelView
 
     public void ToggleCursorLine()
     {
-        if (_cursorLinePoints is null) CalculateCursorLinePoints();
-        else _cursorLinePoints = null;
+        Cursor.ToggleLine();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
