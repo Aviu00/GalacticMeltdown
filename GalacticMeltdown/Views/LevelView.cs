@@ -62,7 +62,7 @@ public partial class LevelView : View
 
     private string CoordinateString => $"X:{_focusObject.X} Y:{_focusObject.Y}";
 
-    private (int minX, int minY, int maxX, int maxY) ViewBounds => 
+    public (int minX, int minY, int maxX, int maxY) ViewBounds => 
         (_focusObject.X - Width / 2, _focusObject.Y - Height / 2,
             _focusObject.X + (Width - 1) / 2, _focusObject.Y + (Height - 1) / 2);
 
@@ -143,8 +143,7 @@ public partial class LevelView : View
         }
 
         if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-            return new ViewCellData(
-                (_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
+            return new ViewCellData((_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
                 backgroundColor);
 
         return new ViewCellData(null, backgroundColor);

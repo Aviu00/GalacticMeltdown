@@ -12,11 +12,8 @@ namespace GalacticMeltdown.UserInterfaceRelated.Cursor;
 
 public class Cursor : IControllable
 {
-    public Controller Controller { get; }
-    
-    private Func<(int, int)> _getStartCoords;
-    
-    private Func<(int, int, int, int)> _getViewBounds;
+    private Controller Controller { get; }
+
     private (int minX, int minY, int maxX, int maxY)? _levelBounds;
 
     private LevelView _levelView;
@@ -36,20 +33,15 @@ public class Cursor : IControllable
     public int X { get; private set; }
     public int Y { get; private set; }
     
-    public bool InFocus { get; set; }
-    
     public Action<int, int> Action { private get; set; }
     
     public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int x, int y, Func<(int, int)> getStartCoords, Func<(int, int, int, int)> getViewBounds,
-        LevelView levelView)
+    public Cursor(int x, int y, LevelView levelView)
     {
         X = x;
         Y = y;
         _levelView = levelView;
-        _getStartCoords = getStartCoords;
-        _getViewBounds = getViewBounds;
         Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Cursor,
             new Dictionary<CursorControl, Action>
             {
@@ -78,7 +70,6 @@ public class Cursor : IControllable
 
     private void Interact()
     {
-        var (x0, y0) = _getStartCoords();
         Action?.Invoke(X, Y);
     }
     
@@ -105,9 +96,9 @@ public class Cursor : IControllable
 
     private (int minX, int minY, int maxX, int maxY) GetBounds()
     {
-        if (LevelBounds is null) return _getViewBounds();
+        if (LevelBounds is null) return _levelView.ViewBounds;
 
-        var (minXView, minYView, maxXView, maxYView) = _getViewBounds();
+        var (minXView, minYView, maxXView, maxYView) = _levelView.ViewBounds;
         var (minXWorld, minYWorld, maxXWorld, maxYWorld) = LevelBounds.Value;
         return (Math.Max(minXView, minXWorld), Math.Max(minYView, minYWorld), Math.Min(maxXView, maxXWorld),
             Math.Min(maxYView, maxYWorld));
