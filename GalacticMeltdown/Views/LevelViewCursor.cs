@@ -13,10 +13,10 @@ namespace GalacticMeltdown.Views;
 
 public partial class LevelView
 {
-    private HashSet<(int x, int y)> _cursorLinePoints = new();
-    private Cursor _cursor;
+    [JsonIgnore] private HashSet<(int x, int y)> _cursorLinePoints;
+    [JsonIgnore] private Cursor _cursor;
 
-    private bool _focusOnCursor;
+    [JsonIgnore] private bool _focusOnCursor;
 
     [JsonIgnore]
     public Cursor Cursor
@@ -31,14 +31,11 @@ public partial class LevelView
         }
     }
 
-    [JsonIgnore] private bool _drawCursorLine;
-
     public void RemoveCursor()
     {
         if (ReferenceEquals(_cursor, FocusObject)) ToggleCursorFocus();
-        _drawCursorLine = false;
+        _cursorLinePoints = null;
         _focusOnCursor = false;
-        _cursorLinePoints.Clear();
         _cursor.Moved -= CursorMoveHandler;
         _cursor = null;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
@@ -52,7 +49,7 @@ public partial class LevelView
 
     private void CursorMoveHandler(object sender, MoveEventArgs _)
     {
-        if (_drawCursorLine) CalculateCursorLinePoints();
+        if (_cursorLinePoints is not null) CalculateCursorLinePoints();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
@@ -69,9 +66,8 @@ public partial class LevelView
 
     public void ToggleCursorLine()
     {
-        _drawCursorLine = !_drawCursorLine;
-        _cursorLinePoints.Clear();
-        if (_drawCursorLine) CalculateCursorLinePoints();
+        if (_cursorLinePoints is null) CalculateCursorLinePoints();
+        else _cursorLinePoints = null;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

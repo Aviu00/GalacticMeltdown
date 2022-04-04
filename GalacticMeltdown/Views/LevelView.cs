@@ -132,7 +132,8 @@ public partial class LevelView : View
 
         var (levelX, levelY) = coords;
 
-        if (_drawCursorLine && _cursorLinePoints.Contains(coords)) backgroundColor = GetCursorLineColor(levelX, levelY);
+        if (_cursorLinePoints is not null && _cursorLinePoints.Contains(coords))
+            backgroundColor = GetCursorLineColor(levelX, levelY);
 
         if (_cursor is not null && _cursor.X == levelX && _cursor.Y == levelY) backgroundColor = _cursor.Color;
 
@@ -175,7 +176,7 @@ public partial class LevelView : View
         if (FocusObject is IDrawable drawable)
             cells[Width / 2, Height / 2] = new ViewCellData(drawable.SymbolData, drawable.BgColor);
 
-        if (_drawCursorLine)
+        if (_cursorLinePoints is not null)
         {
             foreach ((int x, int y) in _cursorLinePoints.Where(point => IsPointInsideView(point.x, point.y)))
             {
