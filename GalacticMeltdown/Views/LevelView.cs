@@ -41,7 +41,16 @@ public partial class LevelView : View
 {
     [JsonProperty] private readonly Level _level;
 
-    private IFocusable _focusObject;
+    [JsonProperty] private IFocusable _actualFocusObject;
+
+    private IFocusable FocusObject
+    {
+        get => _focusOnCursor && _cursor is not null ? _cursor : _actualFocusObject;
+        set
+        {
+            if (value is not null) _actualFocusObject = value;
+        }
+    }
 
     private bool _showCoordinates;
 
@@ -60,11 +69,11 @@ public partial class LevelView : View
         }
     }
 
-    private string CoordinateString => $"X:{_focusObject.X} Y:{_focusObject.Y}";
+    private string CoordinateString => $"X:{FocusObject.X} Y:{FocusObject.Y}";
 
     public (int minX, int minY, int maxX, int maxY) ViewBounds => 
-        (_focusObject.X - Width / 2, _focusObject.Y - Height / 2,
-            _focusObject.X + (Width - 1) / 2, _focusObject.Y + (Height - 1) / 2);
+        (FocusObject.X - Width / 2, FocusObject.Y - Height / 2,
+            FocusObject.X + (Width - 1) / 2, FocusObject.Y + (Height - 1) / 2);
 
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangedEventArgs> CellChanged;
@@ -80,14 +89,14 @@ public partial class LevelView : View
         _level = level;
         var (width, height) = _level.Size;
         _seenCells = new SeenTilesArray(width, height);
-        _focusObject = _level.Player;
+        FocusObject = _level.Player;
         Init();
     }
 
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        _focusObject = _level.Player;
+        FocusObject = _level.Player;
         Init();
     }
 
@@ -118,7 +127,7 @@ public partial class LevelView : View
         
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
-        coords = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, _focusObject.X, _focusObject.Y);
+        coords = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, FocusObject.X, FocusObject.Y);
 
 
         var (levelX, levelY) = coords;
@@ -130,7 +139,7 @@ public partial class LevelView : View
         if (x == centerScreenX && y == centerScreenY)
         {
             // Draw object in focus on top of everything else
-            if (_focusObject is IDrawable drawable)
+            if (FocusObject is IDrawable drawable)
                 return new ViewCellData(drawable.SymbolData, backgroundColor ?? drawable.BgColor);
         }
 
@@ -153,7 +162,7 @@ public partial class LevelView : View
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
         cells.Initialize();
-        int minX = _focusObject.X - Width / 2, minY = _focusObject.Y - Height / 2;
+        int minX = FocusObject.X - Width / 2, minY = FocusObject.Y - Height / 2;
         for (int viewY = 0; viewY < Height; viewY++)
         {
             for (int viewX = 0; viewX < Width; viewX++)
@@ -163,7 +172,7 @@ public partial class LevelView : View
             }
         }
 
-        if (_focusObject is IDrawable drawable)
+        if (FocusObject is IDrawable drawable)
             cells[Width / 2, Height / 2] = new ViewCellData(drawable.SymbolData, drawable.BgColor);
 
         if (_drawCursorLine)
@@ -214,11 +223,11 @@ public partial class LevelView : View
 
     public void SetFocus(IFocusable focusObj)
     {
-        if (ReferenceEquals(focusObj, _focusObject) || focusObj is null) return;
-        _focusObject.Moved -= FocusObjectMoved;
+        if (ReferenceEquals(focusObj, FocusObject) || focusObj is null) return;
+        FocusObject.Moved -= FocusObjectMoved;
 
-        _focusObject = focusObj;
-        _focusObject.Moved += FocusObjectMoved;
+        FocusObject = focusObj;
+        FocusObject.Moved += FocusObjectMoved;
         
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
@@ -266,7 +275,7 @@ public partial class LevelView : View
     private void FocusObjectMoved(object sender, MoveEventArgs _)
     {
         // Redraw happens on visible tile calculation already
-        if (_focusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
+        if (FocusObject is ISightedObject focusObject && _sightedObjects.Contains(focusObject)) return;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

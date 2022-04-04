@@ -16,7 +16,7 @@ public partial class LevelView
     private HashSet<(int x, int y)> _cursorLinePoints = new();
     private Cursor _cursor;
 
-    private IFocusable _prevFocus;
+    private bool _focusOnCursor;
 
     [JsonIgnore]
     public Cursor Cursor
@@ -24,7 +24,7 @@ public partial class LevelView
         get
         {
             if (_cursor is not null) return _cursor;
-            _cursor = new Cursor(_focusObject.X, _focusObject.Y, this);
+            _cursor = new Cursor(FocusObject.X, FocusObject.Y, this);
             _cursor.Moved += CursorMoveHandler;
             NeedRedraw?.Invoke(this, EventArgs.Empty);
             return _cursor;
@@ -35,25 +35,25 @@ public partial class LevelView
 
     public void RemoveCursor()
     {
-        if (ReferenceEquals(_cursor, _focusObject)) ToggleCursorFocus();
+        if (ReferenceEquals(_cursor, FocusObject)) ToggleCursorFocus();
         _drawCursorLine = false;
+        _focusOnCursor = false;
         _cursorLinePoints.Clear();
         _cursor.Moved -= CursorMoveHandler;
         _cursor = null;
-        _prevFocus = null;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private void CalculateCursorLinePoints()
     {
-        var (x0, y0) = GetCursorStartCoords();
+        var (x0, y0) = (_actualFocusObject.X, _actualFocusObject.Y);
         _cursorLinePoints = Algorithms.BresenhamGetPointsOnLine(x0, y0, Cursor.X, Cursor.Y).ToHashSet();
     }
 
     private void CursorMoveHandler(object sender, MoveEventArgs _)
     {
         if (_drawCursorLine) CalculateCursorLinePoints();
-        if (!ReferenceEquals(_focusObject, _cursor)) NeedRedraw?.Invoke(this, EventArgs.Empty);
+        if (!ReferenceEquals(FocusObject, _cursor)) NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
@@ -67,11 +67,6 @@ public partial class LevelView
         return DataHolder.Colors.HighlightedNothingColor;
     }
 
-    private (int, int) GetCursorStartCoords()
-    {
-        return _prevFocus is not null ? (_prevFocus.X, _prevFocus.Y) : (_focusObject.X, _focusObject.Y);
-    }
-
     public void ToggleCursorLine()
     {
         _drawCursorLine = !_drawCursorLine;
@@ -83,16 +78,8 @@ public partial class LevelView
     public void ToggleCursorFocus()
     {
         if (_cursor is null) return;
-        if (!ReferenceEquals(_cursor, _focusObject))
-        {
-            _prevFocus = _focusObject;
-            SetFocus(_cursor);
-        }
-        else
-        {
-            SetFocus(_prevFocus);
-            _prevFocus = null;
-            _cursor.MoveInbounds();
-        }
+        _focusOnCursor = !_focusOnCursor;
+        _cursor.MoveInbounds();
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 }
