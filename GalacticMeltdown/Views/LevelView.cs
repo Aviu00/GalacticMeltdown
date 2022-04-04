@@ -41,14 +41,14 @@ public partial class LevelView : View
 {
     [JsonProperty] private readonly Level _level;
 
-    [JsonProperty] private IFocusable _actualFocusObject;
+    [JsonProperty] private IFocusable _focusedOn;
 
     private IFocusable FocusObject
     {
-        get => _focusOnCursor && _cursor is not null ? _cursor : _actualFocusObject;
+        get => _focusOnCursor && _cursor is not null ? _cursor : _focusedOn;
         set
         {
-            if (value is not null) _actualFocusObject = value;
+            if (value is not null) _focusedOn = value;
         }
     }
 

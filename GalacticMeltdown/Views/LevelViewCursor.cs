@@ -46,14 +46,14 @@ public partial class LevelView
 
     private void CalculateCursorLinePoints()
     {
-        var (x0, y0) = (_actualFocusObject.X, _actualFocusObject.Y);
+        var (x0, y0) = (_focusedOn.X, _focusedOn.Y);
         _cursorLinePoints = Algorithms.BresenhamGetPointsOnLine(x0, y0, Cursor.X, Cursor.Y).ToHashSet();
     }
 
     private void CursorMoveHandler(object sender, MoveEventArgs _)
     {
         if (_drawCursorLine) CalculateCursorLinePoints();
-        if (!ReferenceEquals(FocusObject, _cursor)) NeedRedraw?.Invoke(this, EventArgs.Empty);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
@@ -77,7 +77,6 @@ public partial class LevelView
 
     public void ToggleCursorFocus()
     {
-        if (_cursor is null) return;
         _focusOnCursor = !_focusOnCursor;
         _cursor.MoveInbounds();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
