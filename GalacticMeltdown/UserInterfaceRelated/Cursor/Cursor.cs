@@ -38,7 +38,7 @@ public class Cursor : IControllable
     
     public bool InFocus { get; set; }
     
-    public Action<int, int, int, int> Action { private get; set; }
+    public Action<int, int> Action { private get; set; }
     
     public event EventHandler<MoveEventArgs> Moved;
 
@@ -76,10 +76,10 @@ public class Cursor : IControllable
         return true;
     }
 
-    public void Interact()
+    private void Interact()
     {
         var (x0, y0) = _getStartCoords();
-        Action?.Invoke(x0, y0, X, Y);
+        Action?.Invoke(X, Y);
     }
     
     public void MoveInbounds()

@@ -34,7 +34,7 @@ public partial class LevelView
     private bool _drawCursorLine;
 
     [JsonIgnore]
-    public bool DrawCursorLine
+    private bool DrawCursorLine
     {
         get => _drawCursorLine;
         set

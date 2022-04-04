@@ -33,7 +33,7 @@ public partial class PlaySession
             {
                 Cursor cursor = _levelView.Cursor;
                 cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
-                cursor.Action = (_, _, x, y) =>
+                cursor.Action = (x, y) =>
                 {
                     List<Item> items = _level.GetItems(x, y);
                     if (items is null || items.Count == 0) return;
@@ -75,7 +75,7 @@ public partial class PlaySession
             {
                 Cursor cursor = _levelView.Cursor;
                 cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
-                cursor.Action = (_, _, x, y) =>
+                cursor.Action = (x, y) =>
                 {
                     cursor.Close();
                     if (_level.InteractWithDoor(x, y, _player)) UserInterface.YieldControl(this);
@@ -90,7 +90,7 @@ public partial class PlaySession
                 if (_player.Equipment[BodyPart.Hands] is not RangedWeaponItem || _player.ChosenAmmoId is null) return;
                 Cursor cursor = _levelView.Cursor;
                 _levelView.ToggleCursorLine();
-                cursor.Action = (_, _, x, y) =>
+                cursor.Action = (x, y) =>
                 {
                     cursor.Close();
                     if (_player.Shoot(x, y))
