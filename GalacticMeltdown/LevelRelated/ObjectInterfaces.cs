@@ -34,7 +34,6 @@ public interface IObjectOnMap : IHasCoords, IDrawable
 
 public interface IFocusable : IMovable
 {
-    bool InFocus { get; set; }
 }
 
 public interface IControllable : IFocusable

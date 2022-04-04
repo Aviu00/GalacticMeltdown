@@ -102,7 +102,6 @@ public partial class LevelView : View
         {
             sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
         }
-        _focusObject.InFocus = true;
         
         UpdateVisiblePoints();
     }
@@ -217,11 +216,9 @@ public partial class LevelView : View
     public void SetFocus(IFocusable focusObj)
     {
         if (ReferenceEquals(focusObj, _focusObject) || focusObj is null) return;
-        _focusObject.InFocus = false;
         _focusObject.Moved -= FocusObjectMoved;
 
         _focusObject = focusObj;
-        _focusObject.InFocus = true;
         _focusObject.Moved += FocusObjectMoved;
         
         NeedRedraw?.Invoke(this, EventArgs.Empty);
