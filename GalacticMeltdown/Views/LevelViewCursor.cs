@@ -39,10 +39,7 @@ public partial class LevelView
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void CursorMoveHandler(object sender, MoveEventArgs _)
-    {
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
-    }
+    private void CursorMoveHandler(object sender, MoveEventArgs _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
     {
@@ -64,7 +61,9 @@ public partial class LevelView
     public void ToggleCursorFocus()
     {
         _focusOnCursor = !_focusOnCursor;
+        _cursor.Moved -= CursorMoveHandler;
         _cursor.MoveInbounds();
+        _cursor.Moved += CursorMoveHandler;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 }
