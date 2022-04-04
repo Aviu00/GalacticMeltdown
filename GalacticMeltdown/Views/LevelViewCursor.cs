@@ -16,6 +16,7 @@ public partial class LevelView
     [JsonIgnore] private Cursor _cursor;
 
     [JsonIgnore] private bool _focusOnCursor;
+    [JsonIgnore] private bool _blockRedrawOnCursorMove;
 
     [JsonIgnore]
     public Cursor Cursor
@@ -24,7 +25,7 @@ public partial class LevelView
         {
             if (_cursor is not null) return _cursor;
             _cursor = new Cursor(FocusObject.X, FocusObject.Y, this);
-            _cursor.Moved += CursorMoveHandler;
+            _cursor.Moved += OnCursorMove;
             NeedRedraw?.Invoke(this, EventArgs.Empty);
             return _cursor;
         }
@@ -34,12 +35,15 @@ public partial class LevelView
     {
         if (ReferenceEquals(_cursor, FocusObject)) ToggleCursorFocus();
         _focusOnCursor = false;
-        _cursor.Moved -= CursorMoveHandler;
+        _cursor.Moved -= OnCursorMove;
         _cursor = null;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void CursorMoveHandler(object sender, MoveEventArgs _) => NeedRedraw?.Invoke(this, EventArgs.Empty);
+    private void OnCursorMove(object sender, MoveEventArgs _)
+    {
+        if (!_blockRedrawOnCursorMove) NeedRedraw?.Invoke(this, EventArgs.Empty);
+    }
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
     {
@@ -61,9 +65,9 @@ public partial class LevelView
     public void ToggleCursorFocus()
     {
         _focusOnCursor = !_focusOnCursor;
-        _cursor.Moved -= CursorMoveHandler;
+        _blockRedrawOnCursorMove = true;
         _cursor.MoveInbounds();
-        _cursor.Moved += CursorMoveHandler;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
+        _blockRedrawOnCursorMove = false;
     }
 }
