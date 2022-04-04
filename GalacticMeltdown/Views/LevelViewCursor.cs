@@ -31,20 +31,7 @@ public partial class LevelView
         }
     }
 
-    private bool _drawCursorLine;
-
-    [JsonIgnore]
-    private bool DrawCursorLine
-    {
-        get => _drawCursorLine;
-        set
-        {
-            _drawCursorLine = value;
-            _cursorLinePoints.Clear();
-            if (_drawCursorLine) CalculateCursorLinePoints();
-            NeedRedraw?.Invoke(this, EventArgs.Empty);
-        }
-    }
+    [JsonIgnore] private bool _drawCursorLine;
 
     public void RemoveCursor()
     {
