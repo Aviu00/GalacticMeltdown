@@ -35,8 +35,6 @@ public class Player : Actor, ISightedObject, IControllable
 
     [JsonIgnore] public bool NoClip;
 
-    [JsonIgnore] public bool InFocus { get; set; }
-
     [JsonIgnore]
     public bool Xray
     {
