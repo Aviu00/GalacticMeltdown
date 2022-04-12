@@ -25,7 +25,6 @@ public class InputLine : PressableListLine
 
     private StringBuilder _currentText;
 
-    private bool _selected;
     private InputLineState _state;
 
     private Func<char, bool> _characterValidationFunction;

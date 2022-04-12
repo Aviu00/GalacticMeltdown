@@ -1,6 +1,5 @@
 using System;
 using GalacticMeltdown.Events;
-using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Views;
 

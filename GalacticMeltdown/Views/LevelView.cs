@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
-using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;

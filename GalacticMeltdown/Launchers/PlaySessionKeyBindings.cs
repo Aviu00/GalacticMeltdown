@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Actors;
-using GalacticMeltdown.Data;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated;
 using GalacticMeltdown.UserInterfaceRelated.Cursor;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
-using GalacticMeltdown.UserInterfaceRelated.TextWindows;
 using GalacticMeltdown.UserInterfaceRelated.TextWindows.ItemManagement;
 
 namespace GalacticMeltdown.Launchers;

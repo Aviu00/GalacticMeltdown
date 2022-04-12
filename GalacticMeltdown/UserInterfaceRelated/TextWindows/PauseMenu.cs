@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.Launchers;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.UserInterfaceRelated.Rendering;

@@ -1,11 +1,11 @@
-using GalacticMeltdown.Behaviors;
-using GalacticMeltdown.LevelRelated;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
+using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
@@ -32,7 +32,7 @@ public class Enemy : Npc
     {
         _typeData = typeData;
         Id = typeData.Id;
-        Targets = new() {Level.Player}; //temp
+        Targets = new HashSet<Actor> {Level.Player};
         _alertCounter = new Counter(Level, 1, 30);
         Died += _alertCounter.RemoveCounter;
 
