@@ -15,6 +15,7 @@ public class PauseMenu : TextWindow
         LineView.SetLines(new List<ListLine>
         {
             new Button("Back", "", Close),
+            new Button("Help", "", OpenHelp),
             new Button("To main menu", "", saveAndQuit)
         });
         Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection, new Dictionary<SelectionControl, Action>()
@@ -24,5 +25,12 @@ public class PauseMenu : TextWindow
             {SelectionControl.Up, LineView.SelectPrev},
             {SelectionControl.Select, LineView.PressCurrent}
         }));
+    }
+    
+    private void OpenHelp()
+    {
+        InfoWindow infoWindow = new(DataHolder.InfoLines);
+        UserInterface.AddChild(this, infoWindow);
+        infoWindow.Open();
     }
 }
