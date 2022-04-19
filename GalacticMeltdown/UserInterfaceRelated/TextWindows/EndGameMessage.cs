@@ -22,12 +22,6 @@ public class EndGameMessage : TextWindow
             {
                 {SelectionControl.Select, LineView.PressCurrent}
             }));
-    }
-
-    public override void Open()
-    {
-        UserInterface.SetViewPositioner(this, new ExactViewPositioner(LineView, (0.3, 0.25, 0.6, 0.4)));
-        UserInterface.SetController(this, Controller);
-        UserInterface.TakeControl(this);
+        Position = (0.3, 0.25, 0.6, 0.4);
     }
 }
