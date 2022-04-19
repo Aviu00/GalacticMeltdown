@@ -27,9 +27,8 @@ public class TextView : View
     public override void Resize(int width, int height)
     {
         base.Resize(width, height);
-        int totalLines = _lines.Sum(line => (line.Length + Width - 1) / Width);
-        _characters = new char[Width, totalLines];
-        int curRow = 0;
+        _characters = new char[Width, _lines.Sum(line => line.Length == 0 ? 1 : (line.Length - 1) / Width + 1)];
+        int curRow = -1;
         foreach (var textLine in _lines)
         {
             if (textLine.Length == 0)
@@ -41,7 +40,7 @@ public class TextView : View
             for (int i = 0; i < textLine.Length; i++)
             {
                 if (i % Width == 0) curRow++;
-                _characters[curRow, i % Width] = textLine[i];
+                _characters[i % Width, curRow] = textLine[i];
             }
         }
 
@@ -50,9 +49,9 @@ public class TextView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y < Height - _characters.GetLength(1)) return new ViewCellData(null, null);
+        if (y < Height - _characters.GetLength(1)) return new ViewCellData(null, DefaultBackgroundColor);
         char character = _characters[x, Height - y - 1 + _topTextRow];
-        return new ViewCellData(character == '\0' ? null : (character, TextColor), null);
+        return new ViewCellData(character == '\0' ? null : (character, TextColor), DefaultBackgroundColor);
     }
 
     public override ViewCellData[,] GetAllCells()
@@ -71,7 +70,8 @@ public class TextView : View
             for (int viewY = Math.Max(0, Height - _lines.Count); viewY < Height; viewY++)
             {
                 char character = _characters[viewX, Height - viewY - 1 + _topTextRow];
-                cells[viewX, viewY] = new ViewCellData(character == '\0' ? null : (character, TextColor), null);
+                cells[viewX, viewY] = new ViewCellData(character == '\0' ? null : (character, TextColor),
+                    DefaultBackgroundColor);
             }
         }
 
