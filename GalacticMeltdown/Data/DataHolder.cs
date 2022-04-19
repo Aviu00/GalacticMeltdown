@@ -82,6 +82,7 @@ public static partial class DataHolder
         public const ConsoleColor DexColor = ConsoleColor.Cyan;
         public const ConsoleColor DefColor = ConsoleColor.Gray;
         public const ConsoleColor DefaultBackgroundColor = ConsoleColor.Black;
+        public const ConsoleColor TextViewColor = ConsoleColor.Blue;
     }
 
     public struct CurrentBindings
