@@ -11,6 +11,7 @@ public class ItemDialog : ChoiceDialog<ItemAction>
     {
         var choices = new LinkedList<(string text, ItemAction choice)>();
         choices.AddFirst(("Drop", ItemAction.Drop));
+        choices.AddFirst(("Info", ItemAction.Info));
         switch (item)
         {
             case EquippableItem:

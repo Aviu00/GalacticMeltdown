@@ -191,7 +191,7 @@ public partial class PlaySession
                     !Enum.TryParse(words[1], out DataHolder.ActorStateChangerType stateChangerId) ||
                     !int.TryParse(words[2], out int power)) break;
                 int duration = 0;
-                if(words.Length == 4 && !int.TryParse(words[3], out duration) || duration <= 0) break;
+                if(words.Length == 4 && (!int.TryParse(words[3], out duration) || duration <= 0)) break;
                 DataHolder.ActorStateChangers[stateChangerId](_player, power, duration);
                 break;
             case "animtime":

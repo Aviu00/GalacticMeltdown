@@ -348,4 +348,6 @@ public partial class LevelView : View
         var (minX, minY, _, _) = ViewBounds;
         return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, minX, minY);
     }
+
+    public bool IsPointVisible(int x, int y) => _visiblePoints.Contains((x, y));
 }

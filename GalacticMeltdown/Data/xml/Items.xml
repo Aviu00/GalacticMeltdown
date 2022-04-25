@@ -167,8 +167,8 @@
             </Ammo>
             <Ammo>
                 <Id>metal_bar</Id>
-                <MinDamage>30</MinDamage>
-                <MaxDamage>150</MaxDamage>
+                <MinDamage>60</MinDamage>
+                <MaxDamage>200</MaxDamage>
                 <StateChanger>
                     <Type>Stun</Type>
                     <Power>30</Power>

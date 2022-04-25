@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Items;
-using AmmoDictionary = Dictionary<string, (int reloadAmount, int minDamage, int maxDamage,
-     IEnumerable<ActorStateChangerData> actorStateChangerData)>;
+
+using AmmoDictionary = Dictionary<string, (int minDamage, int maxDamage,
+    LinkedList<ActorStateChangerData> actorStateChangerData)>;
 
 public class WeaponItem : EquippableItem
 {
@@ -29,7 +31,7 @@ public class WeaponItem : EquippableItem
     [JsonConstructor]
     protected WeaponItem(string id) : base((WeaponItemData) DataHolder.ItemTypes[id])
     {
-        _itemData = (WeaponItemData)DataHolder.ItemTypes[id];
+        _itemData = (WeaponItemData) DataHolder.ItemTypes[id];
     }
 
     public override void Equip(Actor actor)
@@ -38,5 +40,42 @@ public class WeaponItem : EquippableItem
 
     public override void Unequip(Actor actor)
     {
+    }
+
+    public override List<string> GetDescription()
+    {
+        List<string> description = new()
+        {
+            Name,
+            "",
+            $"Deals {MinHitDamage}-{MaxHitDamage} damage on hit",
+            $"Attack energy cost: {HitEnergy}"
+        };
+        if (StateChangers is not null)
+        {
+            description.Add("Applies effects on target when hit:");
+            description.AddRange(StateChangers.Select(data =>
+                DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+        }
+
+        if (AmmoTypes is not null) description.AddRange(GetAmmoDescription());
+        return description;
+    }
+
+    protected IEnumerable<string> GetAmmoDescription()
+    {
+        List<string> description = new() {"Possible ammo types:"};
+        foreach (var pair in AmmoTypes)
+        {
+            description.Add("");
+            description.Add(DataHolder.ItemTypes[pair.Key].Name);
+            description.Add($"Damage: {pair.Value.minDamage}-{pair.Value.maxDamage}");
+            if (pair.Value.actorStateChangerData is null) continue;
+            description.Add("Applies effects on target:");
+            description.AddRange(pair.Value.actorStateChangerData.Select(data => 
+                DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+        }
+
+        return description;
     }
 }

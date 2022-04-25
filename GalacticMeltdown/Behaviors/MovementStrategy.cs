@@ -162,4 +162,13 @@ public class MovementStrategy : Behavior
         _wantsToGoTo = (randomPoint.x, randomPoint.y);
         SetPathTo(randomPoint.x, randomPoint.y);
     }
+
+    public override List<string> GetDescription()
+    {
+        return new()
+        {
+            "",
+            "Can move"
+        };
+    }
 }

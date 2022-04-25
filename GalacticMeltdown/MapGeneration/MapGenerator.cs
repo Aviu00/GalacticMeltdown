@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -29,7 +28,8 @@ public class MapGenerator
 
     private Tile[] _westernWall;
     private Tile[] _southernWall;
-    
+
+    private ChunkGenerator _startRoom;
     private (int x, int y) _playerStartPoint;
     private (int x, int y) _endPoint;
 
@@ -119,7 +119,6 @@ public class MapGenerator
         bool topStartRoom = Chance(50, _rng);
         int mainRouteRoomCount = 0;
 
-        ChunkGenerator startPoint = null;
         for (int i = 0; i < _chunkGenerators.GetLength(0); i++)
         {
             int x = i - MapOffset;
@@ -152,7 +151,7 @@ public class MapGenerator
                     || !topStartRoom && x == _columns.Count - startRoomPos - 1 && y == _columns[x].min)
                 {
                     _chunkGenerators[i, j].IsStartPoint = true;
-                    startPoint = _chunkGenerators[i, j];
+                    _startRoom = _chunkGenerators[i, j];
                 }
 
                 mainRouteRoomCount++;
@@ -177,7 +176,7 @@ public class MapGenerator
         int addDifficulty = 1;
         int difficulty = 1;
         ChunkGenerator previousChunk = null;
-        ChunkGenerator currentChunk = startPoint!;
+        ChunkGenerator currentChunk = _startRoom;
         for (int i = 0; i < mainRouteRoomCount; i++)
         {
             difficulty += addDifficulty;
@@ -241,6 +240,7 @@ public class MapGenerator
 
     private void FinalizeRooms()
     {
+        _startRoom.Difficulty = 0;
         for (int x = _chunks.GetLength(0) - 1; x >= 0; x--)
         {
             for (int y = _chunks.GetLength(1) - 1; y >= 0; y--)
@@ -522,32 +522,5 @@ public class MapGenerator
 
         if (room1.HasAccessToMainRoute) room2.AccessMainRoute(room1.Difficulty);
         if (room2.HasAccessToMainRoute) room1.AccessMainRoute(room2.Difficulty);
-    }
-
-    /// <summary>
-    /// Debug method
-    /// </summary>
-    private string CalculateMapString()
-    {
-        int width = _chunkGenerators.GetLength(0);
-        int height = _chunkGenerators.GetLength(1);
-        StringBuilder sb = new StringBuilder((_chunkGenerators.GetLength(0) + 1) * _chunkGenerators.GetLength(1));
-        for (int y = height - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (_chunkGenerators[x, y].IsStartPoint)
-                {
-                    sb.Append('S');
-                    continue;
-                }
-
-                sb.Append(_chunkGenerators[x, y].CalculateSymbol());
-            }
-
-            sb.Append('\n');
-        }
-
-        return sb.ToString();
     }
 }

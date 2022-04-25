@@ -108,6 +108,11 @@ public class InventoryMenu : TextWindow
                 case ItemAction.Consume:
                     _player.Consume((ConsumableItem) item);
                     break;
+                case ItemAction.Info:
+                        InfoWindow infoWindow = new(item.GetDescription());
+                        UserInterface.AddChild(this, infoWindow);
+                        infoWindow.Open();
+                    break;
             }
             UpdateLines();
         }

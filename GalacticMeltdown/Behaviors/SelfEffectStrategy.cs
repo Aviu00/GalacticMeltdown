@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
@@ -21,7 +22,7 @@ public class SelfEffectStrategy : Behavior
     private SelfEffectStrategy()
     {
     }
-    
+
     public SelfEffectStrategy(SelfEffectStrategyData data, Npc controlledNpc) : base(data.Priority ?? DefaultPriority)
     {
         _activateWhenTargetIsVisible = data.ActivateIfTargetIsVisible;
@@ -39,7 +40,7 @@ public class SelfEffectStrategy : Behavior
         if (_selfEffectStrategyCounter is not null)
             ControlledNpc.Died += _selfEffectStrategyCounter.RemoveCounter;
     }
-    
+
     public override ActorActionInfo TryAct()
     {
         if (_stateChangers is null || _activateWhenTargetIsVisible && ControlledNpc.CurrentTarget is null ||
@@ -54,5 +55,20 @@ public class SelfEffectStrategy : Behavior
         _selfEffectStrategyCounter?.ResetTimer();
         ControlledNpc.Energy -= _energyCost;
         return new ActorActionInfo(ActorAction.ApplyEffect, new List<(int, int)> {(ControlledNpc.X, ControlledNpc.Y)});
+    }
+
+    public override List<string> GetDescription()
+    {
+        List<string> description = new()
+        {
+            "",
+            "Applies effects on self" + (_activateWhenTargetIsVisible ? " when sees the target:" : ":"),
+        };
+        if (_selfEffectStrategyCounter is not null)
+            description.Add($"Cooldown: {_selfEffectStrategyCounter.Timer.MaxValue}");
+        description.AddRange(_stateChangers.Select(data =>
+            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+        description.Add($"Energy cost: {_energyCost}");
+        return description;
     }
 }

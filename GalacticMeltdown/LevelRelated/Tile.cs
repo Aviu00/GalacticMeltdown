@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Data;
 using Newtonsoft.Json;
@@ -6,7 +7,7 @@ using Newtonsoft.Json;
 namespace GalacticMeltdown.LevelRelated;
 
 [JsonObject(IsReference = false)]
-public class Tile : IDrawable
+public class Tile : IDrawable, IHasDescription
 {
     private TileTypeData _typeData;
 
@@ -24,7 +25,7 @@ public class Tile : IDrawable
 
     [JsonIgnore] public int MoveCost => _typeData.MoveCost;
 
-    [JsonIgnore] public readonly bool IsDoor;
+    [JsonIgnore] public bool IsDoor => InteractWithDoor is not null;
 
     [JsonIgnore] public readonly Action InteractWithDoor;
 
@@ -34,7 +35,6 @@ public class Tile : IDrawable
         var splitId = Id.Split('-');
         if (splitId[^1] is not ("open" or "closed")) return;
         
-        IsDoor = true;
         bool isClosed = splitId[^1] == "closed";
         string baseId = splitId.Aggregate("", (current, s) =>
         {
@@ -49,5 +49,16 @@ public class Tile : IDrawable
     [JsonConstructor]
     private Tile(string id) : this(DataHolder.TileTypes[id])
     {
+    }
+
+    public List<string> GetDescription()
+    {
+        return new()
+        {
+            Name,
+            "",
+            IsWalkable ? $"Move Cost: {MoveCost}" : "Impassible",
+            IsTransparent ? "Transparent" : "Not Transparent"
+        };
     }
 }

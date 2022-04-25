@@ -11,8 +11,8 @@ public static partial class DataHolder
 {
     public const int ChunkSize = 25;
     public const int ActiveChunkRadius = 2;
-    
-    public static readonly string ProjectDirectory = 
+
+    public static readonly string ProjectDirectory =
         Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
 
     public static int CurrentSeed { get; set; }
@@ -21,7 +21,7 @@ public static partial class DataHolder
     public static readonly Dictionary<string, ItemData> ItemTypes;
     public static readonly Dictionary<string, ILoot> LootTables;
     public static readonly Dictionary<string, EnemyTypeData> EnemyTypes;
-    
+
     public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {
         {"white", ConsoleColor.White},
@@ -41,7 +41,7 @@ public static partial class DataHolder
         {"dark_red", ConsoleColor.DarkRed},
         {"dark_yellow", ConsoleColor.DarkYellow},
     };
-    
+
     public static readonly Dictionary<ItemCategory, string> CategoryName = new()
     {
         {ItemCategory.Item, "Other"},
@@ -163,7 +163,7 @@ public static partial class DataHolder
             {ConsoleKey.C, LevelMenuControl.Create},
             {ConsoleKey.D, LevelMenuControl.Delete},
         };
-        
+
         public static Dictionary<ConsoleKey, InventoryControl> InventoryMenu = new()
         {
             {ConsoleKey.UpArrow, InventoryControl.Up},
@@ -177,7 +177,7 @@ public static partial class DataHolder
             {ConsoleKey.Divide, InventoryControl.OpenSearchBox},
         };
     }
-    
+
     static DataHolder()
     {
         TileTypes = new TileTypesExtractor().TileTypes;
@@ -191,16 +191,23 @@ public static partial class DataHolder
         return new RoomTypesExtractor(TileTypes).Rooms;
     }
 
-    public static List<string> InfoLines = new()
+    public static readonly List<string> InfoLines = new()
     {
         "Galactic Meltdown",
-        "This game is turn-based: every entity has a set amount of energy that it can use to make one or several "
-        + "turns in one \"game step\". At the end of each game step all entities restore their energy.",
+        "",
+        "You are an astronaut, caught stranded on a damaged spaceship that has been taken over by hostile alien " +
+        "forces. The only way you can survive is by making a daring escape through the teleport pad located " +
+        "somewhere on the ship. You have to find a way out or you will be assimilated by terrible creatures and " +
+        "become one of them. You have a limited amount of time, so all you can do is grab a few spare items on the " +
+        "ship and make a run for it.",
+        "",
+        "This game is turn-based: each entity has a set amount of energy that it can use to make take or several "
+        + "actions in one turn. Turn finishes when each entity either spends all of their energy or refuses to " +
+        "perform any action At the end of turn step all entities restore their energy.",
         "The amount restored is the maximum possible amount available to the entity.",
         "",
         "Key bindings",
         "Use 1-9 or arrows to move, hit, or open doors",
-        "Use Enter to select a cell using the cursor",
         "Use Escape to go back",
         "",
         "In game:",
@@ -208,8 +215,9 @@ public static partial class DataHolder
         "    O: get a cursor for opening doors",
         "    P: get a cursor for picking up items",
         "    U: get a cursor to shoot",
-        "    D: skip a turn",
-        "    S: stop until the end of this game step",
+        "    C: get a cursor for examining objects",
+        "    D: wait for other creatures to move",
+        "    S: skip a turn",
         "    E: open inventory",
         "    A: open ammo selection menu",
         "    /: open console",
@@ -217,6 +225,7 @@ public static partial class DataHolder
         "Cursor:",
         "    L: toggle line",
         "    F: toggle focus",
+        "    Enter: interact with an object",
         "",
         "Level menu:",
         "    C: create level",

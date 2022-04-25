@@ -8,7 +8,7 @@ public static class Algorithms
     /// <summary>
     /// Bresenham's line algorithm
     /// </summary>
-    /// <param name="maxLength">max possible length of the line; negative value or 0 for no restrictions</param>
+    /// <param name="maxLength">length of the line; negative value or 0 for no restrictions</param>
     /// <returns></returns>
     public static IEnumerable<(int x, int y)> BresenhamGetPointsOnLine(int x0, int y0, int x1, int y1,
         int maxLength = 0)
@@ -38,7 +38,9 @@ public static class Algorithms
 
         int error = dx / 2;
 
-        for (int i = startingPoint, x = x0, y = y0; i <= dif; i++, x += xSide * addX, y += ySide * addY)
+        for (int i = startingPoint, x = x0, y = y0;
+             maxLength > 0 || i <= dif;
+             i++, x += xSide * addX, y += ySide * addY)
         {
             if (maxLength > 0)
             {
@@ -59,38 +61,13 @@ public static class Algorithms
 
     public static IEnumerable<(int x, int y)> GetPointsOnSquareBorder(int x0, int y0, int radius)
     {
-        for (int i = radius * 2 -1; i >= 0; i--)
+        for (int i = radius * 2 - 1; i >= 0; i--)
         {
             yield return (x0 - radius + i, y0 + radius);
             yield return (x0 + radius - i, y0 - radius);
             yield return (x0 + radius, y0 + radius - i);
             yield return (x0 - radius, y0 - radius + i);
         }
-    }
-
-    /// <summary>
-    /// Bresenham's circle algorithm; target for termination
-    /// </summary>
-    public static IEnumerable<(int x, int y)> GetPointsOnCircleBorder(int x0, int y0, int radius)
-    {
-        int y = radius;
-        int d = 3 - 2 * radius;
-        List<(int, int)> coords = new List<(int, int)>();
-        FillCirclePoints(coords, x0, y0, 0, y);
-        for (int x = 1; x < y; x++)
-        {
-            if (d > 0)
-            {
-                y--;
-                d = d + 4 * (x - y) + 10;
-            }
-            else
-                d = d + 4 * x + 6;
-
-            FillCirclePoints(coords, x0, y0, x, y);
-        }
-
-        return coords;
     }
 
     public static void TransposeMatrix<T>(T[,] matrix)
@@ -129,29 +106,7 @@ public static class Algorithms
         }
     }
 
-    //target for termination
-    private static void FillCirclePoints(List<(int x, int y)> coords, int x0, int y0, int x, int y)
-    {
-        TransposePointsToList(coords, x0 + x, y0 + y);
-        TransposePointsToList(coords, x0 - x, y0 + y);
-        TransposePointsToList(coords, x0 + x, y0 - y);
-        TransposePointsToList(coords, x0 - x, y0 - y);
-        TransposePointsToList(coords, x0 + y, y0 + x);
-        TransposePointsToList(coords, x0 - y, y0 + x);
-        TransposePointsToList(coords, x0 + y, y0 - x);
-        TransposePointsToList(coords, x0 - y, y0 - x);
-    }
-
-    //target for termination
-    private static void TransposePointsToList(List<(int, int)> coords, int x, int y)
-    {
-        if (!coords.Contains((x, y)))
-        {
-            coords.Add((x, y));
-        }
-    }
-    
-    public  static LinkedList<(int, int)> AStar(int x0, int y0, int x1, int y1,
+    public static LinkedList<(int, int)> AStar(int x0, int y0, int x1, int y1,
         Func<int, int, IEnumerable<(int x, int y, int cost)>> getNeighbors)
     {
         LinkedList<(int, int)> path = new LinkedList<(int, int)>();
@@ -173,18 +128,21 @@ public static class Algorithms
                     goal = (previousNodes[goal].Value.Item1, previousNodes[goal].Value.Item2);
                     path.AddFirst(goal);
                 }
+
                 return path;
             }
+
             foreach ((int x, int y, int moveCost) in getNeighbors(currentPoint.x, currentPoint.y))
             {
                 int newCost = moveCost + minCosts[currentPoint];
                 if (minCosts.TryGetValue((x, y), out int oldCost) && newCost >= oldCost) continue;
                 minCosts[(x, y)] = newCost;
-                int priority = newCost + (int)UtilityFunctions.GetDistance(x, y, x1, y1);
+                int priority = newCost + (int) UtilityFunctions.GetDistance(x, y, x1, y1);
                 pendingPoints.Enqueue((x, y), priority);
                 previousNodes[(x, y)] = currentPoint;
             }
         }
+
         return null;
     }
 }

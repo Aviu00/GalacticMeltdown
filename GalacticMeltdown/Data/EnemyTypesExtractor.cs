@@ -243,12 +243,12 @@ public record BehaviorData(int? Priority);
 public record MovementStrategyData(int? Priority) : BehaviorData(Priority);
 
 public record MeleeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int MeleeAttackCost, 
-        IEnumerable<ActorStateChangerData> ActorStateChangerData)
+        LinkedList<ActorStateChangerData> ActorStateChangerData)
     : BehaviorData(Priority);
 
 public record RangeAttackStrategyData(int? Priority, int MinDamage, int MaxDamage, int Cooldown, int RangeAttackCost,
-        int AttackRange, int Spread, IEnumerable<ActorStateChangerData> ActorStateChangerData)
+        int AttackRange, int Spread, LinkedList<ActorStateChangerData> ActorStateChangerData)
     : BehaviorData(Priority);
 
 public record SelfEffectStrategyData(int? Priority, int Cooldown, int SelfEffectCost, bool ActivateIfTargetIsVisible,
-    IEnumerable<ActorStateChangerData> ActorStateChangerData) : BehaviorData(Priority);
+    LinkedList<ActorStateChangerData> ActorStateChangerData) : BehaviorData(Priority);

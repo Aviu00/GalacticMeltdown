@@ -29,6 +29,9 @@ public class MinimapView : View
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerViewX, centerViewY);
         var (xAbs, yAbs) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, xPlayer, yPlayer);
         if (!Inbounds(xAbs, yAbs)) return new ViewCellData(null, null);
+        if (_chunks[xAbs, yAbs].IsFinalRoom)
+            return new ViewCellData((_chunks[xAbs, yAbs].Symbol, ConsoleColor.DarkYellow),
+                x == centerViewX && y == centerViewY ? ConsoleColor.Green : ConsoleColor.Cyan);
         if (!_chunks[xAbs, yAbs].WasVisitedByPlayer) return new ViewCellData(('◻', ConsoleColor.DarkGray), null);
         return new ViewCellData((_chunks[xAbs, yAbs].Symbol, ConsoleColor.DarkYellow),
             x == centerViewX && y == centerViewY ? ConsoleColor.Green : null);
@@ -47,10 +50,12 @@ public class MinimapView : View
                 int chunkX = minX + viewX, chunkY = minY + viewY;
                 if (!Inbounds(chunkX, chunkY)) continue;
                 cells[viewX, viewY] =
-                    new ViewCellData(
-                        _chunks[chunkX, chunkY].WasVisitedByPlayer
-                            ? (_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow)
-                            : ('◻', ConsoleColor.DarkGray), null);
+                    _chunks[chunkX, chunkY].IsFinalRoom
+                        ? new ViewCellData((_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow), ConsoleColor.Cyan)
+                        : new ViewCellData(
+                            _chunks[chunkX, chunkY].WasVisitedByPlayer
+                                ? (_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow)
+                                : ('◻', ConsoleColor.DarkGray), null);
             }
         }
 

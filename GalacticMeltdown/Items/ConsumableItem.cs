@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using Newtonsoft.Json;
@@ -29,5 +31,16 @@ public class ConsumableItem : Item
         {
             DataHolder.ActorStateChangers[stateChanger.Type](actor, stateChanger.Power, stateChanger.Duration);
         }
+    }
+    
+    public override List<string> GetDescription()
+    {
+        List<string> description = new() {Name};
+        if (_itemData.ActorStateChangerData.Count <= 0) return description;
+        description.Add("");
+        description.Add("On consume:");
+        description.AddRange(_itemData.ActorStateChangerData.Select(data =>
+            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+        return description;
     }
 }

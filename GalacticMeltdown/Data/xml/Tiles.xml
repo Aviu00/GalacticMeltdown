@@ -125,4 +125,22 @@
         <IsTransparent>True</IsTransparent>
         <MoveCost>300</MoveCost>
     </Tile>
+    <Tile>
+        <Id>startpos</Id>
+        <Name>broken teleport pad</Name>
+        <Symbol>#</Symbol>
+        <Color>dark_yellow</Color>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+        <MoveCost>100</MoveCost>
+    </Tile>
+    <Tile>
+        <Id>endpos</Id>
+        <Name>teleport pad</Name>
+        <Symbol>#</Symbol>
+        <Color>green</Color>
+        <IsWalkable>True</IsWalkable>
+        <IsTransparent>True</IsTransparent>
+        <MoveCost>100</MoveCost>
+    </Tile>
 </Tiles>

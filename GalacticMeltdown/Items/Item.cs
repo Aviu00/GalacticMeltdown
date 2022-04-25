@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
 using JsonSubTypes;
@@ -11,7 +12,7 @@ namespace GalacticMeltdown.Items;
 [JsonSubtypes.KnownSubType(typeof(WeaponItem), "MeleeWeapon")]
 [JsonSubtypes.KnownSubType(typeof(ConsumableItem), "Consumable")]
 [JsonSubtypes.KnownSubType(typeof(EquippableItem), "Equippable")]
-public class Item : IDrawable
+public class Item : IDrawable, IHasDescription
 {
     private readonly ItemData _itemData;
     [JsonIgnore] public bool Stackable => _itemData.Stackable;
@@ -20,7 +21,7 @@ public class Item : IDrawable
     [JsonIgnore] public string Name => _itemData.Name;
     [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
     [JsonIgnore] public ConsoleColor? BgColor => ConsoleColor.Cyan;
-    
+
     [JsonProperty] protected virtual string ItemType { get; }
 
     protected Item(ItemData data)
@@ -36,7 +37,7 @@ public class Item : IDrawable
     private Item(string id) : this(DataHolder.ItemTypes[id])
     {
     }
-    
+
     public static Item CreateItem(ItemData data)
     {
         return data switch
@@ -48,7 +49,7 @@ public class Item : IDrawable
             _ => new Item(data)
         };
     }
-    
+
     public static Item CreateItem(Item item)
     {
         return item switch
@@ -59,5 +60,10 @@ public class Item : IDrawable
             EquippableItem itemObj => new EquippableItem(itemObj),
             _ => new Item(item)
         };
+    }
+
+    public virtual List<string> GetDescription()
+    {
+        return new() {Name};
     }
 }

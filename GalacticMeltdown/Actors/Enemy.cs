@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
-public class Enemy : Npc
+public class Enemy : Npc, IHasDescription
 {
     [JsonProperty] protected override string ActorName => "Enemy";
     private EnemyTypeData _typeData;
@@ -91,5 +91,26 @@ public class Enemy : Npc
                 }
             }
         }
+    }
+
+    public List<string> GetDescription()
+    {
+        List<string> description = new()
+        {
+            Name,
+            "",
+            $"HP: {Hp}/{MaxHp}",
+            $"Energy: {Energy}/{MaxEnergy}",
+            $"Def: {Defence}",
+            $"Dex: {Dexterity}",
+            $"View Range: {ViewRange}",
+            $"Alert Radius: {AlertRadius}"
+        };
+        if (Behaviors is null) return description;
+        foreach (var behavior in Behaviors)
+        {
+            description.AddRange(behavior.GetDescription());
+        }
+        return description;
     }
 }

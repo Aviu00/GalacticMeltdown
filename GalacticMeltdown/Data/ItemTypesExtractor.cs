@@ -5,8 +5,9 @@ using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 
 namespace GalacticMeltdown.Data;
-using AmmoDictionary = Dictionary<string, (int reloadAmount, int minDamage, int maxDamage,
-    IEnumerable<ActorStateChangerData> actorStateChangerData)>;
+
+using AmmoDictionary = Dictionary<string, (int minDamage, int maxDamage,
+    LinkedList<ActorStateChangerData> actorStateChangerData)>;
 
 public class ItemTypesExtractor : XmlExtractor
 {
@@ -23,7 +24,7 @@ public class ItemTypesExtractor : XmlExtractor
         XmlDocument doc = GetXmlDocument(docName);
         foreach (XmlNode node in doc.DocumentElement.ChildNodes)
         {
-            if(!Enum.TryParse(node.Name, out ItemCategory itemCategory)) continue;
+            if (!Enum.TryParse(node.Name, out ItemCategory itemCategory)) continue;
             string id = "";
             string name = "";
             char symbol = ' ';
@@ -82,7 +83,7 @@ public class ItemTypesExtractor : XmlExtractor
 
             ItemData itemData = itemCategory switch
             {
-                ItemCategory.ConsumableItem => new ConsumableItemData(symbol, name, id, itemCategory, stackable, 
+                ItemCategory.ConsumableItem => new ConsumableItemData(symbol, name, id, itemCategory, stackable,
                     actorStateChangerData),
                 ItemCategory.EquippableItem => new WearableItemData(symbol, name, id, itemCategory, bodyPart,
                     actorStateChangerData),
@@ -102,7 +103,6 @@ public class ItemTypesExtractor : XmlExtractor
         foreach (XmlNode locNode in node)
         {
             string ammoId = "";
-            int reloadAmount = 1;
             int minDamage = 0;
             int maxDamage = 0;
             LinkedList<ActorStateChangerData> actorStateChangerData = null;
@@ -112,12 +112,6 @@ public class ItemTypesExtractor : XmlExtractor
                 {
                     case "Id":
                         ammoId = ammoNode.InnerText;
-                        break;
-                    case "ReloadAmount":
-                        reloadAmount = Convert.ToInt32(ammoNode.InnerText);
-                        break;
-                    case "ReloadEnergy":
-                        reloadAmount = Convert.ToInt32(ammoNode.InnerText);
                         break;
                     case "MinDamage":
                         minDamage = Convert.ToInt32(ammoNode.InnerText);
@@ -132,8 +126,9 @@ public class ItemTypesExtractor : XmlExtractor
                 }
             }
 
-            dictionary.Add(ammoId, (reloadAmount, minDamage, maxDamage, actorStateChangerData));
+            dictionary.Add(ammoId, (minDamage, maxDamage, actorStateChangerData));
         }
+
         return dictionary;
     }
 }
@@ -141,21 +136,20 @@ public class ItemTypesExtractor : XmlExtractor
 public record ItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable);
 
 public record WearableItemData
-    (char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart,
-        IEnumerable<ActorStateChangerData> ActorStateChangerData) : ItemData(Symbol, Name, Id,
-        Category, false);
+(char Symbol, string Name, string Id, ItemCategory Category, BodyPart BodyPart,
+    LinkedList<ActorStateChangerData> ActorStateChangerData) : ItemData(Symbol, Name, Id, Category, false);
 
 public record WeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
     int MaxHitDamage, int HitEnergy, AmmoDictionary AmmoTypes,
-    IEnumerable<ActorStateChangerData> ActorStateChangerData) : WearableItemData(Symbol, Name, Id,
+    LinkedList<ActorStateChangerData> ActorStateChangerData) : WearableItemData(Symbol, Name, Id,
     Category, BodyPart.Hands, ActorStateChangerData);
 
 public record RangedWeaponItemData(char Symbol, string Name, string Id, ItemCategory Category, int MinHitDamage,
         int MaxHitDamage, int HitEnergy, int ShootEnergy, int Spread, AmmoDictionary AmmoTypes,
-        IEnumerable<ActorStateChangerData> ActorStateChangerData) 
+        LinkedList<ActorStateChangerData> ActorStateChangerData)
     : WeaponItemData(Symbol, Name, Id, Category, MinHitDamage, MaxHitDamage, HitEnergy, AmmoTypes,
         ActorStateChangerData);
 
 public record ConsumableItemData(char Symbol, string Name, string Id, ItemCategory Category, bool Stackable,
-    IEnumerable<ActorStateChangerData> ActorStateChangerData)
+        LinkedList<ActorStateChangerData> ActorStateChangerData)
     : ItemData(Symbol, Name, Id, Category, Stackable);

@@ -5,9 +5,9 @@
         <Name>xeno dog</Name>
         <Symbol>X</Symbol>
         <Color>dark_magenta</Color>
-        <MaxHp>20</MaxHp>
+        <MaxHp>25</MaxHp>
         <Defence>0</Defence>
-        <Dexterity>15</Dexterity>
+        <Dexterity>12</Dexterity>
         <ViewRange>3</ViewRange>
         <AlertRadius>5</AlertRadius>
         <MaxEnergy>150</MaxEnergy>
@@ -86,9 +86,9 @@
         <MaxHp>90</MaxHp>
         <MaxEnergy>70</MaxEnergy>
         <Dexterity>3</Dexterity>
-        <Defence>10</Defence>
+        <Defence>8</Defence>
         <ViewRange>10</ViewRange>
-        <Cost>150</Cost>
+        <Cost>200</Cost>
         <AlertRadius>10</AlertRadius>
         <Behaviors>
             <Movement/>
@@ -178,7 +178,7 @@
             <Movement/>
             <MeleeAttack>
                 <MinDamage>30</MinDamage>
-                <MaxDamage>65</MaxDamage>
+                <MaxDamage>70</MaxDamage>
                 <MeleeAttackCost>30</MeleeAttackCost>
                 <StateChanger>
                     <Type>ModifyViewRangeEffect</Type>

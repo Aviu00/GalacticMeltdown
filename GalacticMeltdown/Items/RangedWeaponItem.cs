@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using Newtonsoft.Json;
@@ -34,5 +36,26 @@ public class RangedWeaponItem : WeaponItem
 
     public override void Unequip(Actor actor)
     {
+    }
+    
+    public override List<string> GetDescription()
+    {
+        List<string> description = new()
+        {
+            Name,
+            "",
+            $"Deals {MinHitDamage}-{MaxHitDamage} damage on hit",
+            $"Melee attack energy cost: {HitEnergy}",
+            $"Shoot energy cost: {ShootEnergy}",
+            $"Spread: {Spread}"
+        };
+        if (StateChangers is not null)
+        {
+            description.Add("Applies effects on target when shot:");
+            description.AddRange(StateChangers.Select(data =>
+                DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+        }
+        if(AmmoTypes is not null) description.AddRange(GetAmmoDescription());
+        return description;
     }
 }

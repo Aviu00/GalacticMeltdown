@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
 
@@ -52,26 +53,35 @@ public class RangeAttackStrategy : Behavior
 
     public override ActorActionInfo TryAct()
     {
-        if (ControlledNpc.CurrentTarget is null)
+        if (ControlledNpc.CurrentTarget is null || !CanAttack())
             return null;
         
-        if (!CanAttack()) return null;
-        // Failed to shoot
-        if (!UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance
-            (UtilityFunctions.GetDistance(ControlledNpc.X, ControlledNpc.Y,
-                ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y), _spread)))
-            return new ActorActionInfo(ActorAction.Shoot, new List<(int, int)>());
-        
-        int damage = RandomDamage(_minDamage, _maxDamage);
-        ControlledNpc.CurrentTarget.Hit(damage, true, false);
-        UtilityFunctions.ApplyStateChangers(_stateChangers, ControlledNpc.CurrentTarget);
-        ControlledNpc.Energy -= _rangeAttackCost;
-        _rangeAttackCounter?.ResetTimer();
-        return new ActorActionInfo(ActorAction.Shoot,
-            Algorithms.BresenhamGetPointsOnLine(ControlledNpc.X, ControlledNpc.Y, ControlledNpc.CurrentTarget.X,
-                    ControlledNpc.CurrentTarget.Y)
-                .Skip(1)
-                .ToList());
+        List<(int, int)> lineCells = new();
+        (int x0, int y0) = (ControlledNpc.X, ControlledNpc.Y);
+        (int x1, int y1) = (ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y);
+        foreach (var point in Algorithms.BresenhamGetPointsOnLine(x0, y0, x1, y1, 200).Skip(1))
+        {
+            var (xi, yi) = point;
+            if (ControlledNpc.Level.GetTile(xi, yi) is {IsWalkable: false}) break;
+            IObjectOnMap obj = ControlledNpc.Level.GetNonTileObject(xi, yi);
+            if (obj is null)
+            {
+                lineCells.Add(point);
+                continue;
+            }
+            if (obj is not Actor actor) break;
+
+            double distance = UtilityFunctions.GetDistance(x0, y0, xi, yi);
+            if (!UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance(distance, _spread))) continue;
+            int damage = RandomDamage(_minDamage, _maxDamage);
+            actor.Hit(damage, true, false);
+            UtilityFunctions.ApplyStateChangers(_stateChangers, ControlledNpc.CurrentTarget);
+            ControlledNpc.Energy -= _rangeAttackCost;
+            _rangeAttackCounter?.ResetTimer();
+            break;
+        }
+
+        return new ActorActionInfo(ActorAction.Shoot, lineCells);
     }
 
     private int RandomDamage(int minDamage, int maxDamage)
@@ -101,5 +111,24 @@ public class RangeAttackStrategy : Behavior
                 return false;
         }
         return true;
+    }
+
+    public override List<string> GetDescription()
+    {
+        List<string> description = new()
+        {
+            "",
+            "Can shoot",
+            $"Damage: {_minDamage}-{_maxDamage}",
+            $"Energy cost: {_rangeAttackCost}",
+            $"Range: {_attackRange}",
+            $"Spread: {_spread}"
+        };
+        if (_cooldown > 0) description.Add($"Cooldown: {_cooldown}");
+        if (_stateChangers is null) return description;
+        description.Add("Applies effects on target:");
+        description.AddRange(_stateChangers.Select(data =>
+            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+        return description;
     }
 }

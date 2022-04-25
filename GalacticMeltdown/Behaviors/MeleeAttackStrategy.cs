@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
@@ -58,5 +59,23 @@ public class MeleeAttackStrategy : Behavior
         _meleeAttackCounter?.ResetTimer();
         return new ActorActionInfo(hit ? ActorAction.MeleeAttackHit : ActorAction.MeleeAttackMissed,
             new List<(int, int)> {(ControlledNpc.CurrentTarget.X, ControlledNpc.CurrentTarget.Y)});
+    }
+
+    public override List<string> GetDescription()
+    {
+        List<string> description = new()
+        {
+            "",
+            "Can attack",
+            $"Damage: {_minDamage}-{_maxDamage}",
+            $"Energy cost: {_meleeAttackCost}"
+        };
+        if (_meleeAttackCounter is not null)
+            description.Add($"Cooldown: {_meleeAttackCounter.Timer.MaxValue}");
+        if (_stateChangers is null) return description;
+        description.Add("Applies effects on target:");
+        description.AddRange(_stateChangers.Select(data =>
+            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+        return description;
     }
 }

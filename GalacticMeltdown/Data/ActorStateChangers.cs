@@ -27,9 +27,7 @@ public static partial class DataHolder
         ModifyDefenceEffect,
         ModifyStrengthEffect,
         ModifySpeedEffect,
-        ModifyViewRangeEffect,
-        AdrenalineEffect,
-        MassiveHealEffect
+        ModifyViewRangeEffect
     }
 
     public static readonly Dictionary<ActorStateChangerType, Action<Actor, int, int>> ActorStateChangers = new()
@@ -128,4 +126,84 @@ public static partial class DataHolder
             }
         }
     };
+
+    public static readonly Dictionary<ActorStateChangerType, Func<int, int, string>> StateChangerDescriptions = new()
+    {
+        {
+            ActorStateChangerType.Heal, (power, _) => $"Heals {power} HP"
+        },
+        {
+            ActorStateChangerType.Damage, (power, _) => $"Deals {power} damage"
+        },
+        {
+            ActorStateChangerType.Stun, (power, _) => $"Stuns for {power} energy"
+        },
+        {
+            ActorStateChangerType.ModifyDefence, (power, _) =>
+                (power < 0 ? "Decreases" : "Increases") + $" defence by {Math.Abs(power)}"
+        },
+        {
+            ActorStateChangerType.ModifyDexterity, (power, _) =>
+                (power < 0 ? "Decreases" : "Increases") + $" dexterity by {Math.Abs(power)}"
+        },
+        {
+            ActorStateChangerType.ModifyMaxHealth, (power, _) =>
+                (power < 0 ? "Decreases" : "Increases") + $" max HP by {Math.Abs(power)}"
+        },
+        {
+            ActorStateChangerType.ModifyMaxEnergy, (power, _) =>
+                (power < 0 ? "Decreases" : "Increases") + $" max energy by {Math.Abs(power)}"
+        },
+        {
+            ActorStateChangerType.ModifyViewRange, (power, _) =>
+                (power < 0 ? "Decreases" : "Increases") + $" view range by {Math.Abs(power)}"
+        },
+        {
+            ActorStateChangerType.ModifyStrength, (power, _) =>
+                (power < 0 ? "Decreases" : "Increases") + $" strength by {Math.Abs(power)}"
+        },
+        {
+            ActorStateChangerType.ModifySpeed, (power, _) =>
+                (power < 0 ? "Decreases" : "Increases") + $" move speed by {Math.Abs(power)}"
+        },
+        {
+            ActorStateChangerType.RegenerationEffect, (power, duration) =>
+                $"Regenerates {power} HP each turn for a total of {duration} turns"
+        },
+        {
+            ActorStateChangerType.PoisonEffect, (power, duration) =>
+                $"Applies poison effect, dealing {power} damage each turn for a total of {duration} turns"
+        },
+        {
+            ActorStateChangerType.ModifyMaxEnergyEffect, (power, duration) =>
+                GetModificationEffectDescription(ActorStateChangerType.ModifyMaxEnergy, power, duration)
+        },
+        {
+            ActorStateChangerType.ModifyMaxHealthEffect, (power, duration) =>
+                GetModificationEffectDescription(ActorStateChangerType.ModifyMaxHealth, power, duration)
+        },
+        {
+            ActorStateChangerType.ModifyDefenceEffect, (power, duration) =>
+                GetModificationEffectDescription(ActorStateChangerType.ModifyDefence, power, duration)
+        },
+        {
+            ActorStateChangerType.ModifyDexterityEffect, (power, duration) =>
+                GetModificationEffectDescription(ActorStateChangerType.ModifyDexterity, power, duration)
+        },
+        {
+            ActorStateChangerType.ModifyStrengthEffect, (power, duration) =>
+                GetModificationEffectDescription(ActorStateChangerType.ModifyStrength, power, duration)
+        },
+        {
+            ActorStateChangerType.ModifySpeedEffect, (power, duration) =>
+                GetModificationEffectDescription(ActorStateChangerType.ModifySpeed, power, duration)
+        },
+        {
+            ActorStateChangerType.ModifyViewRangeEffect, (power, duration) =>
+                GetModificationEffectDescription(ActorStateChangerType.ModifyViewRange, power, duration)
+        }
+    };
+
+    private static string GetModificationEffectDescription(ActorStateChangerType baseStateChanger, int power,
+        int duration) => StateChangerDescriptions[baseStateChanger](power, duration) + $" for {duration} turns";
 }

@@ -22,14 +22,13 @@ public class ContinuousEffect : Effect
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        Level.TurnFinished += NextTurn;
         EffectInit();
+        Level.TurnFinished += NextTurn;
     }
 
     protected override void RemoveEffect()
     {
         Level.TurnFinished -= NextTurn;
-        EffectAction?.Invoke(AffectedActor, Power, Duration);
         base.RemoveEffect();
     }
 

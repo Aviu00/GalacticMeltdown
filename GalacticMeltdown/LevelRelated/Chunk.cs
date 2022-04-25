@@ -19,7 +19,7 @@ public class Chunk
 
     public bool WasActiveBefore;
     public bool WasVisitedByPlayer;
-
+    [JsonProperty] public readonly bool IsFinalRoom;
 
     [JsonIgnore] public bool IsActive;
     
@@ -36,7 +36,7 @@ public class Chunk
     }
     
     public Chunk(Tile[,] tiles, ItemDictionary items, List<(int x, int y)> neighborCoords, int difficulty, int seed,
-        int x, int y, char symbol)
+        int x, int y, char symbol, bool isFinalRoom = false)
     {
         Tiles = tiles;
         Difficulty = difficulty;
@@ -46,6 +46,7 @@ public class Chunk
         Seed = seed;
         _items = items;
         Symbol = symbol;
+        IsFinalRoom = isFinalRoom;
         Enemies = new List<Enemy>();
     }
 

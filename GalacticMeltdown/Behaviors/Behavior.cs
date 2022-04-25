@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.LevelRelated;
 using JsonSubTypes;
 using Newtonsoft.Json;
 
@@ -11,7 +13,7 @@ namespace GalacticMeltdown.Behaviors;
 [JsonSubtypes.KnownSubType(typeof(MeleeAttackStrategy), "MeleeAttack")]
 [JsonSubtypes.KnownSubType(typeof(RangeAttackStrategy), "RangeAttack")]
 [JsonSubtypes.KnownSubType(typeof(SelfEffectStrategy), "SelfEffect")]
-public abstract class Behavior : IComparable<Behavior>
+public abstract class Behavior : IComparable<Behavior>, IHasDescription
 {
     [JsonProperty] protected abstract string Strategy { get; }
     [JsonProperty] private readonly int _priority;
@@ -33,4 +35,6 @@ public abstract class Behavior : IComparable<Behavior>
     {
         return _priority.CompareTo(obj._priority);
     }
+
+    public abstract List<string> GetDescription();
 }

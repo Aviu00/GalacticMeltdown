@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GalacticMeltdown.Events;
 
 namespace GalacticMeltdown.LevelRelated;
@@ -39,4 +40,9 @@ public interface IFocusable : IMovable
 public interface IControllable : IFocusable
 {
     bool TryMove(int deltaX, int deltaY);
+}
+
+public interface IHasDescription
+{
+    List<string> GetDescription();
 }

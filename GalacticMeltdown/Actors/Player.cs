@@ -234,13 +234,16 @@ public class Player : Actor, ISightedObject, IControllable
         if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun || ChosenAmmoId is null) return false;
         Item ammo = GetAmmo();
         List<(int, int)> lineCells = new();
-        foreach (var point in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y).Skip(1))
+        foreach (var point in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y, 200).Skip(1))
         {
-            lineCells.Add(point);
             var (xi, yi) = point;
             if (Level.GetTile(xi, yi) is {IsWalkable: false}) break;
             IObjectOnMap obj = Level.GetNonTileObject(xi, yi);
-            if (obj is null) continue;
+            if (obj is null)
+            {
+                lineCells.Add(point);
+                continue;
+            }
             if (obj is not Actor actor) break;
 
             double distance = UtilityFunctions.GetDistance(X, Y, xi, yi);
