@@ -201,9 +201,10 @@ public static partial class DataHolder
         "become one of them. You have a limited amount of time, so all you can do is grab a few spare items on the " +
         "ship and make a run for it.",
         "",
-        "This game is turn-based: each entity has a set amount of energy that it can use to make take or several "
-        + "actions in one turn. Turn finishes when each entity either spends all of their energy or refuses to " +
-        "perform any action At the end of turn step all entities restore their energy.",
+        "This game is turn-based: each entity has some energy that it can use to perform actions during a turn.", 
+        "After an entity performs an action, all other entities close to the player may perform an action as well.",
+        "A turn finishes when no entities spend energy when performing their action.",
+        "At the end of each turn all entities restore their energy.",
         "The amount restored is the maximum possible amount available to the entity.",
         "",
         "Key bindings",
