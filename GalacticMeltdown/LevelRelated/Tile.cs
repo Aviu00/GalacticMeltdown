@@ -57,7 +57,7 @@ public class Tile : IDrawable, IHasDescription
         {
             Name,
             "",
-            IsWalkable ? $"Move Cost: {MoveCost}" : "Impassible",
+            IsWalkable ? $"Move Cost: {MoveCost}" : "Not Walkable",
             IsTransparent ? "Transparent" : "Not Transparent"
         };
     }

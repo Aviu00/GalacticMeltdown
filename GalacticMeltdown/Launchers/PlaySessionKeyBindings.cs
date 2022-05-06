@@ -85,7 +85,7 @@ public partial class PlaySession
                         }
                         else
                         {
-                            description = new() {"Unseen"};
+                            description = new() {"Not visible"};
                         }
                         InfoWindow infoWindow = new(description);
                         UserInterface.AddChild(this, infoWindow);
