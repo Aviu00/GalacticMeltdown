@@ -42,16 +42,16 @@ public class Renderer
     private Dictionary<View, (int minX, int minY)> _viewCornerCoords;
     private LinkedList<(View view, int viewX, int viewY, ViewCellData cellData, int delay)> _animQueue;
 
-    private int _animationTime = 200;
+    private int _maxAnimationTime = 100;
 
     private Dictionary<object, ViewPositioner> _objectViewPositioners;
 
-    public int AnimationTime
+    public int MaxAnimationTime
     {
-        get => _animationTime;
+        get => _maxAnimationTime;
         set
         {
-            if (value >= 0) _animationTime = value;
+            if (value >= 0) _maxAnimationTime = value;
         }
     }
 
@@ -114,7 +114,7 @@ public class Renderer
     {
         if (!_animQueue.Any()) return;
         int totalDelay = _animQueue.Sum(data => data.delay);
-        double factor = totalDelay <= AnimationTime ? 1 : AnimationTime / (double) totalDelay;
+        double factor = totalDelay <= MaxAnimationTime ? 1 : MaxAnimationTime / (double) totalDelay;
         foreach (var (view, viewX, viewY, viewCellData, delay) in _animQueue)
         {
             if (RedrawOnScreenSizeChange()) return;

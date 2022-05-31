@@ -115,6 +115,6 @@ public static class UserInterface
 
     public static void SetAnimationTime(int animationTime)
     {
-        _renderer.AnimationTime = animationTime;
+        _renderer.MaxAnimationTime = animationTime;
     }
 }
