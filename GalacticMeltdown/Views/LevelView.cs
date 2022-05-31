@@ -307,7 +307,8 @@ public partial class LevelView : View
                     IDrawable drawable = _level.GetDrawable(x, y);
                     var (viewX, viewY) = ToViewCoords(x, y);
                     CellChanged?.Invoke(this,
-                        new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 0)));
+                        new CellChangedEventArgs((viewX, viewY,
+                            new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 20)));
                 }
                 break;
             case ActorAction.InteractWithDoor:
