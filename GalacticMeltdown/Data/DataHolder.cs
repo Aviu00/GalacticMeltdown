@@ -9,9 +9,6 @@ namespace GalacticMeltdown.Data;
 
 public static partial class DataHolder
 {
-    public const int ChunkSize = 25;
-    public const int ActiveChunkRadius = 2;
-
     public static readonly string ProjectDirectory =
         Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
 

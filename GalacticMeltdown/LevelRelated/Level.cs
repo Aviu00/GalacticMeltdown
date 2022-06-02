@@ -17,8 +17,8 @@ namespace GalacticMeltdown.LevelRelated;
 
 public class Level
 {
-    private const int ActiveChunkRadius = DataHolder.ActiveChunkRadius;
-    private const int ChunkSize = DataHolder.ChunkSize;
+    private const int ActiveChunkRadius = ChunkConstants.ActiveChunkRadius;
+    private const int ChunkSize = ChunkConstants.ChunkSize;
 
     [JsonProperty] private readonly Tile[] _southernWall;
     [JsonProperty] private readonly Tile[] _westernWall;

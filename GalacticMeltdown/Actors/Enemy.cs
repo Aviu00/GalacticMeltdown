@@ -79,7 +79,8 @@ public class Enemy : Npc, IHasDescription
     private void AlertEnemiesAboutTarget(int x, int y)
     {
         (int chunkCoordX, int chunkCoordY) = Level.GetChunkCoords(x, y);
-        foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY, AlertRadius / DataHolder.ChunkSize + 1))
+        foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY,
+                     AlertRadius / ChunkConstants.ChunkSize + 1))
         {
             foreach (var enemy in chunk.Enemies.Where(enemy =>
                          UtilityFunctions.GetDistance(enemy.X, enemy.Y, X, Y) <= AlertRadius &&

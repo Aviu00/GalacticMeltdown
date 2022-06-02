@@ -71,7 +71,7 @@ public class EnemySpawner
 
     private List<Chunk> GetTargetChunks()
     {
-        HashSet<Chunk> chunks = _level.GetChunksAroundControllable(DataHolder.ActiveChunkRadius, false);
+        HashSet<Chunk> chunks = _level.GetChunksAroundControllable(ChunkConstants.ActiveChunkRadius, false);
         foreach (var chunk in _level.GetChunksAroundControllable(NoSpawnRadius, false))
         {
             chunks.Remove(chunk);

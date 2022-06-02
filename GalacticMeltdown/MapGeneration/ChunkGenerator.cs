@@ -15,7 +15,7 @@ public class ChunkGenerator
     private const double RandomFuncNorm = 500;
         
     private Random _rng;
-    private const int ChunkSize = DataHolder.ChunkSize;
+    private const int ChunkSize = ChunkConstants.ChunkSize;
 
     public bool HasAccessToMainRoute;
     public bool MainRoute;
@@ -137,8 +137,8 @@ public class ChunkGenerator
             !UtilityFunctions.Chance(ChanceFunction(roomData[localX, localY].LootChance, roomData[localX, localY].Gain,
                 roomData[localX, localY].Limit), _rng))
             return;
-        int newX = localX + MapX * DataHolder.ChunkSize;
-        int newY = localY + MapY * DataHolder.ChunkSize;
+        int newX = localX + MapX * ChunkConstants.ChunkSize;
+        int newY = localY + MapY * ChunkConstants.ChunkSize;
         SpawnItems(items, id, newX, newY);
     }
 

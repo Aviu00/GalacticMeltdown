@@ -9,7 +9,7 @@ using TerrainInformation = Dictionary<char, (string tileId, string lootId, int l
 
 public class RoomTypesExtractor : XmlExtractor
 {
-    private const int ChunkSize = DataHolder.ChunkSize;
+    private const int ChunkSize = ChunkConstants.ChunkSize;
 
     public readonly List<RoomType> Rooms;
 

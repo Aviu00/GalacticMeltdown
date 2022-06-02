@@ -53,12 +53,12 @@ public class Chunk
     public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
     {
         List<(int, int)> coords = new();
-        for (int x = 0; x < DataHolder.ChunkSize; x++)
+        for (int x = 0; x < ChunkConstants.ChunkSize; x++)
         {
-            for (int y = 0; y < DataHolder.ChunkSize; y++)
+            for (int y = 0; y < ChunkConstants.ChunkSize; y++)
             {
                 if (Tiles[x, y].Id == "floor" && (ignoreObjectsOnMap || GetMapObject(x, y) is null))
-                    coords.Add((x + MapX * DataHolder.ChunkSize, y + MapY * DataHolder.ChunkSize));
+                    coords.Add((x + MapX * ChunkConstants.ChunkSize, y + MapY * ChunkConstants.ChunkSize));
             }
         }
 
