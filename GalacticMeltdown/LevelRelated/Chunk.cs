@@ -91,7 +91,8 @@ public class Chunk
 
     public List<Item> GetItems(int localX, int localY)
     {
-        return _items.ContainsKey((localX, localY)) ? _items[(localX, localY)] : null;
+        if (!(_items.ContainsKey((localX, localY)) && _items[(localX, localY)].Any())) return null;
+        return _items[(localX, localY)];
     }
 
     public Item FindItem(int x, int y)

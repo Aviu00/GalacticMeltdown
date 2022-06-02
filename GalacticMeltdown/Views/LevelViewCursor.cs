@@ -47,7 +47,7 @@ public partial class LevelView
         if (!_visiblePoints.Contains((x, y))) return Colors.CursorBg.LineNoHighlight;
         
         if (_level.GetNonTileObject(x, y) is Enemy) return Colors.CursorBg.LineEnemy;
-        if (_level.GetItems(x, y).Any()) return Colors.CursorBg.LineItem;
+        if (_level.GetItems(x, y) is not null) return Colors.CursorBg.LineItem;
         if (_level.GetTile(x, y) is {IsWalkable: false}) return Colors.CursorBg.LineNonWalkable;
         if (_level.Player.X == x && _level.Player.Y == y) return Colors.CursorBg.LineFriend;
         

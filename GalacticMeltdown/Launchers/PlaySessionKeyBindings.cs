@@ -42,7 +42,7 @@ public partial class PlaySession
                     cursor.Action = (x, y) =>
                     {
                         List<Item> items = _level.GetItems(x, y);
-                        if (items is null || items.Count == 0) return;
+                        if (items is null) return;
                         ItemPickupDialog dialog = new(items, PickUp);
                         UserInterface.AddChild(this, dialog);
                         dialog.Open();
