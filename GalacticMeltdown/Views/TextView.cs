@@ -8,8 +8,8 @@ namespace GalacticMeltdown.Views;
 
 public class TextView : View
 {
-    private const ConsoleColor TextColor = DataHolder.Colors.TextViewColor;
-    private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
+    private const ConsoleColor TextColor = Colors.TextViewColor;
+    private const ConsoleColor DefaultBackgroundColor = Colors.DefaultBackgroundColor;
 
     private List<string> _lines;
     private char[,] _characters;

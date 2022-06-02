@@ -10,11 +10,11 @@ namespace GalacticMeltdown.Views;
 
 public class OverlayView : View
 {
-    private const ConsoleColor HpColor = DataHolder.Colors.HpColor;
-    private const ConsoleColor EnergyColor = DataHolder.Colors.EnergyColor;
-    private const ConsoleColor StrColor = DataHolder.Colors.StrColor;
-    private const ConsoleColor DexColor = DataHolder.Colors.DexColor;
-    private const ConsoleColor DefColor = DataHolder.Colors.DefColor;
+    private const ConsoleColor HpColor = Colors.HpColor;
+    private const ConsoleColor EnergyColor = Colors.EnergyColor;
+    private const ConsoleColor StrColor = Colors.StrColor;
+    private const ConsoleColor DexColor = Colors.DexColor;
+    private const ConsoleColor DefColor = Colors.DefColor;
     private const ConsoleColor OtherTextColor = ConsoleColor.Blue;
 
     private Level _level; // Maybe later

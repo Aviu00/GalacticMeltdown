@@ -7,8 +7,8 @@ namespace GalacticMeltdown.Views;
 
 public class InputView : View
 {
-    private const ConsoleColor BgColor = DataHolder.Colors.TextBoxDefaultBgColor;
-    private const ConsoleColor TextColor = DataHolder.Colors.TextBoxTextColor;
+    private const ConsoleColor BgColor = Colors.TextBoxDefaultBgColor;
+    private const ConsoleColor TextColor = Colors.TextBoxTextColor;
 
     public override event EventHandler NeedRedraw;
     public override event EventHandler<CellChangedEventArgs> CellChanged;

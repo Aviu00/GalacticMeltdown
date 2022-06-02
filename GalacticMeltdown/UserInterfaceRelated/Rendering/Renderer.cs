@@ -13,7 +13,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 public class Renderer
 {
-    private const ConsoleColor DefaultColor = DataHolder.Colors.DefaultBackgroundColor;
+    private const ConsoleColor DefaultColor = Colors.DefaultBackgroundColor;
 
     private struct ScreenCellData
     {

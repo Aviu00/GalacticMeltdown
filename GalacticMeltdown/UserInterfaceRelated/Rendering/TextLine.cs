@@ -6,8 +6,8 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 public class TextLine : ListLine
 {
-    private const ConsoleColor BgColor = DataHolder.Colors.BackgroundColorUnselected;
-    private const ConsoleColor TextColor = DataHolder.Colors.TextColor;
+    private const ConsoleColor BgColor = Colors.BackgroundColorUnselected;
+    private const ConsoleColor TextColor = Colors.TextColor;
 
     private readonly string _text;
     private string _renderedText;

@@ -43,13 +43,13 @@ public partial class LevelView
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
     {
-        if (!_visiblePoints.Contains((x, y))) return DataHolder.Colors.HighlightedNothingColor;
+        if (!_visiblePoints.Contains((x, y))) return Colors.HighlightedNothingColor;
         
-        if (_level.GetNonTileObject(x, y) is Enemy) return DataHolder.Colors.HighlightedEnemyColor;
-        if (_level.GetTile(x, y) is {IsWalkable: false}) return DataHolder.Colors.HighlightedSolidTileColor;
-        if (_level.Player.X == x && _level.Player.Y == y) return DataHolder.Colors.HighlightedFriendColor;
+        if (_level.GetNonTileObject(x, y) is Enemy) return Colors.HighlightedEnemyColor;
+        if (_level.GetTile(x, y) is {IsWalkable: false}) return Colors.HighlightedSolidTileColor;
+        if (_level.Player.X == x && _level.Player.Y == y) return Colors.HighlightedFriendColor;
         
-        return DataHolder.Colors.HighlightedNothingColor;
+        return Colors.HighlightedNothingColor;
     }
 
     public void ToggleCursorLine()

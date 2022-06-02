@@ -152,7 +152,7 @@ public partial class LevelView : View
         }
 
         if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-            return new ViewCellData((_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
+            return new ViewCellData((_seenCells[levelX, levelY].Value, Colors.OutOfVisionTileColor),
                 backgroundColor);
 
         return new ViewCellData(null, backgroundColor);
@@ -215,7 +215,7 @@ public partial class LevelView : View
 
             if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
                 return new ViewCellData(
-                    (_seenCells[levelX, levelY].Value, DataHolder.Colors.OutOfVisionTileColor),
+                    (_seenCells[levelX, levelY].Value, Colors.OutOfVisionTileColor),
                     null);
             return new ViewCellData(null, null);
         }

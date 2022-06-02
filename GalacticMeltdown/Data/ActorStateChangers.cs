@@ -5,7 +5,7 @@ using GalacticMeltdown.Actors.Effects;
 
 namespace GalacticMeltdown.Data;
 
-public static partial class DataHolder
+public static class DataHolder
 {
     public enum ActorStateChangerType
     {

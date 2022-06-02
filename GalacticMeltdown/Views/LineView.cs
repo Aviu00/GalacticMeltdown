@@ -10,7 +10,7 @@ namespace GalacticMeltdown.Views;
 
 public class LineView : View
 {
-    private const ConsoleColor DefaultBackgroundColor = DataHolder.Colors.DefaultBackgroundColor;
+    private const ConsoleColor DefaultBackgroundColor = Colors.DefaultBackgroundColor;
     
     private List<ListLine> _lines;
     private List<int> _pressableLineIndexes;
