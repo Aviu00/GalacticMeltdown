@@ -17,7 +17,7 @@ public class EndGameMessage : TextWindow
             new TextLine(message),
             new Button("OK", "", Close)
         });
-        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Select, LineView.PressCurrent}

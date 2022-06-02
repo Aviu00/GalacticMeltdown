@@ -25,7 +25,7 @@ public class InventoryMenu : TextWindow
         _inventory = _player.Inventory;
         _inventoryFilters = new Dictionary<InventoryFilterType, Func<Item, bool>>();
         UpdateLines();
-        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.InventoryMenu,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.InventoryMenu,
             new Dictionary<InventoryControl, Action>
             {
                 {InventoryControl.Back, Close},

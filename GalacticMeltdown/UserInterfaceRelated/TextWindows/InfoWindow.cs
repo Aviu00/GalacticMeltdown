@@ -17,7 +17,7 @@ public class InfoWindow
     public InfoWindow(List<string> lines)
     {
         _textView = new TextView(lines);
-        _controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        _controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Back, Close},

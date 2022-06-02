@@ -26,7 +26,7 @@ public class LevelCreationDialog : TextWindow
         {
             new TextLine("Name"), _nameLine, new TextLine("Seed"), _seedLine,
         });
-        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Back, Close},

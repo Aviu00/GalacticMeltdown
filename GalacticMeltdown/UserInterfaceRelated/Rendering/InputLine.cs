@@ -69,7 +69,7 @@ public class InputLine : PressableListLine
         Updated?.Invoke(this, EventArgs.Empty);
         UserInterface.SetController(this,
             new TextInputController(AddCharacter,
-                UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.TextInput,
+                UtilityFunctions.JoinDictionaries(KeyBindings.TextInput,
                     new Dictionary<TextInputControl, Action>
                     {
                         {TextInputControl.Back, Back},

@@ -19,7 +19,7 @@ public class MainMenu : TextWindow
             new Button("Help", "", OpenHelp),
             new Button("Quit", "", Game.Quit)
         });
-        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Down, LineView.SelectNext},

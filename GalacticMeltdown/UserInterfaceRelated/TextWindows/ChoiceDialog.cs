@@ -23,7 +23,7 @@ public abstract class ChoiceDialog<T> : TextWindow
         Options = options;
         _message = message;
         _closeOnChoice = closeOnChoice;
-        Controller = new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Selection,
+        Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Selection,
             new Dictionary<SelectionControl, Action>
             {
                 {SelectionControl.Back, Close},

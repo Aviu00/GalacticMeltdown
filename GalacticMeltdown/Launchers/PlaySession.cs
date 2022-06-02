@@ -54,7 +54,7 @@ public partial class PlaySession
         UserInterface.SetViewPositioner(this,
             new MainViewPositioner(_levelView, _level.OverlayView, _level.MinimapView));
         UserInterface.SetController(this,
-            new ActionController(UtilityFunctions.JoinDictionaries(DataHolder.CurrentBindings.Main, _mainActions)));
+            new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Main, _mainActions)));
         UserInterface.SetTask(this, MapTurn);
     }
 
