@@ -16,7 +16,7 @@ public class CategoryDialog : ChoiceDialog<ItemCategory?>
     {
         var choices = new List<(string text, ItemCategory? choice)> { ("All", null) };
         choices.AddRange(Enum.GetValues<ItemCategory>()
-            .Select(category => (DataHolder.CategoryName[category], (ItemCategory?) category)));
+            .Select(category => (Names.ItemCategories[category], (ItemCategory?) category)));
         return choices;
     }
 }

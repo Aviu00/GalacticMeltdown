@@ -45,10 +45,10 @@ public class EnemyTypesExtractor : XmlExtractor
                         symbol = Convert.ToChar(locNode.InnerText);
                         break;
                     case "Color":
-                        color = DataHolder.ColorName[locNode.InnerText];
+                        color = Names.Colors[locNode.InnerText];
                         break;
                     case "BgColor":
-                        bgColor = DataHolder.ColorName[locNode.InnerText];
+                        bgColor = Names.Colors[locNode.InnerText];
                         break;
                     case "MaxEnergy":
                         maxEnergy = Convert.ToInt32(locNode.InnerText);

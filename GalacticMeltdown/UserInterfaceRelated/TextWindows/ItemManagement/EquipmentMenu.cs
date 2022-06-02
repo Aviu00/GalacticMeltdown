@@ -34,11 +34,11 @@ public class EquipmentMenu : TextWindow
         {
             if (_player.Equipment[bodyPart] is null)
             {
-                lines.Add(new TextLine($"{DataHolder.BodyPartName[bodyPart]}: nothing"));
+                lines.Add(new TextLine($"{Names.BodyParts[bodyPart]}: nothing"));
             }
             else
             {
-                lines.Add(new Button($"{DataHolder.BodyPartName[bodyPart]}: {_player.Equipment[bodyPart].Name}", "",
+                lines.Add(new Button($"{Names.BodyParts[bodyPart]}: {_player.Equipment[bodyPart].Name}", "",
                     () => UnequipAndUpdate(bodyPart)));
             }
         }
