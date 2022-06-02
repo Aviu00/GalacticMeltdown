@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
@@ -9,9 +8,6 @@ namespace GalacticMeltdown.Data;
 
 public static partial class DataHolder
 {
-    public static readonly string ProjectDirectory =
-        Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
-
     public static readonly Dictionary<string, TileTypeData> TileTypes;
     public static readonly Dictionary<string, ItemData> ItemTypes;
     public static readonly Dictionary<string, ILoot> LootTables;
