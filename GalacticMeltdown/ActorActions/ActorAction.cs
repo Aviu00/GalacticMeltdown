@@ -13,14 +13,4 @@ public enum ActorAction
     StopTurn,
 }
 
-public class ActorActionInfo
-{
-    public ActorAction Action { get; }
-    public List<(int, int)> AffectedCells { get; }
-
-    public ActorActionInfo(ActorAction action, List<(int, int)> affectedCells)
-    {
-        Action = action;
-        AffectedCells = affectedCells;
-    }
-}
+public record ActorActionInfo(ActorAction Action, List<(int, int)> AffectedCells);
