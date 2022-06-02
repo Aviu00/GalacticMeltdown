@@ -29,7 +29,7 @@ public class PauseMenu : TextWindow
     
     private void OpenHelp()
     {
-        InfoWindow infoWindow = new(DataHolder.InfoLines);
+        InfoWindow infoWindow = new(Text.English.InfoLines);
         UserInterface.AddChild(this, infoWindow);
         infoWindow.Open();
     }
