@@ -21,6 +21,7 @@ public static partial class DataHolder
     public static readonly Dictionary<string, ItemData> ItemTypes;
     public static readonly Dictionary<string, ILoot> LootTables;
     public static readonly Dictionary<string, EnemyTypeData> EnemyTypes;
+    public static readonly List<RoomType> RoomTypes;
 
     public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {
@@ -184,11 +185,7 @@ public static partial class DataHolder
         EnemyTypes = new EnemyTypesExtractor().EnemiesTypes;
         ItemTypes = new ItemTypesExtractor().ItemTypes;
         LootTables = new LootTableDataExtractor().LootTables;
-    }
-
-    public static List<RoomType> GetRooms()
-    {
-        return new RoomTypesExtractor(TileTypes).Rooms;
+        RoomTypes = new RoomTypesExtractor(TileTypes).Rooms;
     }
 
     public static readonly List<string> InfoLines = new()

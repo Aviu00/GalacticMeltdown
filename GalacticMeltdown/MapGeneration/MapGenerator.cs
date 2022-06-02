@@ -36,7 +36,7 @@ public class MapGenerator
     public MapGenerator(int seed)
     {
         _rng = new Random(seed);
-        _roomTypes = DataHolder.GetRooms();
+        _roomTypes = DataHolder.RoomTypes;
     }
 
     public Level Generate()
