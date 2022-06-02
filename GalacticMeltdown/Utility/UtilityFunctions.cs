@@ -145,7 +145,7 @@ public static class UtilityFunctions
         if (stateChangers is null) return;
         foreach (var changer in stateChangers)
         {
-            DataHolder.ActorStateChangers[changer.Type](target, changer.Power, changer.Duration);
+            StateChangerData.StateChangers[changer.Type](target, changer.Power, changer.Duration);
         }
     }
 

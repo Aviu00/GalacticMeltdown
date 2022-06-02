@@ -55,7 +55,7 @@ public class WeaponItem : EquippableItem
         {
             description.Add("Applies effects on target when hit:");
             description.AddRange(StateChangers.Select(data =>
-                DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+                Data.StateChangerData.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
         }
 
         if (AmmoTypes is not null) description.AddRange(GetAmmoDescription());
@@ -73,7 +73,7 @@ public class WeaponItem : EquippableItem
             if (pair.Value.actorStateChangerData is null) continue;
             description.Add("Applies effects on target:");
             description.AddRange(pair.Value.actorStateChangerData.Select(data => 
-                DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+                Data.StateChangerData.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
         }
 
         return description;

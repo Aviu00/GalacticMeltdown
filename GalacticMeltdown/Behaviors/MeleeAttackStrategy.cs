@@ -75,7 +75,7 @@ public class MeleeAttackStrategy : Behavior
         if (_stateChangers is null) return description;
         description.Add("Applies effects on target:");
         description.AddRange(_stateChangers.Select(data =>
-            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+            StateChangerData.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
         return description;
     }
 }

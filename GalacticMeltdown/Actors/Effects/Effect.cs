@@ -14,7 +14,7 @@ public abstract class Effect : Counter
 {
     [JsonProperty] protected abstract string EffectType { get; }
     [JsonProperty] protected Actor AffectedActor;
-    [JsonProperty] protected DataHolder.ActorStateChangerType EffectActionId;
+    [JsonProperty] protected StateChangerType EffectActionId;
     protected Action<Actor, int, int> EffectAction;
     [JsonProperty] public readonly int Power;
     [JsonIgnore] protected int Duration => Timer.Value;
@@ -24,7 +24,7 @@ public abstract class Effect : Counter
     {
     }
 
-    protected Effect(Actor actor, int power, int duration, DataHolder.ActorStateChangerType effectActionId)
+    protected Effect(Actor actor, int power, int duration, StateChangerType effectActionId)
         : base(actor.Level, duration, duration)
     {
         if(duration <= 0) return;
@@ -36,7 +36,7 @@ public abstract class Effect : Counter
 
     protected void EffectInit()
     {
-        EffectAction = DataHolder.ActorStateChangers[EffectActionId];        
+        EffectAction = StateChangerData.StateChangers[EffectActionId];        
         Action = _ => RemoveEffect();    
     }
     protected virtual void RemoveEffect()

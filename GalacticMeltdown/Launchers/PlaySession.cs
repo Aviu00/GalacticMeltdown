@@ -188,11 +188,11 @@ public partial class PlaySession
                 break;
             case "statechanger":
                 if (!_cheatsEnabled || words.Length is not (3 or 4) ||
-                    !Enum.TryParse(words[1], out DataHolder.ActorStateChangerType stateChangerId) ||
+                    !Enum.TryParse(words[1], out StateChangerType stateChangerId) ||
                     !int.TryParse(words[2], out int power)) break;
                 int duration = 0;
                 if(words.Length == 4 && (!int.TryParse(words[3], out duration) || duration <= 0)) break;
-                DataHolder.ActorStateChangers[stateChangerId](_player, power, duration);
+                StateChangerData.StateChangers[stateChangerId](_player, power, duration);
                 break;
             case "animtime":
                 if (words.Length == 2 && int.TryParse(words[1], out int animTime))

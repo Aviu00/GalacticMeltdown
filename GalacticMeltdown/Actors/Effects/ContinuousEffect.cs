@@ -32,7 +32,7 @@ public class ContinuousEffect : Effect
         base.RemoveEffect();
     }
 
-    public ContinuousEffect (Actor actor, int power, int duration, DataHolder.ActorStateChangerType effectTypeId)
+    public ContinuousEffect (Actor actor, int power, int duration, StateChangerType effectTypeId)
         : base(actor, power, duration, effectTypeId)
     {
         if(duration <= 0) return;

@@ -39,7 +39,7 @@ public class EquippableItem : Item
     {
         foreach (var stateChanger in StateChangers)
         {
-            DataHolder.ActorStateChangers[stateChanger.Type](actor, stateChanger.Power, 0);
+            Data.StateChangerData.StateChangers[stateChanger.Type](actor, stateChanger.Power, 0);
         }
     }
 
@@ -47,7 +47,7 @@ public class EquippableItem : Item
     {
         foreach (var stateChanger in StateChangers)
         {
-            DataHolder.ActorStateChangers[stateChanger.Type](actor, -stateChanger.Power, 0);
+            Data.StateChangerData.StateChangers[stateChanger.Type](actor, -stateChanger.Power, 0);
         }
     }
 
@@ -58,7 +58,7 @@ public class EquippableItem : Item
         description.Add("");
         description.Add("On equip:");
         description.AddRange(StateChangers.Select(data =>
-            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+            Data.StateChangerData.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
         return description;
     }
 }

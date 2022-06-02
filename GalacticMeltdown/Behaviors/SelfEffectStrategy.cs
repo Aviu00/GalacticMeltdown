@@ -48,7 +48,7 @@ public class SelfEffectStrategy : Behavior
 
         foreach (var stateChanger in _stateChangers)
         {
-            DataHolder.ActorStateChangers[stateChanger.Type](ControlledNpc, stateChanger.Power,
+            StateChangerData.StateChangers[stateChanger.Type](ControlledNpc, stateChanger.Power,
                 stateChanger.Duration);
         }
 
@@ -67,7 +67,7 @@ public class SelfEffectStrategy : Behavior
         if (_selfEffectStrategyCounter is not null)
             description.Add($"Cooldown: {_selfEffectStrategyCounter.Timer.MaxValue}");
         description.AddRange(_stateChangers.Select(data =>
-            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+            StateChangerData.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
         description.Add($"Energy cost: {_energyCost}");
         return description;
     }

@@ -53,7 +53,7 @@ public class RangedWeaponItem : WeaponItem
         {
             description.Add("Applies effects on target when shot:");
             description.AddRange(StateChangers.Select(data =>
-                DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+                Data.StateChangerData.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
         }
         if(AmmoTypes is not null) description.AddRange(GetAmmoDescription());
         return description;

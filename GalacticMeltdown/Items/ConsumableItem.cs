@@ -29,7 +29,7 @@ public class ConsumableItem : Item
     {
         foreach (var stateChanger in _itemData.ActorStateChangerData)
         {
-            DataHolder.ActorStateChangers[stateChanger.Type](actor, stateChanger.Power, stateChanger.Duration);
+            StateChangerData.StateChangers[stateChanger.Type](actor, stateChanger.Power, stateChanger.Duration);
         }
     }
     
@@ -40,7 +40,7 @@ public class ConsumableItem : Item
         description.Add("");
         description.Add("On consume:");
         description.AddRange(_itemData.ActorStateChangerData.Select(data =>
-            DataHolder.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
+            StateChangerData.StateChangerDescriptions[data.Type](data.Power, data.Duration)));
         return description;
     }
 }
