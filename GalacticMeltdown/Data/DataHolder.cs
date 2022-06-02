@@ -15,8 +15,6 @@ public static partial class DataHolder
     public static readonly string ProjectDirectory =
         Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../"));
 
-    public static int CurrentSeed { get; set; }
-
     public static readonly Dictionary<string, TileTypeData> TileTypes;
     public static readonly Dictionary<string, ItemData> ItemTypes;
     public static readonly Dictionary<string, ILoot> LootTables;
