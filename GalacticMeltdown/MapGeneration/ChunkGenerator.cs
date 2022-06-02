@@ -144,27 +144,27 @@ public class ChunkGenerator
 
     private void SpawnItems(ItemDictionary items, string id, int x, int y)
     {
-        if (DataHolder.ItemTypes.ContainsKey(id))
+        if (MapData.ItemTypes.ContainsKey(id))
         {
-            AddItem(items, DataHolder.ItemTypes[id], x, y);
+            AddItem(items, MapData.ItemTypes[id], x, y);
             return;
         }
 
-        if (DataHolder.LootTables[id] is ItemLoot)
+        if (MapData.LootTables[id] is ItemLoot)
         {
-            ItemLoot itemLoot = (ItemLoot) DataHolder.LootTables[id];
+            ItemLoot itemLoot = (ItemLoot) MapData.LootTables[id];
             int amount = GetLimitedValue(itemLoot.Limit, 
                 _rng.Next(itemLoot.Min, itemLoot.Max + (int) (Difficulty * itemLoot.Gain) + 1));
             if (amount <= 0)
                 return;
             for (; amount > 0; amount--)
             {
-                AddItem(items, DataHolder.ItemTypes[itemLoot.ItemId], x, y);
+                AddItem(items, MapData.ItemTypes[itemLoot.ItemId], x, y);
             }
             return;
         }
 
-        LootTable table = (LootTable) DataHolder.LootTables[id];
+        LootTable table = (LootTable) MapData.LootTables[id];
         if (!table.IsCollection)
         {
             int[] chances =
@@ -210,7 +210,7 @@ public class ChunkGenerator
             TileTypeData terrainObject = NorthConnection is null || x is not (ChunkSize / 2 - 1 or ChunkSize / 2)
                 ? GetConnectableData(roomData, x, ChunkSize - 1, northernTileMap?[x, 0].ConnectToWalls,
                     overrideId: "wall")
-                : DataHolder.TileTypes["door-closed"];
+                : MapData.TileTypes["door-closed"];
             Tiles[x, ChunkSize - 1] = new Tile(terrainObject);
         }
 
@@ -219,7 +219,7 @@ public class ChunkGenerator
             TileTypeData terrainObject = EastConnection is null || y is not (ChunkSize / 2 - 1 or ChunkSize / 2)
                 ? GetConnectableData(roomData, ChunkSize - 1, y,
                     easternTileConnectable: easternTileMap?[0, y].ConnectToWalls, overrideId: "wall")
-                : DataHolder.TileTypes["door-closed"];
+                : MapData.TileTypes["door-closed"];
             Tiles[ChunkSize - 1, y] = new Tile(terrainObject);
         }
     }
@@ -229,7 +229,7 @@ public class ChunkGenerator
     {
         string id = overrideId ?? roomData[x, y].TileTypeData.Id;
         string newId = id + "_";
-        if ((x, y) is (ChunkSize - 1, ChunkSize - 1)) return DataHolder.TileTypes[newId + "nesw"];
+        if ((x, y) is (ChunkSize - 1, ChunkSize - 1)) return MapData.TileTypes[newId + "nesw"];
         StringBuilder wallKey = new StringBuilder(newId);
         if (northernTileConnectable ?? CheckForConnectionInTile(roomData, x, y + 1)) wallKey.Append('n');
         if (easternTileConnectable ?? CheckForConnectionInTile(roomData, x + 1, y)) wallKey.Append('e');
@@ -237,7 +237,7 @@ public class ChunkGenerator
         if (CheckForConnectionInTile(roomData, x - 1, y)) wallKey.Append('w');
         string str = wallKey.ToString();
         if (str[^1] == '_') str = id;
-        return DataHolder.TileTypes[str];
+        return MapData.TileTypes[str];
     }
 
     private void ResolveRoomConnectionDependency(TileInformation[,] tileInfo, int x, int y)
@@ -253,7 +253,7 @@ public class ChunkGenerator
         };
 
         string newId = !switchId ? parsedId[0] : parsedId[1];
-        tileInfo[x, y].TileTypeData = DataHolder.TileTypes[newId];
+        tileInfo[x, y].TileTypeData = MapData.TileTypes[newId];
     }
 
     private static bool CheckForConnectionInTile(TileInformation[,] roomData, int x, int y)

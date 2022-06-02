@@ -21,7 +21,7 @@ public class ConsumableItem : Item
     }
 
     [JsonConstructor]
-    private ConsumableItem(string id) : this((ConsumableItemData) DataHolder.ItemTypes[id])
+    private ConsumableItem(string id) : this((ConsumableItemData) MapData.ItemTypes[id])
     {
     }
 

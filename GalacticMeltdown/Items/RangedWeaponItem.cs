@@ -27,7 +27,7 @@ public class RangedWeaponItem : WeaponItem
     [JsonConstructor]
     private RangedWeaponItem(string id) : base(id)
     {
-        _itemData = (RangedWeaponItemData) DataHolder.ItemTypes[id];
+        _itemData = (RangedWeaponItemData) MapData.ItemTypes[id];
     }
 
     public override void Equip(Actor actor)

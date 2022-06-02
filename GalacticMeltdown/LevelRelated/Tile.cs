@@ -41,13 +41,13 @@ public class Tile : IDrawable, IHasDescription
             if (s is "open" or "closed") return current;
             return current + s + "-";
         });
-        TileTypeData closedData = isClosed ? typeData : DataHolder.TileTypes[baseId + "closed"];
-        TileTypeData openData = !isClosed ? typeData : DataHolder.TileTypes[baseId + "open"];
+        TileTypeData closedData = isClosed ? typeData : MapData.TileTypes[baseId + "closed"];
+        TileTypeData openData = !isClosed ? typeData : MapData.TileTypes[baseId + "open"];
         InteractWithDoor = () => _typeData = _typeData == closedData ? openData : closedData;
     }
 
     [JsonConstructor]
-    private Tile(string id) : this(DataHolder.TileTypes[id])
+    private Tile(string id) : this(MapData.TileTypes[id])
     {
     }
 

@@ -109,7 +109,7 @@ public class Level
 
     private void Init()
     {
-        _cornerTile = new Tile(DataHolder.TileTypes["wall_nesw"]);
+        _cornerTile = new Tile(MapData.TileTypes["wall_nesw"]);
         OverlayView = new OverlayView(this);
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;

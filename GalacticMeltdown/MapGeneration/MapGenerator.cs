@@ -36,7 +36,7 @@ public class MapGenerator
     public MapGenerator(int seed)
     {
         _rng = new Random(seed);
-        _roomTypes = DataHolder.RoomTypes;
+        _roomTypes = MapData.RoomTypes;
     }
 
     public Level Generate()
@@ -404,7 +404,7 @@ public class MapGenerator
                     else if (parsedId[2] == p2) parsedId[2] = p1;
                 }
 
-                roomData[x, y].TileTypeData = DataHolder.TileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
+                roomData[x, y].TileTypeData = MapData.TileTypes[$"{parsedId[0]}_{parsedId[1]}_{parsedId[2]}"];
             }
         }
     }
@@ -420,7 +420,7 @@ public class MapGenerator
                 int tileX = mapX * ChunkSize + x;
                 string wallKey = x == ChunkSize - 1 ? "wall_nesw" :
                     _chunks[mapX, 0].Tiles[x, 0].ConnectToWalls ? "wall_new" : "wall_ew";
-                _southernWall[tileX] = new Tile(DataHolder.TileTypes[wallKey]);
+                _southernWall[tileX] = new Tile(MapData.TileTypes[wallKey]);
             }
         }
 
@@ -431,7 +431,7 @@ public class MapGenerator
                 int tileY = mapY * ChunkSize + y;
                 string wallKey = y == ChunkSize - 1 ? "wall_nesw" :
                     _chunks[0, mapY].Tiles[0, y].ConnectToWalls ? "wall_nes" : "wall_ns";
-                _westernWall[tileY] = new Tile(DataHolder.TileTypes[wallKey]);
+                _westernWall[tileY] = new Tile(MapData.TileTypes[wallKey]);
             }
         }
     }

@@ -29,9 +29,9 @@ public class WeaponItem : EquippableItem
     }
 
     [JsonConstructor]
-    protected WeaponItem(string id) : base((WeaponItemData) DataHolder.ItemTypes[id])
+    protected WeaponItem(string id) : base((WeaponItemData) MapData.ItemTypes[id])
     {
-        _itemData = (WeaponItemData) DataHolder.ItemTypes[id];
+        _itemData = (WeaponItemData) MapData.ItemTypes[id];
     }
 
     public override void Equip(Actor actor)
@@ -68,7 +68,7 @@ public class WeaponItem : EquippableItem
         foreach (var pair in AmmoTypes)
         {
             description.Add("");
-            description.Add(DataHolder.ItemTypes[pair.Key].Name);
+            description.Add(MapData.ItemTypes[pair.Key].Name);
             description.Add($"Damage: {pair.Value.minDamage}-{pair.Value.maxDamage}");
             if (pair.Value.actorStateChangerData is null) continue;
             description.Add("Applies effects on target:");

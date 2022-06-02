@@ -60,7 +60,7 @@ public class Enemy : Npc, IHasDescription
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        _typeData = DataHolder.EnemyTypes[Id];
+        _typeData = MapData.EnemyTypes[Id];
         Died += _alertCounter.RemoveCounter;
     }
 

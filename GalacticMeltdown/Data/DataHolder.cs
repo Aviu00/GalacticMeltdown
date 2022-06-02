@@ -8,12 +8,6 @@ namespace GalacticMeltdown.Data;
 
 public static partial class DataHolder
 {
-    public static readonly Dictionary<string, TileTypeData> TileTypes;
-    public static readonly Dictionary<string, ItemData> ItemTypes;
-    public static readonly Dictionary<string, ILoot> LootTables;
-    public static readonly Dictionary<string, EnemyTypeData> EnemyTypes;
-    public static readonly List<RoomType> RoomTypes;
-
     public static readonly Dictionary<string, ConsoleColor> ColorName = new()
     {
         {"white", ConsoleColor.White},
@@ -168,15 +162,6 @@ public static partial class DataHolder
             {ConsoleKey.C, InventoryControl.OpenCategorySelection},
             {ConsoleKey.Divide, InventoryControl.OpenSearchBox},
         };
-    }
-
-    static DataHolder()
-    {
-        TileTypes = new TileTypesExtractor().TileTypes;
-        EnemyTypes = new EnemyTypesExtractor().EnemiesTypes;
-        ItemTypes = new ItemTypesExtractor().ItemTypes;
-        LootTables = new LootTableDataExtractor().LootTables;
-        RoomTypes = new RoomTypesExtractor(TileTypes).Rooms;
     }
 
     public static readonly List<string> InfoLines = new()

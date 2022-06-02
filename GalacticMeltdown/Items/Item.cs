@@ -34,7 +34,7 @@ public class Item : IDrawable, IHasDescription
     }
 
     [JsonConstructor]
-    private Item(string id) : this(DataHolder.ItemTypes[id])
+    private Item(string id) : this(MapData.ItemTypes[id])
     {
     }
 
