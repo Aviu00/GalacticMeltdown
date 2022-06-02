@@ -21,8 +21,8 @@ public class EnemyTypesExtractor : XmlExtractor
             string id = "";
             string name = "";
             char symbol = ' ';
-            ConsoleColor color = ConsoleColor.White;
-            ConsoleColor bgColor = ConsoleColor.Black;
+            ConsoleColor color = Colors.DefaultSym;
+            ConsoleColor bgColor = Colors.DefaultMain;
             int maxHp = 10;
             int maxEnergy = 20;
             int defence = 0;

@@ -18,10 +18,10 @@ internal enum InputLineState
 
 public class InputLine : PressableListLine
 {
-    private const ConsoleColor Selected = Colors.InputLineBgColorSelected;
-    private const ConsoleColor Unselected = Colors.TextBoxDefaultBgColor;
-    private const ConsoleColor Pressed = ConsoleColor.Magenta;
-    private const ConsoleColor TextColor = Colors.TextBoxTextColor;
+    private const ConsoleColor EnteredTextColor = Colors.Input.Text;
+    private const ConsoleColor Unselected = Colors.Input.Background;
+    private const ConsoleColor Selected = Colors.MenuLine.InputLine.Selected;
+    private const ConsoleColor Pressed = Colors.MenuLine.InputLine.Pressed;
 
     private StringBuilder _currentText;
 
@@ -53,7 +53,7 @@ public class InputLine : PressableListLine
             {
                 symbol = _currentText[_currentText.Length - Width + x];
             }
-            return new ViewCellData((symbol, TextColor), _state switch
+            return new ViewCellData((symbol, EnteredTextColor), _state switch
             {
                 InputLineState.Pressed => Pressed,
                 InputLineState.Selected => Selected,

@@ -31,7 +31,7 @@ public class TileTypesExtractor : XmlExtractor
             bool isWalkable = false;
             bool isTransparent = false;
             char symbol = ' ';
-            ConsoleColor color = ConsoleColor.White;
+            ConsoleColor color = Colors.DefaultSym;
             bool isConnection = false;
             bool isConnectable = false;
             bool isDependingOnRoomConnection = false;

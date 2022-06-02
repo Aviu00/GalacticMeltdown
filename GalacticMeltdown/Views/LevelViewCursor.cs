@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -43,13 +44,14 @@ public partial class LevelView
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
     {
-        if (!_visiblePoints.Contains((x, y))) return Colors.HighlightedNothingColor;
+        if (!_visiblePoints.Contains((x, y))) return Colors.CursorBg.LineNoHighlight;
         
-        if (_level.GetNonTileObject(x, y) is Enemy) return Colors.HighlightedEnemyColor;
-        if (_level.GetTile(x, y) is {IsWalkable: false}) return Colors.HighlightedSolidTileColor;
-        if (_level.Player.X == x && _level.Player.Y == y) return Colors.HighlightedFriendColor;
+        if (_level.GetNonTileObject(x, y) is Enemy) return Colors.CursorBg.LineEnemy;
+        if (_level.GetItems(x, y).Any()) return Colors.CursorBg.LineItem;
+        if (_level.GetTile(x, y) is {IsWalkable: false}) return Colors.CursorBg.LineNonWalkable;
+        if (_level.Player.X == x && _level.Player.Y == y) return Colors.CursorBg.LineFriend;
         
-        return Colors.HighlightedNothingColor;
+        return Colors.CursorBg.LineNoHighlight;
     }
 
     public void ToggleCursorLine()

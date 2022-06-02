@@ -1,14 +1,9 @@
-using System;
-using GalacticMeltdown.Data;
 using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 public class TextLine : ListLine
 {
-    private const ConsoleColor BgColor = Colors.BackgroundColorUnselected;
-    private const ConsoleColor TextColor = Colors.TextColor;
-
     private readonly string _text;
     private string _renderedText;
 
@@ -34,5 +29,5 @@ public class TextLine : ListLine
         base.SetWidth(width);
     }
 
-    public override ViewCellData this[int x] => new((_renderedText[x], TextColor), BgColor);
+    public override ViewCellData this[int x] => new((_renderedText[x], TextColor), DefaultColor);
 }

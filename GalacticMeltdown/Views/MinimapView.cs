@@ -1,5 +1,6 @@
 using System;
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
@@ -8,6 +9,8 @@ namespace GalacticMeltdown.Views;
 
 public class MinimapView : View
 {
+    private const char UndiscoveredSym = '◻';
+    
     private Chunk[,] _chunks;
     private Player _player;
 
@@ -28,13 +31,17 @@ public class MinimapView : View
         var (xPlayer, yPlayer) = Level.GetChunkCoords(_player.X, _player.Y);
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerViewX, centerViewY);
         var (xAbs, yAbs) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, xPlayer, yPlayer);
-        if (!Inbounds(xAbs, yAbs)) return new ViewCellData(null, null);
+
+        ConsoleColor? bgColor = x == centerViewX && y == centerViewY ? Colors.Minimap.CenterChunk : null;
+        if (!Inbounds(xAbs, yAbs)) return new ViewCellData(null, bgColor);
         if (_chunks[xAbs, yAbs].IsFinalRoom)
-            return new ViewCellData((_chunks[xAbs, yAbs].Symbol, ConsoleColor.DarkYellow),
-                x == centerViewX && y == centerViewY ? ConsoleColor.Green : ConsoleColor.Cyan);
-        if (!_chunks[xAbs, yAbs].WasVisitedByPlayer) return new ViewCellData(('◻', ConsoleColor.DarkGray), null);
-        return new ViewCellData((_chunks[xAbs, yAbs].Symbol, ConsoleColor.DarkYellow),
-            x == centerViewX && y == centerViewY ? ConsoleColor.Green : null);
+            bgColor ??= Colors.Minimap.FinalRoom;
+
+        return new ViewCellData(
+            _chunks[xAbs, yAbs].WasVisitedByPlayer
+                ? (_chunks[xAbs, yAbs].Symbol, Colors.Minimap.Visited)
+                : (UndiscoveredSym, Colors.Minimap.Undiscovered),
+            bgColor);
     }
 
     public override ViewCellData[,] GetAllCells()
@@ -49,22 +56,17 @@ public class MinimapView : View
             {
                 int chunkX = minX + viewX, chunkY = minY + viewY;
                 if (!Inbounds(chunkX, chunkY)) continue;
-                cells[viewX, viewY] =
-                    _chunks[chunkX, chunkY].IsFinalRoom
-                        ? new ViewCellData((_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow), ConsoleColor.Cyan)
-                        : new ViewCellData(
-                            _chunks[chunkX, chunkY].WasVisitedByPlayer
-                                ? (_chunks[chunkX, chunkY].Symbol, ConsoleColor.DarkYellow)
-                                : ('◻', ConsoleColor.DarkGray), null);
+                cells[viewX, viewY] = new ViewCellData(_chunks[chunkX, chunkY].WasVisitedByPlayer
+                        ? (_chunks[chunkX, chunkY].Symbol, Colors.Minimap.Visited)
+                        : (UndiscoveredSym, Colors.Minimap.Undiscovered),
+                    _chunks[chunkX, chunkY].IsFinalRoom ? Colors.Minimap.FinalRoom : null);
             }
         }
 
         cells[Width / 2, Height / 2] =
-            new ViewCellData(
-                Inbounds(xPlayer, yPlayer) ? (_chunks[xPlayer, yPlayer].Symbol, ConsoleColor.DarkYellow) : null,
-                ConsoleColor.Green);
+            new ViewCellData(cells[Width / 2, Height / 2].SymbolData, Colors.Minimap.CenterChunk);
 
-            return cells;
+        return cells;
     }
 
     private void PlayerMoveHandler(object sender, MoveEventArgs e)

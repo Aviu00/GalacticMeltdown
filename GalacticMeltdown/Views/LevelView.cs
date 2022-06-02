@@ -121,7 +121,7 @@ public partial class LevelView : View
         if (ShowCoordinates && y == Height - 1 && x < CoordinateString.Length)
         {
             char sym = CoordinateString[x];
-            return new ViewCellData(sym == ' ' ? null : (sym, ConsoleColor.Black), ConsoleColor.White);
+            return new ViewCellData(sym == ' ' ? null : (sym, Colors.DefaultMain), Colors.DefaultSym);
         }
         
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
@@ -152,8 +152,7 @@ public partial class LevelView : View
         }
 
         if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-            return new ViewCellData((_seenCells[levelX, levelY].Value, Colors.OutOfVisionTileColor),
-                backgroundColor);
+            return new ViewCellData((_seenCells[levelX, levelY].Value, Colors.OutOfView), backgroundColor);
 
         return new ViewCellData(null, backgroundColor);
     }
@@ -197,7 +196,7 @@ public partial class LevelView : View
             {
                 char sym = coordinateString[i];
                 cells[i, Height - 1] =
-                    new ViewCellData(sym == ' ' ? null : (sym, ConsoleColor.Black), ConsoleColor.White);
+                    new ViewCellData(sym == ' ' ? null : (sym, Colors.DefaultMain), Colors.DefaultSym);
             }
         }
         
@@ -214,9 +213,7 @@ public partial class LevelView : View
             }
 
             if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-                return new ViewCellData(
-                    (_seenCells[levelX, levelY].Value, Colors.OutOfVisionTileColor),
-                    null);
+                return new ViewCellData((_seenCells[levelX, levelY].Value, Colors.OutOfView), null);
             return new ViewCellData(null, null);
         }
     }
@@ -289,16 +286,16 @@ public partial class LevelView : View
         switch (actionInfo.Action)
         {
             case ActorAction.Shoot:
-                PaintCells(ConsoleColor.Magenta, 10);
+                PaintCells(Colors.FlashAnim.Tracer, 10);
                 break;
             case ActorAction.ApplyEffect:
-                PaintCells(ConsoleColor.Yellow, 70);
+                PaintCells(Colors.FlashAnim.Effect, 70);
                 break;
             case ActorAction.MeleeAttackHit:
-                PaintCells(ConsoleColor.Red, 70);
+                PaintCells(Colors.FlashAnim.MeleeHit, 70);
                 break;
             case ActorAction.MeleeAttackMissed:
-                PaintCells(ConsoleColor.DarkGray, 70);
+                PaintCells(Colors.FlashAnim.MeleeMiss, 70);
                 break;
             case ActorAction.Move:
                 foreach ((int x, int y) in actionInfo.AffectedCells)

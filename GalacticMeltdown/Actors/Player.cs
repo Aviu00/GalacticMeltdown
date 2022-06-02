@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.ActorActions;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
 using GalacticMeltdown.LevelRelated;
@@ -29,7 +30,7 @@ public class Player : Actor, ISightedObject, IControllable
     private bool _xray;
     [JsonIgnore] public bool GodMode { get; set; }
 
-    [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => ('@', ConsoleColor.White);
+    [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => ('@', Colors.Player.Color);
     [JsonIgnore] public override ConsoleColor? BgColor => null;
 
     [JsonIgnore] public bool NoClip;

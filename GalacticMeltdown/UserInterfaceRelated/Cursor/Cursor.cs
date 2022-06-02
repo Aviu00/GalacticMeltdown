@@ -34,7 +34,7 @@ public class Cursor : IControllable
         }
     }
 
-    public ConsoleColor Color => Colors.CursorColor;
+    public ConsoleColor Color => Colors.CursorBg.Cursor;
     
     public int X { get; private set; }
     public int Y { get; private set; }

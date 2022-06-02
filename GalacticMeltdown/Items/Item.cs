@@ -19,8 +19,8 @@ public class Item : IDrawable, IHasDescription
     [JsonIgnore] public ItemCategory Category => _itemData.Category;
     public string Id => _itemData.Id;
     [JsonIgnore] public string Name => _itemData.Name;
-    [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, ConsoleColor.White);
-    [JsonIgnore] public ConsoleColor? BgColor => ConsoleColor.Cyan;
+    [JsonIgnore] public (char symbol, ConsoleColor color) SymbolData => (_itemData.Symbol, Colors.Item.Symbol);
+    [JsonIgnore] public ConsoleColor? BgColor => Colors.Item.Background;
 
     [JsonProperty] protected virtual string ItemType { get; }
 

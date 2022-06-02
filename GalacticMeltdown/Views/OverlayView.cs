@@ -10,12 +10,12 @@ namespace GalacticMeltdown.Views;
 
 public class OverlayView : View
 {
-    private const ConsoleColor HpColor = Colors.HpColor;
-    private const ConsoleColor EnergyColor = Colors.EnergyColor;
-    private const ConsoleColor StrColor = Colors.StrColor;
-    private const ConsoleColor DexColor = Colors.DexColor;
-    private const ConsoleColor DefColor = Colors.DefColor;
-    private const ConsoleColor OtherTextColor = ConsoleColor.Blue;
+    private const ConsoleColor HpColor = Colors.Overlay.Hp;
+    private const ConsoleColor EnergyColor = Colors.Overlay.Energy;
+    private const ConsoleColor StrColor = Colors.Overlay.Strength;
+    private const ConsoleColor DexColor = Colors.Overlay.Dexterity;
+    private const ConsoleColor DefColor = Colors.Overlay.Defence;
+    private const ConsoleColor OtherTextColor = Colors.Overlay.Other;
 
     private Level _level; // Maybe later
     private Player _player; // State, equipment

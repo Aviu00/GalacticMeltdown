@@ -7,9 +7,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 public class Button : PressableListLine
 {
-    private const ConsoleColor SelectedBgColor = Colors.BackgroundColorSelected;
-    private const ConsoleColor UnselectedBgColor = Colors.BackgroundColorUnselected;
-    protected const ConsoleColor TextColor = Colors.TextColor;
+    private const ConsoleColor SelectedBgColor = Colors.MenuLine.Button.Selected;
 
     protected string TextLeft { get; }
     protected string TextRight { get; }
@@ -21,7 +19,7 @@ public class Button : PressableListLine
 
     public (string left, string right) Text => (TextLeft, TextRight);
 
-    protected ConsoleColor BgColor => _selected ? SelectedBgColor : UnselectedBgColor;
+    protected ConsoleColor BgColor => _selected ? SelectedBgColor : DefaultColor;
 
     public Button(string textLeft, string textRight, Action action)
     {

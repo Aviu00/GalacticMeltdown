@@ -8,8 +8,8 @@ namespace GalacticMeltdown.Views;
 
 public class TextView : View
 {
-    private const ConsoleColor TextColor = Colors.TextViewColor;
-    private const ConsoleColor DefaultBackgroundColor = Colors.DefaultBackgroundColor;
+    private const ConsoleColor TextColor = Colors.TextView.Normal;
+    private const ConsoleColor BackgroundColor = Colors.TextView.Background;
 
     private List<string> _lines;
     private char[,] _characters;
@@ -49,9 +49,9 @@ public class TextView : View
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y < Height - _characters.GetLength(1)) return new ViewCellData(null, DefaultBackgroundColor);
+        if (y < Height - _characters.GetLength(1)) return new ViewCellData(null, BackgroundColor);
         char character = _characters[x, Height - y - 1 + _topTextRow];
-        return new ViewCellData(character == '\0' ? null : (character, TextColor), DefaultBackgroundColor);
+        return new ViewCellData(character == '\0' ? null : (character, TextColor), BackgroundColor);
     }
 
     public override ViewCellData[,] GetAllCells()
@@ -61,7 +61,7 @@ public class TextView : View
         {
             for (int viewY = 0; viewY < Height - _lines.Count; viewY++)
             {
-                cells[viewX, viewY] = new ViewCellData(null, DefaultBackgroundColor);
+                cells[viewX, viewY] = new ViewCellData(null, BackgroundColor);
             }
         }
 
@@ -71,7 +71,7 @@ public class TextView : View
             {
                 char character = _characters[viewX, Height - viewY - 1 + _topTextRow];
                 cells[viewX, viewY] = new ViewCellData(character == '\0' ? null : (character, TextColor),
-                    DefaultBackgroundColor);
+                    BackgroundColor);
             }
         }
 

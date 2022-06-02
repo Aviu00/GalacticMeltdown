@@ -13,7 +13,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 public class Renderer
 {
-    private const ConsoleColor DefaultColor = Colors.DefaultBackgroundColor;
+    private const ConsoleColor DefaultColor = Colors.DefaultMain;
 
     private struct ScreenCellData
     {
@@ -100,7 +100,7 @@ public class Renderer
     public Renderer()
     {
         Console.CursorVisible = false;
-        Console.BackgroundColor = ConsoleColor.Black;
+        Console.BackgroundColor = DefaultColor;
         Console.Clear();
         _viewPositioners = new OrderedSet<ViewPositioner>();
         _viewCornerCoords = new Dictionary<View, (int, int)>();
@@ -269,8 +269,8 @@ public class Renderer
             }
         }
 
-        symbolData ??= (' ', ConsoleColor.Black);
-        backgroundColor ??= ConsoleColor.Black;
+        symbolData ??= (' ', DefaultColor);
+        backgroundColor ??= DefaultColor;
         return new ScreenCellData(symbolData.Value.symbol, symbolData.Value.color, backgroundColor.Value);
     }
 
