@@ -14,18 +14,16 @@ public abstract class Npc : Actor
     [JsonProperty] public HashSet<Actor> Targets { get; protected set; }
     [JsonIgnore] public Actor CurrentTarget { get; set; }
 
-    [JsonProperty] private readonly string _id;
-
     [JsonProperty] protected SortedSet<Behavior> Behaviors;
 
     [JsonConstructor]
     protected Npc()
     {
     }
+
     protected Npc(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
         : base(maxHp, maxEnergy, dexterity, defence, viewRange, x, y, level)
     {
-        _id = UtilityFunctions.RandomString(16);
     }
 
     protected bool IsPointVisible(int x, int y)
@@ -48,16 +46,6 @@ public abstract class Npc : Actor
     public override ActorActionInfo TakeAction()
     {
         return Behaviors?.Select(behavior => behavior.TryAct()).FirstOrDefault(el => el is not null);
-    }
-
-    public override int GetHashCode()
-    {
-        return _id.GetHashCode();
-    }
-
-    public override bool Equals(object obj)
-    {
-        return ReferenceEquals(this, obj);
     }
 
     public override bool Hit(int damage, bool ignoreDexterity, bool ignoreDefence)

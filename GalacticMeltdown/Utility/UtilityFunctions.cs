@@ -103,17 +103,6 @@ public static class UtilityFunctions
         return dictionary;
     }
 
-    public static string RandomString(int size)
-    {
-        StringBuilder builder = new StringBuilder(size);
-        for (int i = 0; i < size; i++)
-        {
-            builder.Append((char) Random.Shared.Next('A', 'Z' + 1));
-        }
-
-        return builder.ToString();
-    }
-
     public static double GetDistance(int x0, int y0, int x1, int y1)
     {
         int xDist = x1 - x0;
