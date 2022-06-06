@@ -78,6 +78,7 @@ public class OverlayView : View
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
         cells.Initialize();
+        if (Width == 0 || Height == 0) return cells;
         (string text, ConsoleColor color)?[] lines = Lines;
         for (int line = 0; line < Math.Min(lines.Length, Height); line++)
         {

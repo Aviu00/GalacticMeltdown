@@ -29,7 +29,7 @@ public class InputView : View
     {
         var cells = new ViewCellData[Width, Height];
         cells.Initialize();
-        if (Width == 0) return cells;
+        if (Width == 0 || Height == 0) return cells;
         if (_currentText.Length / Width < Height)
         {
             for (int row = 0; row < _currentText.Length / Width + 1; row++)

@@ -161,6 +161,7 @@ public partial class LevelView : View
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
         cells.Initialize();
+        if (Width == 0 || Height == 0) return cells;
         int minX = FocusObject.X - Width / 2, minY = FocusObject.Y - Height / 2;
         for (int viewY = 0; viewY < Height; viewY++)
         {

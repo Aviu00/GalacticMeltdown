@@ -48,6 +48,7 @@ public class MinimapView : View
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
         cells.Initialize();
+        if (Width == 0 || Height == 0) return cells;
         var (xPlayer, yPlayer) = Level.GetChunkCoords(_player.X, _player.Y);
         int minX = xPlayer - Width / 2, minY = yPlayer - Height / 2;
         for (int viewY = 0; viewY < Height; viewY++)

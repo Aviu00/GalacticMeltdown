@@ -32,6 +32,7 @@ public class LineView : View
     {
         ViewCellData[,] cells = new ViewCellData[Width, Height];
         cells.Initialize();
+        if (Width == 0 || Height == 0) return cells;
         for (int viewX = 0; viewX < Width; viewX++)
         {
             for (int viewY = 0; viewY < Height - _lines.Count; viewY++)

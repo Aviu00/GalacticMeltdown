@@ -64,6 +64,7 @@ public class TextView : View
                 cells[viewX, viewY] = new ViewCellData(null, BackgroundColor);
             }
         }
+        if (Width == 0 || Height == 0) return cells;
 
         for (int viewX = 0; viewX < Width; viewX++)
         {
