@@ -14,7 +14,7 @@ public abstract class Npc : Actor
     [JsonProperty] public HashSet<Actor> Targets { get; protected set; }
     [JsonIgnore] public Actor CurrentTarget { get; set; }
 
-    [JsonProperty] public SortedSet<Behavior> Behaviors;
+    [JsonProperty] protected SortedSet<Behavior> Behaviors;
 
     [JsonConstructor]
     protected Npc()
@@ -54,5 +54,14 @@ public abstract class Npc : Actor
         if(hit)
             SendAffected();
         return hit;
+    }
+
+    public override void Alert(Actor target)
+    {
+        if (Behaviors is null) return;
+        foreach (var behavior in Behaviors.OfType<MovementStrategy>())
+        {
+            behavior.PreviousTarget = target;
+        }
     }
 }

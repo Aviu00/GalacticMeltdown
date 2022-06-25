@@ -233,4 +233,6 @@ public abstract class Actor : IObjectOnMap
     }
 
     public abstract ActorActionInfo TakeAction();
+
+    public abstract void Alert(Actor actor);
 }

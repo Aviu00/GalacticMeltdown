@@ -286,4 +286,8 @@ public class Player : Actor, ISightedObject, IControllable
         base.StopTurn();
         _actionInfo = new ActorActionInfo(ActorAction.StopTurn, new List<(int, int)>());
     }
+
+    public override void Alert(Actor actor)
+    {
+    }
 }

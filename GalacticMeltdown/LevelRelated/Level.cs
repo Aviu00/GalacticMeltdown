@@ -460,17 +460,12 @@ public class Level
     public void AlertEnemies(int centerX, int centerY, int radius, Actor target)
     {
         (int chunkCoordX, int chunkCoordY) = GetChunkCoords(centerX, centerY);
-        foreach (var chunk in GetChunksAround(chunkCoordX, chunkCoordY,
-                     radius / ChunkConstants.ChunkSize + 1))
+        foreach (var chunk in GetChunksAround(chunkCoordX, chunkCoordY, radius / ChunkConstants.ChunkSize + 1))
         {
             foreach (var enemy in chunk.Enemies.Where(enemy =>
-                         UtilityFunctions.GetDistance(enemy.X, enemy.Y, centerX, centerY) <= radius &&
-                         enemy.Behaviors is not null))
+                         UtilityFunctions.GetDistance(enemy.X, enemy.Y, centerX, centerY) <= radius))
             {
-                foreach (var behavior in enemy.Behaviors.OfType<MovementStrategy>())
-                {
-                    behavior.PreviousTarget = target;
-                }
+                enemy.Alert(target);
             }
         }
     }
