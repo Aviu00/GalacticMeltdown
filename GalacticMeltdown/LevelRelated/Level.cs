@@ -483,14 +483,14 @@ public class Level
 
         return Algorithms.AStar(chunkX0, chunkY0, chunkX1, chunkY1,
             MapRouteGetNeighbors);
-    }
 
-    private IEnumerable<(int x, int y, int cost)> MapRouteGetNeighbors(int x, int y)
-    {
-        foreach ((int neighborX, int neighborY) in _chunks[x, y].NeighborCoords)
+        IEnumerable<(int x, int y, int cost)> MapRouteGetNeighbors(int x, int y)
         {
-            if(!_chunks[neighborX, neighborY].IsActive) continue;
-            yield return (neighborX, neighborY, 1);
+            foreach ((int neighborX, int neighborY) in _chunks[x, y].NeighborCoords)
+            {
+                if(!_chunks[neighborX, neighborY].IsActive) continue;
+                yield return (neighborX, neighborY, 1);
+            }
         }
     }
 
