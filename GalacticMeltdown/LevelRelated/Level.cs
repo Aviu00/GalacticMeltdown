@@ -470,7 +470,7 @@ public class Level
         }
     }
 
-    public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1, bool onlyActiveChunks = true)
+    public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1)
     {
         (int chunkX0, int chunkY0) = GetChunkCoords(x0, y0);
         (int chunkX1, int chunkY1) = GetChunkCoords(x1, y1);
@@ -480,15 +480,16 @@ public class Level
             list.AddLast((chunkX0, chunkY0));
             return list;
         }
+
         return Algorithms.AStar(chunkX0, chunkY0, chunkX1, chunkY1,
-            (x, y) => MapRouteGetNeighbors(x, y, onlyActiveChunks));
+            MapRouteGetNeighbors);
     }
 
-    private IEnumerable<(int x, int y, int cost)> MapRouteGetNeighbors(int x, int y, bool onlyActiveChunks)
+    private IEnumerable<(int x, int y, int cost)> MapRouteGetNeighbors(int x, int y)
     {
         foreach ((int neighborX, int neighborY) in _chunks[x, y].NeighborCoords)
         {
-            if(onlyActiveChunks && !_chunks[neighborX, neighborY].IsActive) continue;
+            if(!_chunks[neighborX, neighborY].IsActive) continue;
             yield return (neighborX, neighborY, 1);
         }
     }
