@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
+using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
@@ -384,7 +385,7 @@ public class Level
         }
     }
 
-    public IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
+    private IEnumerable<Chunk> GetChunksAround(int chunkXCenter, int chunkYCenter, int radius)
     {
         for (int chunkX = Math.Max(chunkXCenter - radius, 0);
              chunkX < Math.Min(chunkXCenter + radius + 1, _chunks.GetLength(0));
@@ -454,6 +455,24 @@ public class Level
         if (!Inbounds(x, y)) return null;
         (int chunkX, int chunkY) = GetChunkCoords(x, y);
         return _chunks[chunkX, chunkY].GetItems(x, y);
+    }
+
+    public void AlertEnemies(int centerX, int centerY, int radius, Actor target)
+    {
+        (int chunkCoordX, int chunkCoordY) = GetChunkCoords(centerX, centerY);
+        foreach (var chunk in GetChunksAround(chunkCoordX, chunkCoordY,
+                     radius / ChunkConstants.ChunkSize + 1))
+        {
+            foreach (var enemy in chunk.Enemies.Where(enemy =>
+                         UtilityFunctions.GetDistance(enemy.X, enemy.Y, centerX, centerY) <= radius &&
+                         enemy.Behaviors is not null))
+            {
+                foreach (var behavior in enemy.Behaviors.OfType<MovementStrategy>())
+                {
+                    behavior.PreviousTarget = target;
+                }
+            }
+        }
     }
 
     public LinkedList<(int, int)> GetPathBetweenChunks(int x0, int y0, int x1, int y1, bool onlyActiveChunks = true)

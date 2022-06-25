@@ -14,7 +14,7 @@ public abstract class Npc : Actor
     [JsonProperty] public HashSet<Actor> Targets { get; protected set; }
     [JsonIgnore] public Actor CurrentTarget { get; set; }
 
-    [JsonProperty] protected SortedSet<Behavior> Behaviors;
+    [JsonProperty] public SortedSet<Behavior> Behaviors;
 
     [JsonConstructor]
     protected Npc()

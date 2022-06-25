@@ -70,28 +70,10 @@ public class Enemy : Npc, IHasDescription
         CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
             .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
         if (CurrentTarget is null || !_alertCounter.FinishedCounting) return base.TakeAction();
-        AlertEnemiesAboutTarget(X, Y);
+        
+        Level.AlertEnemies(X, Y, AlertRadius, CurrentTarget);
         _alertCounter.ResetTimer();
-
         return base.TakeAction();
-    }
-
-    private void AlertEnemiesAboutTarget(int x, int y)
-    {
-        (int chunkCoordX, int chunkCoordY) = Level.GetChunkCoords(x, y);
-        foreach (var chunk in Level.GetChunksAround(chunkCoordX, chunkCoordY,
-                     AlertRadius / ChunkConstants.ChunkSize + 1))
-        {
-            foreach (var enemy in chunk.Enemies.Where(enemy =>
-                         UtilityFunctions.GetDistance(enemy.X, enemy.Y, X, Y) <= AlertRadius &&
-                         enemy.Behaviors is not null))
-            {
-                foreach (var behavior in enemy.Behaviors.OfType<MovementStrategy>())
-                {
-                    behavior.PreviousTarget = CurrentTarget;
-                }
-            }
-        }
     }
 
     public List<string> GetDescription()
