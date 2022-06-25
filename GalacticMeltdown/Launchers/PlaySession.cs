@@ -116,7 +116,7 @@ public partial class PlaySession
 
     private void OpenAmmoSelectionDialog()
     {
-        if (!(_player.Equipment[BodyPart.Hands] is WeaponItem weapon && weapon.AmmoTypes is not null)) return;
+        if (_player.Equipment[BodyPart.Hands] is not WeaponItem {AmmoTypes: { }}) return;
         AmmoDialog dialog = new(_player, id => _player.ChosenAmmoId = id);
         UserInterface.AddChild(this, dialog);
         dialog.Open();
@@ -127,77 +127,85 @@ public partial class PlaySession
         InputBox console = new(ProcessCommand);
         UserInterface.AddChild(this, console);
         console.Open();
-    }
 
-    private void ProcessCommand(string command)
-    {
-        command = command.TrimStart();
-        string[] words = command.Split(' ');
-        if (words.Length == 0) return;
-        switch (words[0])
+        void ProcessCommand(string command)
         {
-            case "exit":
-                SaveAndQuit();
-                break;
-            case "cheats":
-                if (words.Length == 2) _cheatsEnabled = words[1] == "1";
-                break;
-            case "xray":
-                if (_cheatsEnabled && words.Length == 2) _player.Xray = words[1] == "1";
-                else _player.Xray = false;
-                break;
-            case "noclip":
-                if (_cheatsEnabled && words.Length == 2) _player.NoClip = words[1] == "1";
-                else _player.NoClip = false;
-                break;
-            case "viewrange":
-                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int viewRange))
-                    _player.ViewRange = viewRange;
-                break;
-            case "godmode":
-                if (_cheatsEnabled && words.Length == 2) _player.GodMode = words[1] == "1";
-                else _player.GodMode = false;
-                break;
-            case "coords":
-                if (words.Length == 2) _levelView.ShowCoordinates = words[1] == "1";
-                else _levelView.ShowCoordinates = false;
-                break;
-            case "str":
-                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int str))
-                    _player.Strength = str;
-                break;
-            case "def":
-                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int def))
-                    _player.Defence = def;
-                break;
-            case "dex":
-                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int dex))
-                    _player.Dexterity = dex;
-                break;
-            case "heal":
-                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int heal))
-                    _player.Hp += heal;
-                break;
-            case "maxhp":
-                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int maxHp))
-                    _player.MaxHp = maxHp;
-                break;
-            case "maxenergy":
-                if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int maxEnergy))
-                    _player.MaxEnergy = maxEnergy;
-                break;
-            case "statechanger":
-                if (!_cheatsEnabled || words.Length is not (3 or 4) ||
-                    !Enum.TryParse(words[1], out StateChangerType stateChangerId) ||
-                    !int.TryParse(words[2], out int power)) break;
-                int duration = 0;
-                if(words.Length == 4 && (!int.TryParse(words[3], out duration) || duration <= 0)) break;
-                StateChangerData.StateChangers[stateChangerId](_player, power, duration);
-                break;
-            case "animtime":
-                if (words.Length == 2 && int.TryParse(words[1], out int animTime))
-                    UserInterface.SetAnimationTime(animTime);
-                break;
+            command = command.TrimStart();
+            string[] words = command.Split(' ');
+            if (words.Length == 0) return;
+            switch (words[0])
+            {
+                case "exit":
+                    SaveAndQuit();
+                    break;
+                case "cheats":
+                    if (words.Length == 2) _cheatsEnabled = words[1] == "1";
+                    break;
+                case "xray":
+                    if (_cheatsEnabled && words.Length == 2)
+                        _player.Xray = words[1] == "1";
+                    else
+                        _player.Xray = false;
+                    break;
+                case "noclip":
+                    if (_cheatsEnabled && words.Length == 2)
+                        _player.NoClip = words[1] == "1";
+                    else
+                        _player.NoClip = false;
+                    break;
+                case "viewrange":
+                    if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int viewRange))
+                        _player.ViewRange = viewRange;
+                    break;
+                case "godmode":
+                    if (_cheatsEnabled && words.Length == 2)
+                        _player.GodMode = words[1] == "1";
+                    else
+                        _player.GodMode = false;
+                    break;
+                case "coords":
+                    if (words.Length == 2)
+                        _levelView.ShowCoordinates = words[1] == "1";
+                    else
+                        _levelView.ShowCoordinates = false;
+                    break;
+                case "str":
+                    if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int str))
+                        _player.Strength = str;
+                    break;
+                case "def":
+                    if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int def))
+                        _player.Defence = def;
+                    break;
+                case "dex":
+                    if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int dex))
+                        _player.Dexterity = dex;
+                    break;
+                case "heal":
+                    if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int heal)) _player.Hp += heal;
+                    break;
+                case "maxhp":
+                    if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int maxHp))
+                        _player.MaxHp = maxHp;
+                    break;
+                case "maxenergy":
+                    if (_cheatsEnabled && words.Length == 2 && int.TryParse(words[1], out int maxEnergy))
+                        _player.MaxEnergy = maxEnergy;
+                    break;
+                case "statechanger":
+                    if (!_cheatsEnabled || words.Length is not (3 or 4) ||
+                        !Enum.TryParse(words[1], out StateChangerType stateChangerId) ||
+                        !int.TryParse(words[2], out int power))
+                        break;
+                    int duration = 0;
+                    if (words.Length == 4 && (!int.TryParse(words[3], out duration) || duration <= 0)) break;
+                    StateChangerData.StateChangers[stateChangerId](_player, power, duration);
+                    break;
+                case "animtime":
+                    if (words.Length == 2 && int.TryParse(words[1], out int animTime))
+                        UserInterface.SetAnimationTime(animTime);
+                    break;
+            }
         }
     }
 }

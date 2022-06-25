@@ -40,14 +40,10 @@ public static class UserInterface
     public static void SetTask(object obj, Action task)
     {
         if (!_children.ContainsKey(obj)) return;
-        if (_objectTasks.ContainsKey(obj))
-        {
-            _tasks.Remove(_objectTasks[obj]);
-            _objectTasks.Remove(obj);
-        }
+        if (_objectTasks.ContainsKey(obj)) _tasks.Remove(_objectTasks[obj]);
         (object, Action) taskTuple = (obj, task);
         _tasks.Add(taskTuple);
-        _objectTasks.Add(obj, taskTuple);
+        _objectTasks[obj] = taskTuple;
     }
 
     public static void SetViewPositioner(object obj, ViewPositioner viewPositioner)

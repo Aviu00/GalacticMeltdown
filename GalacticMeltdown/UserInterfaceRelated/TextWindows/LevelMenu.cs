@@ -58,6 +58,18 @@ public class LevelMenu : TextWindow
         List<Button> buttons = new(levelInfos.OrderBy(info => info.Name)
             .Select(levelInfo => new LevelButton(levelInfo, TryStartLevel)));
         LineView.SetLines(buttons.Cast<ListLine>().ToList(), true);
+        
+        void TryStartLevel(LevelInfo levelInfo)
+        {
+            Level level = FilesystemLevelManager.GetLevel(levelInfo.Name);
+            if (level is null)
+            {
+                SetLevelButtons();
+                return;
+            }
+
+            Game.StartLevel(level, levelInfo.Name);
+        }
     }
 
     private void OpenLevelCreationMenu()
@@ -65,6 +77,13 @@ public class LevelMenu : TextWindow
         LevelCreationDialog creationDialog = new(CreateLevel);
         UserInterface.AddChild(this, creationDialog);
         creationDialog.Open();
+        
+        void CreateLevel(string name, int? seed)
+        {
+            seed ??= Random.Shared.Next();
+            Level level = FilesystemLevelManager.CreateLevel(seed.Value, name);
+            Game.StartLevel(level, name);
+        }
     }
 
     private void OpenLevelRemovalDialog()
@@ -73,31 +92,12 @@ public class LevelMenu : TextWindow
         YesNoDialog levelRemovalDialog = new(RemoveSelectedLevel, "Are you sure you want to remove this level?");
         UserInterface.AddChild(this, levelRemovalDialog);
         levelRemovalDialog.Open();
-    }
-
-    private void RemoveSelectedLevel(bool doIt)
-    {
-        if (!doIt) return;
-        FilesystemLevelManager.RemoveLevel(((LevelButton) LineView.GetCurrent()).Name);
-        SetLevelButtons();
-    }
-
-    private void CreateLevel(string name, int? seed)
-    {
-        seed ??= Random.Shared.Next();
-        Level level = FilesystemLevelManager.CreateLevel(seed.Value, name);
-        Game.StartLevel(level, name);
-    }
-
-    private void TryStartLevel(LevelInfo levelInfo)
-    {
-        Level level = FilesystemLevelManager.GetLevel(levelInfo.Name);
-        if (level is null)
+        
+        void RemoveSelectedLevel(bool doIt)
         {
+            if (!doIt) return;
+            FilesystemLevelManager.RemoveLevel(((LevelButton) LineView.GetCurrent()).Name);
             SetLevelButtons();
-            return;
         }
-
-        Game.StartLevel(level, levelInfo.Name);
     }
 }

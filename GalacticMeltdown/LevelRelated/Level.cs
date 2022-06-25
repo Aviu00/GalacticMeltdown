@@ -132,15 +132,15 @@ public class Level
         {
             for (; _currentlyActiveIndex < _activeActors.Count; _currentlyActiveIndex++)
             {
-                Actor actor = _activeActors[_currentlyActiveIndex];
                 // The player may have reached the finish or died
                 if (PlayerWon is not null)
                 {
                     FinishLevelTurn();
                     return;
                 }
-
-                // An actor could die due to actions of another actor
+                
+                Actor actor = _activeActors[_currentlyActiveIndex];
+                // An actor could have died due to actions of another actor
                 if (actor.IsActive)
                 {
                     ActorActionInfo actionInfo = actor.TakeAction();
