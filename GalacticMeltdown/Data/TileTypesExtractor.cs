@@ -36,7 +36,7 @@ public class TileTypesExtractor : XmlExtractor
             bool isConnectable = false;
             bool isDependingOnRoomConnection = false;
             char[] symbols = null;
-            int moveCost = 10;
+            int moveCost = EnergyCosts.DefaultMoveCost;
             foreach (XmlNode locNode in node)
             {
                 switch (locNode.Name)

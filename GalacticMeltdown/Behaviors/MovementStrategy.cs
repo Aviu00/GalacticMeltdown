@@ -65,7 +65,9 @@ public class MovementStrategy : Behavior
                 continue;
             
             // if door is closed
-            int cost = tile.IsDoor && !tile.IsWalkable ? 200 : tile.MoveCost;
+            int cost = tile.IsDoor && !tile.IsWalkable
+                ? EnergyCosts.DoorInteraction + MapData.TileTypes["door-open"].MoveCost
+                : tile.MoveCost;
             yield return (xi, yi, cost);
         }
     }

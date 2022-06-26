@@ -520,7 +520,7 @@ public class Level
             doorCounter.ResetTimer();
         else
             doorCounter.StopTimer();
-        if (actor is not null) actor.Energy -= 100;
+        if (actor is not null) actor.Energy -= EnergyCosts.DoorInteraction;
         TileChanged?.Invoke(this, new TileChangeEventArgs((x, y)));
         return true;
     }
