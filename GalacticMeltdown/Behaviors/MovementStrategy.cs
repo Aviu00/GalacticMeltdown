@@ -54,34 +54,16 @@ public class MovementStrategy : Behavior
 
     }
 
-    private IEnumerable<(int, int, int)> GetNeighbors(int x, int y)
+    private void SetPathTo(int destX, int destY)
     {
-        foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
-        {
-            (int, int) chunkCoords = Level.GetChunkCoords(xi, yi);
-            Tile tile = Level.GetTile(xi, yi, chunkCoords);
-            if (tile is null || !tile.IsWalkable && !tile.IsDoor || !_chunkPath.Contains(chunkCoords) ||
-                x == ControlledNpc.X && y == ControlledNpc.Y && Level.GetNonTileObject(xi, yi) is not null)
-                continue;
-            
-            // if door is closed
-            int cost = tile.IsDoor && !tile.IsWalkable
-                ? EnergyCosts.DoorInteraction + MapData.TileTypes["door-open"].MoveCost
-                : tile.MoveCost;
-            yield return (xi, yi, cost);
-        }
-    }
-
-    private void SetPathTo(int x, int y)
-    {
-        _chunkPath = Level.GetPathBetweenChunks(ControlledNpc.X, ControlledNpc.Y, x, y);
+        _chunkPath = Level.GetPathBetweenChunks(ControlledNpc.X, ControlledNpc.Y, destX, destY);
         if (_chunkPath is null)
         {
             _wantsToGoTo = null;
             _nextPathCellNode = null;
             return;
         }
-        var path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, x, y, GetNeighbors);
+        var path = Algorithms.AStar(ControlledNpc.X, ControlledNpc.Y, destX, destY, GetNeighbors);
         if (path is null || path.Count < 3)
         {
             _wantsToGoTo = null;
@@ -93,6 +75,24 @@ public class MovementStrategy : Behavior
         path.RemoveLast();
 
         _nextPathCellNode = path.First;
+        
+        IEnumerable<(int, int, int)> GetNeighbors(int x, int y)
+        {
+            foreach ((int xi, int yi) in Algorithms.GetPointsOnSquareBorder(x, y, 1))
+            {
+                (int, int) chunkCoords = Level.GetChunkCoords(xi, yi);
+                Tile tile = Level.GetTile(xi, yi, chunkCoords);
+                if (tile is null || !tile.IsWalkable && !tile.IsDoor || !_chunkPath.Contains(chunkCoords) ||
+                    x == ControlledNpc.X && y == ControlledNpc.Y && Level.GetNonTileObject(xi, yi) is not null)
+                    continue;
+            
+                // if door is closed
+                int cost = tile.IsDoor && !tile.IsWalkable
+                    ? EnergyCosts.DoorInteraction + MapData.TileTypes["door-open"].MoveCost
+                    : tile.MoveCost;
+                yield return (xi, yi, cost);
+            }
+        }
     }
 
 
