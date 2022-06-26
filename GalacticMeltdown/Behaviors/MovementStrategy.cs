@@ -18,7 +18,6 @@ public class MovementStrategy : Behavior
     private Level Level => ControlledNpc.Level;
     [JsonProperty] private (int x, int y)? _wantsToGoTo;
     private LinkedListNode<(int x, int y)> _nextPathCellNode;
-    private LinkedList<(int x, int y)> _chunkPath;
     [JsonProperty] private readonly Counter _previousTargetCounter;
     [JsonProperty] private Actor _previousTarget;
     [JsonProperty] private bool _idleMovement;
@@ -56,8 +55,8 @@ public class MovementStrategy : Behavior
 
     private void SetPathTo(int destX, int destY)
     {
-        _chunkPath = Level.GetPathBetweenChunks(ControlledNpc.X, ControlledNpc.Y, destX, destY);
-        if (_chunkPath is null)
+        var chunkPath = Level.GetPathBetweenChunks(ControlledNpc.X, ControlledNpc.Y, destX, destY);
+        if (chunkPath is null)
         {
             _wantsToGoTo = null;
             _nextPathCellNode = null;
@@ -82,7 +81,7 @@ public class MovementStrategy : Behavior
             {
                 (int, int) chunkCoords = Level.GetChunkCoords(xi, yi);
                 Tile tile = Level.GetTile(xi, yi, chunkCoords);
-                if (tile is null || !tile.IsWalkable && !tile.IsDoor || !_chunkPath.Contains(chunkCoords) ||
+                if (tile is null || !tile.IsWalkable && !tile.IsDoor || !chunkPath.Contains(chunkCoords) ||
                     x == ControlledNpc.X && y == ControlledNpc.Y && Level.GetNonTileObject(xi, yi) is not null)
                     continue;
             
