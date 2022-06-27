@@ -233,7 +233,7 @@ public class Level
             : _chunks[chunkX, chunkY].GetDrawable(x, y) ?? GetTile(x, y);
     }
     
-    public Tile GetTile(int x, int y, (int chunkX, int chunkY)? chunkCoords = null)
+    public Tile GetTile(int x, int y)
     {
         switch (x, y)
         {
@@ -247,7 +247,7 @@ public class Level
                 return null;
         }
 
-        var (chunkX, chunkY) = chunkCoords ?? GetChunkCoords(x, y);
+        var (chunkX, chunkY) = GetChunkCoords(x, y);
         if (chunkX >= _chunks.GetLength(0) || chunkY >= _chunks.GetLength(1)) return null;
         int localX = x % ChunkSize;
         int localY = y % ChunkSize;
