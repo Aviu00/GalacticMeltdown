@@ -23,7 +23,7 @@ public class Level
     [JsonProperty] private readonly Tile[] _southernWall;
     [JsonProperty] private readonly Tile[] _westernWall;
     [JsonProperty] private readonly Chunk[,] _chunks;
-    private Tile _cornerTile;
+    [JsonProperty] private Tile _cornerTile;
 
     [JsonProperty] public readonly Player Player;
     [JsonProperty] private (int x, int y) _finishPos;
@@ -109,13 +109,12 @@ public class Level
 
     private void Init()
     {
-        _cornerTile = new Tile(MapData.TileTypes["wall_nesw"]);
         OverlayView = new OverlayView(this);
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
         _controllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;
         MinimapView = new MinimapView(_chunks, Player);
-        _activeChunks = new();
+        _activeChunks = new List<Chunk>();
         UpdateActiveChunks();
     }
     
