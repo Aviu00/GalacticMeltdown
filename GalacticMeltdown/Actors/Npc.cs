@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.ActorActions;
@@ -12,6 +13,13 @@ namespace GalacticMeltdown.Actors;
 public abstract class Npc : Actor
 {
     [JsonProperty] protected override string ActorName => "Npc";
+    protected NpcTypeData TypeData;
+    [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => (TypeData.Symbol, TypeData.Color);
+    [JsonIgnore] public string Name => TypeData.Name;
+    [JsonIgnore] public override ConsoleColor? BgColor => TypeData.BgColor;
+    [JsonIgnore] protected int AlertRadius => TypeData.AlertRadius;
+    [JsonProperty] public readonly string TypeId;
+    [JsonProperty] protected Counter AlertCounter;
     [JsonProperty] public HashSet<Actor> Targets { get; protected set; }
     [JsonIgnore] public Actor CurrentTarget { get; set; }
 
@@ -25,6 +33,31 @@ public abstract class Npc : Actor
     protected Npc(NpcTypeData typeData, int x, int y, Level level)
         : base(typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
+        TypeData = typeData;
+        TypeId = typeData.Id;
+        Targets = new HashSet<Actor> {Level.Player};
+        AlertCounter = new Counter(Level, 1, 30);
+        Died += AlertCounter.RemoveCounter;
+
+        if (TypeData.Behaviors == null) return;
+
+        Behaviors = new SortedSet<Behavior>();
+        foreach (BehaviorData behaviorData in TypeData.Behaviors)
+        {
+            Behavior behavior = behaviorData switch
+            {
+                MovementStrategyData movementStrategyData => new MovementStrategy(movementStrategyData, this),
+                MeleeAttackStrategyData meleeAttackStrategyData => new MeleeAttackStrategy(meleeAttackStrategyData,
+                    this),
+                RangeAttackStrategyData rangeAttackStrategyData => new RangeAttackStrategy(rangeAttackStrategyData,
+                    this),
+                SelfEffectStrategyData selfEffectStrategyData => new SelfEffectStrategy(selfEffectStrategyData, this),
+                _ => null
+            };
+
+            if (behavior is null) continue;
+            Behaviors.Add(behavior);
+        }
     }
 
     protected bool IsPointVisible(int x, int y)
