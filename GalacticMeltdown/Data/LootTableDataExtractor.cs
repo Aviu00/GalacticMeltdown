@@ -44,7 +44,7 @@ public class LootTableDataExtractor : XmlExtractor
         int max = 1;
         double gain = 0;
         int limit = -1;
-        if (itemLootNode.Attributes == null) return;
+        if (itemLootNode.Attributes is null) return;
         foreach (XmlNode node in itemLootNode)
         {
             switch (node.Name)

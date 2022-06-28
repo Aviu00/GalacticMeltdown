@@ -16,7 +16,7 @@ public class LimitedNumber
         set
         {
             _maxValue = value;
-            if(value != null)
+            if (value is not null)
                 _value = Math.Min(_value, value.Value);
         }
     }
@@ -28,7 +28,7 @@ public class LimitedNumber
         set
         {
             _minValue = value;
-            if(value != null)
+            if(value is not null)
                 _value = Math.Max(_value, value.Value);
         }
     }
@@ -39,9 +39,9 @@ public class LimitedNumber
         get => _value;
         set
         {
-            if(_maxValue != null)
+            if (_maxValue is not null)
                 _value = Math.Min(value, _maxValue.Value);
-            if(_minValue != null)
+            if (_minValue is not null)
                 _value = Math.Max(value, _minValue.Value);
         }
     }

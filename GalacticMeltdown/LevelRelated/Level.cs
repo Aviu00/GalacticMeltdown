@@ -335,12 +335,12 @@ public class Level
         HashSet<Chunk> hashSet = new();
         foreach ((int x, int y) in chunk.NeighborCoords)
         {
-            if(prevChunk != null && (x, y) == (prevChunk.MapX, prevChunk.MapY)) continue; 
+            if (prevChunk is not null && (x, y) == (prevChunk.MapX, prevChunk.MapY)) continue; 
             Chunk newChunk = _chunks[x, y];
-            if(!returnNotActiveChunks && !chunk.IsActive) continue;
+            if (!returnNotActiveChunks && !chunk.IsActive) continue;
             hashSet.Add(newChunk);
             HashSet<Chunk> newSet = GetChunkNeighbors(newChunk, amount - 1, returnNotActiveChunks, chunk);
-            if(newSet != null) hashSet.UnionWith(newSet);
+            if (newSet is not null) hashSet.UnionWith(newSet);
         }
         return hashSet;
     }

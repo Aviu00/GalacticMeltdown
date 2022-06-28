@@ -80,10 +80,10 @@ public class ChunkGenerator
     private List<(int x, int y)> GetNeighborCoords()
     {
         var neighborCoords = new List<(int x, int y)>();
-        if (NorthConnection != null) neighborCoords.Add((NorthConnection.MapX, NorthConnection.MapY));
-        if (EastConnection != null) neighborCoords.Add((EastConnection.MapX, EastConnection.MapY));
-        if (SouthConnection != null) neighborCoords.Add((SouthConnection.MapX, SouthConnection.MapY));
-        if (WestConnection != null) neighborCoords.Add((WestConnection.MapX, WestConnection.MapY));
+        if (NorthConnection is not null) neighborCoords.Add((NorthConnection.MapX, NorthConnection.MapY));
+        if (EastConnection is not null) neighborCoords.Add((EastConnection.MapX, EastConnection.MapY));
+        if (SouthConnection is not null) neighborCoords.Add((SouthConnection.MapX, SouthConnection.MapY));
+        if (WestConnection is not null) neighborCoords.Add((WestConnection.MapX, WestConnection.MapY));
         return neighborCoords;
     }
 
@@ -133,7 +133,7 @@ public class ChunkGenerator
     private void CalculateLoot(ItemDictionary items, TileInformation[,] roomData, int localX, int localY)
     {
         string id = roomData[localX, localY].LootId;
-        if (id == null ||
+        if (id is null ||
             !UtilityFunctions.Chance(ChanceFunction(roomData[localX, localY].LootChance, roomData[localX, localY].Gain,
                 roomData[localX, localY].Limit), _rng))
             return;
