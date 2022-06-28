@@ -19,7 +19,7 @@ public class Enemy : Npc, IHasDescription
     [JsonIgnore] public string Name => _typeData.Name;
     [JsonIgnore] public override ConsoleColor? BgColor => _typeData.BgColor;
     [JsonIgnore] private int AlertRadius => _typeData.AlertRadius;
-    [JsonProperty] public readonly string Id;
+    [JsonProperty] public readonly string TypeId;
     [JsonProperty] private Counter _alertCounter;
 
     [JsonConstructor]
@@ -31,7 +31,7 @@ public class Enemy : Npc, IHasDescription
         typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
         _typeData = typeData;
-        Id = typeData.Id;
+        TypeId = typeData.Id;
         Targets = new HashSet<Actor> {Level.Player};
         _alertCounter = new Counter(Level, 1, 30);
         Died += _alertCounter.RemoveCounter;
@@ -60,7 +60,7 @@ public class Enemy : Npc, IHasDescription
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        _typeData = MapData.EnemyTypes[Id];
+        _typeData = MapData.EnemyTypes[TypeId];
         Died += _alertCounter.RemoveCounter;
     }
 
