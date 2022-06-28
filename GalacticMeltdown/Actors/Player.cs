@@ -99,9 +99,9 @@ public class Player : Actor, ISightedObject, IControllable
     {
         int newX = X + deltaX, newY = Y + deltaY;
         Tile tile = Level.GetTile(newX, newY);
-        if (Level.GetNonTileObject(newX, newY) is Enemy enemy)
+        if (Level.GetNonTileObject(newX, newY) is Npc npc)
         {
-            bool hit = HitTarget(enemy);
+            bool hit = HitTarget(npc);
             _actionInfo = new ActorActionInfo(hit ? ActorAction.MeleeAttackHit : ActorAction.MeleeAttackMissed,
                 new List<(int, int)> {(newX, newY)});
             return true;

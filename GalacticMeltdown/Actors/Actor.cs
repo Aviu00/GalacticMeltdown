@@ -13,7 +13,6 @@ namespace GalacticMeltdown.Actors;
 [JsonConverter(typeof(JsonSubtypes), "ActorName")]
 [JsonSubtypes.KnownSubType(typeof(Player), "Player")]
 [JsonSubtypes.KnownSubType(typeof(Npc), "Npc")]
-[JsonSubtypes.KnownSubType(typeof(Enemy), "Enemy")]
 public abstract class Actor : IObjectOnMap
 {
     [JsonProperty] protected abstract string ActorName { get; }

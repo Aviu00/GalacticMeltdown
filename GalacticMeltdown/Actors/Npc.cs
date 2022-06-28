@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.Data;
@@ -10,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
-public abstract class Npc : Actor
+public class Npc : Actor
 {
     [JsonProperty] protected override string ActorName => "Npc";
     protected NpcTypeData TypeData;
@@ -29,8 +30,15 @@ public abstract class Npc : Actor
     protected Npc()
     {
     }
+    
+    [OnDeserialized]
+    private void OnDeserialized(StreamingContext _)
+    {
+        TypeData = MapData.NpcTypes[TypeId];
+        Died += AlertCounter.RemoveCounter;
+    }
 
-    protected Npc(NpcTypeData typeData, int x, int y, Level level)
+    public Npc(NpcTypeData typeData, int x, int y, Level level)
         : base(typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
         TypeData = typeData;
@@ -39,7 +47,7 @@ public abstract class Npc : Actor
         AlertCounter = new Counter(Level, 1, 30);
         Died += AlertCounter.RemoveCounter;
 
-        if (TypeData.Behaviors == null) return;
+        if (TypeData.Behaviors is null) return;
 
         Behaviors = new SortedSet<Behavior>();
         foreach (BehaviorData behaviorData in TypeData.Behaviors)

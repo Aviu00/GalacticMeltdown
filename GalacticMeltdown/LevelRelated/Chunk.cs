@@ -25,7 +25,7 @@ public class Chunk
     
     [JsonProperty] private readonly ItemDictionary _items;
     [JsonProperty] public readonly Tile[,] Tiles;
-    [JsonProperty] public readonly List<Enemy> Enemies;
+    [JsonProperty] public readonly List<Npc> Enemies;
 
     [JsonProperty] public readonly char Symbol;
 
@@ -47,7 +47,7 @@ public class Chunk
         _items = items;
         Symbol = symbol;
         IsFinalRoom = isFinalRoom;
-        Enemies = new List<Enemy>();
+        Enemies = new List<Npc>();
     }
 
     public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
@@ -112,11 +112,11 @@ public class Chunk
 
     public void AddNpc(Npc npc)
     {
-        if (npc is Enemy enemy) Enemies.Add(enemy);
+        Enemies.Add(npc);
     }
 
     public void RemoveNpc(Npc npc)
     {
-        if (npc is Enemy enemy) Enemies.Remove(enemy);
+        Enemies.Remove(npc);
     }
 }
