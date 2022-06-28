@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.Actors;
 
-public class Npc : Actor
+public class Npc : Actor, IHasDescription
 {
     [JsonProperty] protected override string ActorName => "Npc";
     private NpcTypeData _typeData;
