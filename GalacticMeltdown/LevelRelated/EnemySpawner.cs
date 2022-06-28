@@ -134,7 +134,7 @@ public class EnemySpawner
 
     private void SpawnEnemy(NpcTypeData enemyData, int x, int y)
     {
-        Npc enemy = new Npc(enemyData, x, y, _level);
+        Npc enemy = new(enemyData, x, y, _level, new HashSet<Actor> {_level.Player});
         _level.AddNpc(enemy);
     }
 

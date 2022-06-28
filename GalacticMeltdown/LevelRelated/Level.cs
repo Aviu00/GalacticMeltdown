@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Actors;
-using GalacticMeltdown.Behaviors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;

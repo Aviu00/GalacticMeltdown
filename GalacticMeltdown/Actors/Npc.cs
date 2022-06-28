@@ -38,12 +38,12 @@ public class Npc : Actor
         Died += AlertCounter.RemoveCounter;
     }
 
-    public Npc(NpcTypeData typeData, int x, int y, Level level)
+    public Npc(NpcTypeData typeData, int x, int y, Level level, HashSet<Actor> targets)
         : base(typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
         _typeData = typeData;
         TypeId = typeData.Id;
-        Targets = new HashSet<Actor> {Level.Player};
+        Targets = targets;
         AlertCounter = new Counter(Level, 1, 30);
         Died += AlertCounter.RemoveCounter;
 
