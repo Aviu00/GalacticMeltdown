@@ -73,6 +73,7 @@ public class Level
 
         _southernWall = southernWall;
         _westernWall = westernWall;
+        _cornerTile = new Tile(MapData.TileTypes["wall_nesw"]);
         
         _finishPos = finishPos;
         PlayerWon = null;
