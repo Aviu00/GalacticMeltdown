@@ -39,6 +39,9 @@ public class Level
     [JsonProperty] public bool? PlayerWon { get; private set; }
 
     [JsonProperty] private readonly EnemySpawner _enemySpawner;
+
+    [JsonProperty] public HashSet<Actor> PlayerFriends;
+
     [JsonIgnore] public OverlayView OverlayView;
     [JsonIgnore] public MinimapView MinimapView;
 
@@ -70,14 +73,21 @@ public class Level
 
         _southernWall = southernWall;
         _westernWall = westernWall;
+        
         _finishPos = finishPos;
         PlayerWon = null;
+        
         Player = new Player(startPos.x, startPos.y, this);
         (int x, int y) = GetChunkCoords(startPos.x, startPos.y);
         _chunks[x, y].WasVisitedByPlayer = true;
+        
+        PlayerFriends = new HashSet<Actor> {Player};
         _enemySpawner = new EnemySpawner(this);
+        
         SightedObjects = new ObservableCollection<ISightedObject> {Player};
+        
         _controllableObjects = new ObservableCollection<IControllable> {Player};
+        
         LevelView = new LevelView(this);
 
         Init();
