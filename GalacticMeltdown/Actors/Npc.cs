@@ -14,11 +14,11 @@ namespace GalacticMeltdown.Actors;
 public class Npc : Actor
 {
     [JsonProperty] protected override string ActorName => "Npc";
-    protected NpcTypeData TypeData;
-    [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => (TypeData.Symbol, TypeData.Color);
-    [JsonIgnore] public string Name => TypeData.Name;
-    [JsonIgnore] public override ConsoleColor? BgColor => TypeData.BgColor;
-    [JsonIgnore] protected int AlertRadius => TypeData.AlertRadius;
+    private NpcTypeData _typeData;
+    [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
+    [JsonIgnore] private string Name => _typeData.Name;
+    [JsonIgnore] public override ConsoleColor? BgColor => _typeData.BgColor;
+    [JsonIgnore] private int AlertRadius => _typeData.AlertRadius;
     [JsonProperty] public readonly string TypeId;
     [JsonProperty] protected Counter AlertCounter;
     [JsonProperty] public HashSet<Actor> Targets { get; protected set; }
@@ -34,23 +34,23 @@ public class Npc : Actor
     [OnDeserialized]
     private void OnDeserialized(StreamingContext _)
     {
-        TypeData = MapData.NpcTypes[TypeId];
+        _typeData = MapData.NpcTypes[TypeId];
         Died += AlertCounter.RemoveCounter;
     }
 
     public Npc(NpcTypeData typeData, int x, int y, Level level)
         : base(typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
-        TypeData = typeData;
+        _typeData = typeData;
         TypeId = typeData.Id;
         Targets = new HashSet<Actor> {Level.Player};
         AlertCounter = new Counter(Level, 1, 30);
         Died += AlertCounter.RemoveCounter;
 
-        if (TypeData.Behaviors is null) return;
+        if (_typeData.Behaviors is null) return;
 
         Behaviors = new SortedSet<Behavior>();
-        foreach (BehaviorData behaviorData in TypeData.Behaviors)
+        foreach (BehaviorData behaviorData in _typeData.Behaviors)
         {
             Behavior behavior = behaviorData switch
             {
@@ -68,7 +68,7 @@ public class Npc : Actor
         }
     }
 
-    protected bool IsPointVisible(int x, int y)
+    private bool IsPointVisible(int x, int y)
     {
         if (UtilityFunctions.GetDistance(x, y, X, Y) > GetViewRange())
         {
@@ -101,7 +101,7 @@ public class Npc : Actor
     public override bool Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
     {
         bool hit = base.Hit(damage, ignoreDexterity, ignoreDefence);
-        if(hit)
+        if (hit)
             SendAffected();
         return hit;
     }
