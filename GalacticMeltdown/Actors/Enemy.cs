@@ -14,7 +14,7 @@ namespace GalacticMeltdown.Actors;
 public class Enemy : Npc, IHasDescription
 {
     [JsonProperty] protected override string ActorName => "Enemy";
-    private EnemyTypeData _typeData;
+    private NpcTypeData _typeData;
     [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => (_typeData.Symbol, _typeData.Color);
     [JsonIgnore] public string Name => _typeData.Name;
     [JsonIgnore] public override ConsoleColor? BgColor => _typeData.BgColor;
@@ -27,8 +27,7 @@ public class Enemy : Npc, IHasDescription
     {
     }
 
-    public Enemy(EnemyTypeData typeData, int x, int y, Level level) : base(
-        typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
+    public Enemy(NpcTypeData typeData, int x, int y, Level level) : base(typeData, x, y, level)
     {
         _typeData = typeData;
         TypeId = typeData.Id;

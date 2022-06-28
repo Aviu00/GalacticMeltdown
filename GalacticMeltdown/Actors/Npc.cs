@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Behaviors;
+using GalacticMeltdown.Data;
 using GalacticMeltdown.LevelRelated;
 using GalacticMeltdown.Utility;
 using Newtonsoft.Json;
@@ -21,8 +22,8 @@ public abstract class Npc : Actor
     {
     }
 
-    protected Npc(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
-        : base(maxHp, maxEnergy, dexterity, defence, viewRange, x, y, level)
+    protected Npc(NpcTypeData typeData, int x, int y, Level level)
+        : base(typeData.MaxHp, typeData.MaxEnergy, typeData.Dexterity, typeData.Defence, typeData.ViewRange, x, y, level)
     {
     }
 

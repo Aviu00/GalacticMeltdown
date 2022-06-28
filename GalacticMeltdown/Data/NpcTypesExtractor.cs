@@ -4,13 +4,13 @@ using System.Xml;
 
 namespace GalacticMeltdown.Data;
 
-public class EnemyTypesExtractor : XmlExtractor
+public class NpcTypesExtractor : XmlExtractor
 {
-    public Dictionary<string, EnemyTypeData> EnemiesTypes { get; }
+    public Dictionary<string, NpcTypeData> NpcTypes { get; }
     
-    public EnemyTypesExtractor()
+    public NpcTypesExtractor()
     {
-        EnemiesTypes = new Dictionary<string, EnemyTypeData>();
+        NpcTypes = new Dictionary<string, NpcTypeData>();
         ParseDocument("Npcs.xml");
     }
     private void ParseDocument(string docName)
@@ -77,9 +77,9 @@ public class EnemyTypesExtractor : XmlExtractor
                 }
             }
 
-            EnemyTypeData enemiesTypeData = new EnemyTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy, 
+            NpcTypeData npcTypeData = new NpcTypeData(id, name, symbol, color, bgColor, maxHp, maxEnergy, 
                 defence, dexterity , viewRange, cost, alertRadius, behaviors);
-            EnemiesTypes.Add(enemiesTypeData.Id, enemiesTypeData);
+            NpcTypes.Add(npcTypeData.Id, npcTypeData);
         }
     }
 
@@ -234,7 +234,7 @@ public class EnemyTypesExtractor : XmlExtractor
     
     
 }
-public record EnemyTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
+public record NpcTypeData(string Id, string Name, char Symbol, ConsoleColor Color,
     ConsoleColor BgColor, int MaxHp, int MaxEnergy,  int Defence, int Dexterity, int ViewRange, int Cost, 
     int AlertRadius, IEnumerable<BehaviorData> Behaviors);
 

@@ -115,11 +115,11 @@ public class EnemySpawner
         _nextCurrencyAmount = _currencyGain * Random.Shared.Next(3, 16) + _currency;
     }
 
-    private List<EnemyTypeData> CalculateEnemies(ref double currency, Random rng = null)
+    private List<NpcTypeData> CalculateEnemies(ref double currency, Random rng = null)
     {
         rng ??= Random.Shared;
-        List<EnemyTypeData> list = new();
-        List<EnemyTypeData> enemies = MapData.EnemyTypes.Values.ToList();
+        List<NpcTypeData> list = new();
+        List<NpcTypeData> enemies = MapData.EnemyTypes.Values.ToList();
         var curr = currency;
         enemies.RemoveAll(enemy => enemy.Cost > curr);
         while (enemies.Count > 0)
@@ -132,7 +132,7 @@ public class EnemySpawner
         return list;
     }
 
-    private void SpawnEnemy(EnemyTypeData enemyData, int x, int y)
+    private void SpawnEnemy(NpcTypeData enemyData, int x, int y)
     {
         Enemy enemy = new Enemy(enemyData, x, y, _level);
         _level.AddNpc(enemy);
