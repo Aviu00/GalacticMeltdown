@@ -11,7 +11,7 @@ public class EnemyTypesExtractor : XmlExtractor
     public EnemyTypesExtractor()
     {
         EnemiesTypes = new Dictionary<string, EnemyTypeData>();
-        ParseDocument("Enemies.xml");
+        ParseDocument("Npcs.xml");
     }
     private void ParseDocument(string docName)
     {
