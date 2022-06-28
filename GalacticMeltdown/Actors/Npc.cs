@@ -79,6 +79,14 @@ public abstract class Npc : Actor
 
     public override ActorActionInfo TakeAction()
     {
+        if (!IsActive) return null;
+        CurrentTarget = Targets.Where(target => IsPointVisible(target.X, target.Y))
+            .MinBy(target => UtilityFunctions.GetDistance(target.X, target.Y, X, Y));
+        if (CurrentTarget is null || !AlertCounter.FinishedCounting)
+            return Behaviors?.Select(behavior => behavior.TryAct()).FirstOrDefault(el => el is not null);
+
+        Level.AlertEnemies(X, Y, AlertRadius, CurrentTarget);
+        AlertCounter.ResetTimer();
         return Behaviors?.Select(behavior => behavior.TryAct()).FirstOrDefault(el => el is not null);
     }
 
@@ -97,5 +105,26 @@ public abstract class Npc : Actor
         {
             behavior.PreviousTarget = target;
         }
+    }
+    
+    public List<string> GetDescription()
+    {
+        List<string> description = new()
+        {
+            Name,
+            "",
+            $"HP: {Hp}/{MaxHp}",
+            $"Energy: {Energy}/{MaxEnergy}",
+            $"Def: {Defence}",
+            $"Dex: {Dexterity}",
+            $"View Range: {ViewRange}",
+            $"Alert Radius: {AlertRadius}"
+        };
+        if (Behaviors is null) return description;
+        foreach (var behavior in Behaviors)
+        {
+            description.AddRange(behavior.GetDescription());
+        }
+        return description;
     }
 }

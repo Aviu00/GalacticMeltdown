@@ -119,7 +119,7 @@ public class EnemySpawner
     {
         rng ??= Random.Shared;
         List<NpcTypeData> list = new();
-        List<NpcTypeData> enemies = MapData.EnemyTypes.Values.ToList();
+        List<NpcTypeData> enemies = MapData.NpcTypes.Values.ToList();
         var curr = currency;
         enemies.RemoveAll(enemy => enemy.Cost > curr);
         while (enemies.Count > 0)
