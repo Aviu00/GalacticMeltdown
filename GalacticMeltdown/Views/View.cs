@@ -30,3 +30,8 @@ public interface IMultiCellAnim
 {
     public event EventHandler<MultiCellAnimEventArgs> MultiCellAnim;
 }
+
+public interface IOneCellUpdate
+{
+    public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
+}
