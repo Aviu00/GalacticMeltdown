@@ -22,3 +22,13 @@ public abstract class View
 
     public abstract ViewCellData[,] GetAllCells();
 }
+
+public interface IOneCellAnim
+{
+    public event EventHandler<CellChangedEventArgs> CellChanged;
+}
+
+public interface IMultiCellAnim
+{
+    public event EventHandler<CellsChangedEventArgs> CellsChanged;
+}
