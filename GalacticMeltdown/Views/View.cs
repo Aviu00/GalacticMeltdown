@@ -23,10 +23,10 @@ public abstract class View
 
 public interface IOneCellAnim
 {
-    public event EventHandler<CellChangedEventArgs> CellChanged;
+    public event EventHandler<OneCellAnimEventArgs> OneCellAnim;
 }
 
 public interface IMultiCellAnim
 {
-    public event EventHandler<CellsChangedEventArgs> CellsChanged;
+    public event EventHandler<MultiCellAnimEventArgs> MultiCellAnim;
 }

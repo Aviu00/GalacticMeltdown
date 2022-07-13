@@ -4,12 +4,12 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Events;
 
-public class CellsChangedEventArgs : EventArgs
+public class MultiCellAnimEventArgs : EventArgs
 {
     public List<(int x, int y, ViewCellData cellData)> Cells { get; }
     public int Delay { get; }
 
-    public CellsChangedEventArgs(List<(int, int, ViewCellData)> cells, int delay)
+    public MultiCellAnimEventArgs(List<(int, int, ViewCellData)> cells, int delay)
     {
         Delay = delay;
         Cells = cells;

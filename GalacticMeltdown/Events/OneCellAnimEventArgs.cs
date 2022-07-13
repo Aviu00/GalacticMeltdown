@@ -3,11 +3,11 @@ using GalacticMeltdown.Views;
 
 namespace GalacticMeltdown.Events;
 
-public class CellChangedEventArgs : EventArgs
+public class OneCellAnimEventArgs : EventArgs
 {
     public (int x, int y, ViewCellData cellData, int delay) CellInfo { get; }
 
-    public CellChangedEventArgs((int x, int y, ViewCellData cellData, int delay) cellInfo)
+    public OneCellAnimEventArgs((int x, int y, ViewCellData cellData, int delay) cellInfo)
     {
         CellInfo = cellInfo;
     }

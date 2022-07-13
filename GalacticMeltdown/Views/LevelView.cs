@@ -75,8 +75,8 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
             FocusObject.X + (Width - 1) / 2, FocusObject.Y + (Height - 1) / 2);
 
     public override event EventHandler NeedRedraw;
-    public event EventHandler<CellChangedEventArgs> CellChanged;
-    public event EventHandler<CellsChangedEventArgs> CellsChanged;
+    public event EventHandler<OneCellAnimEventArgs> OneCellAnim;
+    public event EventHandler<MultiCellAnimEventArgs> MultiCellAnim;
 
 
     [JsonConstructor]
@@ -304,8 +304,8 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
                     if (!CanPlayerSeePoint(x, y)) continue;
                     IDrawable drawable = _level.GetDrawable(x, y);
                     var (viewX, viewY) = ToViewCoords(x, y);
-                    CellChanged?.Invoke(this,
-                        new CellChangedEventArgs((viewX, viewY,
+                    OneCellAnim?.Invoke(this,
+                        new OneCellAnimEventArgs((viewX, viewY,
                             new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 20)));
                 }
                 break;
@@ -322,10 +322,10 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
                 if (!CanPlayerSeePoint(x, y)) continue;
                 IDrawable drawable = _level.GetDrawable(x, y);
                 var (viewX, viewY) = ToViewCoords(x, y);
-                CellChanged?.Invoke(this,
-                    new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, color), delay)));
-                CellChanged?.Invoke(this,
-                    new CellChangedEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor),
+                OneCellAnim?.Invoke(this,
+                    new OneCellAnimEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, color), delay)));
+                OneCellAnim?.Invoke(this,
+                    new OneCellAnimEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor),
                         0)));
             }
         }
