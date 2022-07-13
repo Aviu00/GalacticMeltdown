@@ -76,7 +76,11 @@ public class Renderer
         {
             if (view is IOneCellAnim oca) oca.OneCellAnim += AddOneCellAnim;
             if (view is IMultiCellAnim mca) mca.MultiCellAnim += AddMultiCellAnim;
-            if (view is IOneCellUpdate ocu) ocu.OneCellUpdate += UpdateCell;
+            if (view is IOneCellUpdate ocu)
+            {
+                ocu.OneCellUpdate += UpdateCell;
+                ocu.CellChangeOutside += OutsideViewChangeHandler;
+            }
             view.NeedRedraw += NeedRedrawHandler;
         }
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -91,7 +95,11 @@ public class Renderer
         {
             if (view is IOneCellAnim oca) oca.OneCellAnim -= AddOneCellAnim;
             if (view is IMultiCellAnim mca) mca.MultiCellAnim -= AddMultiCellAnim;
-            if (view is IOneCellUpdate ocu) ocu.OneCellUpdate -= UpdateCell;
+            if (view is IOneCellUpdate ocu)
+            {
+                ocu.OneCellUpdate -= UpdateCell;
+                ocu.CellChangeOutside -= OutsideViewChangeHandler;
+            }
             view.NeedRedraw -= NeedRedrawHandler;
         }
         _viewPositioners.Remove(_objectViewPositioners[obj]);
@@ -319,6 +327,11 @@ public class Renderer
         Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
         SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
         Console.Write(screenCellData.Symbol);
+    }
+
+    private void OutsideViewChangeHandler(object sender, EventArgs _)
+    {
+        RedrawOnScreenSizeChange();
     }
 
     private void NeedRedrawHandler(object sender, EventArgs _)
