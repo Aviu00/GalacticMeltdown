@@ -306,11 +306,21 @@ public class Renderer
         }
     }
 
-    public void UpdateCell(object sender, OneCellUpdateEventArgs e)
+    private void UpdateCell(object sender, OneCellUpdateEventArgs e)
     {
-        
-    } 
-    
+        if (RedrawOnScreenSizeChange()) return;
+
+        PlayAnimations();
+        View view = (View) sender;
+        var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
+        var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(e.CellInfo.x, e.CellInfo.y,
+            viewMinScreenX, viewMinScreenY);
+        ScreenCellData screenCellData = GetCellWithSwap(screenX, screenY, e.CellInfo.cellData, view);
+        Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
+        SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
+        Console.Write(screenCellData.Symbol);
+    }
+
     private void NeedRedrawHandler(object sender, EventArgs _)
     {
         if (RedrawOnScreenSizeChange()) return;

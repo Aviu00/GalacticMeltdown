@@ -50,13 +50,30 @@ public class InputView : View, IOneCellUpdate
     public void DeleteCharacter()
     {
         if (_currentText.Length == 0) return;
-        _currentText.Length--;
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        if (_currentText.Length-- <= Width * Height)
+        {
+            if ((_currentText.Length + 1) % Width == 0)
+                NeedRedraw?.Invoke(this, EventArgs.Empty);
+            else
+            {
+                OneCellUpdate?.Invoke(this,
+                    new OneCellUpdateEventArgs((_currentText.Length % Width, _currentText.Length / Width,
+                        new ViewCellData(null, BgColor))));
+            }
+        }
     }
 
     public void AddCharacter(char character)
     {
         _currentText.Append(character);
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        if (_currentText.Length <= Width * Height)
+        {
+            if (_currentText.Length % Width == 0)
+                NeedRedraw?.Invoke(this, EventArgs.Empty);
+            else
+                OneCellUpdate?.Invoke(this,
+                    new OneCellUpdateEventArgs((_currentText.Length % Width - 1, _currentText.Length / Width,
+                        new ViewCellData((_currentText[^1], TextColor), BgColor))));
+        }
     }
 }
