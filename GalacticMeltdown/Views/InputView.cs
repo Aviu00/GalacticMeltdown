@@ -5,13 +5,14 @@ using GalacticMeltdown.Events;
 
 namespace GalacticMeltdown.Views;
 
-public class InputView : View
+public class InputView : View, IOneCellUpdate
 {
     private const ConsoleColor BgColor = Colors.Input.Background;
     private const ConsoleColor TextColor = Colors.Input.Text;
 
     public override event EventHandler NeedRedraw;
-    
+    public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate; 
+
     private StringBuilder _currentText = new();
     public string Text => _currentText.ToString();
 
