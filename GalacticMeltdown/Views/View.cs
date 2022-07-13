@@ -9,8 +9,6 @@ public abstract class View
     protected int Height;
     
     public abstract event EventHandler NeedRedraw;
-    public abstract event EventHandler<CellChangedEventArgs> CellChanged;
-    public abstract event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public virtual void Resize(int width, int height)
     {

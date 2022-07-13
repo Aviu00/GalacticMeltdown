@@ -17,8 +17,6 @@ public class LineView : View
     private int _selectedIndex;
     
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangedEventArgs> CellChanged;
-    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public override ViewCellData GetSymbol(int x, int y)
     {

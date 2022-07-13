@@ -74,8 +74,8 @@ public class Renderer
         viewPositioner.SetScreenSize(_cellInfos.GetLength(0), _cellInfos.GetLength(1));
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
         {
-            view.CellChanged += AddCellChange;
-            view.CellsChanged += AddAnimation;
+            if (view is IOneCellAnim oca) oca.CellChanged += AddCellChange;
+            if (view is IMultiCellAnim mca) mca.CellsChanged += AddAnimation;
             view.NeedRedraw += NeedRedrawHandler;
         }
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -88,8 +88,8 @@ public class Renderer
         ViewPositioner viewPositioner = _objectViewPositioners[obj];
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
         {
-            view.CellChanged -= AddCellChange;
-            view.CellsChanged -= AddAnimation;
+            if (view is IOneCellAnim oca) oca.CellChanged -= AddCellChange;
+            if (view is IMultiCellAnim mca) mca.CellsChanged -= AddAnimation;
             view.NeedRedraw -= NeedRedrawHandler;
         }
         _viewPositioners.Remove(_objectViewPositioners[obj]);

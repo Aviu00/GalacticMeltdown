@@ -16,8 +16,6 @@ public class TextView : View
     private int _topTextRow;
 
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangedEventArgs> CellChanged;
-    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public TextView(List<string> lines)
     {

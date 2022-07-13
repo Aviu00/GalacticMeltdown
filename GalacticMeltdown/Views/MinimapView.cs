@@ -15,8 +15,6 @@ public class MinimapView : View
     private Player _player;
 
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangedEventArgs> CellChanged;
-    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public MinimapView(Chunk[,] chunks, Player player)
     {

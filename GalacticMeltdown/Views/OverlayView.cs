@@ -50,8 +50,6 @@ public class OverlayView : View
         };
 
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangedEventArgs> CellChanged;
-    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
 
     public OverlayView(Level level)
     {

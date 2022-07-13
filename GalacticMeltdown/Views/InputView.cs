@@ -11,8 +11,6 @@ public class InputView : View
     private const ConsoleColor TextColor = Colors.Input.Text;
 
     public override event EventHandler NeedRedraw;
-    public override event EventHandler<CellChangedEventArgs> CellChanged;
-    public override event EventHandler<CellsChangedEventArgs> CellsChanged;
     
     private StringBuilder _currentText = new();
     public string Text => _currentText.ToString();
