@@ -256,7 +256,7 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
         {
             if (!_seenCells.Inbounds(x, y)) continue;
             var tile = _level.GetTile(x, y);
-            if (tile is not null) _seenCells[x, y] = tile.SymbolData.symbol;
+            if (tile is not null) _seenCells[x, y] = tile.SaveSymbol;
         }
 
         NeedRedraw?.Invoke(this, EventArgs.Empty);

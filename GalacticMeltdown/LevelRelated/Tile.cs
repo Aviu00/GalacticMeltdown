@@ -25,6 +25,8 @@ public class Tile : IDrawable, IHasDescription
 
     [JsonIgnore] public int MoveCost => _typeData.MoveCost;
 
+    public char SaveSymbol => _typeData.SaveSymbol;
+
     [JsonIgnore] public bool IsDoor => InteractWithDoor is not null;
 
     [JsonIgnore] public readonly Action InteractWithDoor;

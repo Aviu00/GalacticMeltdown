@@ -78,6 +78,7 @@
         <IsTransparent>True</IsTransparent>
         <IsConnection>True</IsConnection>
         <MoveCost>100</MoveCost>
+        <SaveSymbol>+</SaveSymbol>
     </Tile>
     <Tile>
         <Id>gate-closed</Id>
@@ -97,6 +98,7 @@
         <IsTransparent>True</IsTransparent>
         <IsConnection>True</IsConnection>
         <MoveCost>100</MoveCost>
+        <SaveSymbol>%</SaveSymbol>
     </Tile>
     <Tile>
         <Id>table</Id>
