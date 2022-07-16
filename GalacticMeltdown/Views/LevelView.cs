@@ -299,9 +299,8 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
                 PaintCells(Colors.FlashAnim.MeleeMiss, 70);
                 break;
             case ActorAction.Move:
-                foreach ((int x, int y) in actionInfo.AffectedCells)
+                foreach ((int x, int y) in actionInfo.AffectedCells.Where(CanPlayerSeePoint))
                 {
-                    if (!CanPlayerSeePoint(x, y)) continue;
                     IDrawable drawable = _level.GetDrawable(x, y);
                     var (viewX, viewY) = ToViewCoords(x, y);
                     OneCellAnim?.Invoke(this,
@@ -317,9 +316,8 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
 
         void PaintCells(ConsoleColor color, int delay)
         {
-            foreach ((int x, int y) in actionInfo.AffectedCells)
+            foreach ((int x, int y) in actionInfo.AffectedCells.Where(CanPlayerSeePoint))
             {
-                if (!CanPlayerSeePoint(x, y)) continue;
                 IDrawable drawable = _level.GetDrawable(x, y);
                 var (viewX, viewY) = ToViewCoords(x, y);
                 OneCellAnim?.Invoke(this,
@@ -329,11 +327,11 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
                         0)));
             }
         }
-    }
-
-    private bool CanPlayerSeePoint(int x, int y)
-    {
-        return _visiblePoints.Contains((x, y)) && IsPointInsideView(x, y);
+        
+        bool CanPlayerSeePoint((int x, int y) pos)
+        {
+            return _visiblePoints.Contains(pos) && IsPointInsideView(pos.x, pos.y);
+        }
     }
 
     private bool IsPointInsideView(int x, int y)
