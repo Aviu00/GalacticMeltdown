@@ -341,11 +341,6 @@ public class Renderer
         }
     }
 
-    private void OutsideViewChangeHandler(object sender, EventArgs _)
-    {
-        RedrawOnScreenSizeChange();
-    }
-
     private void NeedRedrawHandler(object sender, EventArgs _)
     {
         if (RedrawOnScreenSizeChange()) return;
