@@ -15,12 +15,12 @@ public class Cursor : IControllable
 {
     private Controller Controller { get; }
 
-    private (int minX, int minY, int maxX, int maxY)? _levelBounds;
+    private readonly (int minX, int minY, int maxX, int maxY)? _levelBounds;
 
-    private LevelView _levelView;
+    private readonly LevelView _levelView;
 
-    private int _initialX;
-    private int _initialY;
+    private readonly int _initialX;
+    private readonly int _initialY;
 
     public HashSet<(int x, int y)> LinePoints { get; private set; }
 
