@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -15,17 +14,13 @@ public partial class LevelView
     [JsonIgnore] private bool _focusOnCursor;
     [JsonIgnore] private bool _blockRedrawOnCursorMove;
 
-    [JsonIgnore]
-    public Cursor Cursor
+    public Cursor GetCursor((int minX, int minY, int maxX, int maxY)? levelBounds = null)
     {
-        get
-        {
-            if (_cursor is not null) return _cursor;
-            _cursor = new Cursor(FocusObject.X, FocusObject.Y, this);
-            _cursor.Moved += OnCursorMove;
-            NeedRedraw?.Invoke(this, EventArgs.Empty);
-            return _cursor;
-        }
+        if (_cursor is not null) return _cursor;
+        _cursor = new Cursor(this, FocusObject.X, FocusObject.Y, levelBounds);
+        _cursor.Moved += OnCursorMove;
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        return _cursor;
     }
 
     public void RemoveCursor()
@@ -56,7 +51,7 @@ public partial class LevelView
 
     public void ToggleCursorLine()
     {
-        Cursor.ToggleLine();
+        _cursor.ToggleLine();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 

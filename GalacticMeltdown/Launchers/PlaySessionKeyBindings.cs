@@ -37,8 +37,7 @@ public partial class PlaySession
             {
                 MainControl.PickUpItem, () =>
                 {
-                    Cursor cursor = _levelView.Cursor;
-                    cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
+                    Cursor cursor = _levelView.GetCursor((_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1));
                     cursor.Action = (x, y) =>
                     {
                         List<Item> items = _level.GetItems(x, y);
@@ -71,7 +70,7 @@ public partial class PlaySession
             {
                 MainControl.UseCursor, () =>
                 {
-                    Cursor cursor = _levelView.Cursor;
+                    Cursor cursor = _levelView.GetCursor();
                     _levelView.ToggleCursorFocus();
                     cursor.Action = (x, y) =>
                     {
@@ -98,8 +97,7 @@ public partial class PlaySession
             {
                 MainControl.InteractWithDoors, () =>
                 {
-                    Cursor cursor = _levelView.Cursor;
-                    cursor.LevelBounds = (_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1);
+                    Cursor cursor = _levelView.GetCursor((_player.X - 1, _player.Y - 1, _player.X + 1, _player.Y + 1));
                     cursor.Action = (x, y) =>
                     {
                         cursor.Close();
@@ -114,7 +112,7 @@ public partial class PlaySession
                 {
                     if (_player.Equipment[BodyPart.Hands] is not RangedWeaponItem ||
                         _player.ChosenAmmoId is null) return;
-                    Cursor cursor = _levelView.Cursor;
+                    Cursor cursor = _levelView.GetCursor();
                     _levelView.ToggleCursorLine();
                     cursor.Action = (x, y) =>
                     {

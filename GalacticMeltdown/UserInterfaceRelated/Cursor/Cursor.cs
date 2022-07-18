@@ -24,16 +24,6 @@ public class Cursor : IControllable
 
     public HashSet<(int x, int y)> LinePoints { get; private set; }
 
-    public (int minX, int minY, int maxX, int maxY)? LevelBounds
-    {
-        get => _levelBounds;
-        set
-        {
-            _levelBounds = value;
-            MoveInbounds();
-        }
-    }
-
     public ConsoleColor Color => Colors.CursorBg.Cursor;
     
     public int X { get; private set; }
@@ -43,13 +33,16 @@ public class Cursor : IControllable
     
     public event EventHandler<MoveEventArgs> Moved;
 
-    public Cursor(int initialX, int initialY, LevelView levelView)
+    public Cursor(LevelView levelView, int initialX, int initialY,
+        (int minX, int minY, int maxX, int maxY)? levelBounds)
     {
         _initialX = initialX;
         _initialY = initialY;
         X = _initialX;
         Y = _initialY;
         _levelView = levelView;
+        _levelBounds = levelBounds;
+        MoveInbounds();
         Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Cursor,
             new Dictionary<CursorControl, Action>
             {
@@ -113,10 +106,10 @@ public class Cursor : IControllable
 
     private (int minX, int minY, int maxX, int maxY) GetBounds()
     {
-        if (LevelBounds is null) return _levelView.ViewBounds;
+        if (_levelBounds is null) return _levelView.ViewBounds;
 
         var (minXView, minYView, maxXView, maxYView) = _levelView.ViewBounds;
-        var (minXWorld, minYWorld, maxXWorld, maxYWorld) = LevelBounds.Value;
+        var (minXWorld, minYWorld, maxXWorld, maxYWorld) = _levelBounds.Value;
         return (Math.Max(minXView, minXWorld), Math.Max(minYView, minYWorld), Math.Min(maxXView, maxXWorld),
             Math.Min(maxYView, maxYWorld));
     }
