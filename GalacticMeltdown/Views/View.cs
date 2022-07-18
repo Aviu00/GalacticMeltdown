@@ -35,3 +35,8 @@ public interface IOneCellUpdate
 {
     public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
 }
+
+public interface IMultiCellUpdate
+{
+    public event EventHandler<MultiCellUpdateEventArgs> MultiCellUpdate;
+}
