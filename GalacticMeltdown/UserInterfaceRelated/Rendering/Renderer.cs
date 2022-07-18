@@ -77,6 +77,7 @@ public class Renderer
             if (view is IOneCellAnim oca) oca.OneCellAnim += AddOneCellAnim;
             if (view is IMultiCellAnim mca) mca.MultiCellAnim += AddMultiCellAnim;
             if (view is IOneCellUpdate ocu) ocu.OneCellUpdate += UpdateCell;
+            if (view is IMultiCellUpdate mcu) mcu.MultiCellUpdate += UpdateCells;
             view.NeedRedraw += NeedRedrawHandler;
         }
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -92,6 +93,7 @@ public class Renderer
             if (view is IOneCellAnim oca) oca.OneCellAnim -= AddOneCellAnim;
             if (view is IMultiCellAnim mca) mca.MultiCellAnim -= AddMultiCellAnim;
             if (view is IOneCellUpdate ocu) ocu.OneCellUpdate -= UpdateCell;
+            if (view is IMultiCellUpdate mcu) mcu.MultiCellUpdate -= UpdateCells;
             view.NeedRedraw -= NeedRedrawHandler;
         }
         _viewPositioners.Remove(_objectViewPositioners[obj]);
@@ -311,7 +313,7 @@ public class Renderer
         if (RedrawOnScreenSizeChange()) return;
 
         PlayAnimations();
-        View view = (View) sender;
+        var view = (View) sender;
         var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
         var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(e.CellInfo.x, e.CellInfo.y,
             viewMinScreenX, viewMinScreenY);
@@ -319,6 +321,24 @@ public class Renderer
         Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
         SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
         Console.Write(screenCellData.Symbol);
+    }
+
+    private void UpdateCells(object sender, MultiCellUpdateEventArgs e)
+    {
+        if (RedrawOnScreenSizeChange()) return;
+
+        PlayAnimations();
+        var view = (View) sender;
+        var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
+        foreach (var (x, y, cellData) in e.Cells)
+        {
+            var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(x, y,
+                viewMinScreenX, viewMinScreenY);
+            ScreenCellData screenCellData = GetCellWithSwap(screenX, screenY, cellData, view);
+            Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
+            SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
+            Console.Write(screenCellData.Symbol);
+        }
     }
 
     private void OutsideViewChangeHandler(object sender, EventArgs _)

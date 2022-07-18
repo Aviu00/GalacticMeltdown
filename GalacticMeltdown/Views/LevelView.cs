@@ -36,7 +36,7 @@ public class SeenTilesArray
     }
 }
 
-public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
+public partial class LevelView : View, IOneCellAnim, IMultiCellAnim, IMultiCellUpdate
 {
     [JsonProperty] private readonly Level _level;
 
@@ -77,6 +77,7 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim
     public override event EventHandler NeedRedraw;
     public event EventHandler<OneCellAnimEventArgs> OneCellAnim;
     public event EventHandler<MultiCellAnimEventArgs> MultiCellAnim;
+    public event EventHandler<MultiCellUpdateEventArgs> MultiCellUpdate;
 
 
     [JsonConstructor]
