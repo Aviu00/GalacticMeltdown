@@ -12,7 +12,6 @@ public partial class LevelView
     [JsonIgnore] private Cursor _cursor;
 
     [JsonIgnore] private bool _focusOnCursor;
-    [JsonIgnore] private bool _blockRedrawOnCursorMove;
 
     public Cursor GetCursor((int minX, int minY, int maxX, int maxY)? levelBounds = null)
     {
@@ -34,7 +33,7 @@ public partial class LevelView
 
     private void OnCursorMove(object sender, MoveEventArgs _)
     {
-        if (!_blockRedrawOnCursorMove) NeedRedraw?.Invoke(this, EventArgs.Empty);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
@@ -58,17 +57,13 @@ public partial class LevelView
     public void ToggleCursorFocus()
     {
         _focusOnCursor = !_focusOnCursor;
-        _blockRedrawOnCursorMove = true;
         _cursor.MoveInbounds();
         NeedRedraw?.Invoke(this, EventArgs.Empty);
-        _blockRedrawOnCursorMove = false;
     }
 
     public override void Resize(int width, int height)
     {
         base.Resize(width, height);
-        _blockRedrawOnCursorMove = true;
         _cursor?.MoveInbounds();
-        _blockRedrawOnCursorMove = false;
     }
 }

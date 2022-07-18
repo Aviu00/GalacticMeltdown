@@ -76,9 +76,12 @@ public class Cursor : IControllable
     
     public void MoveInbounds()
     {
+        // code contract: should only be called by LevelView and Cursor,
+        // thus LevelView should know when to redraw, thus no move event
+        // is fired 
         if (IsPositionInbounds(X, Y)) return;
         var (minX, minY, maxX, maxY) = GetBounds();
-        MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY));
+        MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY), false);
     }
 
     public void ToggleLine()
@@ -88,14 +91,14 @@ public class Cursor : IControllable
             : null;
     }
 
-    private void MoveTo(int x, int y)
+    private void MoveTo(int x, int y, bool notify = true)
     {
         int oldX = X, oldY = Y;
         X = x;
         Y = y;
         if (LinePoints is not null)
             LinePoints = Algorithms.BresenhamGetPointsOnLine(_initialX, _initialY, X, Y).ToHashSet();
-        Moved?.Invoke(this, new MoveEventArgs(oldX, oldY));
+        if (notify) Moved?.Invoke(this, new MoveEventArgs(oldX, oldY));
     }
 
     private bool IsPositionInbounds(int x, int y)
