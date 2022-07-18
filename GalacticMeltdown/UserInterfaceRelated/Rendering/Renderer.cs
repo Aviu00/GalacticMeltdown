@@ -310,8 +310,6 @@ public class Renderer
 
     private void UpdateCell(object sender, OneCellUpdateEventArgs e)
     {
-        if (RedrawOnScreenSizeChange()) return;
-
         PlayAnimations();
         var view = (View) sender;
         var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
@@ -325,8 +323,6 @@ public class Renderer
 
     private void UpdateCells(object sender, MultiCellUpdateEventArgs e)
     {
-        if (RedrawOnScreenSizeChange()) return;
-
         PlayAnimations();
         var view = (View) sender;
         var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
@@ -343,8 +339,6 @@ public class Renderer
 
     private void NeedRedrawHandler(object sender, EventArgs _)
     {
-        if (RedrawOnScreenSizeChange()) return;
-
         PlayAnimations();
         var view = (View) sender;
         var (minX, minY) = _viewCornerCoords[view];
