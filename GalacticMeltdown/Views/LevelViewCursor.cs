@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
@@ -31,9 +32,23 @@ public partial class LevelView
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
-    private void OnCursorMove(object sender, MoveEventArgs _)
+    private void OnCursorMove(object sender, MoveEventArgs e)
     {
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        if (!_focusOnCursor && _cursor.LinePoints is null)
+        {
+            var (oldScreenX, oldScreenY) = ToViewCoords(e.OldX, e.OldY);
+            var (newScreenX, newScreenY) = ToViewCoords(_cursor.X, _cursor.Y);
+            MultiCellUpdate?.Invoke(this,
+                new MultiCellUpdateEventArgs(new List<(int, int, ViewCellData)>
+                {
+                    (oldScreenX, oldScreenY, GetSymbol(oldScreenX, oldScreenY)),
+                    (newScreenX, newScreenY, GetSymbol(newScreenX, newScreenY))
+                }));
+        }
+        else
+        {
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private ConsoleColor? GetCursorLineColor(int x, int y)
