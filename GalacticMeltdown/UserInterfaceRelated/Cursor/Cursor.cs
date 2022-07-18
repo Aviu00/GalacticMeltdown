@@ -76,9 +76,9 @@ public class Cursor : IControllable
     
     public void MoveInbounds()
     {
-        // code contract: should only be called by LevelView and Cursor,
-        // thus LevelView should know when to redraw, thus no move event
-        // is fired 
+        /* code contract: should only be called by LevelView and Cursor,
+         thus LevelView should know when to redraw, thus no move event 
+         needs to be fired */
         if (IsPositionInbounds(X, Y)) return;
         var (minX, minY, maxX, maxY) = GetBounds();
         MoveTo(Math.Min(Math.Max(X, minX), maxX), Math.Min(Math.Max(Y, minY), maxY), false);
