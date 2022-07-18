@@ -36,11 +36,11 @@ public class Cursor : IControllable
     public Cursor(LevelView levelView, int initialX, int initialY,
         (int minX, int minY, int maxX, int maxY)? levelBounds)
     {
+        _levelView = levelView;
         _initialX = initialX;
         _initialY = initialY;
         X = _initialX;
         Y = _initialY;
-        _levelView = levelView;
         _levelBounds = levelBounds;
         MoveInbounds();
         Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.Cursor,

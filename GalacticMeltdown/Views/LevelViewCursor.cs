@@ -63,4 +63,12 @@ public partial class LevelView
         NeedRedraw?.Invoke(this, EventArgs.Empty);
         _blockRedrawOnCursorMove = false;
     }
+
+    public override void Resize(int width, int height)
+    {
+        base.Resize(width, height);
+        _blockRedrawOnCursorMove = true;
+        _cursor?.MoveInbounds();
+        _blockRedrawOnCursorMove = false;
+    }
 }
