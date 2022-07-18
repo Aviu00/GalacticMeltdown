@@ -231,6 +231,14 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim, IMultiCellU
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
+    public List<string> GetDescription(int x, int y)
+    {
+        IHasDescription descriptionObject =
+            _level.GetNonTileObject(x, y) as IHasDescription ?? _level.GetTile(x, y);
+        if (descriptionObject is null) return null;
+        return _visiblePoints.Contains((x, y)) ? descriptionObject.GetDescription() : new List<string> {"Not visible"};
+    }
+
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is not null)
@@ -346,6 +354,4 @@ public partial class LevelView : View, IOneCellAnim, IMultiCellAnim, IMultiCellU
         var (minX, minY, _, _) = ViewBounds;
         return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, minX, minY);
     }
-
-    public bool IsPointVisible(int x, int y) => _visiblePoints.Contains((x, y));
 }

@@ -74,18 +74,8 @@ public partial class PlaySession
                     _levelView.ToggleCursorFocus();
                     cursor.Action = (x, y) =>
                     {
-                        List<string> description;
-                        if (_level.LevelView.IsPointVisible(x, y))
-                        {
-                            IHasDescription descriptionObject =
-                                _level.GetNonTileObject(x, y) as IHasDescription ?? _level.GetTile(x, y);
-                            if (descriptionObject is null) return;
-                            description = descriptionObject.GetDescription();
-                        }
-                        else
-                        {
-                            description = new() {"Not visible"};
-                        }
+                        List<string> description = _levelView.GetDescription(x, y);
+                        if (description is null) return;
                         InfoWindow infoWindow = new(description);
                         UserInterface.AddChild(this, infoWindow);
                         infoWindow.Open();
