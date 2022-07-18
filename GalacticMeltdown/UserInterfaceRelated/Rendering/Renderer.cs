@@ -76,11 +76,7 @@ public class Renderer
         {
             if (view is IOneCellAnim oca) oca.OneCellAnim += AddOneCellAnim;
             if (view is IMultiCellAnim mca) mca.MultiCellAnim += AddMultiCellAnim;
-            if (view is IOneCellUpdate ocu)
-            {
-                ocu.OneCellUpdate += UpdateCell;
-                ocu.CellChangeOutside += OutsideViewChangeHandler;
-            }
+            if (view is IOneCellUpdate ocu) ocu.OneCellUpdate += UpdateCell;
             view.NeedRedraw += NeedRedrawHandler;
         }
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -95,11 +91,7 @@ public class Renderer
         {
             if (view is IOneCellAnim oca) oca.OneCellAnim -= AddOneCellAnim;
             if (view is IMultiCellAnim mca) mca.MultiCellAnim -= AddMultiCellAnim;
-            if (view is IOneCellUpdate ocu)
-            {
-                ocu.OneCellUpdate -= UpdateCell;
-                ocu.CellChangeOutside -= OutsideViewChangeHandler;
-            }
+            if (view is IOneCellUpdate ocu) ocu.OneCellUpdate -= UpdateCell;
             view.NeedRedraw -= NeedRedrawHandler;
         }
         _viewPositioners.Remove(_objectViewPositioners[obj]);

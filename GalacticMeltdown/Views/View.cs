@@ -34,12 +34,4 @@ public interface IMultiCellAnim
 public interface IOneCellUpdate
 {
     public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
-    /* It is guaranteed that a renderer will not ask a view about a cell that
-     isn't inside of it. It is also guaranteed that a view will not report a 
-     cell change in a position outside of its rectangle. However, if the window 
-     size changed, it is possible that a view should report change inside of it 
-     but thinks it happened outside of it. That's why it signals the renderer 
-     that a change has happened but it thinks it has happened outside of it. The 
-     event below is that signal. */
-    public event EventHandler CellChangeOutside;
 }

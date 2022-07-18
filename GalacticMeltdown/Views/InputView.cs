@@ -12,7 +12,6 @@ public class InputView : View, IOneCellUpdate
 
     public override event EventHandler NeedRedraw;
     public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
-    public event EventHandler CellChangeOutside;
 
     private StringBuilder _currentText = new();
     public string Text => _currentText.ToString();
@@ -62,10 +61,6 @@ public class InputView : View, IOneCellUpdate
                         new ViewCellData(null, BgColor))));
             }
         }
-        else
-        {
-            CellChangeOutside?.Invoke(this, EventArgs.Empty);
-        }
     }
 
     public void AddCharacter(char character)
@@ -79,10 +74,6 @@ public class InputView : View, IOneCellUpdate
                 OneCellUpdate?.Invoke(this,
                     new OneCellUpdateEventArgs((_currentText.Length % Width - 1, _currentText.Length / Width,
                         new ViewCellData((_currentText[^1], TextColor), BgColor))));
-        }
-        else
-        {
-            CellChangeOutside?.Invoke(this, EventArgs.Empty);
         }
     }
 }
