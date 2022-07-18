@@ -151,7 +151,7 @@ public class Renderer
         Console.SetCursorPosition(0, 0);
     }
 
-    private bool RedrawOnScreenSizeChange()
+    public bool RedrawOnScreenSizeChange()
     {
         int windowWidth = Console.WindowWidth;
         int windowHeight = Console.WindowHeight;

@@ -21,6 +21,7 @@ public static class UserInterface
     {
         _renderer = new Renderer();
         _inputProcessor = new InputProcessor();
+        _inputProcessor.KeyPressed += OnKeyPress;
         _tasks = new OrderedSet<(object, Action)>();
         _objectTasks = new Dictionary<object, (object, Action)>();
     }
@@ -107,6 +108,11 @@ public static class UserInterface
     public static void PlayAnimations()
     {
         _renderer.PlayAnimations();
+    }
+
+    private static void OnKeyPress(object sender, EventArgs _)
+    {
+        _renderer.RedrawOnScreenSizeChange();
     }
 
     public static void SetAnimationTime(int animationTime)
