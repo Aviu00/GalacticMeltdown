@@ -8,6 +8,8 @@ public class InputProcessor
 {
     private Dictionary<object, Controller> _objectControllers;
     private OrderedSet<Controller> _activeControllers;
+
+    public event EventHandler KeyPressed;
     
     private bool _inLoop;
 
@@ -60,7 +62,9 @@ public class InputProcessor
         Controller active;
         while ((active = _activeControllers.Last) is not null)
         {
-            active.HandleKey(Console.ReadKey(true));
+            ConsoleKeyInfo key = Console.ReadKey(true);
+            KeyPressed?.Invoke(this, EventArgs.Empty);
+            active.HandleKey(key);
         }
 
         _inLoop = false;
