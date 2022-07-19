@@ -10,15 +10,11 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 public class LevelCreationDialog : TextWindow
 {
-    private readonly Action<string, int?> _sender;
-
     private InputLine _nameLine;
     private InputLine _seedLine;
     
     public LevelCreationDialog(Action<string, int?> sender)
     {
-        _sender = sender;
-        
         _nameLine = new InputLine();
         _seedLine = new InputLine(char.IsDigit);
         
@@ -35,17 +31,17 @@ public class LevelCreationDialog : TextWindow
                 {SelectionControl.Up, LineView.SelectPrev},
                 {SelectionControl.SpecialAction, SendInfo}
             }));
-    }
-
-    private void SendInfo()
-    {
-        UserInterface.Forget(this);
-        int? seed = null;
-        if (int.TryParse(_seedLine.Text, out int tempSeed))
-        {
-            seed = tempSeed;
-        }
-        _sender(_nameLine.Text, seed);
+        
+        void SendInfo()
+            {
+                UserInterface.Forget(this);
+                int? seed = null;
+                if (int.TryParse(_seedLine.Text, out int tempSeed))
+                {
+                    seed = tempSeed;
+                }
+                sender(_nameLine.Text, seed);
+            }
     }
 
     public override void Open()
