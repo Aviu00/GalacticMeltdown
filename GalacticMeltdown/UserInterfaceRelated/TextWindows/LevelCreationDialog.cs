@@ -35,12 +35,7 @@ public class LevelCreationDialog : TextWindow
         void SendInfo()
             {
                 UserInterface.Forget(this);
-                int? seed = null;
-                if (int.TryParse(_seedLine.Text, out int tempSeed))
-                {
-                    seed = tempSeed;
-                }
-                sender(_nameLine.Text, seed);
+                sender(_nameLine.Text, int.TryParse(_seedLine.Text, out int seed) ? seed : null);
             }
     }
 
