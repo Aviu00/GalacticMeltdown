@@ -1,18 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 
 namespace GalacticMeltdown.Views;
 
-public class InputView : View, IOneCellUpdate
+public class InputView : View, IMultiCellUpdate
 {
     private const ConsoleColor BgColor = Colors.Input.Background;
     private const ConsoleColor TextColor = Colors.Input.Text;
     private const ConsoleColor CursorColor = Colors.Input.Cursor;
 
     public override event EventHandler NeedRedraw;
-    public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
+    public event EventHandler<MultiCellUpdateEventArgs> MultiCellUpdate;
 
     private StringBuilder _currentText = new();
     public string Text => _currentText.ToString();
@@ -59,35 +60,32 @@ public class InputView : View, IOneCellUpdate
     public void DeleteCharacter()
     {
         if (_currentText.Length == 0) return;
-        _currentText.Length--;
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
-        return;
-        if (_currentText.Length-- <= Width * Height)
-        {
-            if ((_currentText.Length + 1) % Width == 0)
-                NeedRedraw?.Invoke(this, EventArgs.Empty);
-            else
-            {
-                OneCellUpdate?.Invoke(this,
-                    new OneCellUpdateEventArgs((_currentText.Length % Width, _currentText.Length / Width,
-                        new ViewCellData(null, BgColor))));
-            }
-        }
+        if (_currentText.Length-- > Width * Height) return;
+        if ((_currentText.Length + 1) % Width == 0)
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        else
+            MultiCellUpdate?.Invoke(this,
+                new MultiCellUpdateEventArgs(new List<(int, int, ViewCellData)>
+                {
+                    (_currentText.Length % Width, _currentText.Length / Width,
+                        new ViewCellData(null, CursorColor)),
+                    (_currentText.Length % Width + 1, _currentText.Length / Width,
+                        new ViewCellData(null, BgColor)),
+                }));
     }
 
     public void AddCharacter(char character)
     {
         _currentText.Append(character);
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
-        return;
-        if (_currentText.Length <= Width * Height)
-        {
-            if (_currentText.Length % Width == 0)
-                NeedRedraw?.Invoke(this, EventArgs.Empty);
-            else
-                OneCellUpdate?.Invoke(this,
-                    new OneCellUpdateEventArgs((_currentText.Length % Width - 1, _currentText.Length / Width,
-                        new ViewCellData((_currentText[^1], TextColor), BgColor))));
-        }
+        if (_currentText.Length > Width * Height) return;
+        if (_currentText.Length % Width == 0)
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        else
+            MultiCellUpdate?.Invoke(this, new MultiCellUpdateEventArgs(new List<(int, int, ViewCellData)>
+            {
+                (_currentText.Length % Width - 1, _currentText.Length / Width,
+                    new ViewCellData((_currentText[^1], TextColor), BgColor)),
+                (_currentText.Length % Width, _currentText.Length / Width, new ViewCellData(null, CursorColor)),
+            }));
     }
 }
