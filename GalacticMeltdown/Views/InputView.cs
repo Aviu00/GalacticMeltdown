@@ -9,6 +9,7 @@ public class InputView : View, IOneCellUpdate
 {
     private const ConsoleColor BgColor = Colors.Input.Background;
     private const ConsoleColor TextColor = Colors.Input.Text;
+    private const ConsoleColor CursorColor = Colors.Input.Cursor;
 
     public override event EventHandler NeedRedraw;
     public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
@@ -19,6 +20,7 @@ public class InputView : View, IOneCellUpdate
     public override ViewCellData GetSymbol(int x, int y)
     {
         ConsoleColor? bgColor = y > _currentText.Length / Width ? null : BgColor;
+        if (y * Width + x == _currentText.Length) bgColor = CursorColor;
         (char, ConsoleColor TextColor)? symbolData =
             y * Width + x < _currentText.Length ? (_currentText[y * Width + x], TextColor) : null;
         return new ViewCellData(symbolData, bgColor);
@@ -43,6 +45,13 @@ public class InputView : View, IOneCellUpdate
         for (var i = 0; i < _currentText.Length && i / Width < Height; i++)
         {
             cells[i % Width, i / Width] = new ViewCellData((_currentText[i], TextColor), BgColor);
+        }
+
+        if (_currentText.Length < Width * Height)
+        {
+            cells[_currentText.Length % Width, _currentText.Length / Width] =
+                new ViewCellData(cells[_currentText.Length % Width, _currentText.Length / Width].SymbolData,
+                    CursorColor);
         }
         return cells;
     }
