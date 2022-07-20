@@ -50,6 +50,9 @@ public class InputView : View, IOneCellUpdate
     public void DeleteCharacter()
     {
         if (_currentText.Length == 0) return;
+        _currentText.Length--;
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        return;
         if (_currentText.Length-- <= Width * Height)
         {
             if ((_currentText.Length + 1) % Width == 0)
@@ -66,6 +69,8 @@ public class InputView : View, IOneCellUpdate
     public void AddCharacter(char character)
     {
         _currentText.Append(character);
+        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        return;
         if (_currentText.Length <= Width * Height)
         {
             if (_currentText.Length % Width == 0)
