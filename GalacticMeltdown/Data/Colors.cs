@@ -50,6 +50,7 @@ public static class Colors
     {
         public const ConsoleColor Background = ConsoleColor.DarkGray;
         public const ConsoleColor Text = ConsoleColor.White;
+        public const ConsoleColor Cursor = ConsoleColor.Gray;
     }
     
     public static class Player

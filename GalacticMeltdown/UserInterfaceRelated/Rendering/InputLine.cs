@@ -20,6 +20,7 @@ public class InputLine : PressableListLine
 {
     private const ConsoleColor EnteredTextColor = Colors.Input.Text;
     private const ConsoleColor Unselected = Colors.Input.Background;
+    private const ConsoleColor Cursor = Colors.Input.Cursor;
     private const ConsoleColor Selected = Colors.MenuLine.InputLine.Selected;
     private const ConsoleColor Pressed = Colors.MenuLine.InputLine.Pressed;
 
@@ -45,21 +46,38 @@ public class InputLine : PressableListLine
         get
         {
             char symbol;
-            if (_currentText.Length < Width)
-            {
-                symbol = x < _currentText.Length ? _currentText[x] : ' ';
-            }
-            else
-            {
-                symbol = _currentText[_currentText.Length - Width + x];
-            }
-            return new ViewCellData((symbol, EnteredTextColor), _state switch
+            ConsoleColor bgColor = _state switch
             {
                 InputLineState.Pressed => Pressed,
                 InputLineState.Selected => Selected,
                 InputLineState.Unselected => Unselected,
                 _ => Unselected
-            });
+            };
+            if (_currentText.Length < Width - 1)
+            {
+                if (x < _currentText.Length)
+                {
+                    symbol = _currentText[x];
+                }
+                else
+                {
+                    symbol = ' ';
+                    if (x == _currentText.Length && _state == InputLineState.Pressed) bgColor = Cursor;
+                }
+            }
+            else
+            {
+                if (x == Width - 1)
+                {
+                    symbol = ' ';
+                    if (_state == InputLineState.Pressed) bgColor = Cursor;
+                }
+                else
+                {
+                    symbol = _currentText[_currentText.Length - (Width - 1) + x];                    
+                }
+            }
+            return new ViewCellData((symbol, EnteredTextColor), bgColor);
         }
     }
 
