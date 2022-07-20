@@ -32,7 +32,7 @@ public class InputView : View, IMultiCellUpdate
         var cells = new ViewCellData[Width, Height];
         cells.Initialize();
         if (Width == 0 || Height == 0) return cells;
-        if (_currentText.Length / Width < Height)
+        if (_currentText.Length < Height * Width)
         {
             for (int row = 0; row < _currentText.Length / Width + 1; row++)
             {
@@ -43,7 +43,7 @@ public class InputView : View, IMultiCellUpdate
             }
         }
         
-        for (var i = 0; i < _currentText.Length && i / Width < Height; i++)
+        for (var i = 0; i < Math.Min(_currentText.Length, Height * Width); i++)
         {
             cells[i % Width, i / Width] = new ViewCellData((_currentText[i], TextColor), BgColor);
         }
