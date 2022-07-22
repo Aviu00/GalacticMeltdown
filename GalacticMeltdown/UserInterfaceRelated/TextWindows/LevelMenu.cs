@@ -58,17 +58,17 @@ public class LevelMenu : TextWindow
         List<Button> buttons = new(levelInfos.OrderBy(info => info.Name)
             .Select(levelInfo => new LevelButton(levelInfo, TryStartLevel)));
         LineView.SetLines(buttons.Cast<ListLine>().ToList(), true);
-        
+
         void TryStartLevel(LevelInfo levelInfo)
         {
-            Level level = FilesystemLevelManager.GetLevel(levelInfo.Name);
+            Level level = FilesystemLevelManager.GetLevel(levelInfo.Path);
             if (level is null)
             {
                 SetLevelButtons();
                 return;
             }
 
-            Game.StartLevel(level, levelInfo.Name);
+            Game.StartLevel(level, levelInfo.Path);
         }
     }
 
@@ -81,8 +81,8 @@ public class LevelMenu : TextWindow
         void CreateLevel(string name, int? seed)
         {
             seed ??= Random.Shared.Next();
-            Level level = FilesystemLevelManager.CreateLevel(seed.Value, name);
-            Game.StartLevel(level, name);
+            Level level = FilesystemLevelManager.CreateLevel(seed.Value, name, out string path);
+            Game.StartLevel(level, path);
         }
     }
 

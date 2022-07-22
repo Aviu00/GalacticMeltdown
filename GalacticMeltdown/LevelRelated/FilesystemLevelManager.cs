@@ -36,26 +36,24 @@ public static class FilesystemLevelManager
         return levelInfos;
     }
 
-    public static Level CreateLevel(int seed, string name)
+    public static Level CreateLevel(int seed, string name, out string path)
     {
         Level level = new MapGenerator(seed).Generate();
         // Save seed and name
-        string path = Path.Combine(GetSaveFolder(), name);
+        path = Path.Combine(GetSaveFolder(), name);
         Directory.CreateDirectory(path);
         File.WriteAllText(Path.Combine(path, "seed.txt"), seed.ToString());
-        SaveLevel(level, name);
+        SaveLevel(level, path);
         return level;
     }
 
-    public static Level GetLevel(string name)
+    public static Level GetLevel(string path)
     {
-        string path = Path.Combine(GetSaveFolder(), name, "level.json");
-        return JsonConvert.DeserializeObject<Level>(File.ReadAllText(path));
+        return JsonConvert.DeserializeObject<Level>(File.ReadAllText(Path.Combine(path, "level.json")));
     }
 
-    public static void SaveLevel(Level level, string name)
+    public static void SaveLevel(Level level, string path)
     {
-        string path = Path.Combine(GetSaveFolder(), name);
         string levelStr = JsonConvert.SerializeObject(level, Formatting.None, new JsonSerializerSettings
         {
             PreserveReferencesHandling = PreserveReferencesHandling.Objects,

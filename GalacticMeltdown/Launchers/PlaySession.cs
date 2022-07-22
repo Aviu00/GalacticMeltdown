@@ -20,7 +20,7 @@ public partial class PlaySession
 {
     private const int SaveInterval = 100;
 
-    private readonly string _levelName;
+    private readonly string _levelPath;
 
     private bool _cheatsEnabled;
 
@@ -32,10 +32,10 @@ public partial class PlaySession
 
     private Dictionary<MainControl, Action> _mainActions;
 
-    public PlaySession(Level level, string levelName)
+    public PlaySession(Level level, string levelPath)
     {
         _saveCounter = new Counter(level, SaveInterval, SaveInterval);
-        _levelName = levelName;
+        _levelPath = levelPath;
         _level = level;
         _player = _level.Player;
         _player.SetControlFunc(() =>
@@ -84,7 +84,7 @@ public partial class PlaySession
 
     private void SaveLevel()
     {
-        FilesystemLevelManager.SaveLevel(_level, _levelName);
+        FilesystemLevelManager.SaveLevel(_level, _levelPath);
     }
 
     private void MoveControlled(int deltaX, int deltaY)
