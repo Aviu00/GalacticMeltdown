@@ -63,9 +63,9 @@ public static class FilesystemLevelManager
         File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
     }
 
-    public static void RemoveLevel(string name)
+    public static void RemoveLevel(string path)
     {
-        Directory.Delete(Path.Combine(GetSaveFolder(), name), true);
+        Directory.Delete(path, true);
     }
 
     private static string GetSaveFolder()

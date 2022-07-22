@@ -13,12 +13,12 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows;
 
 internal class LevelButton : Button
 {
-    public string Name { get; }
+    public string Path { get; }
 
     public LevelButton(LevelInfo levelInfo, Action<LevelInfo> levelStarter) 
         : base(levelInfo.Name, $"Seed: {levelInfo.Seed}", () => levelStarter(levelInfo))
     {
-        Name = levelInfo.Name;
+        Path = levelInfo.Path;
     }
 }
 
@@ -96,7 +96,7 @@ public class LevelMenu : TextWindow
         void RemoveSelectedLevel(bool doIt)
         {
             if (!doIt) return;
-            FilesystemLevelManager.RemoveLevel(((LevelButton) LineView.GetCurrent()).Name);
+            FilesystemLevelManager.RemoveLevel(((LevelButton) LineView.GetCurrent()).Path);
             SetLevelButtons();
         }
     }
