@@ -7,30 +7,30 @@ using Newtonsoft.Json;
 
 namespace GalacticMeltdown.LevelRelated;
 
-public readonly record struct LevelInfo(int Seed, string Name);
+public readonly record struct LevelInfo(string Path, string Name, int Seed);
 
 public static class FilesystemLevelManager
 {
     public static List<LevelInfo> GetLevelInfo()
     {
         List<LevelInfo> levelInfos = new();
-        string path = GetSaveFolder();
-        if (!Directory.Exists(path))
-            Directory.CreateDirectory(path!);
-        foreach (var dir in Directory.GetDirectories(path))
+        string saveFolderPath = GetSaveFolder();
+        if (!Directory.Exists(saveFolderPath))
+            Directory.CreateDirectory(saveFolderPath!);
+        foreach (var dir in Directory.GetDirectories(saveFolderPath))
         {
             string name = Path.GetFileName(dir);
             int seed;
             try
             {
-                seed = Convert.ToInt32(File.ReadAllText(Path.Combine(path, name, "seed.txt")));
+                seed = Convert.ToInt32(File.ReadAllText(Path.Combine(saveFolderPath, name, "seed.txt")));
             }
             catch (Exception)
             {
                 seed = -1;
             }
 
-            levelInfos.Add(new LevelInfo(seed, name));
+            levelInfos.Add(new LevelInfo(dir, name, seed));
         }
 
         return levelInfos;
