@@ -138,5 +138,16 @@ public static class UtilityFunctions
         }
     }
 
+    public static string RandomString(int size)
+    {
+        var builder = new StringBuilder(size);
+        for (var i = 0; i < size; i++)
+        {
+            builder.Append((char) Random.Shared.Next('a', 'z' + 1));
+        }
+
+        return builder.ToString();
+    }
+
     public static int CountDigits(int num) => num == 0 ? 1 : (int) Math.Floor(Math.Log10(Math.Abs(num))) + 1;
 }

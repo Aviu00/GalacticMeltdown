@@ -37,7 +37,7 @@ public static class FilesystemLevelManager
     {
         Level level = new MapGenerator(seed).Generate();
         // Save seed and name
-        path = Path.Combine(GetSaveFolder(), name);
+        while (Directory.Exists(path = Path.Combine(GetSaveFolder(), Utility.UtilityFunctions.RandomString(32)))) {}
         Directory.CreateDirectory(path);
         File.WriteAllText(Path.Combine(path, "info.txt"), seed.ToString() + '\n' + name);
         SaveLevel(level, path);
