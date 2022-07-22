@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security;
 using GalacticMeltdown.MapGeneration;
 using Newtonsoft.Json;
 
@@ -9,6 +11,9 @@ public readonly record struct LevelInfo(string Path, string Name, int Seed);
 
 public static class FilesystemLevelManager
 {
+    private const string LevelFileName = "level.json";
+    private const string InfoFileName = "info.txt";
+    
     public static List<LevelInfo> GetLevelInfo()
     {
         List<LevelInfo> levelInfos = new();
@@ -17,15 +22,24 @@ public static class FilesystemLevelManager
             Directory.CreateDirectory(saveDirPath);
         foreach (string dir in Directory.GetDirectories(saveDirPath))
         {
-            string[] fileLines = File.ReadAllText(Path.Combine(dir, "info.txt")).Split('\n');
-            if (fileLines.Length < 2) continue;
-            if (!int.TryParse(fileLines[0], out int seed))
+            if (!File.Exists(Path.Combine(dir, LevelFileName))) continue;
+            try
             {
-                seed = -1;
-            }
-            string name = fileLines[1];
+                string[] fileLines = File.ReadAllText(Path.Combine(dir, InfoFileName)).Split('\n');
+                string name = fileLines.Length < 2 ? "noname" : fileLines[1];
 
-            levelInfos.Add(new LevelInfo(dir, name, seed));
+                if (fileLines.Length == 0 || !int.TryParse(fileLines[0], out int seed))
+                {
+                    seed = -1;
+                }
+
+                levelInfos.Add(new LevelInfo(dir, name, seed));
+            }
+            catch (FileNotFoundException) { }
+            catch (IOException) { }
+            catch (SecurityException) { }
+            catch (UnauthorizedAccessException) { }
+            catch (NotSupportedException) { }
         }
 
         return levelInfos;
@@ -38,15 +52,32 @@ public static class FilesystemLevelManager
                    Utility.UtilityFunctions.RandomString(32))))
         {
         }
-        Directory.CreateDirectory(path);
-        File.WriteAllText(Path.Combine(path, "info.txt"), seed.ToString() + '\n' + name);
+
+        try
+        {
+            Directory.CreateDirectory(path);
+            File.WriteAllText(Path.Combine(path, InfoFileName), seed.ToString() + '\n' + name);
+        }
+        catch (FileNotFoundException) { }
+        catch (IOException) { }
+        catch (SecurityException) { }
+        catch (UnauthorizedAccessException) { }
+        catch (NotSupportedException) { }
+        
         SaveLevel(level, path);
         return level;
     }
 
     public static Level GetLevel(string path)
     {
-        return JsonConvert.DeserializeObject<Level>(File.ReadAllText(Path.Combine(path, "level.json")));
+        try
+        {
+            return JsonConvert.DeserializeObject<Level>(File.ReadAllText(Path.Combine(path, LevelFileName)));
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     public static void SaveLevel(Level level, string path)
@@ -56,12 +87,25 @@ public static class FilesystemLevelManager
             PreserveReferencesHandling = PreserveReferencesHandling.Objects,
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
         });
-        
-        File.WriteAllText(Path.Combine(path, "level.json"), levelStr);
+
+        try
+        {
+            File.WriteAllText(Path.Combine(path, LevelFileName), levelStr);
+        }
+        catch (FileNotFoundException) { }
+        catch (IOException) { }
+        catch (SecurityException) { }
+        catch (UnauthorizedAccessException) { }
+        catch (NotSupportedException) { }
     }
 
     public static void RemoveLevel(string path)
     {
-        Directory.Delete(path, true);
+        try
+        {
+            Directory.Delete(path, true);
+        }
+        catch (IOException) { }
+        catch (UnauthorizedAccessException) { }
     }
 }
