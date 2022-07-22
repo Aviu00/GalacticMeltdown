@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using GalacticMeltdown.MapGeneration;
 using Newtonsoft.Json;
 
@@ -14,10 +12,10 @@ public static class FilesystemLevelManager
     public static List<LevelInfo> GetLevelInfo()
     {
         List<LevelInfo> levelInfos = new();
-        string saveFolderPath = GetSaveFolder();
-        if (!Directory.Exists(saveFolderPath))
-            Directory.CreateDirectory(saveFolderPath!);
-        foreach (string dir in Directory.GetDirectories(saveFolderPath))
+        string saveDirPath = Data.FileSystemInfo.LevelDirectory;
+        if (!Directory.Exists(saveDirPath))
+            Directory.CreateDirectory(saveDirPath);
+        foreach (string dir in Directory.GetDirectories(saveDirPath))
         {
             string[] fileLines = File.ReadAllText(Path.Combine(dir, "info.txt")).Split('\n');
             if (fileLines.Length < 2) continue;
@@ -36,8 +34,10 @@ public static class FilesystemLevelManager
     public static Level CreateLevel(int seed, string name, out string path)
     {
         Level level = new MapGenerator(seed).Generate();
-        // Save seed and name
-        while (Directory.Exists(path = Path.Combine(GetSaveFolder(), Utility.UtilityFunctions.RandomString(32)))) {}
+        while (Directory.Exists(path = Path.Combine(Data.FileSystemInfo.LevelDirectory,
+                   Utility.UtilityFunctions.RandomString(32))))
+        {
+        }
         Directory.CreateDirectory(path);
         File.WriteAllText(Path.Combine(path, "info.txt"), seed.ToString() + '\n' + name);
         SaveLevel(level, path);
@@ -63,13 +63,5 @@ public static class FilesystemLevelManager
     public static void RemoveLevel(string path)
     {
         Directory.Delete(path, true);
-    }
-
-    private static string GetSaveFolder()
-    {
-        bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-        string home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-        return Path.Combine(home, isWindows
-            ? @"AppData\Roaming\galactic-meltdown\levels" : ".local/share/galactic-meltdown/levels");
     }
 }
