@@ -17,18 +17,15 @@ public static class FilesystemLevelManager
         string saveFolderPath = GetSaveFolder();
         if (!Directory.Exists(saveFolderPath))
             Directory.CreateDirectory(saveFolderPath!);
-        foreach (var dir in Directory.GetDirectories(saveFolderPath))
+        foreach (string dir in Directory.GetDirectories(saveFolderPath))
         {
-            string name = Path.GetFileName(dir);
-            int seed;
-            try
-            {
-                seed = Convert.ToInt32(File.ReadAllText(Path.Combine(saveFolderPath, name, "seed.txt")));
-            }
-            catch (Exception)
+            string[] fileLines = File.ReadAllText(Path.Combine(dir, "info.txt")).Split('\n');
+            if (fileLines.Length < 2) continue;
+            if (!int.TryParse(fileLines[0], out int seed))
             {
                 seed = -1;
             }
+            string name = fileLines[1];
 
             levelInfos.Add(new LevelInfo(dir, name, seed));
         }
@@ -42,7 +39,7 @@ public static class FilesystemLevelManager
         // Save seed and name
         path = Path.Combine(GetSaveFolder(), name);
         Directory.CreateDirectory(path);
-        File.WriteAllText(Path.Combine(path, "seed.txt"), seed.ToString());
+        File.WriteAllText(Path.Combine(path, "info.txt"), seed.ToString() + '\n' + name);
         SaveLevel(level, path);
         return level;
     }
