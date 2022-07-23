@@ -40,3 +40,8 @@ public interface IMultiCellUpdate
 {
     public event EventHandler<MultiCellUpdateEventArgs> MultiCellUpdate;
 }
+
+public interface ILineUpdate
+{
+    public event EventHandler<LineUpdateEventArgs> LineUpdate;
+}
