@@ -214,37 +214,24 @@ public class Renderer
                 }
             }
         }
-        Console.SetCursorPosition(0, 0);
-        // do first step outside the loop to avoid working with nulls
-        ScreenCellData screenCellData = screenCells[0, ConvertToConsoleY(0)];
-        StringBuilder currentSequence = new($"{screenCellData.Symbol}");
-        ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
-        int x = 1;
-        // We want Y coordinate increasing by 1 to mean an object going up.
-        // However, in the console it means an object going down. This is why we go backwards here.  
-        for (int y = ConvertToConsoleY(0); y >= 0; y--)
-        {
-            for (; x < screenCells.GetLength(0); x++)
-            {
-                screenCellData = screenCells[x, y];
-                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
-                    || screenCellData.BgColor != curBgColor)
-                {
-                    SetConsoleColor(curFgColor, curBgColor);
-                    Console.Write(currentSequence);
-                    currentSequence.Clear();
-                    curFgColor = screenCellData.FgColor;
-                    curBgColor = screenCellData.BgColor;
-                }
+        ScreenCellData firstCell = screenCells[0, ConvertToConsoleY(0)];
+        Draw(RowIter(), (firstCell.FgColor, firstCell.BgColor));
 
-                currentSequence.Append(screenCellData.Symbol);
+        IEnumerable<IEnumerable<ScreenCellData>> RowIter()
+        {
+            for (int y = screenCells.GetLength(1) - 1; y >= 0; y--)
+            {
+                yield return CellIter(y);
             }
 
-            x = 0;
+            IEnumerable<ScreenCellData> CellIter(int y)
+            {
+                for (int x = 0; x < screenCells.GetLength(0); x++)
+                {
+                    yield return screenCells[x, y];
+                }
+            }
         }
-
-        SetConsoleColor(curFgColor, curBgColor);
-        Console.Write(currentSequence);
     }
 
     private void InitPixelFuncArr(int windowWidth, int windowHeight)
@@ -341,21 +328,98 @@ public class Renderer
     {
         PlayAnimations();
         var view = (View) sender;
-        var (minX, minY) = _viewCornerCoords[view];
-        var viewCells = view.GetAllCells();
-        int maxX = Math.Min(_cellInfos.GetLength(0), minX + viewCells.GetLength(0)), 
-            maxY = Math.Min(_cellInfos.GetLength(1), minY + viewCells.GetLength(1)) - 1;
-        Console.SetCursorPosition(minX, ConvertToConsoleY(maxY));
+        (int minX, int minY) = _viewCornerCoords[view];
+        ViewCellData[,] viewCells = view.GetAllCells();
+        int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
         ScreenCellData screenCellData = GetCellWithSwap(minX, maxY, viewCells[0, maxY - minY], view);
-        StringBuilder currentSequence = new();
-        ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
-        for (int y = maxY; y >= minY; y--)
-        {
-            if (minX != 0) Console.SetCursorPosition(minX, ConvertToConsoleY(y));
+        if (minX == 0) Draw(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), ConvertToConsoleY(maxY));
+        else Draw(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), minX, ConvertToConsoleY(maxY));
 
-            for (int x = minX; x < maxX; x++)
+        IEnumerable<IEnumerable<ScreenCellData>> RowIter()
+        {
+            for (int y = maxY; y >= minY; y--)
             {
-                screenCellData = GetCellWithSwap(x, y, viewCells[x - minX, y - minY], view);
+                yield return CellIter(y);
+            }
+
+            IEnumerable<ScreenCellData> CellIter(int y)
+            {
+                for (int x = minX; x < maxX; x++)
+                {
+                    yield return GetCellWithSwap(x, y, viewCells[x - minX, y - minY], view);
+                }
+            }
+        }
+    }
+
+    private void Draw(IEnumerable<IEnumerable<ScreenCellData>> data,
+        (ConsoleColor FgColor, ConsoleColor BgColor) firstColor)
+    {
+        Console.SetCursorPosition(0, 0);
+        StringBuilder currentSequence = new();
+        (ConsoleColor curFgColor, ConsoleColor curBgColor) = firstColor;
+        foreach (IEnumerable<ScreenCellData> row in data)
+        {
+            foreach (ScreenCellData screenCellData in row)
+            {
+                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
+                    || screenCellData.BgColor != curBgColor)
+                {
+                    SetConsoleColor(curFgColor, curBgColor);
+                    Console.Write(currentSequence);
+                    currentSequence.Clear();
+                    curFgColor = screenCellData.FgColor;
+                    curBgColor = screenCellData.BgColor;
+                }
+
+                currentSequence.Append(screenCellData.Symbol);
+            }
+        }
+        SetConsoleColor(curFgColor, curBgColor);
+        Console.Write(currentSequence);
+    }
+
+    private void Draw(IEnumerable<IEnumerable<ScreenCellData>> data,
+        (ConsoleColor FgColor, ConsoleColor BgColor) firstColor, int y)
+    {
+        Console.SetCursorPosition(0, y);
+        StringBuilder currentSequence = new();
+        (ConsoleColor curFgColor, ConsoleColor curBgColor) = firstColor;
+        foreach (IEnumerable<ScreenCellData> row in data)
+        {
+            foreach (ScreenCellData screenCellData in row)
+            {
+                if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
+                    || screenCellData.BgColor != curBgColor)
+                {
+                    SetConsoleColor(curFgColor, curBgColor);
+                    Console.Write(currentSequence);
+                    currentSequence.Clear();
+                    curFgColor = screenCellData.FgColor;
+                    curBgColor = screenCellData.BgColor;
+                }
+
+                currentSequence.Append(screenCellData.Symbol);
+            }
+
+            currentSequence.Append('\n');
+        }
+
+        currentSequence.Length--;
+        SetConsoleColor(curFgColor, curBgColor);
+        Console.Write(currentSequence);
+    }
+
+    private void Draw(IEnumerable<IEnumerable<ScreenCellData>> data,
+        (ConsoleColor FgColor, ConsoleColor BgColor) firstColor, int x, int y)
+    {
+        StringBuilder currentSequence = new();
+        (ConsoleColor curFgColor, ConsoleColor curBgColor) = firstColor;
+        foreach (IEnumerable<ScreenCellData> row in data)
+        {
+            Console.SetCursorPosition(x, y++);
+            foreach (ScreenCellData screenCellData in row)
+            {
                 if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
                     || screenCellData.BgColor != curBgColor)
                 {
@@ -366,22 +430,11 @@ public class Renderer
 
                 currentSequence.Append(screenCellData.Symbol);
             }
-
-            if (minX == 0)
-            {
-                if (maxX != _cellInfos.GetLength(0)) currentSequence.Append('\n');
-            }
-            else
-            {
-                WriteSequenceOut();
-            }
-        }
-
-        if (minX == 0)
-        {
-            if (maxX != _cellInfos.GetLength(0)) currentSequence.Length--;
+            
             WriteSequenceOut();
         }
+
+        WriteSequenceOut();
 
         void WriteSequenceOut()
         {
