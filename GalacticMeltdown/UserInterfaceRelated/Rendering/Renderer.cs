@@ -126,11 +126,8 @@ public class Renderer
             var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(viewX, viewY,
                 viewMinScreenX, viewMinScreenY);
-            ScreenCellData screenCellData = GetCellWithSwap(screenX, screenY, viewCellData, view);
-            Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
-            SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
-            Console.Write(screenCellData.Symbol);
-            int actualDelay = (int) (delay * factor);
+            DrawCell(GetCellWithSwap(screenX, screenY, viewCellData, view), screenX, screenY);
+            var actualDelay = (int) (delay * factor);
             if (actualDelay != 0) Thread.Sleep(actualDelay);
         }
 
@@ -302,10 +299,7 @@ public class Renderer
         var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
         var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(e.CellInfo.x, e.CellInfo.y,
             viewMinScreenX, viewMinScreenY);
-        ScreenCellData screenCellData = GetCellWithSwap(screenX, screenY, e.CellInfo.cellData, view);
-        Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
-        SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
-        Console.Write(screenCellData.Symbol);
+        DrawCell(GetCellWithSwap(screenX, screenY, e.CellInfo.cellData, view), screenX, screenY);
     }
 
     private void UpdateCells(object sender, MultiCellUpdateEventArgs e)
@@ -317,11 +311,15 @@ public class Renderer
         {
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(x, y,
                 viewMinScreenX, viewMinScreenY);
-            ScreenCellData screenCellData = GetCellWithSwap(screenX, screenY, cellData, view);
-            Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
-            SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
-            Console.Write(screenCellData.Symbol);
+            DrawCell(GetCellWithSwap(screenX, screenY, cellData, view), screenX, screenY);
         }
+    }
+
+    private void DrawCell(ScreenCellData screenCellData, int screenX, int screenY)
+    {
+        Console.SetCursorPosition(screenX, ConvertToConsoleY(screenY));
+        SetConsoleColor(screenCellData.FgColor, screenCellData.BgColor);
+        Console.Write(screenCellData.Symbol);
     }
 
     private void NeedRedrawHandler(object sender, EventArgs _)
