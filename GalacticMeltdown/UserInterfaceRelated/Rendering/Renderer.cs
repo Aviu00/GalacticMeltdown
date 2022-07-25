@@ -422,20 +422,20 @@ public class Renderer
         {
             foreach (IEnumerable<ScreenCellData> row in data)
             {
-                DrawLine(row, minX, y++);
+                Console.SetCursorPosition(minX, y++);
+                DrawSeq(row);
             }
         }
     }
 
-    private (StringBuilder currentSequence, ConsoleColor FgColor, ConsoleColor BgColor) DrawLine(
-        IEnumerable<ScreenCellData> data, int x, int y,
+    private (StringBuilder currentSequence, ConsoleColor FgColor, ConsoleColor BgColor) DrawSeq(
+        IEnumerable<ScreenCellData> data,
         (StringBuilder currentSequence, ConsoleColor FgColor, ConsoleColor BgColor)? prevInfo = null)
     {
         StringBuilder currentSequence;
         ConsoleColor curFgColor; 
         ConsoleColor curBgColor;
         ScreenCellData screenCellData;
-        Console.SetCursorPosition(x, y);
         using IEnumerator<ScreenCellData> en = data.GetEnumerator();
         if (!en.MoveNext()) return prevInfo ?? (null, DefaultColor, DefaultColor);
         if (prevInfo is null)
