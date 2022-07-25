@@ -215,7 +215,7 @@ public class Renderer
             }
         }
         ScreenCellData firstCell = screenCells[0, ConvertToConsoleY(0)];
-        Draw(RowIter(), (firstCell.FgColor, firstCell.BgColor));
+        DrawWholeLines(RowIter(), (firstCell.FgColor, firstCell.BgColor), 0);
 
         IEnumerable<IEnumerable<ScreenCellData>> RowIter()
         {
@@ -332,8 +332,16 @@ public class Renderer
         ViewCellData[,] viewCells = view.GetAllCells();
         int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
         ScreenCellData screenCellData = GetCellWithSwap(minX, maxY, viewCells[0, maxY - minY], view);
-        if (minX == 0) Draw(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), ConvertToConsoleY(maxY));
-        else Draw(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), minX, ConvertToConsoleY(maxY));
+        if (minX == 0)
+        {
+            if (maxX == _cellInfos.GetLength(0))
+                DrawWholeLines(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), ConvertToConsoleY(maxY));
+            else DrawLeftLines(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), ConvertToConsoleY(maxY));
+        }
+        else
+        {
+            DrawLines(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), minX, ConvertToConsoleY(maxY));
+        }
 
         IEnumerable<IEnumerable<ScreenCellData>> RowIter()
         {
@@ -352,10 +360,10 @@ public class Renderer
         }
     }
 
-    private void Draw(IEnumerable<IEnumerable<ScreenCellData>> data,
-        (ConsoleColor FgColor, ConsoleColor BgColor) firstColor)
+    private void DrawWholeLines(IEnumerable<IEnumerable<ScreenCellData>> data,
+        (ConsoleColor FgColor, ConsoleColor BgColor) firstColor, int y)
     {
-        Console.SetCursorPosition(0, 0);
+        Console.SetCursorPosition(0, y);
         StringBuilder currentSequence = new();
         (ConsoleColor curFgColor, ConsoleColor curBgColor) = firstColor;
         foreach (IEnumerable<ScreenCellData> row in data)
@@ -379,7 +387,7 @@ public class Renderer
         Console.Write(currentSequence);
     }
 
-    private void Draw(IEnumerable<IEnumerable<ScreenCellData>> data,
+    private void DrawLeftLines(IEnumerable<IEnumerable<ScreenCellData>> data,
         (ConsoleColor FgColor, ConsoleColor BgColor) firstColor, int y)
     {
         Console.SetCursorPosition(0, y);
@@ -410,7 +418,7 @@ public class Renderer
         Console.Write(currentSequence);
     }
 
-    private void Draw(IEnumerable<IEnumerable<ScreenCellData>> data,
+    private void DrawLines(IEnumerable<IEnumerable<ScreenCellData>> data,
         (ConsoleColor FgColor, ConsoleColor BgColor) firstColor, int x, int y)
     {
         StringBuilder currentSequence = new();
