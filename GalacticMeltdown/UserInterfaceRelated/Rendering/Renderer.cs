@@ -78,6 +78,7 @@ public class Renderer
             if (view is IMultiCellAnim mca) mca.MultiCellAnim += AddMultiCellAnim;
             if (view is IOneCellUpdate ocu) ocu.OneCellUpdate += UpdateCell;
             if (view is IMultiCellUpdate mcu) mcu.MultiCellUpdate += UpdateCells;
+            if (view is ILineUpdate lu) lu.LineUpdate += UpdateLine;
             view.NeedRedraw += NeedRedrawHandler;
         }
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
@@ -94,6 +95,7 @@ public class Renderer
             if (view is IMultiCellAnim mca) mca.MultiCellAnim -= AddMultiCellAnim;
             if (view is IOneCellUpdate ocu) ocu.OneCellUpdate -= UpdateCell;
             if (view is IMultiCellUpdate mcu) mcu.MultiCellUpdate -= UpdateCells;
+            if (view is ILineUpdate lu) lu.LineUpdate -= UpdateLine;
             view.NeedRedraw -= NeedRedrawHandler;
         }
         _viewPositioners.Remove(_objectViewPositioners[obj]);
@@ -308,6 +310,21 @@ public class Renderer
             var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(x, y,
                 viewMinScreenX, viewMinScreenY);
             DrawCell(GetCellWithSwap(screenX, screenY, cellData, view), screenX, screenY);
+        }
+    }
+
+    private void UpdateLine(object sender, LineUpdateEventArgs e)
+    {
+        var view = (View) sender;
+        Console.SetCursorPosition(0, ConvertToConsoleY(_viewCornerCoords[view].minY + e.Y));
+        DrawSequence(GetCells());
+
+        IEnumerable<ScreenCellData> GetCells()
+        {
+            for (int x = 0; x < e.Cells.Count; x++)
+            {
+                yield return GetCellWithSwap(x, e.Y, e.Cells[x], view);
+            }
         }
     }
 
