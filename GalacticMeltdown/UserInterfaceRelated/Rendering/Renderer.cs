@@ -427,15 +427,30 @@ public class Renderer
         }
     }
 
-    private void DrawLine(IEnumerable<ScreenCellData> data, int x, int y)
+    private (StringBuilder currentSequence, ConsoleColor FgColor, ConsoleColor BgColor) DrawLine(
+        IEnumerable<ScreenCellData> data, int x, int y,
+        (StringBuilder currentSequence, ConsoleColor FgColor, ConsoleColor BgColor)? prevInfo = null)
     {
+        StringBuilder currentSequence;
+        ConsoleColor curFgColor; 
+        ConsoleColor curBgColor;
+        ScreenCellData screenCellData;
         Console.SetCursorPosition(x, y);
         using IEnumerator<ScreenCellData> en = data.GetEnumerator();
-        if (!en.MoveNext()) return;
-        ScreenCellData screenCellData = en.Current;
-        StringBuilder currentSequence = new($"{screenCellData.Symbol}");
-        ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
-        while (en.MoveNext())
+        if (!en.MoveNext()) return prevInfo ?? (null, DefaultColor, DefaultColor);
+        if (prevInfo is null)
+        {
+            currentSequence = new StringBuilder();
+            screenCellData = en.Current;
+            curFgColor = screenCellData.FgColor;
+            curBgColor = screenCellData.BgColor;
+        }
+        else
+        {
+            (currentSequence, curFgColor, curBgColor) = prevInfo.Value;
+        }
+
+        do
         {
             screenCellData = en.Current;
             if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
@@ -447,9 +462,10 @@ public class Renderer
             }
 
             currentSequence.Append(screenCellData.Symbol);
-        }
-        WriteSequenceOut();
-        
+        } while (en.MoveNext());
+        if (prevInfo is null) WriteSequenceOut();
+        return (currentSequence, curFgColor, curBgColor);
+
         void WriteSequenceOut()
         {
             SetConsoleColor(curFgColor, curBgColor);
