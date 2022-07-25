@@ -434,8 +434,6 @@ public class Renderer
             WriteSequenceOut();
         }
 
-        WriteSequenceOut();
-
         void WriteSequenceOut()
         {
             SetConsoleColor(curFgColor, curBgColor);
