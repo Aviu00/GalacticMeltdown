@@ -211,8 +211,7 @@ public class Renderer
                 }
             }
         }
-        ScreenCellData firstCell = screenCells[0, ConvertToConsoleY(0)];
-        DrawArea(RowIter(), (firstCell.FgColor, firstCell.BgColor), 0, 0, screenCells.GetLength(0));
+        DrawArea(RowIter(), 0, 0, screenCells.GetLength(0));
 
         IEnumerable<IEnumerable<ScreenCellData>> RowIter()
         {
@@ -329,8 +328,7 @@ public class Renderer
         (int minX, int minY) = _viewCornerCoords[view];
         ViewCellData[,] viewCells = view.GetAllCells();
         int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
-        ScreenCellData screenCellData = GetCellWithSwap(minX, maxY, viewCells[0, maxY - minY], view);
-        DrawArea(RowIter(), (screenCellData.FgColor, screenCellData.BgColor), ConvertToConsoleY(maxY), minX, maxX);
+        DrawArea(RowIter(), ConvertToConsoleY(maxY), minX, maxX);
 
         IEnumerable<IEnumerable<ScreenCellData>> RowIter()
         {
@@ -349,8 +347,7 @@ public class Renderer
         }
     }
 
-    private void DrawArea(IEnumerable<IEnumerable<ScreenCellData>> data,
-        (ConsoleColor FgColor, ConsoleColor BgColor) firstColor, int y, int minX, int maxX)
+    private void DrawArea(IEnumerable<IEnumerable<ScreenCellData>> data, int y, int minX, int maxX)
     {
         if (minX == 0)
         {
@@ -368,7 +365,7 @@ public class Renderer
         {
             Console.SetCursorPosition(0, y);
             StringBuilder currentSequence = new();
-            (ConsoleColor curFgColor, ConsoleColor curBgColor) = firstColor;
+            ConsoleColor curFgColor = DefaultColor, curBgColor = DefaultColor;
             foreach (IEnumerable<ScreenCellData> row in data)
             {
                 foreach (ScreenCellData screenCellData in row)
@@ -395,7 +392,7 @@ public class Renderer
         {
             Console.SetCursorPosition(0, y);
             StringBuilder currentSequence = new();
-            (ConsoleColor curFgColor, ConsoleColor curBgColor) = firstColor;
+            ConsoleColor curFgColor = DefaultColor, curBgColor = DefaultColor;
             foreach (IEnumerable<ScreenCellData> row in data)
             {
                 foreach (ScreenCellData screenCellData in row)
