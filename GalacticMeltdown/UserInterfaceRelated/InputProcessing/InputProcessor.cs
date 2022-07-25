@@ -10,6 +10,7 @@ public class InputProcessor
     private OrderedSet<Controller> _activeControllers;
 
     public event EventHandler KeyPressed;
+    public event EventHandler WaitingForKey;
     
     private bool _inLoop;
 
@@ -62,6 +63,7 @@ public class InputProcessor
         Controller active;
         while ((active = _activeControllers.Last) is not null)
         {
+            WaitingForKey?.Invoke(this, EventArgs.Empty);
             ConsoleKeyInfo key = Console.ReadKey(true);
             KeyPressed?.Invoke(this, EventArgs.Empty);
             active.HandleKey(key);

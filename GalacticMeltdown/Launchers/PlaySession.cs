@@ -40,7 +40,6 @@ public partial class PlaySession
         _player = _level.Player;
         _player.SetControlFunc(() =>
         {
-            UserInterface.PlayAnimations();
             UserInterface.TakeControl(this);
         });
         _controlledObject = _player;
@@ -73,7 +72,6 @@ public partial class PlaySession
         }
         else
         {
-            UserInterface.PlayAnimations();
             Thread.Sleep(400);
             EndGameMessage endGameMessage = new(_level.PlayerWon.Value ? "You won" : "You died");
             UserInterface.AddChild(this, endGameMessage);

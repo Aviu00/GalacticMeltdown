@@ -21,7 +21,8 @@ public static class UserInterface
     {
         _renderer = new Renderer();
         _inputProcessor = new InputProcessor();
-        _inputProcessor.KeyPressed += OnKeyPress;
+        _inputProcessor.KeyPressed += (_, _) => _renderer.RedrawOnScreenSizeChange();;
+        _inputProcessor.WaitingForKey += (_, _) => _renderer.PlayAnimations();
         _tasks = new OrderedSet<(object, Action)>();
         _objectTasks = new Dictionary<object, (object, Action)>();
     }
@@ -86,7 +87,7 @@ public static class UserInterface
         {
             Forget(child);
         }
-        
+
         object parent = _children[obj].parent;
         if (parent is not null) _children[parent].children.Remove(obj);
         _children.Remove(obj);
@@ -97,22 +98,12 @@ public static class UserInterface
         _tasks.Remove(_objectTasks[obj]);
         _objectTasks.Remove(obj);
     }
-    
+
     public static void AddChild(object parent, object child)
     {
         if (!_children.ContainsKey(parent)) return;
         _children[parent].children.Add(child);
         _children.Add(child, (parent, new HashSet<object>()));
-    }
-
-    public static void PlayAnimations()
-    {
-        _renderer.PlayAnimations();
-    }
-
-    private static void OnKeyPress(object sender, EventArgs _)
-    {
-        _renderer.RedrawOnScreenSizeChange();
     }
 
     public static void SetAnimationTime(int animationTime)
