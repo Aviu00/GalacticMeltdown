@@ -364,58 +364,29 @@ public class Renderer
         void DrawWholeLines()
         {
             Console.SetCursorPosition(0, y);
-            StringBuilder currentSequence = new();
-            ConsoleColor curFgColor = DefaultColor, curBgColor = DefaultColor;
+            (StringBuilder CurrentSequence, ConsoleColor FgColor, ConsoleColor BgColor) seqData = 
+                (new StringBuilder(), DefaultColor, DefaultColor);
             foreach (IEnumerable<ScreenCellData> row in data)
             {
-                foreach (ScreenCellData screenCellData in row)
-                {
-                    if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
-                        || screenCellData.BgColor != curBgColor)
-                    {
-                        SetConsoleColor(curFgColor, curBgColor);
-                        Console.Write(currentSequence);
-                        currentSequence.Clear();
-                        curFgColor = screenCellData.FgColor;
-                        curBgColor = screenCellData.BgColor;
-                    }
-
-                    currentSequence.Append(screenCellData.Symbol);
-                }
+                seqData = DrawSequence(row, seqData);
             }
 
-            SetConsoleColor(curFgColor, curBgColor);
-            Console.Write(currentSequence);
+            WriteSeq(seqData);
         }
 
         void DrawLeftLines()
         {
             Console.SetCursorPosition(0, y);
-            StringBuilder currentSequence = new();
-            ConsoleColor curFgColor = DefaultColor, curBgColor = DefaultColor;
+            (StringBuilder CurrentSequence, ConsoleColor FgColor, ConsoleColor BgColor) seqData = 
+                (new StringBuilder(), DefaultColor, DefaultColor);
             foreach (IEnumerable<ScreenCellData> row in data)
             {
-                foreach (ScreenCellData screenCellData in row)
-                {
-                    if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
-                        || screenCellData.BgColor != curBgColor)
-                    {
-                        SetConsoleColor(curFgColor, curBgColor);
-                        Console.Write(currentSequence);
-                        currentSequence.Clear();
-                        curFgColor = screenCellData.FgColor;
-                        curBgColor = screenCellData.BgColor;
-                    }
-
-                    currentSequence.Append(screenCellData.Symbol);
-                }
-
-                currentSequence.Append('\n');
+                seqData = DrawSequence(row, seqData);
+                seqData.CurrentSequence.Append('\n');
             }
 
-            currentSequence.Length--;
-            SetConsoleColor(curFgColor, curBgColor);
-            Console.Write(currentSequence);
+            seqData.CurrentSequence.Length--;
+            WriteSeq(seqData);
         }
 
         void DrawLines()
@@ -423,14 +394,20 @@ public class Renderer
             foreach (IEnumerable<ScreenCellData> row in data)
             {
                 Console.SetCursorPosition(minX, y++);
-                DrawSeq(row);
+                DrawSequence(row);
             }
+        }
+
+        void WriteSeq((StringBuilder CurrentSequence, ConsoleColor FgColor, ConsoleColor BgColor) seqData)
+        {
+            SetConsoleColor(seqData.FgColor, seqData.BgColor);
+            Console.Write(seqData.CurrentSequence);
         }
     }
 
-    private (StringBuilder currentSequence, ConsoleColor FgColor, ConsoleColor BgColor) DrawSeq(
+    private (StringBuilder CurrentSequence, ConsoleColor FgColor, ConsoleColor BgColor) DrawSequence(
         IEnumerable<ScreenCellData> data,
-        (StringBuilder currentSequence, ConsoleColor FgColor, ConsoleColor BgColor)? prevInfo = null)
+        (StringBuilder CurrentSequence, ConsoleColor FgColor, ConsoleColor BgColor)? prevInfo = null)
     {
         StringBuilder currentSequence;
         ConsoleColor curFgColor; 
