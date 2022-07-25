@@ -423,33 +423,41 @@ public class Renderer
 
         void DrawLines()
         {
-            StringBuilder currentSequence = new();
-            (ConsoleColor curFgColor, ConsoleColor curBgColor) = firstColor;
             foreach (IEnumerable<ScreenCellData> row in data)
             {
-                Console.SetCursorPosition(minX, y++);
-                foreach (ScreenCellData screenCellData in row)
-                {
-                    if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
-                        || screenCellData.BgColor != curBgColor)
-                    {
-                        WriteSequenceOut();
-                        curFgColor = screenCellData.FgColor;
-                        curBgColor = screenCellData.BgColor;
-                    }
-
-                    currentSequence.Append(screenCellData.Symbol);
-                }
-
-                WriteSequenceOut();
+                DrawLine(row, minX, y++);
             }
+        }
+    }
 
-            void WriteSequenceOut()
+    private void DrawLine(IEnumerable<ScreenCellData> data, int x, int y)
+    {
+        Console.SetCursorPosition(x, y);
+        using IEnumerator<ScreenCellData> en = data.GetEnumerator();
+        if (!en.MoveNext()) return;
+        ScreenCellData screenCellData = en.Current;
+        StringBuilder currentSequence = new($"{screenCellData.Symbol}");
+        ConsoleColor curFgColor = screenCellData.FgColor, curBgColor = screenCellData.BgColor;
+        while (en.MoveNext())
+        {
+            screenCellData = en.Current;
+            if (screenCellData.FgColor != curFgColor && screenCellData.Symbol != ' '
+                || screenCellData.BgColor != curBgColor)
             {
-                SetConsoleColor(curFgColor, curBgColor);
-                Console.Write(currentSequence);
-                currentSequence.Clear();
+                WriteSequenceOut();
+                curFgColor = screenCellData.FgColor;
+                curBgColor = screenCellData.BgColor;
             }
+
+            currentSequence.Append(screenCellData.Symbol);
+        }
+        WriteSequenceOut();
+        
+        void WriteSequenceOut()
+        {
+            SetConsoleColor(curFgColor, curBgColor);
+            Console.Write(currentSequence);
+            currentSequence.Clear();
         }
     }
 }
