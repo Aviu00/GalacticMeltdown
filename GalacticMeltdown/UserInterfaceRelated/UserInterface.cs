@@ -50,7 +50,7 @@ public static class UserInterface
     public static void SetViewPositioner(object obj, ViewPositioner viewPositioner)
     {
         if (!_children.ContainsKey(obj)) return;
-        _renderer.SetView(obj, viewPositioner);
+        _renderer.SetViewPositioner(obj, viewPositioner);
     }
 
     public static void SetController(object obj, Controller controller)

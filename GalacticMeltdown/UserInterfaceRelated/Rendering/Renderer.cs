@@ -55,7 +55,7 @@ public class Renderer
         }
     }
 
-    public void SetView(object obj, ViewPositioner viewPositioner)
+    public void SetViewPositioner(object obj, ViewPositioner viewPositioner)
     {
         if (_objectViewPositioners.ContainsKey(obj))
         {
