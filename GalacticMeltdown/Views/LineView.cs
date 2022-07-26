@@ -149,7 +149,7 @@ public class LineView : View, IFullRedraw, ILineUpdate
         return _lines[_pressableLineIndexes[_selectedIndex]];
     }
 
-    private void OnInputLineUpdate(object sender, EventArgs _)
+    private void OnInputLineUpdate(object sender, InputLineUpdateEventArgs e)
     {
         var lineContents = GetLineCells(_pressableLineIndexes[_selectedIndex]);
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using GalacticMeltdown.Data;
+using GalacticMeltdown.Events;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing;
 using GalacticMeltdown.UserInterfaceRelated.InputProcessing.ControlTypes;
 using GalacticMeltdown.Utility;
@@ -32,7 +33,7 @@ public class InputLine : PressableListLine
 
     public string Text => _currentText.ToString();
 
-    public event EventHandler Updated;
+    public event EventHandler<InputLineUpdateEventArgs> Updated;
 
     public InputLine(Func<char, bool> characterValidationFunction = null)
     {
@@ -84,7 +85,7 @@ public class InputLine : PressableListLine
     public override void Press()
     {
         _state = InputLineState.Pressed;
-        Updated?.Invoke(this, EventArgs.Empty);
+        Updated?.Invoke(this, new InputLineUpdateEventArgs(null));
         UserInterface.SetController(this,
             new TextInputController(AddCharacter,
                 UtilityFunctions.JoinDictionaries(KeyBindings.TextInput,
@@ -101,32 +102,53 @@ public class InputLine : PressableListLine
     private void DeleteCharacter()
     {
         if (_currentText.Length == 0) return;
-        _currentText.Length--;
-        Updated?.Invoke(this, EventArgs.Empty);
+        if (_currentText.Length-- < Width - 1)
+        {
+            Updated?.Invoke(this, new InputLineUpdateEventArgs(new List<(int x, ViewCellData)>
+            {
+                (_currentText.Length, new ViewCellData(null, Cursor)),
+                (_currentText.Length + 1, new ViewCellData(null, Pressed)),
+            }));
+        }
+        else
+        {
+            Updated?.Invoke(this, new InputLineUpdateEventArgs(null));
+        }
     }
 
     private void AddCharacter(char character)
     {
         _currentText.Append(character);
-        Updated?.Invoke(this, EventArgs.Empty);
+        if (_currentText.Length < Width - 1)
+        {
+            Updated?.Invoke(this, new InputLineUpdateEventArgs(new List<(int x, ViewCellData)>
+            {
+                (_currentText.Length, new ViewCellData(null, Cursor)),
+                (_currentText.Length - 1, new ViewCellData((character, EnteredTextColor), Pressed)),
+            }));
+        }
+        else
+        {
+            Updated?.Invoke(this, new InputLineUpdateEventArgs(null));
+        }
     }
 
     public override void Select()
     {
         _state = InputLineState.Selected;
-        Updated?.Invoke(this, EventArgs.Empty);
+        Updated?.Invoke(this, new InputLineUpdateEventArgs(null));
     }
 
     public override void Deselect()
     {
         _state = InputLineState.Unselected;
-        Updated?.Invoke(this, EventArgs.Empty);
+        Updated?.Invoke(this, new InputLineUpdateEventArgs(null));
     }
 
     private void Back()
     {
         _state = InputLineState.Selected;
-        Updated?.Invoke(this, EventArgs.Empty);
+        Updated?.Invoke(this, new InputLineUpdateEventArgs(null));
         UserInterface.YieldControl(this);
     }
 }
