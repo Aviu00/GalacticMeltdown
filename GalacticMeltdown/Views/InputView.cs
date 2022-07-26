@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 
 namespace GalacticMeltdown.Views;
 
-public class InputView : View, IMultiCellUpdate
+public class InputView : View, IOneCellUpdate, IMultiCellUpdate, ILineUpdate
 {
     private const ConsoleColor BgColor = Colors.Input.Background;
     private const ConsoleColor TextColor = Colors.Input.Text;
     private const ConsoleColor CursorColor = Colors.Input.Cursor;
 
     public override event EventHandler NeedRedraw;
+    public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
     public event EventHandler<MultiCellUpdateEventArgs> MultiCellUpdate;
+    public event EventHandler<LineUpdateEventArgs> LineUpdate;
 
     private StringBuilder _currentText = new();
     public string Text => _currentText.ToString();
@@ -62,7 +65,13 @@ public class InputView : View, IMultiCellUpdate
         if (_currentText.Length == 0) return;
         if (_currentText.Length-- > Width * Height) return;
         if ((_currentText.Length + 1) % Width == 0)
-            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        {
+            OneCellUpdate?.Invoke(this,
+                new OneCellUpdateEventArgs(
+                    (Width - 1, _currentText.Length / Width, new ViewCellData(null, CursorColor))));
+            LineUpdate?.Invoke(this, new LineUpdateEventArgs((_currentText.Length + 1) / Width,
+                Enumerable.Repeat(new ViewCellData(null, null), Width).ToList()));
+        }
         else
             MultiCellUpdate?.Invoke(this,
                 new MultiCellUpdateEventArgs(new List<(int, int, ViewCellData)>
@@ -79,7 +88,15 @@ public class InputView : View, IMultiCellUpdate
         _currentText.Append(character);
         if (_currentText.Length > Width * Height) return;
         if (_currentText.Length % Width == 0)
-            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        {
+            OneCellUpdate?.Invoke(this,
+                new OneCellUpdateEventArgs((Width - 1, _currentText.Length / Width - 1,
+                    GetSymbol(Width - 1, _currentText.Length / Width - 1))));
+            var line = new List<ViewCellData> {new ViewCellData(null, CursorColor)};
+            line.AddRange(Enumerable.Repeat(new ViewCellData(null, BgColor), Width - 1));
+            LineUpdate?.Invoke(this,
+                new LineUpdateEventArgs(_currentText.Length / Width, line));
+        }
         else
             MultiCellUpdate?.Invoke(this, new MultiCellUpdateEventArgs(new List<(int, int, ViewCellData)>
             {
