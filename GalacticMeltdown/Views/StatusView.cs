@@ -68,7 +68,6 @@ public class StatusView : View, ILineUpdate
         {Equipment.Feet, 10},
     };
 
-    public override event EventHandler NeedRedraw;
     public event EventHandler<LineUpdateEventArgs> LineUpdate;
 
     public StatusView(Level level)

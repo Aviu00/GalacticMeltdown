@@ -7,14 +7,14 @@ using GalacticMeltdown.Utility;
 
 namespace GalacticMeltdown.Views;
 
-public class MinimapView : View
+public class MinimapView : View, IFullRedraw
 {
     private const char UndiscoveredSym = '◻';
     
     private Chunk[,] _chunks;
     private Player _player;
 
-    public override event EventHandler NeedRedraw;
+    public event EventHandler NeedRedraw;
 
     public MinimapView(Chunk[,] chunks, Player player)
     {

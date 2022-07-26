@@ -7,8 +7,6 @@ public abstract class View
 {
     protected int Width;
     protected int Height;
-    
-    public abstract event EventHandler NeedRedraw;
 
     public virtual void Resize(int width, int height)
     {
@@ -19,6 +17,11 @@ public abstract class View
     public abstract ViewCellData GetSymbol(int x, int y);
 
     public abstract ViewCellData[,] GetAllCells();
+}
+
+public interface IFullRedraw
+{
+    public event EventHandler NeedRedraw;
 }
 
 public interface IOneCellAnim

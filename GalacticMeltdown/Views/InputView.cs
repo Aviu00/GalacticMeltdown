@@ -13,7 +13,6 @@ public class InputView : View, IOneCellUpdate, IMultiCellUpdate, ILineUpdate
     private const ConsoleColor TextColor = Colors.Input.Text;
     private const ConsoleColor CursorColor = Colors.Input.Cursor;
 
-    public override event EventHandler NeedRedraw;
     public event EventHandler<OneCellUpdateEventArgs> OneCellUpdate;
     public event EventHandler<MultiCellUpdateEventArgs> MultiCellUpdate;
     public event EventHandler<LineUpdateEventArgs> LineUpdate;

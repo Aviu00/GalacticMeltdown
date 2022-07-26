@@ -8,7 +8,7 @@ using GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 namespace GalacticMeltdown.Views;
 
-public class LineView : View, ILineUpdate
+public class LineView : View, IFullRedraw, ILineUpdate
 {
     private const ConsoleColor DefaultBackgroundColor = Colors.DefaultMain;
     
@@ -16,7 +16,7 @@ public class LineView : View, ILineUpdate
     private List<int> _pressableLineIndexes;
     private int _selectedIndex;
     
-    public override event EventHandler NeedRedraw;
+    public event EventHandler NeedRedraw;
     public event EventHandler<LineUpdateEventArgs> LineUpdate;
 
     public override ViewCellData GetSymbol(int x, int y)

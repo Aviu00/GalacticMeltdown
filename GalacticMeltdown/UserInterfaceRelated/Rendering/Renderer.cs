@@ -79,7 +79,7 @@ public class Renderer
             if (view is IOneCellUpdate ocu) ocu.OneCellUpdate += UpdateCell;
             if (view is IMultiCellUpdate mcu) mcu.MultiCellUpdate += UpdateCells;
             if (view is ILineUpdate lu) lu.LineUpdate += UpdateLine;
-            view.NeedRedraw += NeedRedrawHandler;
+            if (view is IFullRedraw fr) fr.NeedRedraw += NeedRedrawHandler;
         }
         RecalcAndRedraw(Console.WindowWidth, Console.WindowHeight);
     }
@@ -96,7 +96,7 @@ public class Renderer
             if (view is IOneCellUpdate ocu) ocu.OneCellUpdate -= UpdateCell;
             if (view is IMultiCellUpdate mcu) mcu.MultiCellUpdate -= UpdateCells;
             if (view is ILineUpdate lu) lu.LineUpdate -= UpdateLine;
-            view.NeedRedraw -= NeedRedrawHandler;
+            if (view is IFullRedraw fr) fr.NeedRedraw -= NeedRedrawHandler;
         }
         _viewPositioners.Remove(_objectViewPositioners[obj]);
         _objectViewPositioners.Remove(obj);

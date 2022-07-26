@@ -6,7 +6,7 @@ using GalacticMeltdown.Events;
 
 namespace GalacticMeltdown.Views;
 
-public class TextView : View
+public class TextView : View, IFullRedraw
 {
     private const ConsoleColor TextColor = Colors.TextView.Normal;
     private const ConsoleColor BackgroundColor = Colors.TextView.Background;
@@ -15,7 +15,7 @@ public class TextView : View
     private char[,] _characters;
     private int _topTextRow;
 
-    public override event EventHandler NeedRedraw;
+    public event EventHandler NeedRedraw;
 
     public TextView(List<string> lines)
     {
