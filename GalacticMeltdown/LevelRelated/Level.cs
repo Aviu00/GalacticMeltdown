@@ -42,7 +42,7 @@ public class Level
 
     [JsonProperty] public HashSet<Actor> PlayerFriends;
 
-    [JsonIgnore] public OverlayView OverlayView;
+    [JsonIgnore] public StatusView StatusView;
     [JsonIgnore] public MinimapView MinimapView;
 
     [JsonIgnore] private List<Chunk> _activeChunks;
@@ -120,7 +120,7 @@ public class Level
 
     private void Init()
     {
-        OverlayView = new OverlayView(this);
+        StatusView = new StatusView(this);
         Player.Died += PlayerDiedHandler;
         Player.Moved += ControllableMoved;
         _controllableObjects.CollectionChanged += ControllableObjectsUpdateHandler;

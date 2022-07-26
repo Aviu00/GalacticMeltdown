@@ -10,13 +10,13 @@ public class MainViewPositioner : ViewPositioner
     private const double MinimapHeight = 0.2;
     
     private LevelView _levelView;
-    private OverlayView _overlayView;
+    private StatusView _statusView;
     private MinimapView _minimapView;
     
-    public MainViewPositioner(LevelView levelView, OverlayView overlayView, MinimapView minimapView)
+    public MainViewPositioner(LevelView levelView, StatusView statusView, MinimapView minimapView)
     {
         _levelView = levelView;
-        _overlayView = overlayView;
+        _statusView = statusView;
         _minimapView = minimapView;
     }
 
@@ -26,12 +26,12 @@ public class MainViewPositioner : ViewPositioner
         var levelViewWidth = Convert.ToInt32(Width * LevelViewWidth);
         var minimapHeight = Convert.ToInt32(Height * MinimapHeight);
         _levelView.Resize(levelViewWidth, Height);
-        _overlayView.Resize(Width - levelViewWidth, Height - minimapHeight);
+        _statusView.Resize(Width - levelViewWidth, Height - minimapHeight);
         _minimapView.Resize(Width - levelViewWidth, minimapHeight);
         ViewPositions = new List<(View, int minX, int minY, int maxX, int maxY)>
         {
             (_minimapView, levelViewWidth, 0, Width, minimapHeight),
-            (_overlayView, levelViewWidth, minimapHeight, Width, Height),
+            (_statusView, levelViewWidth, minimapHeight, Width, Height),
             (_levelView, 0, 0, levelViewWidth, Height),
         };
     }

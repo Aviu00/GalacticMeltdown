@@ -8,7 +8,7 @@ using GalacticMeltdown.LevelRelated;
 
 namespace GalacticMeltdown.Views;
 
-public class OverlayView : View
+public class StatusView : View
 {
     private const ConsoleColor HpColor = Colors.Overlay.Hp;
     private const ConsoleColor EnergyColor = Colors.Overlay.Energy;
@@ -19,7 +19,6 @@ public class OverlayView : View
 
     private Level _level; // Maybe later
     private Player _player; // State, equipment
-    // Performance monitor?
 
     private (string text, ConsoleColor color)?[] Lines =>
         new (string text, ConsoleColor color)?[]
@@ -51,7 +50,7 @@ public class OverlayView : View
 
     public override event EventHandler NeedRedraw;
 
-    public OverlayView(Level level)
+    public StatusView(Level level)
     {
         _level = level;
         _player = level.Player;
