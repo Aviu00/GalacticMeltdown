@@ -100,9 +100,19 @@ public class LineView : View, ILineUpdate
         _selectedIndex += 1;
         if (_selectedIndex == _pressableLineIndexes.Count) _selectedIndex = 0;
         if (prevIndex == _selectedIndex) return;
-        ((PressableListLine) _lines[_pressableLineIndexes[prevIndex]]).Deselect();
-        ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        int prevLineIndex = _pressableLineIndexes[prevIndex];
+        int curLineIndex = _pressableLineIndexes[_selectedIndex];
+        ((PressableListLine) _lines[prevLineIndex]).Deselect();
+        ((PressableListLine) _lines[curLineIndex]).Select();
+        if (prevLineIndex < Height && curLineIndex < Height)
+        {
+            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - prevLineIndex - 1, GetLineCells(prevLineIndex)));
+            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - curLineIndex - 1, GetLineCells(curLineIndex)));
+        }
+        else
+        {
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public void SelectPrev()
@@ -112,9 +122,19 @@ public class LineView : View, ILineUpdate
         _selectedIndex -= 1;
         if (_selectedIndex == -1) _selectedIndex = _pressableLineIndexes.Count - 1;
         if (prevIndex == _selectedIndex) return;
-        ((PressableListLine) _lines[_pressableLineIndexes[prevIndex]]).Deselect();
-        ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        int prevLineIndex = _pressableLineIndexes[prevIndex];
+        int curLineIndex = _pressableLineIndexes[_selectedIndex];
+        ((PressableListLine) _lines[prevLineIndex]).Deselect();
+        ((PressableListLine) _lines[curLineIndex]).Select();
+        if (prevLineIndex < Height && curLineIndex < Height)
+        {
+            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - prevLineIndex - 1, GetLineCells(prevLineIndex)));
+            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - curLineIndex - 1, GetLineCells(curLineIndex)));
+        }
+        else
+        {
+            NeedRedraw?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public void PressCurrent()
@@ -131,15 +151,20 @@ public class LineView : View, ILineUpdate
 
     private void OnInputLineUpdate(object sender, EventArgs _)
     {
-        var lineContents = new List<ViewCellData>();
-        for (int i = 0; i < Width; i++)
-        {
-            lineContents.Add(((InputLine) _lines[_pressableLineIndexes[_selectedIndex]])[i]);
-        }
+        var lineContents = GetLineCells(_pressableLineIndexes[_selectedIndex]);
 
         LineUpdate?.Invoke(this,
             new LineUpdateEventArgs(
                 _pressableLineIndexes[_selectedIndex] < Height ? Height - _pressableLineIndexes[_selectedIndex] - 1: 0,
                 lineContents));
+    }
+
+    private List<ViewCellData> GetLineCells(int index)
+    {
+        var lineContents = new List<ViewCellData>();
+        for (int i = 0; i < Width; i++)
+            lineContents.Add(_lines[index][i]);
+
+        return lineContents;
     }
 }
