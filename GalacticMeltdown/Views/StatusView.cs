@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Actors;
 using GalacticMeltdown.Data;
@@ -8,7 +9,7 @@ using GalacticMeltdown.LevelRelated;
 
 namespace GalacticMeltdown.Views;
 
-public class StatusView : View
+public class StatusView : View, ILineUpdate
 {
     private const ConsoleColor HpColor = Colors.Overlay.Hp;
     private const ConsoleColor EnergyColor = Colors.Overlay.Energy;
@@ -48,7 +49,17 @@ public class StatusView : View
                 : null,
         };
 
+    private static readonly Dictionary<Stat, int> StatLine = new()
+    {
+        {Stat.Hp, 0},
+        {Stat.Energy, 1},
+        {Stat.Strength, 2},
+        {Stat.Defence, 3},
+        {Stat.Dexterity, 4},
+    };
+
     public override event EventHandler NeedRedraw;
+    public event EventHandler<LineUpdateEventArgs> LineUpdate;
 
     public StatusView(Level level)
     {
@@ -91,7 +102,15 @@ public class StatusView : View
 
     private void OnStatChange(object sender, StatChangeEventArgs e)
     {
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        var lineContent = new List<ViewCellData>(Width);
+        lineContent.AddRange(Enumerable.Repeat(new ViewCellData(null, null), Width));
+        if (!StatLine.TryGetValue(e.Stat, out int lineNum))
+            return;
+
+        (string text, ConsoleColor color) = Lines[lineNum]!.Value;
+        for (int i = 0; i < Math.Min(Width, text.Length); i++)
+            lineContent[i] = new ViewCellData((text[i], color), null);
+        LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContent));
     }
     
     private void OnEquipmentChange(object sender, EventArgs _)
