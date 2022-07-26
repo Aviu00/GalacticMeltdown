@@ -28,6 +28,16 @@ public class Player : Actor, ISightedObject, IControllable
     private ActorActionInfo _actionInfo;
     
     private bool _xray;
+
+    private static readonly Dictionary<BodyPart, Equipment> BodyPartEquipment = new()
+    {
+        {BodyPart.Hands, Actors.Equipment.Hands},
+        {BodyPart.Head, Actors.Equipment.Head},
+        {BodyPart.Torso, Actors.Equipment.Torso},
+        {BodyPart.Legs, Actors.Equipment.Legs},
+        {BodyPart.Feet, Actors.Equipment.Feet},
+    };
+
     [JsonIgnore] public bool GodMode { get; set; }
 
     [JsonIgnore] public override (char symbol, ConsoleColor color) SymbolData => ('@', Colors.Player.Color);
@@ -68,11 +78,11 @@ public class Player : Actor, ISightedObject, IControllable
         set
         {
             _chosenAmmoId = value;
-            EquipmentChanged?.Invoke(this, EventArgs.Empty);
+            EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(Actors.Equipment.Ammo));
         }
     }
 
-    public event EventHandler EquipmentChanged;
+    public event EventHandler<EquipmentChangeEventArgs> EquipmentChanged;
     public event EventHandler VisiblePointsChanged;
     public event EventHandler InventoryChanged;
 
@@ -148,6 +158,7 @@ public class Player : Actor, ISightedObject, IControllable
         ((EquippableItem) item).Unequip(this);
         Equipment[bodyPart] = null;
         AddToInventory(item);
+        EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(BodyPartEquipment[bodyPart]));
         if (bodyPart == BodyPart.Hands) ChosenAmmoId = null;
     }
 
@@ -162,7 +173,7 @@ public class Player : Actor, ISightedObject, IControllable
 
         if (item is WeaponItem weapon)
             SetFirstAvailableAmmoId(weapon);
-        EquipmentChanged?.Invoke(this, EventArgs.Empty);
+        EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(BodyPartEquipment[item.BodyPart]));
     }
 
     private void SetFirstAvailableAmmoId(WeaponItem weapon)
@@ -189,7 +200,6 @@ public class Player : Actor, ISightedObject, IControllable
         InventoryChanged?.Invoke(this, EventArgs.Empty);
         if (item.Id != ChosenAmmoId) return;
         ChosenAmmoId = null;
-        EquipmentChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void Consume(ConsumableItem item)
@@ -219,7 +229,6 @@ public class Player : Actor, ISightedObject, IControllable
             minDamage += weaponItem.AmmoTypes[ammo.Id].minDamage;
             maxDamage += weaponItem.AmmoTypes[ammo.Id].maxDamage;
             RemoveAmmo(ammo);
-            EquipmentChanged?.Invoke(this, EventArgs.Empty);
             UtilityFunctions.ApplyStateChangers(weaponItem.AmmoTypes[ammo.Id].actorStateChangerData, target);
         }
 
@@ -259,7 +268,6 @@ public class Player : Actor, ISightedObject, IControllable
         _actionInfo = new ActorActionInfo(ActorAction.Shoot, lineCells);
         RemoveAmmo(ammo);
         Energy -= gun.ShootEnergy;
-        EquipmentChanged?.Invoke(this, EventArgs.Empty);
         return true;
     }
 
@@ -271,8 +279,10 @@ public class Player : Actor, ISightedObject, IControllable
     private void RemoveAmmo(Item ammo)
     {
         Inventory.Remove(ammo);
-        if (!Inventory.Any(match => ammo.Id == match.Id))
+        if (Inventory.All(match => ammo.Id != match.Id))
             SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
+        else
+            EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(Actors.Equipment.Ammo));
         InventoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
