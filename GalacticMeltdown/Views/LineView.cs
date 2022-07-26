@@ -8,7 +8,7 @@ using GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 namespace GalacticMeltdown.Views;
 
-public class LineView : View, IFullRedraw, ILineUpdate
+public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
 {
     private const ConsoleColor DefaultBackgroundColor = Colors.DefaultMain;
     
@@ -17,6 +17,7 @@ public class LineView : View, IFullRedraw, ILineUpdate
     private int _selectedIndex;
     
     public event EventHandler NeedRedraw;
+    public event EventHandler<MultiCellUpdateEventArgs> MultiCellUpdate;
     public event EventHandler<LineUpdateEventArgs> LineUpdate;
 
     public override ViewCellData GetSymbol(int x, int y)
@@ -151,12 +152,19 @@ public class LineView : View, IFullRedraw, ILineUpdate
 
     private void OnInputLineUpdate(object sender, InputLineUpdateEventArgs e)
     {
+        int lineY = _pressableLineIndexes[_selectedIndex] < Height
+            ? Height - _pressableLineIndexes[_selectedIndex] - 1
+            : 0;
+        if (e.Cells is not null)
+        {
+            MultiCellUpdate?.Invoke(this,
+                new MultiCellUpdateEventArgs(e.Cells.Select(el => (el.x, y: lineY, el.cell)).ToList()));
+            return;
+        }
+
         var lineContents = GetLineCells(_pressableLineIndexes[_selectedIndex]);
 
-        LineUpdate?.Invoke(this,
-            new LineUpdateEventArgs(
-                _pressableLineIndexes[_selectedIndex] < Height ? Height - _pressableLineIndexes[_selectedIndex] - 1: 0,
-                lineContents));
+        LineUpdate?.Invoke(this, new LineUpdateEventArgs(lineY, lineContents));
     }
 
     private List<ViewCellData> GetLineCells(int index)
