@@ -67,6 +67,17 @@ public class Player : Actor, ISightedObject, IControllable
         }
     }
 
+    [JsonIgnore]
+    public override int ViewRange
+    {
+        get => base.ViewRange;
+        set
+        {
+            base.ViewRange = value;
+            VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
     [JsonProperty] private string _chosenAmmoId;
 
     [JsonProperty] public List<Item> Inventory;
@@ -89,7 +100,6 @@ public class Player : Actor, ISightedObject, IControllable
     [JsonConstructor]
     private Player()
     {
-        StatChanged += OnStatChanged;
     }
 
     public Player(int x, int y, Level level)
@@ -101,8 +111,6 @@ public class Player : Actor, ISightedObject, IControllable
         {
             Equipment[val] = null;
         }
-
-        StatChanged += OnStatChanged;
     }
 
     public bool TryMove(int deltaX, int deltaY)
@@ -284,12 +292,6 @@ public class Player : Actor, ISightedObject, IControllable
         else
             EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(Actors.Equipment.Ammo));
         InventoryChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void OnStatChanged(object sender, StatChangeEventArgs e)
-    {
-        if (e.Stat == Stat.ViewRange)
-            VisiblePointsChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public override void StopTurn()

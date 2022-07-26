@@ -22,7 +22,6 @@ public abstract class Actor : IObjectOnMap
     private const int ActorMoveSpeed = 0;
     [JsonProperty] private int _strength;
     [JsonProperty] private int _moveSpeed;
-    [JsonProperty] private int _viewRange;
 
     [JsonIgnore]
     public int Strength
@@ -49,16 +48,7 @@ public abstract class Actor : IObjectOnMap
     }
 
     [JsonIgnore]
-    public int ViewRange
-    {
-        get => _viewRange;
-        set
-        {
-            if (value == _viewRange) return;
-            _viewRange = value;
-            FireStatAffected(Stat.ViewRange);
-        }
-    }
+    public virtual int ViewRange { get; set; }
 
     [JsonIgnore] public bool IsActive => Hp > 0 && Energy > 0 && !_turnStopped;
 
@@ -228,7 +218,7 @@ public abstract class Actor : IObjectOnMap
 
     public int GetViewRange()
     {
-        return _viewRange < 1 ? 1 : _viewRange;
+        return ViewRange < 1 ? 1 : ViewRange;
     }
 
     public abstract ActorActionInfo TakeAction();

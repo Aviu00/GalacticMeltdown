@@ -8,5 +8,4 @@ public enum Stat
     Defence,
     Strength,
     MoveSpeed,
-    ViewRange
 }
