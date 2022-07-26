@@ -13,7 +13,6 @@ namespace GalacticMeltdown.UserInterfaceRelated.TextWindows.ItemManagement;
 
 public class InventoryMenu : TextWindow
 {
-    private List<Item> _inventory;
     private Dictionary<InventoryFilterType, Func<Item, bool>> _inventoryFilters;
 
     private readonly Player _player;
@@ -21,8 +20,7 @@ public class InventoryMenu : TextWindow
     public InventoryMenu(Player player)
     {
         _player = player;
-        _player.EquipmentChanged += OnEquipmentChange;
-        _inventory = _player.Inventory;
+        _player.Inventory.CollectionChanged += OnInventoryChange;
         _inventoryFilters = new Dictionary<InventoryFilterType, Func<Item, bool>>();
         UpdateLines();
         Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.InventoryMenu,
@@ -40,7 +38,7 @@ public class InventoryMenu : TextWindow
 
     public override void Close()
     {
-        _player.EquipmentChanged -= OnEquipmentChange;
+        _player.Inventory.CollectionChanged -= OnInventoryChange;
         base.Close();
     }
 
@@ -48,7 +46,7 @@ public class InventoryMenu : TextWindow
     {
         List<Item> itemLines = new();
         Dictionary<string, int> stackableItemCounts = new();
-        foreach (Item item in _inventory.Where(item => _inventoryFilters.Values.All(cond => cond(item))))
+        foreach (Item item in _player.Inventory.Where(item => _inventoryFilters.Values.All(cond => cond(item))))
         {
             if (item.Stackable)
             {
@@ -114,7 +112,6 @@ public class InventoryMenu : TextWindow
                         infoWindow.Open();
                     break;
             }
-            UpdateLines();
         }
     }
 
@@ -149,5 +146,5 @@ public class InventoryMenu : TextWindow
         }
     }
 
-    private void OnEquipmentChange(object sender, EventArgs e) => UpdateLines();
+    private void OnInventoryChange(object sender, EventArgs e) => UpdateLines();
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Data;
@@ -59,7 +60,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     [JsonProperty] private string _chosenAmmoId;
 
-    [JsonProperty] public List<Item> Inventory;
+    [JsonProperty] public ObservableCollection<Item> Inventory;
     [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
     public string ChosenAmmoId
@@ -84,8 +85,7 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        Inventory = new List<Item>();
-
+        Inventory = new ObservableCollection<Item>();
         Equipment = new Dictionary<BodyPart, EquippableItem>();
         foreach (BodyPart val in Enum.GetValues<BodyPart>())
         {
@@ -176,7 +176,11 @@ public class Player : Actor, ISightedObject, IControllable
         if (item.Stackable)
         {
             List<Item> items = Inventory.Where(match => match.Id == item.Id).ToList();
-            Inventory.RemoveAll(match => match.Id == item.Id);
+            for (int i = Inventory.Count - 1; i >= 0; i--)
+            {
+                if (Inventory[i].Id == item.Id)
+                    Inventory.RemoveAt(i);
+            }
             foreach (Item droppedItem in items)
             {
                 Level.AddItem(droppedItem, X, Y);
