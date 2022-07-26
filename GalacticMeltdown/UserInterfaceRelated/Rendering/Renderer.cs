@@ -316,14 +316,15 @@ public class Renderer
     private void UpdateLine(object sender, LineUpdateEventArgs e)
     {
         var view = (View) sender;
-        Console.SetCursorPosition(0, ConvertToConsoleY(_viewCornerCoords[view].minY + e.Y));
+        (int offsetX, int offsetY) = _viewCornerCoords[view];
+        Console.SetCursorPosition(offsetX, ConvertToConsoleY(offsetY + e.Y));
         DrawSequence(GetCells());
 
         IEnumerable<ScreenCellData> GetCells()
         {
             for (int x = 0; x < e.Cells.Count; x++)
             {
-                yield return GetCellWithSwap(x, e.Y, e.Cells[x], view);
+                yield return GetCellWithSwap(x + offsetX, e.Y, e.Cells[x], view);
             }
         }
     }
