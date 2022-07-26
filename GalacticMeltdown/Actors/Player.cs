@@ -147,7 +147,7 @@ public class Player : Actor, ISightedObject, IControllable
         ((EquippableItem) item).Unequip(this);
         Equipment[bodyPart] = null;
         AddToInventory(item);
-        ChosenAmmoId = null;
+        if (bodyPart == BodyPart.Hands) ChosenAmmoId = null;
     }
 
     public void Equip(EquippableItem item)
