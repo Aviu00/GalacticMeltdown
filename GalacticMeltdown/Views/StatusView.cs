@@ -57,6 +57,16 @@ public class StatusView : View, ILineUpdate
         {Stat.Defence, 3},
         {Stat.Dexterity, 4},
     };
+    
+    private static readonly Dictionary<Equipment, int> EquipmentLine = new()
+    {
+        {Equipment.Hands, 5},
+        {Equipment.Ammo, 6},
+        {Equipment.Head, 7},
+        {Equipment.Torso, 8},
+        {Equipment.Legs, 9},
+        {Equipment.Feet, 10},
+    };
 
     public override event EventHandler NeedRedraw;
     public event EventHandler<LineUpdateEventArgs> LineUpdate;
@@ -106,6 +116,7 @@ public class StatusView : View, ILineUpdate
         lineContent.AddRange(Enumerable.Repeat(new ViewCellData(null, null), Width));
         if (!StatLine.TryGetValue(e.Stat, out int lineNum))
             return;
+        if (lineNum >= Height) return;
 
         (string text, ConsoleColor color) = Lines[lineNum]!.Value;
         for (int i = 0; i < Math.Min(Width, text.Length); i++)
@@ -113,8 +124,23 @@ public class StatusView : View, ILineUpdate
         LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContent));
     }
     
-    private void OnEquipmentChange(object sender, EventArgs _)
+    private void OnEquipmentChange(object sender, EquipmentChangeEventArgs e)
     {
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        var lineContent = new List<ViewCellData>(Width);
+        lineContent.AddRange(Enumerable.Repeat(new ViewCellData(null, null), Width));
+        if (!EquipmentLine.TryGetValue(e.Equipment, out int lineNum))
+            return;
+        if (lineNum >= Height) return;
+        (string text, ConsoleColor color)? line = Lines[lineNum];
+        if (line is null)
+        {
+            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContent));
+            return;
+        }
+        (string text, ConsoleColor color) = line.Value;
+        for (int i = 0; i < Math.Min(Width, text.Length); i++)
+            lineContent[i] = new ViewCellData((text[i], color), null);
+        if (lineNum >= Height) return;
+        LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContent));
     }
 }
