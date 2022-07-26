@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using GalacticMeltdown.ActorActions;
 using GalacticMeltdown.Data;
@@ -60,7 +59,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     [JsonProperty] private string _chosenAmmoId;
 
-    [JsonProperty] public ObservableCollection<Item> Inventory;
+    [JsonProperty] public List<Item> Inventory;
     [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
     public string ChosenAmmoId
@@ -75,6 +74,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     public event EventHandler EquipmentChanged;
     public event EventHandler VisiblePointsChanged;
+    public event EventHandler InventoryChanged;
 
     [JsonConstructor]
     private Player()
@@ -85,7 +85,7 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        Inventory = new ObservableCollection<Item>();
+        Inventory = new List<Item>();
         Equipment = new Dictionary<BodyPart, EquippableItem>();
         foreach (BodyPart val in Enum.GetValues<BodyPart>())
         {
@@ -138,6 +138,7 @@ public class Player : Actor, ISightedObject, IControllable
     public void AddToInventory(Item item)
     {
         Inventory.Add(item);
+        InventoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void Unequip(BodyPart bodyPart)
@@ -156,12 +157,11 @@ public class Player : Actor, ISightedObject, IControllable
 
         Inventory.Remove(item);
         Equipment[item.BodyPart] = item;
+        InventoryChanged?.Invoke(this, EventArgs.Empty);
         item.Equip(this);
 
         if (item is WeaponItem weapon)
-        {
             SetFirstAvailableAmmoId(weapon);
-        }
         EquipmentChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -176,22 +176,17 @@ public class Player : Actor, ISightedObject, IControllable
         if (item.Stackable)
         {
             List<Item> items = Inventory.Where(match => match.Id == item.Id).ToList();
-            for (int i = Inventory.Count - 1; i >= 0; i--)
-            {
-                if (Inventory[i].Id == item.Id)
-                    Inventory.RemoveAt(i);
-            }
+            Inventory.RemoveAll(match => match.Id == item.Id);
             foreach (Item droppedItem in items)
-            {
                 Level.AddItem(droppedItem, X, Y);
-            }
         }
         else
         {
             Inventory.Remove(item);
             Level.AddItem(item, X, Y);
         }
-
+        
+        InventoryChanged?.Invoke(this, EventArgs.Empty);
         if (item.Id != ChosenAmmoId) return;
         ChosenAmmoId = null;
         EquipmentChanged?.Invoke(this, EventArgs.Empty);
@@ -201,6 +196,7 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Inventory.Remove(item);
         item.Consume(this);
+        InventoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private bool HitTarget(Actor target)
@@ -277,6 +273,7 @@ public class Player : Actor, ISightedObject, IControllable
         Inventory.Remove(ammo);
         if (!Inventory.Any(match => ammo.Id == match.Id))
             SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
+        InventoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnStatChanged(object sender, StatChangeEventArgs e)
