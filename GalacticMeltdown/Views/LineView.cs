@@ -158,7 +158,7 @@ public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
         if (e.Cells is not null)
         {
             MultiCellUpdate?.Invoke(this,
-                new MultiCellUpdateEventArgs(e.Cells.Select(el => (el.x, y: lineY, el.cell)).ToList()));
+                new MultiCellUpdateEventArgs(e.Cells.Select(el => (el.x, lineY, el.cell)).ToList()));
             return;
         }
 
