@@ -41,10 +41,10 @@ public class Renderer
     private LinkedList<(View view, int viewX, int viewY)>[,] _cellInfos;
     private Dictionary<View, (int minX, int minY)> _viewCornerCoords;
     private LinkedList<(View view, int viewX, int viewY, ViewCellData cellData, int delay)> _animQueue;
+    
+    private Dictionary<object, ViewPositioner> _objectViewPositioners;
 
     private int _maxAnimationTime = 100;
-
-    private Dictionary<object, ViewPositioner> _objectViewPositioners;
 
     public int MaxAnimationTime
     {
