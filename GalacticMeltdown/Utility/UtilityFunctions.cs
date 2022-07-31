@@ -119,9 +119,9 @@ public static class UtilityFunctions
     public static int CalculateMeleeDamage(int min, int max, int strength)
     {
         int damage = Random.Shared.Next(min, max + 1);
-        if(strength < Actor.ActorStr)
-            return damage / (1 + (Actor.ActorStr - strength) / 10);
-        return damage + 5 * (strength - Actor.ActorStr);
+        if(strength < Actor.DefaultStrength)
+            return damage / (1 + (Actor.DefaultStrength - strength) / 10);
+        return damage + 5 * (strength - Actor.DefaultStrength);
     }
 
     public static bool ObjectInSquareArea(int x0, int y0, int x1, int y1, int radius)

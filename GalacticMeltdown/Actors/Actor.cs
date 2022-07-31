@@ -15,11 +15,15 @@ namespace GalacticMeltdown.Actors;
 [JsonSubtypes.KnownSubType(typeof(Npc), "Npc")]
 public abstract class Actor : IObjectOnMap
 {
+    public const int DefaultStrength = 10;
+    private const int DefaultMoveSpeed = 0;
+    
     [JsonProperty] protected abstract string ActorName { get; }
+
     [JsonProperty] public readonly Level Level;
+
     [JsonProperty] private bool _turnStopped;
-    public const int ActorStr = 10;
-    private const int ActorMoveSpeed = 0;
+
     [JsonProperty] private int _strength;
     [JsonProperty] private int _moveSpeed;
     [JsonProperty] private int _viewRange;
@@ -72,9 +76,8 @@ public abstract class Actor : IObjectOnMap
         {
             if (value == _hpLim.Value) return;
             _hpLim.Value = value;
-            if (_hpLim.Value > _hpLim.MaxValue!.Value) _hpLim.Value = _hpLim.MaxValue.Value;
-            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
             FireStatAffected(Stat.Hp);
+            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -122,8 +125,8 @@ public abstract class Actor : IObjectOnMap
         {
             if (value == _hpLim.MaxValue) return;
             _hpLim.MaxValue = value;
-            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
             FireStatAffected(Stat.Hp);
+            if (value <= 0) Died?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -158,7 +161,7 @@ public abstract class Actor : IObjectOnMap
     }
     protected Actor(int maxHp, int maxEnergy, int dexterity, int defence, int viewRange, int x, int y, Level level)
     {
-        _effects = new();
+        _effects = new List<Effect>();
         Level = level;
         _hpLim = new LimitedNumber(maxHp, maxHp, 0);
         _energyLim = new LimitedNumber(maxEnergy, maxEnergy);
@@ -168,8 +171,8 @@ public abstract class Actor : IObjectOnMap
         X = x;
         Y = y;
         _turnStopped = false;
-        Strength = ActorStr;
-        MoveSpeed = ActorMoveSpeed;
+        Strength = DefaultStrength;
+        MoveSpeed = DefaultMoveSpeed;
     }
 
     public virtual bool Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
