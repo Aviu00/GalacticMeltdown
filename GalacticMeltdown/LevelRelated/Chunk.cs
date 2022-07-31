@@ -25,7 +25,7 @@ public class Chunk
     
     [JsonProperty] private readonly ItemDictionary _items;
     [JsonProperty] public readonly Tile[,] Tiles;
-    [JsonProperty] public List<Npc> Npcs { get; }
+    [JsonProperty] public readonly List<Npc> Npcs;
 
     [JsonProperty] public readonly char Symbol;
 
