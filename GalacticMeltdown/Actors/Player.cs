@@ -89,6 +89,7 @@ public class Player : Actor, ISightedObject, IControllable
         get => _chosenAmmoId;
         set
         {
+            if (_chosenAmmoId == value) return;
             _chosenAmmoId = value;
             EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(Actors.Equipment.Ammo));
         }
@@ -160,9 +161,9 @@ public class Player : Actor, ISightedObject, IControllable
 
     public void Unequip(BodyPart bodyPart)
     {
-        Item item = Equipment[bodyPart];
+        EquippableItem item = Equipment[bodyPart];
         if (item is null) return;
-        ((EquippableItem) item).Unequip(this);
+        item.Unequip(this);
         Equipment[bodyPart] = null;
         AddToInventory(item);
         EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(BodyPartEquipment[bodyPart]));
@@ -178,11 +179,11 @@ public class Player : Actor, ISightedObject, IControllable
         item.Equip(this);
 
         if (item is WeaponItem weapon)
-            SetFirstAvailableAmmoId(weapon);
+            SetAvailableAmmoId(weapon);
         EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(BodyPartEquipment[item.BodyPart]));
     }
 
-    private void SetFirstAvailableAmmoId(WeaponItem weapon)
+    private void SetAvailableAmmoId(WeaponItem weapon)
     {
         if (weapon.AmmoTypes is null) return;
         ChosenAmmoId = Inventory.FirstOrDefault(item => weapon.AmmoTypes.ContainsKey(item.Id))?.Id;
@@ -202,9 +203,8 @@ public class Player : Actor, ISightedObject, IControllable
             Inventory.Remove(item);
             Level.AddItem(item, X, Y);
         }
-        
-        if (item.Id != ChosenAmmoId) return;
-        ChosenAmmoId = null;
+
+        if (item.Id == ChosenAmmoId) ChosenAmmoId = null;
     }
 
     public void Consume(ConsumableItem item)
@@ -224,15 +224,15 @@ public class Player : Actor, ISightedObject, IControllable
             return hit;
         }
 
-        WeaponItem weaponItem = (WeaponItem) Equipment[BodyPart.Hands];
+        var weaponItem = (WeaponItem) Equipment[BodyPart.Hands];
         int minDamage = weaponItem.MinHitDamage;
         int maxDamage = weaponItem.MaxHitDamage;
-        if (weaponItem.AmmoTypes is not null && weaponItem is not RangedWeaponItem && _chosenAmmoId is not null)
+        if (weaponItem.AmmoTypes is not null && weaponItem is not RangedWeaponItem && ChosenAmmoId is not null)
         {
-            Item ammo = GetAmmo();
+            Item ammo = GetItemById(ChosenAmmoId);
             minDamage += weaponItem.AmmoTypes[ammo.Id].minDamage;
             maxDamage += weaponItem.AmmoTypes[ammo.Id].maxDamage;
-            RemoveAmmo(ammo);
+            RemoveUsedAmmo(ammo);
             UtilityFunctions.ApplyStateChangers(weaponItem.AmmoTypes[ammo.Id].actorStateChangerData, target);
         }
 
@@ -246,7 +246,7 @@ public class Player : Actor, ISightedObject, IControllable
     public bool Shoot(int x, int y)
     {
         if (Equipment[BodyPart.Hands] is not RangedWeaponItem gun || ChosenAmmoId is null) return false;
-        Item ammo = GetAmmo();
+        Item ammo = GetItemById(ChosenAmmoId);
         List<(int, int)> lineCells = new();
         foreach (var point in Algorithms.BresenhamGetPointsOnLine(X, Y, x, y, 200).Skip(1))
         {
@@ -270,21 +270,21 @@ public class Player : Actor, ISightedObject, IControllable
         }
         
         _actionInfo = new ActorActionInfo(ActorAction.Shoot, lineCells);
-        RemoveAmmo(ammo);
+        RemoveUsedAmmo(ammo);
         Energy -= gun.ShootEnergy;
         return true;
     }
 
-    private Item GetAmmo()
+    private Item GetItemById(string id)
     {
-        return Inventory.FirstOrDefault(item => item.Id == ChosenAmmoId);
+        return Inventory.FirstOrDefault(item => item.Id == id);
     }
 
-    private void RemoveAmmo(Item ammo)
+    private void RemoveUsedAmmo(Item ammo)
     {
         Inventory.Remove(ammo);
         if (Inventory.All(match => ammo.Id != match.Id))
-            SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
+            SetAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
         else
             EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(Actors.Equipment.Ammo));
     }
