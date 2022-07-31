@@ -154,11 +154,11 @@ public class MovementStrategy : Behavior
     {
         _idleMovement = true;
         (int x, int y) = Level.GetChunkCoords(ControlledNpc.X, ControlledNpc.Y);
-        var neighboringChunks = Level.GetChunkNeighbors(x, y, returnNotActiveChunks: false).ToList();
+        List<Chunk> neighboringChunks = Level.GetChunkNeighbors(x, y, returnNotActiveChunks: false).ToList();
         if(neighboringChunks.Count == 0) return;
-        var randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
-        var randomChunkPoints = randomChunk.GetFloorTileCoords().ToList();
-        if(randomChunkPoints.Count == 0) return;
+        Chunk randomChunk = neighboringChunks[Random.Shared.Next(neighboringChunks.Count)];
+        List<(int, int)> randomChunkPoints = randomChunk.GetFloorTileCoords();
+        if (randomChunkPoints.Count == 0) return;
         (int x, int y) randomPoint = randomChunkPoints[Random.Shared.Next(randomChunkPoints.Count)];
         _wantsToGoTo = (randomPoint.x, randomPoint.y);
         SetPathTo(randomPoint.x, randomPoint.y);

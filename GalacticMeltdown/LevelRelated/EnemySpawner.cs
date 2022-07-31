@@ -57,7 +57,7 @@ public class EnemySpawner
         Random rng = new Random(chunk.Seed);
         double currency = GetChunkCost(chunk.Difficulty);
         currency *= rng.NextDouble() + 0.5;
-        var points = chunk.GetFloorTileCoords();
+        var points = chunk.GetFloorTileCoords(false);
         if(points is null || points.Count == 0)
             return;
         foreach (var enemy in CalculateEnemies(ref currency, rng))
@@ -85,27 +85,13 @@ public class EnemySpawner
     private void SpawnRandomEnemies()
     {
         TargetChunks ??= GetTargetChunks();
-        if(TargetChunks.Count == 0) return;
-        List<(int, int)> points = TargetChunks[Random.Shared.Next(0, TargetChunks.Count)].GetFloorTileCoords();
-        if(points.Count == 0) return;
-        var enemies= CalculateEnemies(ref _currency);
-        foreach (var enemy in enemies)
+        if (TargetChunks.Count == 0) return;
+        List<(int, int)> points = TargetChunks[Random.Shared.Next(0, TargetChunks.Count)].GetFloorTileCoords(false);
+        if (points.Count == 0) return;
+        foreach (NpcTypeData enemyType in CalculateEnemies(ref _currency))
         {
-            (int x, int y)? point;
-            do
-            {
-                point = points[Random.Shared.Next(0, points.Count)];
-                points.Remove((point.Value.x, point.Value.y));
-                if (_level.GetNonTileObject(point.Value.x, point.Value.y) is not null)
-                    point = null;
-            } while (points.Count > 0 && point is null);
-
-            if (point is null)
-            {
-                _currency += enemy.Cost;
-                continue;
-            }
-            SpawnEnemy(enemy, point.Value.x, point.Value.y);
+            (int x, int y) = points[Random.Shared.Next(0, points.Count)];
+            SpawnEnemy(enemyType, x, y);
         }
         CalculateNextCurrencyAmount();
     }
