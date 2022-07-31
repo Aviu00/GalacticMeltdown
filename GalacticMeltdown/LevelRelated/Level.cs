@@ -101,7 +101,7 @@ public class Level
         {
             for (int j = 0; j < _chunks.GetLength(1); j++)
             {
-                _chunks[i, j].GetNpcs().ForEach(SubscribeNpc);
+                _chunks[i, j].Npcs.ForEach(SubscribeNpc);
             }
         }
         foreach (var keyValuePair in _doorCounters)
@@ -203,7 +203,7 @@ public class Level
 
         IEnumerable<Npc> GetActiveChunkNpcs()
         {
-            return _activeChunks.SelectMany(chunk => chunk.GetNpcs());
+            return _activeChunks.SelectMany(chunk => chunk.Npcs);
         }
         
         void WatchActor(Actor actor)
@@ -311,8 +311,8 @@ public class Level
                 if (chunk.IsActive) continue;
                 _activeChunks.Add(chunk);
                 chunk.IsActive = true;
-                if (chunk.WasActiveBefore) continue;
-                chunk.WasActiveBefore = true;
+                if (chunk.WasActive) continue;
+                chunk.WasActive = true;
                 _enemySpawner.SpawnEnemiesInChunk(chunk);
             }
         }
@@ -422,8 +422,8 @@ public class Level
             var chunk1 = GetChunkCoords(npc.X, npc.Y);
             if (chunk0 != chunk1)
             {
-                _chunks[chunk0.chunkX, chunk0.chunkY].RemoveNpc(npc);
-                _chunks[chunk1.chunkX, chunk1.chunkY].AddNpc(npc);
+                _chunks[chunk0.chunkX, chunk0.chunkY].Npcs.Remove(npc);
+                _chunks[chunk1.chunkX, chunk1.chunkY].Npcs.Add(npc);
             }
         }
     }
@@ -442,7 +442,7 @@ public class Level
     {
         SubscribeNpc(npc);
         (int x, int y) = GetChunkCoords(npc.X, npc.Y);
-        _chunks[x, y].AddNpc(npc);
+        _chunks[x, y].Npcs.Add(npc);
     }
 
     public void SubscribeNpc(Npc npc)
@@ -471,8 +471,9 @@ public class Level
         (int chunkCoordX, int chunkCoordY) = GetChunkCoords(centerX, centerY);
         foreach (var chunk in GetChunksAround(chunkCoordX, chunkCoordY, radius / ChunkConstants.ChunkSize + 1))
         {
-            foreach (var enemy in chunk.Enemies.Where(enemy =>
-                         UtilityFunctions.GetDistance(enemy.X, enemy.Y, centerX, centerY) <= radius))
+            foreach (var enemy in chunk.Npcs.Where(npc =>
+                         UtilityFunctions.GetDistance(npc.X, npc.Y, centerX, centerY) <= radius
+                         && !PlayerFriends.Contains(npc)))
             {
                 enemy.Alert(target);
             }
@@ -542,9 +543,9 @@ public class Level
 
     private void NpcDeathHandler(object npc, EventArgs _)
     {
-        Npc diedNpc = (Npc) npc;
-        (int x, int y) = GetChunkCoords(diedNpc.X, diedNpc.Y);
-        _chunks[x, y].RemoveNpc(diedNpc);
+        var deadNpc = (Npc) npc;
+        (int x, int y) = GetChunkCoords(deadNpc.X, deadNpc.Y);
+        _chunks[x, y].Npcs.Remove(deadNpc);
         NpcDied?.Invoke(npc, EventArgs.Empty);
     }
     

@@ -17,7 +17,7 @@ public class Chunk
     [JsonProperty] public readonly int Difficulty;
     [JsonProperty] public readonly int Seed;
 
-    public bool WasActiveBefore;
+    public bool WasActive;
     public bool WasVisitedByPlayer;
     [JsonProperty] public readonly bool IsFinalRoom;
 
@@ -25,7 +25,7 @@ public class Chunk
     
     [JsonProperty] private readonly ItemDictionary _items;
     [JsonProperty] public readonly Tile[,] Tiles;
-    [JsonProperty] public readonly List<Npc> Enemies;
+    [JsonProperty] public List<Npc> Npcs { get; }
 
     [JsonProperty] public readonly char Symbol;
 
@@ -47,7 +47,7 @@ public class Chunk
         _items = items;
         Symbol = symbol;
         IsFinalRoom = isFinalRoom;
-        Enemies = new List<Npc>();
+        Npcs = new List<Npc>();
     }
 
     public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
@@ -67,15 +67,13 @@ public class Chunk
 
     public IDrawable GetDrawable(int x, int y)
     {
-        IDrawable drawable = GetMapObject(x, y);
-        if (drawable is not null) return drawable;
-        drawable = FindItem(x, y);
-        return drawable;
+        if (GetMapObject(x, y) is { } drawable) return drawable;
+        return GetItems(x, y)?.First();
     }
 
     public IObjectOnMap GetMapObject(int x, int y)
     {
-        IObjectOnMap objectOnMap = Enemies.FirstOrDefault(enemy => enemy.X == x && enemy.Y == y);
+        IObjectOnMap objectOnMap = Npcs.FirstOrDefault(npc => npc.X == x && npc.Y == y);
         return objectOnMap;
     }
 
@@ -91,32 +89,8 @@ public class Chunk
 
     public List<Item> GetItems(int localX, int localY)
     {
-        if (!(_items.ContainsKey((localX, localY)) && _items[(localX, localY)].Any())) return null;
-        return _items[(localX, localY)];
-    }
-
-    public Item FindItem(int x, int y)
-    {
-        if (!_items.ContainsKey((x, y))) return null;
-        List<Item> itemList = _items[(x, y)];
-        if (itemList is null || itemList.Count == 0) return null;
-        return itemList.First();
-    }
-
-    public List<Npc> GetNpcs()
-    {
-        List<Npc> npcs = new();
-        npcs.AddRange(Enemies);
-        return npcs;
-    }
-
-    public void AddNpc(Npc npc)
-    {
-        Enemies.Add(npc);
-    }
-
-    public void RemoveNpc(Npc npc)
-    {
-        Enemies.Remove(npc);
+        if (!_items.TryGetValue((localX, localY), out List<Item> items))
+            return null;
+        return items.Count == 0 ? null : items;
     }
 }
