@@ -24,6 +24,8 @@ public class Chunk
     [JsonIgnore] public bool IsActive;
     
     [JsonProperty] private readonly ItemDictionary _items;
+    [JsonProperty] private readonly List<(int x, int y)> _floorTileCoords;
+    
     [JsonProperty] public readonly Tile[,] Tiles;
     [JsonProperty] public readonly List<Npc> Npcs;
 
@@ -36,34 +38,38 @@ public class Chunk
     }
     
     public Chunk(Tile[,] tiles, ItemDictionary items, List<(int x, int y)> neighborCoords, int difficulty, int seed,
-        int x, int y, char symbol, bool isFinalRoom = false)
+        int mapX, int mapY, char symbol, bool isFinalRoom = false)
     {
         Tiles = tiles;
         Difficulty = difficulty;
-        MapX = x;
-        MapY = y;
+        MapX = mapX;
+        MapY = mapY;
         NeighborCoords = neighborCoords;
         Seed = seed;
         _items = items;
         Symbol = symbol;
         IsFinalRoom = isFinalRoom;
         Npcs = new List<Npc>();
-    }
-
-    public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
-    {
-        List<(int, int)> coords = new();
+        
+        List<(int, int)> floorTileCoords = new();
         for (int x = 0; x < ChunkConstants.ChunkSize; x++)
         {
             for (int y = 0; y < ChunkConstants.ChunkSize; y++)
             {
                 int xGlobal = x + MapX * ChunkConstants.ChunkSize, yGlobal = y + MapY * ChunkConstants.ChunkSize;
-                if (Tiles[x, y].Id == "floor" && (ignoreObjectsOnMap || GetMapObject(xGlobal, yGlobal) is null))
-                    coords.Add((xGlobal, yGlobal));
+                if (Tiles[x, y].Id == "floor")
+                    floorTileCoords.Add((xGlobal, yGlobal));
             }
         }
 
-        return coords;
+        _floorTileCoords = floorTileCoords;
+    }
+
+    public List<(int, int)> GetFloorTileCoords(bool ignoreObjectsOnMap = true)
+    {
+        return ignoreObjectsOnMap
+            ? _floorTileCoords
+            : _floorTileCoords.Where(coords => GetMapObject(coords.x, coords.y) is null).ToList();
     }
 
     public IDrawable GetDrawable(int x, int y)

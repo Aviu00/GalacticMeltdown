@@ -83,6 +83,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
     private LevelView()
     {
     }
+
     public LevelView(Level level)
     {
         _level = level;
