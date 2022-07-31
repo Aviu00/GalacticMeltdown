@@ -20,7 +20,7 @@ public class InventoryMenu : TextWindow
     public InventoryMenu(Player player)
     {
         _player = player;
-        _player.InventoryChanged += OnInventoryChange;
+        _player.Inventory.CollectionChanged += OnInventoryChange;
         _inventoryFilters = new Dictionary<InventoryFilterType, Func<Item, bool>>();
         UpdateLines();
         Controller = new ActionController(UtilityFunctions.JoinDictionaries(KeyBindings.InventoryMenu,
@@ -38,7 +38,7 @@ public class InventoryMenu : TextWindow
 
     public override void Close()
     {
-        _player.InventoryChanged -= OnInventoryChange;
+        _player.Inventory.CollectionChanged -= OnInventoryChange;
         base.Close();
     }
 

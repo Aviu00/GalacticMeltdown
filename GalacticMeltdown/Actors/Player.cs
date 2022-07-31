@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.ActorActions;
+using GalacticMeltdown.Collections;
 using GalacticMeltdown.Data;
 using GalacticMeltdown.Events;
 using GalacticMeltdown.Items;
@@ -80,7 +81,7 @@ public class Player : Actor, ISightedObject, IControllable
 
     [JsonProperty] private string _chosenAmmoId;
 
-    [JsonProperty] public List<Item> Inventory;
+    [JsonProperty] public ObservableList<Item> Inventory;
     [JsonProperty] public readonly Dictionary<BodyPart, EquippableItem> Equipment;
 
     public string ChosenAmmoId
@@ -95,7 +96,6 @@ public class Player : Actor, ISightedObject, IControllable
 
     public event EventHandler<EquipmentChangeEventArgs> EquipmentChanged;
     public event EventHandler VisiblePointsChanged;
-    public event EventHandler InventoryChanged;
 
     [JsonConstructor]
     private Player()
@@ -105,7 +105,7 @@ public class Player : Actor, ISightedObject, IControllable
     public Player(int x, int y, Level level)
         : base(PlayerHp, PlayerEnergy, PlayerDexterity, PlayerDefence, PlayerViewRange, x, y, level)
     {
-        Inventory = new List<Item>();
+        Inventory = new ObservableList<Item>();
         Equipment = new Dictionary<BodyPart, EquippableItem>();
         foreach (BodyPart val in Enum.GetValues<BodyPart>())
         {
@@ -156,7 +156,6 @@ public class Player : Actor, ISightedObject, IControllable
     public void AddToInventory(Item item)
     {
         Inventory.Add(item);
-        InventoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void Unequip(BodyPart bodyPart)
@@ -176,7 +175,6 @@ public class Player : Actor, ISightedObject, IControllable
 
         Inventory.Remove(item);
         Equipment[item.BodyPart] = item;
-        InventoryChanged?.Invoke(this, EventArgs.Empty);
         item.Equip(this);
 
         if (item is WeaponItem weapon)
@@ -205,7 +203,6 @@ public class Player : Actor, ISightedObject, IControllable
             Level.AddItem(item, X, Y);
         }
         
-        InventoryChanged?.Invoke(this, EventArgs.Empty);
         if (item.Id != ChosenAmmoId) return;
         ChosenAmmoId = null;
     }
@@ -214,7 +211,6 @@ public class Player : Actor, ISightedObject, IControllable
     {
         Inventory.Remove(item);
         item.Consume(this);
-        InventoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private bool HitTarget(Actor target)
@@ -291,7 +287,6 @@ public class Player : Actor, ISightedObject, IControllable
             SetFirstAvailableAmmoId((WeaponItem) Equipment[BodyPart.Hands]);
         else
             EquipmentChanged?.Invoke(this, new EquipmentChangeEventArgs(Actors.Equipment.Ammo));
-        InventoryChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public override void StopTurn()
