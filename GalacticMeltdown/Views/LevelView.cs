@@ -275,8 +275,13 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
     {
         if (sender is not IHasCoords hasCoords) return;
 
-        if (!IsPointInsideView(hasCoords.X, hasCoords.Y)) return;
-        NeedRedraw?.Invoke(this, EventArgs.Empty);
+        (int x, int y) = (hasCoords.X, hasCoords.Y);
+        if (!IsPointInsideView(x, y)) return;
+        IDrawable drawableObj = _level.GetDrawable(x, y);
+        (int viewX, int viewY) = ToViewCoords(x, y);
+        OneCellAnim?.Invoke(this, new OneCellAnimEventArgs((viewX, viewY, drawableObj is null
+            ? new ViewCellData(null, null)
+            : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor), 0)));
     }
 
     private void FocusObjectMoved(object sender, EventArgs _)

@@ -56,9 +56,8 @@ public class Chunk
         {
             for (int y = 0; y < ChunkConstants.ChunkSize; y++)
             {
-                int xGlobal = x + MapX * ChunkConstants.ChunkSize, yGlobal = y + MapY * ChunkConstants.ChunkSize;
                 if (Tiles[x, y].Id == "floor")
-                    floorTileCoords.Add((xGlobal, yGlobal));
+                    floorTileCoords.Add((x + MapX * ChunkConstants.ChunkSize, y + MapY * ChunkConstants.ChunkSize));
             }
         }
 
