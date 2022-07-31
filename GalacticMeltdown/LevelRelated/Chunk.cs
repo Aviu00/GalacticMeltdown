@@ -57,8 +57,9 @@ public class Chunk
         {
             for (int y = 0; y < ChunkConstants.ChunkSize; y++)
             {
-                if (Tiles[x, y].Id == "floor" && (ignoreObjectsOnMap || GetMapObject(x, y) is null))
-                    coords.Add((x + MapX * ChunkConstants.ChunkSize, y + MapY * ChunkConstants.ChunkSize));
+                int xGlobal = x + MapX * ChunkConstants.ChunkSize, yGlobal = y + MapY * ChunkConstants.ChunkSize;
+                if (Tiles[x, y].Id == "floor" && (ignoreObjectsOnMap || GetMapObject(xGlobal, yGlobal) is null))
+                    coords.Add((xGlobal, yGlobal));
             }
         }
 
@@ -77,19 +78,19 @@ public class Chunk
         return objectOnMap;
     }
 
-    public void AddItem(Item item, int localX, int localY)
+    public void AddItem(Item item, int x, int y)
     {
-        if (!_items.ContainsKey((localX, localY)))
+        if (!_items.ContainsKey((x, y)))
         {
-            _items[(localX, localY)] = new List<Item>();
+            _items[(x, y)] = new List<Item>();
         }
 
-        _items[(localX, localY)].Add(item);
+        _items[(x, y)].Add(item);
     }
 
-    public List<Item> GetItems(int localX, int localY)
+    public List<Item> GetItems(int x, int y)
     {
-        if (!_items.TryGetValue((localX, localY), out List<Item> items))
+        if (!_items.TryGetValue((x, y), out List<Item> items))
             return null;
         return items.Count == 0 ? null : items;
     }
