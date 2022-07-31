@@ -25,7 +25,7 @@ public class ObservableList<T> : IList<T>, INotifyCollectionChanged
     {
         _list.Add(item);
         CollectionChanged?.Invoke(this,
-            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T> {item}, new List<T>()));
+            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T> {item}));
     }
 
     public void Clear()
@@ -33,7 +33,7 @@ public class ObservableList<T> : IList<T>, INotifyCollectionChanged
         List<T> prev = _list;
         _list = new List<T>();
         CollectionChanged?.Invoke(this,
-            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(), prev));
+            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
 
     public bool Contains(T item)
@@ -45,7 +45,7 @@ public class ObservableList<T> : IList<T>, INotifyCollectionChanged
     {
         _list.Insert(index, item);
         CollectionChanged?.Invoke(this,
-            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T> {item}, new List<T>()));
+            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new List<T> {item}));
     }
 
     public bool Remove(T item)
@@ -53,7 +53,7 @@ public class ObservableList<T> : IList<T>, INotifyCollectionChanged
         bool removed = _list.Remove(item);
         if (removed)
             CollectionChanged?.Invoke(this,
-                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(),
+                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                     new List<T> {item}));
         return removed;
     }
@@ -84,7 +84,7 @@ public class ObservableList<T> : IList<T>, INotifyCollectionChanged
         T item = _list[index];
         _list.RemoveAt(index);
         CollectionChanged?.Invoke(this,
-            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, new List<T>(),
+            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                 new List<T> {item}));
     }
 
@@ -93,7 +93,7 @@ public class ObservableList<T> : IList<T>, INotifyCollectionChanged
         List<T> data = new(collection);
         _list.AddRange(data);
         CollectionChanged?.Invoke(this,
-            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, data, new List<T>()));
+            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, data));
     }
 
     public void RemoveAll(Predicate<T> predicate)
@@ -101,7 +101,7 @@ public class ObservableList<T> : IList<T>, INotifyCollectionChanged
         List<T> data = _list.FindAll(predicate);
         _list.RemoveAll(predicate);
         CollectionChanged?.Invoke(this,
-            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, new List<T>(), data));
+            new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, data));
     }
 
     public IEnumerable<T> DistinctBy<TKey>(Func<T, TKey> selector)
