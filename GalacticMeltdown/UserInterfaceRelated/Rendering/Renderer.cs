@@ -324,7 +324,7 @@ public class Renderer
         {
             for (int x = 0; x < e.Cells.Count; x++)
             {
-                yield return GetCellWithSwap(x + offsetX, e.Y, e.Cells[x], view);
+                yield return GetCellWithSwap(x + offsetX, e.Y + offsetY, e.Cells[x], view);
             }
         }
     }
