@@ -210,23 +210,11 @@ public class Renderer
                 }
             }
         }
-        DrawArea(RowIter(), 0, 0, screenCells.GetLength(0));
 
-        IEnumerable<IEnumerable<ScreenCellData>> RowIter()
-        {
-            for (int y = screenCells.GetLength(1) - 1; y >= 0; y--)
-            {
-                yield return CellIter(y);
-            }
-
-            IEnumerable<ScreenCellData> CellIter(int y)
-            {
-                for (int x = 0; x < screenCells.GetLength(0); x++)
-                {
-                    yield return screenCells[x, y];
-                }
-            }
-        }
+        DrawArea(
+            Enumerable.Range(0, screenCells.GetLength(1)).Reverse().Select(y =>
+                Enumerable.Range(0, screenCells.GetLength(0)).Select(x => screenCells[x, y])), 0, 0,
+            screenCells.GetLength(0));
     }
 
     private void InitPixelFuncArr(int windowWidth, int windowHeight)
@@ -318,15 +306,8 @@ public class Renderer
         var view = (View) sender;
         (int offsetX, int offsetY) = _viewCornerCoords[view];
         Console.SetCursorPosition(offsetX, ConvertToConsoleY(offsetY + e.Y));
-        DrawSequence(GetCells());
-
-        IEnumerable<ScreenCellData> GetCells()
-        {
-            for (int x = 0; x < e.Cells.Count; x++)
-            {
-                yield return GetCellWithSwap(x + offsetX, e.Y + offsetY, e.Cells[x], view);
-            }
-        }
+        DrawSequence(Enumerable.Range(0, e.Cells.Count)
+            .Select(x => GetCellWithSwap(x + offsetX, e.Y + offsetY, e.Cells[x], view)));
     }
 
     private void DrawCell(ScreenCellData screenCellData, int screenX, int screenY)
@@ -343,23 +324,11 @@ public class Renderer
         (int minX, int minY) = _viewCornerCoords[view];
         ViewCellData[,] viewCells = view.GetAllCells();
         int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
-        DrawArea(RowIter(), ConvertToConsoleY(maxY), minX, maxX);
-
-        IEnumerable<IEnumerable<ScreenCellData>> RowIter()
-        {
-            for (int y = maxY; y >= minY; y--)
-            {
-                yield return CellIter(y);
-            }
-
-            IEnumerable<ScreenCellData> CellIter(int y)
-            {
-                for (int x = minX; x < maxX; x++)
-                {
-                    yield return GetCellWithSwap(x, y, viewCells[x - minX, y - minY], view);
-                }
-            }
-        }
+        DrawArea(
+            Enumerable.Range(minY, viewCells.GetLength(1)).Reverse().Select(y =>
+                Enumerable.Range(minX, viewCells.GetLength(0))
+                    .Select(x => GetCellWithSwap(x, y, viewCells[x - minX, y - minY], view))), ConvertToConsoleY(maxY),
+            minX, maxX);
     }
 
     private void DrawArea(IEnumerable<IEnumerable<ScreenCellData>> data, int y, int minX, int maxX)

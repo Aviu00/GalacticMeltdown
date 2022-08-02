@@ -39,10 +39,11 @@ public class LimitedNumber
         get => _value;
         set
         {
+            _value = value;
             if (_maxValue is not null)
-                _value = Math.Min(value, _maxValue.Value);
+                _value = Math.Min(_value, _maxValue.Value);
             if (_minValue is not null)
-                _value = Math.Max(value, _minValue.Value);
+                _value = Math.Max(_value, _minValue.Value);
         }
     }
 
