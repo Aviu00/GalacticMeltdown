@@ -152,6 +152,7 @@ public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
 
     private void OnInputLineUpdate(object sender, InputLineUpdateEventArgs e)
     {
+        if (Height == 0 || Width == 0) return;
         int lineY = _pressableLineIndexes[_selectedIndex] < Height
             ? Height - _pressableLineIndexes[_selectedIndex] - 1
             : 0;

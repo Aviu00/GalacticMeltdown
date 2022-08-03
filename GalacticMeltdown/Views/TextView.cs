@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using GalacticMeltdown.Data;
-using GalacticMeltdown.Events;
 
 namespace GalacticMeltdown.Views;
 
@@ -27,6 +26,8 @@ public class TextView : View, IFullRedraw
         base.Resize(width, height);
         _characters = new char[Width, _lines.Sum(line => line.Length == 0 ? 1 : (line.Length - 1) / Width + 1)];
         int curRow = -1;
+        _topTextRow = 0;
+        if (Width == 0 || Height == 0) return;
         foreach (var textLine in _lines)
         {
             if (textLine.Length == 0)
@@ -41,13 +42,12 @@ public class TextView : View, IFullRedraw
                 _characters[i % Width, curRow] = textLine[i];
             }
         }
-
-        _topTextRow = 0;
     }
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y < Height - _characters.GetLength(1)) return new ViewCellData(null, BackgroundColor);
+        if (y < Height - _characters.GetLength(1) || Height == 0 || Width == 0)
+            return new ViewCellData(null, BackgroundColor);
         char character = _characters[x, Height - y - 1 + _topTextRow];
         return new ViewCellData(character == '\0' ? null : (character, TextColor), BackgroundColor);
     }

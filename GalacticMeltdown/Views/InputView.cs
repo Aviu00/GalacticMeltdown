@@ -22,6 +22,7 @@ public class InputView : View, IOneCellUpdate, IMultiCellUpdate, ILineUpdate
 
     public override ViewCellData GetSymbol(int x, int y)
     {
+        if (Width == 0 || Height == 0) return new ViewCellData(null, null);
         ConsoleColor? bgColor = y > _currentText.Length / Width ? null : BgColor;
         if (y * Width + x == _currentText.Length) bgColor = CursorColor;
         (char, ConsoleColor TextColor)? symbolData =
