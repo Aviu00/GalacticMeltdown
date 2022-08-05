@@ -276,7 +276,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         if (sender is not IHasCoords hasCoords) return;
 
         (int x, int y) = (hasCoords.X, hasCoords.Y);
-        if (!IsPointInsideView(x, y)) return;
+        if (!CanPlayerSeePoint((x, y))) return;
         IDrawable drawableObj = _level.GetDrawable(x, y);
         (int viewX, int viewY) = ToViewCoords(x, y);
         OneCellAnim?.Invoke(this, new OneCellAnimEventArgs((viewX, viewY, drawableObj is null
@@ -341,11 +341,11 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
                         0)));
             }
         }
-        
-        bool CanPlayerSeePoint((int x, int y) pos)
-        {
-            return _visiblePoints.Contains(pos) && IsPointInsideView(pos.x, pos.y);
-        }
+    }
+    
+    private bool CanPlayerSeePoint((int x, int y) pos)
+    {
+        return _visiblePoints.Contains(pos) && IsPointInsideView(pos.x, pos.y);
     }
 
     private bool IsPointInsideView(int x, int y)
