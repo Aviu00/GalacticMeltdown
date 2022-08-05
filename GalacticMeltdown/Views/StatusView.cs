@@ -138,7 +138,6 @@ public class StatusView : View, ILineUpdate
         (string text, ConsoleColor color) = line.Value;
         for (int i = 0; i < Math.Min(Width, text.Length); i++)
             lineContents[i] = new ViewCellData((text[i], color), null);
-        if (lineNum >= Height) return;
         LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContents));
     }
 }
