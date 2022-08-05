@@ -160,6 +160,7 @@ public class Renderer
     private void RecalcAndRedraw(int windowWidth, int windowHeight)
     {
         InitPixelFuncArr(windowWidth, windowHeight);
+        _animQueue.Clear();
         _viewCornerCoords.Clear();
         _views.Clear();
         foreach (ViewPositioner viewPositioner in _viewPositioners)
@@ -184,7 +185,6 @@ public class Renderer
 
     private void OutputAllCells()
     {
-        _animQueue.Clear();
         var screenCells = new ScreenCellData[_cellInfos.GetLength(0), _cellInfos.GetLength(1)];
         screenCells.Initialize();
         foreach (View view in _views)
