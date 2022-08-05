@@ -69,7 +69,7 @@ public class Renderer
 
     private void AddViewPositioner(ViewPositioner viewPositioner)
     {
-        if (!RedrawOnScreenSizeChange()) PlayAnimations();
+        PlayAnimations();
         _viewPositioners.Add(viewPositioner);
         viewPositioner.SetScreenSize(_cellInfos.GetLength(0), _cellInfos.GetLength(1));
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
@@ -87,7 +87,7 @@ public class Renderer
     public void RemoveViewPositioner(object obj)
     {
         if (!_objectViewPositioners.ContainsKey(obj)) return;
-        if (!RedrawOnScreenSizeChange()) PlayAnimations();
+        PlayAnimations();
         ViewPositioner viewPositioner = _objectViewPositioners[obj];
         foreach (var (view, _, _, _, _) in viewPositioner.ViewPositions)
         {
@@ -280,7 +280,6 @@ public class Renderer
 
     private void UpdateCell(object sender, OneCellUpdateEventArgs e)
     {
-        PlayAnimations();
         var view = (View) sender;
         var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
         var (screenX, screenY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(e.CellInfo.x, e.CellInfo.y,
@@ -290,7 +289,6 @@ public class Renderer
 
     private void UpdateCells(object sender, MultiCellUpdateEventArgs e)
     {
-        PlayAnimations();
         var view = (View) sender;
         var (viewMinScreenX, viewMinScreenY) = _viewCornerCoords[view];
         foreach (var (x, y, cellData) in e.Cells)
@@ -319,8 +317,8 @@ public class Renderer
 
     private void NeedRedrawHandler(object sender, EventArgs _)
     {
-        PlayAnimations();
         var view = (View) sender;
+        if (_animQueue.Any(viewInfo => viewInfo.view == view)) PlayAnimations();
         (int minX, int minY) = _viewCornerCoords[view];
         ViewCellData[,] viewCells = view.GetAllCells();
         int maxX = minX + viewCells.GetLength(0), maxY = minY + viewCells.GetLength(1) - 1;
