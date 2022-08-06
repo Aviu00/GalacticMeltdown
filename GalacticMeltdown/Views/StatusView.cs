@@ -21,52 +21,11 @@ public class StatusView : View, ILineUpdate
     private Level _level; // Maybe later
     private Player _player; // State, equipment
 
-    private (string text, ConsoleColor color)?[] Lines =>
-        new (string text, ConsoleColor color)?[]
-        {
-            ($"HP: {_player.Hp}/{_player.MaxHp}", HpColor),
-            ($"Energy: {_player.Energy}/{_player.MaxEnergy}", EnergyColor), ($"STR: {_player.Strength}", StrColor),
-            ($"DEF: {_player.Defence}", DefColor), ($"DEX: {_player.Dexterity}", DexColor),
-            _player.Equipment[BodyPart.Hands] is not null
-                ? ($"Held: {_player.Equipment[BodyPart.Hands].Name}", OtherTextColor)
-                : null,
-            _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null
-                ? (
-                    $"Ammo: {_player.Inventory.Count(item => item.Id == _player.ChosenAmmoId)} "
-                    + $"({_player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name})", OtherTextColor)
-                : null,
-            _player.Equipment[BodyPart.Head] is not null
-                ? ($"Head: {_player.Equipment[BodyPart.Head].Name}", OtherTextColor)
-                : null,
-            _player.Equipment[BodyPart.Torso] is not null
-                ? ($"Torso: {_player.Equipment[BodyPart.Torso].Name}", OtherTextColor)
-                : null,
-            _player.Equipment[BodyPart.Legs] is not null
-                ? ($"Legs: {_player.Equipment[BodyPart.Legs].Name}", OtherTextColor)
-                : null,
-            _player.Equipment[BodyPart.Feet] is not null
-                ? ($"Feet: {_player.Equipment[BodyPart.Feet].Name}", OtherTextColor)
-                : null,
-        };
+    private readonly List<Func<(string text, ConsoleColor color)?>> _lines = new();
 
-    private static readonly Dictionary<Stat, int> StatLine = new()
-    {
-        {Stat.Hp, 0},
-        {Stat.Energy, 1},
-        {Stat.Strength, 2},
-        {Stat.Defence, 3},
-        {Stat.Dexterity, 4},
-    };
+    private readonly Dictionary<Stat, int> _statLine = new();
     
-    private static readonly Dictionary<Equipment, int> EquipmentLine = new()
-    {
-        {Equipment.Hands, 5},
-        {Equipment.Ammo, 6},
-        {Equipment.Head, 7},
-        {Equipment.Torso, 8},
-        {Equipment.Legs, 9},
-        {Equipment.Feet, 10},
-    };
+    private readonly Dictionary<Equipment, int> _equipmentLine = new();
 
     public event EventHandler<LineUpdateEventArgs> LineUpdate;
 
@@ -76,68 +35,114 @@ public class StatusView : View, ILineUpdate
         _player = level.Player;
         _player.StatChanged += OnStatChange;
         _player.EquipmentChanged += OnEquipmentChange;
+        SetLines();
+    }
+
+    private void SetLines()
+    {
+        List<(Stat, Func<(string text, ConsoleColor color)?>)> stats =
+            new()
+            {
+                (Stat.Hp, () => ($"HP: {_player.Hp}/{_player.MaxHp}", HpColor)),
+                (Stat.Energy, () => ($"Energy: {_player.Energy}/{_player.MaxEnergy}", EnergyColor)),
+                (Stat.Strength, () => ($"STR: {_player.Strength}", StrColor)),
+                (Stat.Defence, () => ($"DEF: {_player.Defence}", DefColor)),
+                (Stat.Dexterity, () => ($"DEX: {_player.Dexterity}", DexColor)),
+            };
+        List<(Equipment, Func<(string text, ConsoleColor color)?>)> equipment =
+            new()
+            {
+                (Equipment.Hands, () => _player.Equipment[BodyPart.Hands] is not null
+                    ? ($"Held: {_player.Equipment[BodyPart.Hands].Name}", OtherTextColor)
+                    : null),
+                (Equipment.Ammo, () =>
+                    _player.Equipment[BodyPart.Hands] is WeaponItem && _player.ChosenAmmoId is not null
+                        ? (
+                            $"Ammo: {_player.Inventory.Count(item => item.Id == _player.ChosenAmmoId)} "
+                            + $"({_player.Inventory.First(item => item.Id == _player.ChosenAmmoId).Name})",
+                            OtherTextColor)
+                        : null),
+                (Equipment.Head, () => _player.Equipment[BodyPart.Head] is not null
+                    ? ($"Head: {_player.Equipment[BodyPart.Head].Name}", OtherTextColor)
+                    : null),
+                (Equipment.Torso, () => _player.Equipment[BodyPart.Torso] is not null
+                    ? ($"Torso: {_player.Equipment[BodyPart.Torso].Name}", OtherTextColor)
+                    : null),
+                (Equipment.Legs, () => _player.Equipment[BodyPart.Legs] is not null
+                    ? ($"Legs: {_player.Equipment[BodyPart.Legs].Name}", OtherTextColor)
+                    : null),
+                (Equipment.Feet, () => _player.Equipment[BodyPart.Feet] is not null
+                    ? ($"Feet: {_player.Equipment[BodyPart.Feet].Name}", OtherTextColor)
+                    : null),
+            };
+        int i = 0;
+        AddLoop(stats, _statLine);
+        AddLoop(equipment, _equipmentLine);
+
+        void AddLoop<TKey>(List<(TKey, Func<(string text, ConsoleColor color)?>)> lines,
+            Dictionary<TKey, int> dictionary)
+        {
+            foreach ((TKey eqp, Func<(string text, ConsoleColor color)?> func) in lines)
+            {
+                dictionary.Add(eqp, i++);
+                _lines.Add(func);
+            }
+        }
     }
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        (string text, ConsoleColor color)?[] lines = Lines;
-
-        if (Height - y - 1 < lines.Length && lines[Height - y - 1] is not null)
-        {
-            var (text, color) = lines[Height - y - 1]!.Value;
-            return new ViewCellData(x < text.Length ? (text[x], color) : null, null);
-        }
-        
-        return new ViewCellData(null, null);
+        int lineIndex = ConvertToTopY(y);
+        if (lineIndex >= _lines.Count) return new ViewCellData(null, null);
+        (string text, ConsoleColor color)? lineInfo = _lines[lineIndex]();
+        if (lineInfo is null) return new ViewCellData(null, null);
+        (string text, ConsoleColor color) = lineInfo.Value;
+        return new ViewCellData(x < text.Length ? (text[x], color) : null, null);
     }
 
     public override ViewCellData[,] GetAllCells()
     {
-        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        var cells = new ViewCellData[Width, Height];
         cells.Initialize();
         if (Width == 0 || Height == 0) return cells;
-        (string text, ConsoleColor color)?[] lines = Lines;
-        for (int line = 0; line < Math.Min(lines.Length, Height); line++)
+        for (var line = 0; line < Math.Min(_lines.Count, Height); line++)
         {
-            if (lines[line] is null) continue;
-            var (text, color) = lines[line].Value;
+            (string text, ConsoleColor color)? lineInfo = _lines[line]();
+            if (lineInfo is null) continue;
+            (string text, ConsoleColor color) = lineInfo.Value;
             for (int col = 0; col < Math.Min(text.Length, Width); col++)
             {
-                cells[col, Height - line - 1] = new ViewCellData((text[col], color), null);
+                cells[col, ConvertToTopY(line)] = new ViewCellData((text[col], color), null);
             }
         }
         return cells;
     }
 
-    private void OnStatChange(object sender, StatChangeEventArgs e)
+    private void OnStatChange(object sender, StatChangeEventArgs e) => UpdateStatusLine(_statLine, e.Stat);
+
+    private void OnEquipmentChange(object sender, EquipmentChangeEventArgs e) =>
+        UpdateStatusLine(_equipmentLine, e.Equipment);
+
+    private void UpdateStatusLine<TKey>(Dictionary<TKey, int> lineDict, TKey statusType)
     {
         var lineContents = new List<ViewCellData>(Width);
         lineContents.AddRange(Enumerable.Repeat(new ViewCellData(null, null), Width));
-        if (!StatLine.TryGetValue(e.Stat, out int lineNum)) return;
+        if (!lineDict.TryGetValue(statusType, out int lineNum)) return;
         if (lineNum >= Height) return;
 
-        (string text, ConsoleColor color) = Lines[lineNum]!.Value;
-        for (int i = 0; i < Math.Min(Width, text.Length); i++)
-            lineContents[i] = new ViewCellData((text[i], color), null);
-        LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContents));
-    }
-    
-    private void OnEquipmentChange(object sender, EquipmentChangeEventArgs e)
-    {
-        var lineContents = new List<ViewCellData>(Width);
-        lineContents.AddRange(Enumerable.Repeat(new ViewCellData(null, null), Width));
-        if (!EquipmentLine.TryGetValue(e.Equipment, out int lineNum)) return;
-        if (lineNum >= Height) return;
-
-        (string text, ConsoleColor color)? line = Lines[lineNum];
-        if (line is null)
+        int lineY = ConvertToTopY(lineNum);
+        (string text, ConsoleColor color)? lineInfo = _lines[lineNum]();
+        if (lineInfo is null)
         {
-            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContents));
+            LineUpdate?.Invoke(this, new LineUpdateEventArgs(lineY, lineContents));
             return;
         }
-        (string text, ConsoleColor color) = line.Value;
-        for (int i = 0; i < Math.Min(Width, text.Length); i++)
+
+        (string text, ConsoleColor color) = lineInfo.Value;
+        for (var i = 0; i < Math.Min(Width, text.Length); i++)
             lineContents[i] = new ViewCellData((text[i], color), null);
-        LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - lineNum - 1, lineContents));
+        LineUpdate?.Invoke(this, new LineUpdateEventArgs(lineY, lineContents));
     }
+
+    private int ConvertToTopY(int lineNum) => Height - lineNum - 1;
 }
