@@ -37,9 +37,9 @@ public class InputView : View, IOneCellUpdate, IMultiCellUpdate, ILineUpdate
         if (Width == 0 || Height == 0) return cells;
         if (_currentText.Length < Height * Width)
         {
-            for (int row = 0; row < _currentText.Length / Width + 1; row++)
+            for (var row = 0; row < _currentText.Length / Width + 1; row++)
             {
-                for (int col = 0; col < Width; col++)
+                for (var col = 0; col < Width; col++)
                 {
                     cells[col, row] = new ViewCellData(null, BgColor);
                 }
@@ -87,11 +87,11 @@ public class InputView : View, IOneCellUpdate, IMultiCellUpdate, ILineUpdate
     {
         _currentText.Append(character);
         if (_currentText.Length > Width * Height) return;
+        ViewCellData current = new((character, TextColor), BgColor);
         if (_currentText.Length % Width == 0)
         {
             OneCellUpdate?.Invoke(this,
-                new OneCellUpdateEventArgs((Width - 1, _currentText.Length / Width - 1,
-                    GetSymbol(Width - 1, _currentText.Length / Width - 1))));
+                new OneCellUpdateEventArgs((Width - 1, _currentText.Length / Width - 1, current)));
             var line = new List<ViewCellData> {new ViewCellData(null, CursorColor)};
             line.AddRange(Enumerable.Repeat(new ViewCellData(null, BgColor), Width - 1));
             LineUpdate?.Invoke(this,
@@ -100,8 +100,7 @@ public class InputView : View, IOneCellUpdate, IMultiCellUpdate, ILineUpdate
         else
             MultiCellUpdate?.Invoke(this, new MultiCellUpdateEventArgs(new List<(int, int, ViewCellData)>
             {
-                (_currentText.Length % Width - 1, _currentText.Length / Width,
-                    new ViewCellData((_currentText[^1], TextColor), BgColor)),
+                (_currentText.Length % Width - 1, _currentText.Length / Width, current),
                 (_currentText.Length % Width, _currentText.Length / Width, new ViewCellData(null, CursorColor)),
             }));
     }
