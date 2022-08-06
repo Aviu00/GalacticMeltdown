@@ -25,48 +25,44 @@ public class MinimapView : View, IFullRedraw
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        int centerViewX = Width / 2, centerViewY = Height / 2;
+        int centerX = Width / 2, centerY = Height / 2;
         var (xPlayer, yPlayer) = Level.GetChunkCoords(_player.X, _player.Y);
-        var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerViewX, centerViewY);
-        var (xAbs, yAbs) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, xPlayer, yPlayer);
+        var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerX, centerY);
+        var (chunkX, chunkY) = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, xPlayer, yPlayer);
 
-        ConsoleColor? bgColor = x == centerViewX && y == centerViewY ? Colors.Minimap.CenterChunk : null;
-        if (!Inbounds(xAbs, yAbs)) return new ViewCellData(null, bgColor);
-        if (_chunks[xAbs, yAbs].IsFinalRoom)
-            bgColor ??= Colors.Minimap.FinalRoom;
+        ConsoleColor? bgColor = x == centerX && y == centerY ? Colors.Minimap.CenterChunk : null;
+        if (!Inbounds(chunkX, chunkY)) return new ViewCellData(null, bgColor);
 
-        return new ViewCellData(
-            _chunks[xAbs, yAbs].WasVisitedByPlayer
-                ? (_chunks[xAbs, yAbs].Symbol, Colors.Minimap.Visited)
-                : (UndiscoveredSym, Colors.Minimap.Undiscovered),
-            bgColor);
+        ViewCellData cellData = GetChunkCell(chunkX, chunkY);
+        return cellData with {BackgroundColor = bgColor ?? cellData.BackgroundColor};
     }
 
     public override ViewCellData[,] GetAllCells()
     {
-        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        var cells = new ViewCellData[Width, Height];
         cells.Initialize();
         if (Width == 0 || Height == 0) return cells;
-        var (xPlayer, yPlayer) = Level.GetChunkCoords(_player.X, _player.Y);
+        (int xPlayer, int yPlayer) = Level.GetChunkCoords(_player.X, _player.Y);
         int minX = xPlayer - Width / 2, minY = yPlayer - Height / 2;
-        for (int viewY = 0; viewY < Height; viewY++)
+        for (var viewY = 0; viewY < Height; viewY++)
         {
-            for (int viewX = 0; viewX < Width; viewX++)
+            for (var viewX = 0; viewX < Width; viewX++)
             {
                 int chunkX = minX + viewX, chunkY = minY + viewY;
                 if (!Inbounds(chunkX, chunkY)) continue;
-                cells[viewX, viewY] = new ViewCellData(_chunks[chunkX, chunkY].WasVisitedByPlayer
-                        ? (_chunks[chunkX, chunkY].Symbol, Colors.Minimap.Visited)
-                        : (UndiscoveredSym, Colors.Minimap.Undiscovered),
-                    _chunks[chunkX, chunkY].IsFinalRoom ? Colors.Minimap.FinalRoom : null);
+                cells[viewX, viewY] = GetChunkCell(chunkX, chunkY);
             }
         }
 
-        cells[Width / 2, Height / 2] =
-            new ViewCellData(cells[Width / 2, Height / 2].SymbolData, Colors.Minimap.CenterChunk);
+        cells[Width / 2, Height / 2] = cells[Width / 2, Height / 2] with {BackgroundColor = Colors.Minimap.CenterChunk};
 
         return cells;
     }
+
+    private ViewCellData GetChunkCell(int chunkX, int chunkY) => new(_chunks[chunkX, chunkY].WasVisitedByPlayer
+            ? (_chunks[chunkX, chunkY].Symbol, Colors.Minimap.Visited)
+            : (UndiscoveredSym, Colors.Minimap.Undiscovered),
+        _chunks[chunkX, chunkY].IsFinalRoom ? Colors.Minimap.FinalRoom : null);
 
     private void PlayerMoveHandler(object sender, MoveEventArgs e)
     {
