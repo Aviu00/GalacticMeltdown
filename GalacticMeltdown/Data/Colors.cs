@@ -79,6 +79,12 @@ public static class Colors
         public const ConsoleColor CenterChunk = ConsoleColor.Green;
         public const ConsoleColor FinalRoom = ConsoleColor.Cyan;
     }
+    
+    public static class Debug
+    {
+        public const ConsoleColor Main = DefaultSym;
+        public const ConsoleColor Sym = DefaultMain;
+    }
 
     public const ConsoleColor DefaultMain = ConsoleColor.Black;
     public const ConsoleColor DefaultSym = ConsoleColor.White;
