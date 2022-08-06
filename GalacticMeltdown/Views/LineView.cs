@@ -22,35 +22,30 @@ public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
 
     public override ViewCellData GetSymbol(int x, int y)
     {
-        if (y < Height - _lines.Count) return new ViewCellData(null, DefaultBackgroundColor);
-        return !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height
-            ? _lines[Height - y - 1][x]
-            : _lines[_pressableLineIndexes[_selectedIndex] - y][x];
+        return y < Height - _lines.Count ? new ViewCellData(null, DefaultBackgroundColor) : GetLineSymbol(x, y);
     }
 
     public override ViewCellData[,] GetAllCells()
     {
-        ViewCellData[,] cells = new ViewCellData[Width, Height];
-        cells.Initialize();
-        if (Width == 0 || Height == 0) return cells;
-        for (int viewX = 0; viewX < Width; viewX++)
+        var cells = new ViewCellData[Width, Height];
+        for (var x = 0; x < Width; x++)
         {
-            for (int viewY = 0; viewY < Height - _lines.Count; viewY++)
+            for (var y = 0; y < Height - _lines.Count; y++)
             {
-                cells[viewX, viewY] = new ViewCellData(null, DefaultBackgroundColor);
+                cells[x, y] = new ViewCellData(null, DefaultBackgroundColor);
             }
         }
-        for (int viewX = 0; viewX < Width; viewX++)
+        for (var x = 0; x < Width; x++)
         {
-            for (int viewY = Math.Max(0, Height - _lines.Count); viewY < Height; viewY++)
+            for (int y = Math.Max(0, Height - _lines.Count); y < Height; y++)
             {
-                cells[viewX, viewY] = !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height
-                    ? _lines[Height - viewY - 1][viewX]
-                    : _lines[_pressableLineIndexes[_selectedIndex] - viewY][viewX];
+                cells[x, y] = GetLineSymbol(x, y);
             }
         }
         return cells;
     }
+
+    private ViewCellData GetLineSymbol(int x, int y) => _lines[ConvertLineIndexLineY(y)][x];
 
     public void SetLines(List<ListLine> lines, bool keepSelected = false)
     {
@@ -94,34 +89,24 @@ public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
         base.Resize(width, height);
     }
 
-    public void SelectNext()
+    public void SelectNext() => SelectAdjacent(false);
+
+    public void SelectPrev() => SelectAdjacent(true);
+
+    private void SelectAdjacent(bool prev)
     {
         if (!_pressableLineIndexes.Any()) return;
         int prevIndex = _selectedIndex;
-        _selectedIndex += 1;
-        if (_selectedIndex == _pressableLineIndexes.Count) _selectedIndex = 0;
-        if (prevIndex == _selectedIndex) return;
-        int prevLineIndex = _pressableLineIndexes[prevIndex];
-        int curLineIndex = _pressableLineIndexes[_selectedIndex];
-        ((PressableListLine) _lines[prevLineIndex]).Deselect();
-        ((PressableListLine) _lines[curLineIndex]).Select();
-        if (prevLineIndex < Height && curLineIndex < Height)
+        if (prev)
         {
-            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - prevLineIndex - 1, GetLineCells(prevLineIndex)));
-            LineUpdate?.Invoke(this, new LineUpdateEventArgs(Height - curLineIndex - 1, GetLineCells(curLineIndex)));
+            _selectedIndex -= 1;
+            if (_selectedIndex == -1) _selectedIndex = _pressableLineIndexes.Count - 1;
         }
         else
         {
-            NeedRedraw?.Invoke(this, EventArgs.Empty);
+            _selectedIndex += 1;
+            if (_selectedIndex == _pressableLineIndexes.Count) _selectedIndex = 0;
         }
-    }
-
-    public void SelectPrev()
-    {
-        if (!_pressableLineIndexes.Any()) return;
-        int prevIndex = _selectedIndex;
-        _selectedIndex -= 1;
-        if (_selectedIndex == -1) _selectedIndex = _pressableLineIndexes.Count - 1;
         if (prevIndex == _selectedIndex) return;
         int prevLineIndex = _pressableLineIndexes[prevIndex];
         int curLineIndex = _pressableLineIndexes[_selectedIndex];
@@ -146,16 +131,13 @@ public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
 
     public ListLine GetCurrent()
     {
-        if (!_pressableLineIndexes.Any()) return null;
-        return _lines[_pressableLineIndexes[_selectedIndex]];
+        return !_pressableLineIndexes.Any() ? null : _lines[_pressableLineIndexes[_selectedIndex]];
     }
 
     private void OnInputLineUpdate(object sender, InputLineUpdateEventArgs e)
     {
         if (Height == 0 || Width == 0) return;
-        int lineY = _pressableLineIndexes[_selectedIndex] < Height
-            ? Height - _pressableLineIndexes[_selectedIndex] - 1
-            : 0;
+        int lineY = ConvertLineIndexLineY(_pressableLineIndexes[_selectedIndex]);
         if (e.Cells is not null)
         {
             MultiCellUpdate?.Invoke(this,
@@ -163,15 +145,20 @@ public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
             return;
         }
 
-        var lineContents = GetLineCells(_pressableLineIndexes[_selectedIndex]);
+        LineUpdate?.Invoke(this, new LineUpdateEventArgs(lineY, GetLineCells(_pressableLineIndexes[_selectedIndex])));
+    }
 
-        LineUpdate?.Invoke(this, new LineUpdateEventArgs(lineY, lineContents));
+    private int ConvertLineIndexLineY(int yOrIndex)
+    {
+        return !_pressableLineIndexes.Any() || _pressableLineIndexes[_selectedIndex] < Height 
+            ? Height - yOrIndex - 1
+            : _pressableLineIndexes[_selectedIndex] - yOrIndex;
     }
 
     private List<ViewCellData> GetLineCells(int index)
     {
         var lineContents = new List<ViewCellData>();
-        for (int i = 0; i < Width; i++)
+        for (var i = 0; i < Width; i++)
             lineContents.Add(_lines[index][i]);
 
         return lineContents;
