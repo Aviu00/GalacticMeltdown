@@ -70,7 +70,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
 
     private string CoordinateString => $"X:{FocusObject.X} Y:{FocusObject.Y}";
 
-    public (int minX, int minY, int maxX, int maxY) ViewBounds => 
+    public (int minX, int minY, int maxX, int maxY) ViewBounds =>
         (FocusObject.X - Width / 2, FocusObject.Y - Height / 2,
             FocusObject.X + (Width - 1) / 2, FocusObject.Y + (Height - 1) / 2);
 
@@ -111,7 +111,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         {
             sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
         }
-        
+
         UpdateVisiblePoints();
     }
 
@@ -120,10 +120,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         ConsoleColor? backgroundColor = null;
 
         if (ShowCoordinates && y == Height - 1 && x < CoordinateString.Length)
-        {
-            char sym = CoordinateString[x];
-            return new ViewCellData(sym == ' ' ? null : (sym, Colors.DefaultMain), Colors.DefaultSym);
-        }
+            return CoordStringCell(CoordinateString[x]);
 
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
@@ -186,12 +183,10 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
             string coordinateString = CoordinateString;
             for (int i = 0; i < Math.Min(coordinateString.Length, Width); i++)
             {
-                char sym = coordinateString[i];
-                cells[i, Height - 1] =
-                    new ViewCellData(sym == ' ' ? null : (sym, Colors.DefaultMain), Colors.DefaultSym);
+                cells[i, Height - 1] = CoordStringCell(coordinateString[i]);
             }
         }
-        
+
         return cells;
     }
 
@@ -202,7 +197,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
 
         FocusObject = focusObj;
         FocusObject.Moved += FocusObjectMoved;
-        
+
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
@@ -305,6 +300,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
                     ViewCellData cellData = GetSymbol(viewX, viewY);
                     OneCellAnim?.Invoke(this, new OneCellAnimEventArgs((viewX, viewY, cellData, 20)));
                 }
+
                 break;
             case ActorAction.InteractWithDoor:
             case ActorAction.StopTurn:
@@ -326,7 +322,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
             }
         }
     }
-    
+
     private bool CanPlayerSeePoint((int x, int y) pos)
     {
         return _visiblePoints.Contains(pos) && IsPointInsideView(pos.x, pos.y);
@@ -343,4 +339,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         var (minX, minY, _, _) = ViewBounds;
         return UtilityFunctions.ConvertAbsoluteToRelativeCoords(xLevel, yLevel, minX, minY);
     }
+
+    private ViewCellData CoordStringCell(char sym) =>
+        new(sym == ' ' ? null : (sym, Colors.Debug.Sym), Colors.Debug.Main);
 }
