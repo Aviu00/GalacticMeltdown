@@ -118,18 +118,16 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
     public override ViewCellData GetSymbol(int x, int y)
     {
         ConsoleColor? backgroundColor = null;
-        
+
         if (ShowCoordinates && y == Height - 1 && x < CoordinateString.Length)
         {
             char sym = CoordinateString[x];
             return new ViewCellData(sym == ' ' ? null : (sym, Colors.DefaultMain), Colors.DefaultSym);
         }
-        
+
         int centerScreenX = Width / 2, centerScreenY = Height / 2;
         var coords = UtilityFunctions.ConvertAbsoluteToRelativeCoords(x, y, centerScreenX, centerScreenY);
         coords = UtilityFunctions.ConvertRelativeToAbsoluteCoords(coords.x, coords.y, FocusObject.X, FocusObject.Y);
-
-
         var (levelX, levelY) = coords;
 
         if (_cursor?.LinePoints is not null && _cursor.LinePoints.Contains(coords))
@@ -144,18 +142,8 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
                 return new ViewCellData(drawable.SymbolData, backgroundColor ?? drawable.BgColor);
         }
 
-        if (_visiblePoints.Contains(coords))
-        {
-            IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
-            return drawableObj is null
-                ? new ViewCellData(null, backgroundColor)
-                : new ViewCellData(drawableObj.SymbolData, backgroundColor ?? drawableObj.BgColor);
-        }
-
-        if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-            return new ViewCellData((_seenCells[levelX, levelY].Value, Colors.OutOfView), backgroundColor);
-
-        return new ViewCellData(null, backgroundColor);
+        ViewCellData cellData = GetLevelCell(levelX, levelY);
+        return cellData with {BackgroundColor = backgroundColor ?? cellData.BackgroundColor};
     }
 
     public override ViewCellData[,] GetAllCells()
@@ -203,21 +191,6 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         }
         
         return cells;
-
-        ViewCellData GetLevelCell(int levelX, int levelY)
-        {
-            if (_visiblePoints.Contains((levelX, levelY)))
-            {
-                IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
-                return drawableObj is null
-                    ? new ViewCellData(null, null)
-                    : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor);
-            }
-
-            if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
-                return new ViewCellData((_seenCells[levelX, levelY].Value, Colors.OutOfView), null);
-            return new ViewCellData(null, null);
-        }
     }
 
     public void SetFocus(IFocusable focusObj)
@@ -237,6 +210,19 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
             _level.GetNonTileObject(x, y) as IHasDescription ?? _level.GetTile(x, y);
         if (descriptionObject is null) return null;
         return _visiblePoints.Contains((x, y)) ? descriptionObject.GetDescription() : new List<string> {"Not visible"};
+    }
+
+    private ViewCellData GetLevelCell(int levelX, int levelY)
+    {
+        if (_visiblePoints.Contains((levelX, levelY)))
+        {
+            IDrawable drawableObj = _level.GetDrawable(levelX, levelY);
+            return new ViewCellData(drawableObj?.SymbolData, drawableObj?.BgColor);
+        }
+
+        if (_seenCells.Inbounds(levelX, levelY) && _seenCells[levelX, levelY] is not null)
+            return new ViewCellData((_seenCells[levelX, levelY].Value, Colors.OutOfView), null);
+        return new ViewCellData(null, null);
     }
 
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
