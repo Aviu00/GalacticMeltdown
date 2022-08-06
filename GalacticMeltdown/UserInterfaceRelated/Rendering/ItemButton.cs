@@ -7,7 +7,7 @@ namespace GalacticMeltdown.UserInterfaceRelated.Rendering;
 
 public class ItemButton : Button
 {
-    public Item StoredItem { get; }
+    private Item StoredItem { get; }
 
     public ItemButton(Item item, Action<Item> openItemScreen, int? count = null) : base(item.Name,
         count is null ? "" : count.ToString(), () => openItemScreen(item))
@@ -28,9 +28,8 @@ public class ItemButton : Button
         }
     }
 
-    public override void SetWidth(int width)
+    protected override string RenderText()
     {
-        base.SetWidth(width);
-        RenderedText = UtilityFunctions.RenderText(width - 2, TextLeft, TextRight);
+        return Width < 2 ? "" : UtilityFunctions.RenderText(Width - 2, TextLeft, TextRight);
     }
 }

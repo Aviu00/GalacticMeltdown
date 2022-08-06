@@ -38,7 +38,12 @@ public class Button : PressableListLine
 
     public override void SetWidth(int width)
     {
-        RenderedText = UtilityFunctions.RenderText(width, TextLeft, TextRight);
         base.SetWidth(width);
+        RenderedText = RenderText();
+    }
+
+    protected virtual string RenderText()
+    {
+        return UtilityFunctions.RenderText(Width, TextLeft, TextRight);
     }
 }

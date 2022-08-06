@@ -79,7 +79,7 @@ public class LineView : View, IFullRedraw, IMultiCellUpdate, ILineUpdate
             ((PressableListLine) _lines[_pressableLineIndexes[_selectedIndex]]).Select();
         }
         
-        if (Width != 0) _lines.ForEach(line => line.SetWidth(Width));
+        _lines.ForEach(line => line.SetWidth(Width));
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
 
