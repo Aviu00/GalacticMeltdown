@@ -54,7 +54,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
     private bool _showCoordinates;
 
     private ObservableCollection<ISightedObject> _sightedObjects;
-    private HashSet<(int, int)> _visiblePoints;
+    private HashSet<(int x, int y)> _visiblePoints;
     [JsonProperty] private SeenTilesArray _seenCells;
 
     [JsonIgnore]
@@ -225,15 +225,15 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
     private void SightedObjectUpdateHandler(object _, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is not null)
-            foreach (var sightedObject in e.NewItems)
+            foreach (ISightedObject sightedObject in e.NewItems)
             {
-                ((ISightedObject) sightedObject).VisiblePointsChanged += UpdateVisiblePoints;
+                sightedObject.VisiblePointsChanged += UpdateVisiblePoints;
             }
 
         if (e.OldItems is not null)
-            foreach (var sightedObject in e.OldItems)
+            foreach (ISightedObject sightedObject in e.OldItems)
             {
-                ((ISightedObject) sightedObject).VisiblePointsChanged -= UpdateVisiblePoints;
+                sightedObject.VisiblePointsChanged -= UpdateVisiblePoints;
             }
 
         UpdateVisiblePoints();
@@ -244,10 +244,9 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         _visiblePoints = _sightedObjects
             .SelectMany((obj, _) => GetPointsVisibleAround(obj.X, obj.Y, obj.GetViewRange(), obj.Xray))
             .ToHashSet();
-        foreach (var (x, y) in _visiblePoints)
+        foreach ((int x, int y) in _visiblePoints.Where(cell => _seenCells.Inbounds(cell.x, cell.y)))
         {
-            if (!_seenCells.Inbounds(x, y)) continue;
-            var tile = _level.GetTile(x, y);
+            Tile tile = _level.GetTile(x, y);
             if (tile is not null) _seenCells[x, y] = tile.SaveSymbol;
         }
 
@@ -316,9 +315,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
                 ViewCellData cellData = GetSymbol(viewX, viewY);
                 OneCellAnim?.Invoke(this,
                     new OneCellAnimEventArgs((viewX, viewY, cellData with {BackgroundColor = color}, delay)));
-                OneCellAnim?.Invoke(this,
-                    new OneCellAnimEventArgs((viewX, viewY, cellData,
-                        0)));
+                OneCellAnim?.Invoke(this, new OneCellAnimEventArgs((viewX, viewY, cellData, 0)));
             }
         }
     }
