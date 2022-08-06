@@ -37,7 +37,7 @@ public class MainMenu : TextWindow
 
     private void OpenHelp()
     {
-        InfoWindow infoWindow = new(Text.English.InfoLines);
+        InfoWindow infoWindow = new(Text.InfoLines);
         UserInterface.AddChild(this, infoWindow);
         infoWindow.Open();
     }

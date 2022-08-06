@@ -2,11 +2,9 @@ using System.Collections.Generic;
 
 namespace GalacticMeltdown.Data;
 
-public record Language(string Code, string Name, List<string> InfoLines);
-
 public static class Text
 {
-    public static Language English = new("en", "English", new List<string>
+    public static List<string> InfoLines = new()
     {
         "Galactic Meltdown",
         "",
@@ -16,7 +14,7 @@ public static class Text
         "become one of them. You have a limited amount of time, so all you can do is grab a few spare items on the " +
         "ship and make a run for it.",
         "",
-        "This game is turn-based: each entity has some energy that it can use to perform actions during a turn.", 
+        "This game is turn-based: each entity has some energy that it can use to perform actions during a turn.",
         "After an entity performs an action, all other entities close to the player may perform an action as well.",
         "A turn finishes when no entities spend energy when performing their action.",
         "At the end of each turn all entities restore their energy.",
@@ -56,5 +54,5 @@ public static class Text
         "    Q: open equipment menu",
         "    C: open category selection",
         "    /: open item search",
-    });
+    };
 }
