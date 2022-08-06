@@ -277,11 +277,9 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
 
         (int x, int y) = (hasCoords.X, hasCoords.Y);
         if (!CanPlayerSeePoint((x, y))) return;
-        IDrawable drawableObj = _level.GetDrawable(x, y);
         (int viewX, int viewY) = ToViewCoords(x, y);
-        OneCellAnim?.Invoke(this, new OneCellAnimEventArgs((viewX, viewY, drawableObj is null
-            ? new ViewCellData(null, null)
-            : new ViewCellData(drawableObj.SymbolData, drawableObj.BgColor), 0)));
+        ViewCellData cellData = GetSymbol(viewX, viewY);
+        OneCellAnim?.Invoke(this, new OneCellAnimEventArgs((viewX, viewY, cellData, 0)));
     }
 
     private void FocusObjectMoved(object sender, EventArgs _)
@@ -315,11 +313,9 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
             case ActorAction.Move:
                 foreach ((int x, int y) in actionInfo.AffectedCells.Where(CanPlayerSeePoint))
                 {
-                    IDrawable drawable = _level.GetDrawable(x, y);
                     var (viewX, viewY) = ToViewCoords(x, y);
-                    OneCellAnim?.Invoke(this,
-                        new OneCellAnimEventArgs((viewX, viewY,
-                            new ViewCellData(drawable?.SymbolData, drawable?.BgColor), 20)));
+                    ViewCellData cellData = GetSymbol(viewX, viewY);
+                    OneCellAnim?.Invoke(this, new OneCellAnimEventArgs((viewX, viewY, cellData, 20)));
                 }
                 break;
             case ActorAction.InteractWithDoor:
@@ -332,12 +328,12 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         {
             foreach ((int x, int y) in actionInfo.AffectedCells.Where(CanPlayerSeePoint))
             {
-                IDrawable drawable = _level.GetDrawable(x, y);
-                var (viewX, viewY) = ToViewCoords(x, y);
+                (int viewX, int viewY) = ToViewCoords(x, y);
+                ViewCellData cellData = GetSymbol(viewX, viewY);
                 OneCellAnim?.Invoke(this,
-                    new OneCellAnimEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, color), delay)));
+                    new OneCellAnimEventArgs((viewX, viewY, cellData with {BackgroundColor = color}, delay)));
                 OneCellAnim?.Invoke(this,
-                    new OneCellAnimEventArgs((viewX, viewY, new ViewCellData(drawable?.SymbolData, drawable?.BgColor),
+                    new OneCellAnimEventArgs((viewX, viewY, cellData,
                         0)));
             }
         }
