@@ -148,7 +148,7 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
 
     public override ViewCellData[,] GetAllCells()
     {
-        ViewCellData[,] cells = new ViewCellData[Width, Height];
+        var cells = new ViewCellData[Width, Height];
         cells.Initialize();
         if (Width == 0 || Height == 0) return cells;
         int minX = FocusObject.X - Width / 2, minY = FocusObject.Y - Height / 2;
@@ -164,18 +164,20 @@ public partial class LevelView : View, IFullRedraw, IOneCellAnim, IMultiCellUpda
         if (FocusObject is IDrawable drawable)
             cells[Width / 2, Height / 2] = new ViewCellData(drawable.SymbolData, drawable.BgColor);
 
-        if (_cursor?.LinePoints is not null)
+        if (_cursor is not null) // contract: cursor is always inside view
         {
-            foreach ((int x, int y) in _cursor.LinePoints.Where(point => IsPointInsideView(point.x, point.y)))
-            {
-                var (viewX, viewY) = ToViewCoords(x, y);
-                cells[viewX, viewY] = new ViewCellData(cells[viewX, viewY].SymbolData, GetCursorLineColor(x, y));
-            }
-        }
+            int viewX, viewY;
 
-        if (_cursor is not null && IsPointInsideView(_cursor.X, _cursor.Y))
-        {
-            var (viewX, viewY) = ToViewCoords(_cursor.X, _cursor.Y);
+            if (_cursor.LinePoints is not null)
+            {
+                foreach ((int x, int y) in _cursor.LinePoints.Where(point => IsPointInsideView(point.x, point.y)))
+                {
+                    (viewX, viewY) = ToViewCoords(x, y);
+                    cells[viewX, viewY] = new ViewCellData(cells[viewX, viewY].SymbolData, GetCursorLineColor(x, y));
+                }
+            }
+
+            (viewX, viewY) = ToViewCoords(_cursor.X, _cursor.Y);
             cells[viewX, viewY] = new ViewCellData(cells[viewX, viewY].SymbolData, _cursor.Color);
         }
 
