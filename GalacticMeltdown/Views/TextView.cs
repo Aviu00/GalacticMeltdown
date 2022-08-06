@@ -48,8 +48,7 @@ public class TextView : View, IFullRedraw
     {
         if (y < Height - _characters.GetLength(1) || Height == 0 || Width == 0)
             return new ViewCellData(null, BackgroundColor);
-        char character = _characters[x, Height - y - 1 + _topTextRow];
-        return new ViewCellData(character == '\0' ? null : (character, TextColor), BackgroundColor);
+        return GetCharCell(_characters[x, Height - y - 1 + _topTextRow]);
     }
 
     public override ViewCellData[,] GetAllCells()
@@ -68,9 +67,7 @@ public class TextView : View, IFullRedraw
         {
             for (int viewY = Math.Max(0, Height - _lines.Count); viewY < Height; viewY++)
             {
-                char character = _characters[viewX, Height - viewY - 1 + _topTextRow];
-                cells[viewX, viewY] = new ViewCellData(character == '\0' ? null : (character, TextColor),
-                    BackgroundColor);
+                cells[viewX, viewY] = GetCharCell(_characters[viewX, Height - viewY - 1 + _topTextRow]);
             }
         }
 
@@ -90,4 +87,6 @@ public class TextView : View, IFullRedraw
         _topTextRow--;
         NeedRedraw?.Invoke(this, EventArgs.Empty);
     }
+
+    private ViewCellData GetCharCell(char sym) => new(sym == '\0' ? null : (sym, TextColor), BackgroundColor);
 }
