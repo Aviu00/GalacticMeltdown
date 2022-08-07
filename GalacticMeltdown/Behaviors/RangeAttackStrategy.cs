@@ -72,7 +72,7 @@ public class RangeAttackStrategy : Behavior
             if (obj is not Actor actor) break;
 
             double distance = UtilityFunctions.GetDistance(x0, y0, xi, yi);
-            if (!UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance(distance, _spread))) continue;
+            if (!UtilityFunctions.Occured(UtilityFunctions.RangeAttackHitChance(distance, _spread))) continue;
             int damage = RandomDamage(_minDamage, _maxDamage);
             actor.Hit(damage, true, false);
             UtilityFunctions.ApplyStateChangers(_stateChangers, ControlledNpc.CurrentTarget);

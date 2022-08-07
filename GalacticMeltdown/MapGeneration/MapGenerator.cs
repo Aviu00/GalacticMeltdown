@@ -67,9 +67,9 @@ public class MapGenerator
             int sizeRestriction = i + restrictionAddition;
 
             //Main route distribution formulas
-            int dif = Chance(40, _rng) ? 0 :
-                Chance(newSize * 20 - 120 - Math.Abs(MapWidth / 2 - sizeRestriction) * 5, _rng) ? -1 : 1;
-            int posMultiplier = Chance(50, _rng) ? Chance(40, _rng) ? 2 : 1 : 0;
+            int dif = Occured(40, _rng) ? 0 :
+                Occured(newSize * 20 - 120 - Math.Abs(MapWidth / 2 - sizeRestriction) * 5, _rng) ? -1 : 1;
+            int posMultiplier = Occured(50, _rng) ? Occured(40, _rng) ? 2 : 1 : 0;
 
             if (sizeRestriction <= posMultiplierCeiling)
             {
@@ -116,7 +116,7 @@ public class MapGenerator
         int lastMin = 0;
         int lastMax = 0;
         int startRoomPos = _rng.Next(0, _columns.Count);
-        bool topStartRoom = Chance(50, _rng);
+        bool topStartRoom = Occured(50, _rng);
         int mainRouteRoomCount = 0;
 
         for (int i = 0; i < _chunkGenerators.GetLength(0); i++)
@@ -197,7 +197,7 @@ public class MapGenerator
     {
         int width = _chunkGenerators.GetLength(0);
         int height = _chunkGenerators.GetLength(1);
-        int yStep = Chance(50, _rng) ? 1 : -1;
+        int yStep = Occured(50, _rng) ? 1 : -1;
         int lastX = width / 2 + 1;
         for (int x = 0; x < lastX; x++)
         {
@@ -265,7 +265,7 @@ public class MapGenerator
         {
             int roomType = CalculateRoomType(x, y);
             var matchingRooms =
-                _roomTypes.Where(r => ValidateRoomType(r.Type, roomType) && Chance(r.Chance, _rng)).ToArray();
+                _roomTypes.Where(r => ValidateRoomType(r.Type, roomType) && Occured(r.Chance, _rng)).ToArray();
             room = matchingRooms[_rng.Next(0, matchingRooms.Length)];
         }
 
@@ -470,12 +470,12 @@ public class MapGenerator
                 return;
             }
 
-            if (Chance(ConnectionChance, _rng) && (!xConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
+            if (Occured(ConnectionChance, _rng) && (!xConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
             {
                 ConnectRooms(chunk, xConnection);
             }
 
-            if (yConnection is not null && Chance(ConnectionChance, _rng)
+            if (yConnection is not null && Occured(ConnectionChance, _rng)
                 && (!yConnection.HasAccessToMainRoute || !chunk.HasAccessToMainRoute))
             {
                 ConnectRooms(chunk, yConnection);

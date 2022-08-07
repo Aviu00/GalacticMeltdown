@@ -261,7 +261,7 @@ public class Player : Actor, ISightedObject, IControllable
             if (obj is not Actor actor) break;
 
             double distance = UtilityFunctions.GetDistance(X, Y, xi, yi);
-            if (!UtilityFunctions.Chance(UtilityFunctions.RangeAttackHitChance(distance, gun.Spread))) continue;
+            if (!UtilityFunctions.Occured(UtilityFunctions.RangeAttackHitChance(distance, gun.Spread))) continue;
             actor.Hit(
                 Random.Shared.Next(gun.MinHitDamage + gun.AmmoTypes[ammo.Id].minDamage,
                     gun.MaxHitDamage + gun.AmmoTypes[ammo.Id].maxDamage + 1), true, false);

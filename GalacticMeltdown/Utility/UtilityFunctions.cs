@@ -63,16 +63,16 @@ public static class UtilityFunctions
         return (x + relObjX, y + relObjY);
     }
 
-    public static bool Chance(int chance, Random rng = null)
+    public static bool Occured(int chance, Random rng = null)
     {
         rng ??= Random.Shared;
-        return rng.Next(1, 101) <= chance;
+        return rng.NextDouble() < chance / 100.0;
     }
 
-    public static bool ChanceRoll(int chance, int rolls, Random rng = null)
+    public static bool ChanceRoll(int chance, int tries, Random rng = null)
     {
         rng ??= Random.Shared;
-        return rng.Next(1, 101) <= 100 - Math.Pow(100-chance, rolls) / Math.Pow(100, rolls-1);
+        return rng.Next(1, 101) <= 100 - Math.Pow(100-chance, tries) / Math.Pow(100, tries-1);
     }
 
     public static int MultiChance(int[] chances, Random rng = null)

@@ -134,7 +134,7 @@ public class ChunkGenerator
     {
         string id = roomData[localX, localY].LootId;
         if (id is null ||
-            !UtilityFunctions.Chance(ChanceFunction(roomData[localX, localY].LootChance, roomData[localX, localY].Gain,
+            !UtilityFunctions.Occured(ChanceFunction(roomData[localX, localY].LootChance, roomData[localX, localY].Gain,
                 roomData[localX, localY].Limit), _rng))
             return;
         int newX = localX + MapX * ChunkConstants.ChunkSize;
@@ -177,7 +177,7 @@ public class ChunkGenerator
 
         foreach (var itemObj in table.Items)
         {
-            if (!UtilityFunctions.Chance(ChanceFunction(itemObj.chance, itemObj.gain, itemObj.limit), _rng)) continue;
+            if (!UtilityFunctions.Occured(ChanceFunction(itemObj.chance, itemObj.gain, itemObj.limit), _rng)) continue;
             SpawnItems(items, itemObj.lootId, x, y);
         }
     }

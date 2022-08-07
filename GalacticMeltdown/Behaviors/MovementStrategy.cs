@@ -125,7 +125,7 @@ public class MovementStrategy : Behavior
             else
                 SetPathTo(_wantsToGoTo.Value.x, _wantsToGoTo.Value.y);
         }
-        if (_idleMovement && UtilityFunctions.Chance(50))
+        if (_idleMovement && UtilityFunctions.Occured(50))
         {
             ControlledNpc.StopTurn();
             return new ActorActionInfo(ActorAction.StopTurn, new List<(int, int)>());
