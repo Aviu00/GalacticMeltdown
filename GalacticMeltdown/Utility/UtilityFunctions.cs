@@ -75,20 +75,20 @@ public static class UtilityFunctions
         return rng.NextDouble() < 1 - Math.Pow(1 - chance / 100.0, tries);
     }
 
-    public static int MultiChance(int[] chances, Random rng = null)
+    public static int WeightedRandomIndex(int[] weights, Random rng = null)
     {
         rng ??= Random.Shared;
-        if (chances.Length == 0) throw new ArgumentException("chances array must have non zero length");
-        int val = rng.Next(1, 101);
-        int curChance = chances[0];
-        for (int i = 0; i < chances.Length; i++)
+        int cutoff = rng.Next(1, 101);
+
+        var accumulated = 0;
+        var i = 0;
+        for (; i < weights.Length; i++)
         {
-            if (val <= curChance) return i;
-            if (i + 1 == chances.Length) break;
-            curChance += chances[i + 1];
+            accumulated += weights[i];
+            if (accumulated >= cutoff) return i;
         }
 
-        return chances.Length;
+        return i;
     }
 
     public static Dictionary<TKey, TVal> JoinDictionaries<TKey, TJoin, TVal>(Dictionary<TKey, TJoin> dict1,

@@ -169,7 +169,7 @@ public class ChunkGenerator
         {
             int[] chances =
                 table.Items.Select(item => ChanceFunction(item.chance, item.gain, item.limit)).ToArray();
-            int index = UtilityFunctions.MultiChance(chances, _rng);
+            int index = UtilityFunctions.WeightedRandomIndex(chances, _rng);
             if (index == chances.Length) return;
             SpawnItems(items, table.Items[index].lootId, x, y);
             return;
