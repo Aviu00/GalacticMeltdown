@@ -69,10 +69,10 @@ public static class UtilityFunctions
         return rng.NextDouble() < chance / 100.0;
     }
 
-    public static bool ChanceRoll(int chance, int tries, Random rng = null)
+    public static bool OccuredMultipleTries(int chance, int tries, Random rng = null)
     {
         rng ??= Random.Shared;
-        return rng.Next(1, 101) <= 100 - Math.Pow(100-chance, tries) / Math.Pow(100, tries-1);
+        return rng.NextDouble() < 1 - Math.Pow(1 - chance / 100.0, tries);
     }
 
     public static int MultiChance(int[] chances, Random rng = null)

@@ -177,7 +177,7 @@ public abstract class Actor : IObjectOnMap
 
     public virtual bool Hit(int damage, bool ignoreDexterity, bool ignoreDefence)
     {
-        if (!ignoreDexterity && Dexterity > 0 && UtilityFunctions.ChanceRoll(5, _dexterity))
+        if (!ignoreDexterity && Dexterity > 0 && UtilityFunctions.OccuredMultipleTries(5, _dexterity))
             return false;
         if (!ignoreDefence && Defence > 0)
         {
